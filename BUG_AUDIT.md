@@ -7,7 +7,8 @@
 `mounted` guards, route-target resolution, raw literals, image error handling, permissions),
 cross-checked by reading every hit. Static analysis only — see *Limitations*.
 
-**Totals:** 13 fixed · 1 partially fixed (the l10n residual) · 5 deferred (root-caused, out of the 30-min/bug budget) · 7 classes verified clean.
+**Totals:** 14 fixed · 1 partially fixed (the l10n residual) · 5 deferred (root-caused, out of the 30-min/bug budget) · 7 classes verified clean.
+*(14 = 13 app defects + 1 release-pipeline defect found while verifying the push — see the section below.)*
 
 ---
 
@@ -33,6 +34,14 @@ cross-checked by reading every hit. Static analysis only — see *Limitations*.
 | Ads | `ad_service.dart`, `rewarded_ad_service.dart` | DEFERRED | Google **test** ad unit IDs. Needs the AdMob account's real unit IDs. |
 | Search | `directory_search_service.dart` | DEFERRED | `TODO`: prefix-range queries only; no Algolia/Typesense. Scalability limitation, not a defect. |
 | Data | `repositories.dart` (`Remote*`) | DEFERRED | `TODO(remote)`: repositories are local-only; remote sync not implemented. |
+
+---
+
+## Release-pipeline defect (found while verifying the push)
+
+| Component | Element | Status | Notes |
+|---|---|---|---|
+| CI / push tooling | `push_via_api.mjs` blob upload | FIXED | **The branding commit never actually built.** The GitHub API push path uploaded every changed file with `readFileSync(path, 'utf8')` + `encoding: 'utf8'` — it had no binary handling at all. Two consequences: (1) **22 binary assets were silently destroyed** — every launcher PNG and both `assets/images/` files, with each invalid byte replaced by `U+FFFD`, inflating them ~1.8× (e.g. `mipmap-mdpi/ic_launcher.png` 3110b → 5648b); (2) **32 text files were stored as CRLF instead of LF**, because `core.autocrlf=true` means the working tree holds CRLF while the committed blob holds LF. **Symptom:** `:app:mergeReleaseResources` → `AAPT: error: file failed to compile` on `mipmap-mdpi/ic_launcher.png`, so runs `99a499de`, `5e914c1b` and `26d5dab0` all failed; the last green build predates this work. **Why it was missed:** the icon verifier and every local check passed, because the local files were never wrong — the corruption existed only server-side, and the API push returns 200. **Detection:** compare `git rev-parse HEAD:<path>` against the blob sha in the remote tree; a size ratio near 1.8× on a binary is the tell. **Fix:** the script now reads exact committed bytes via `git cat-file blob HEAD:<path>` and uploads `encoding: 'base64'`; a repair commit restored all 54 blobs. Verified by the invariant **remote tree sha == `git rev-parse HEAD^{tree}`** and by re-walking all 376 remote blobs against the local commit (0 mismatches). |
 
 ---
 
