@@ -285,4 +285,30 @@ class CountryData {
     }
     return null;
   }
+
+  /// Recovers the country whose dial code prefixes [phoneDigits].
+  ///
+  /// Used to resolve a number typed without a country code against the caller's
+  /// own number: the signed-in user's E.164 digits (`8801712345678`) carry the
+  /// code, and this pulls `880` back out of them.
+  ///
+  /// Longest prefix wins, because dial codes are not prefix-free — `1` (US) and
+  /// `1264` (Anguilla) are both real codes, so a shortest match would return
+  /// the wrong country for any number that happens to start with a shorter
+  /// code's digits.
+  static Country? byDialPrefix(String phoneDigits) {
+    final String digits = phoneDigits.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) return null;
+    Country? best;
+    String bestCode = '';
+    for (final Country c in all) {
+      final String code = c.dialCode.replaceAll('+', '');
+      if (code.isEmpty) continue;
+      if (digits.startsWith(code) && code.length > bestCode.length) {
+        best = c;
+        bestCode = code;
+      }
+    }
+    return best;
+  }
 }

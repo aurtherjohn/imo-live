@@ -537,6 +537,8 @@
   "messages": "বার্তা",
   "channels": "চ্যানেল",
   "noResults": "কোনো ফলাফল নেই",
+  "inYourContacts": "আপনার পরিচিতিতে",
+  "onImoLIVE": "Imo LIVE-এ",
   "frequentlyAsked": "প্রায়শ জিজ্ঞাসিত",
   "copyCode": "কোড কপি করুন",
   "theCodeCarriesAnImo": "কোডটিতে Imo LIVE শনাক্তকারী থাকে। অন্য কেউ পারবে ",

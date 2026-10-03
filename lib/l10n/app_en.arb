@@ -544,6 +544,8 @@
   "messages": "Messages",
   "channels": "Channels",
   "noResults": "No results",
+  "inYourContacts": "In your contacts",
+  "onImoLIVE": "On Imo LIVE",
   "frequentlyAsked": "Frequently asked",
   "copyCode": "Copy code",
   "theCodeCarriesAnImo": "The code carries an Imo LIVE identifier. Another person can ",

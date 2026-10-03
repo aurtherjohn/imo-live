@@ -176,6 +176,57 @@ class RemoteContactService {
     return digits;
   }
 
+  /// Canonical form of [raw] **with the country code resolved**.
+  ///
+  /// Search has to accept the three shapes a person actually types for the same
+  /// number, because each is a different string but only one is a `phones/{n}`
+  /// document id:
+  ///
+  /// | typed            | resolved        | rule                        |
+  /// | ---------------- | --------------- | --------------------------- |
+  /// | `+8801712345678` | `8801712345678` | leading `+` → drop it       |
+  /// | `8801712345678`  | `8801712345678` | already E.164 → as-is       |
+  /// | `01712345678`    | `8801712345678` | national `0` → dial code    |
+  ///
+  /// [dialCode] is the caller's own country dial code without `+` (e.g. `880`).
+  /// It is required — without it, `01712345678` cannot be told apart from a
+  /// foreign number that merely starts with `0`, and guessing would silently
+  /// send the lookup to the wrong person's profile.
+  ///
+  /// A number that already carries a country code is left alone: the national
+  /// trunk `0` is never re-prefixed, which is what stops `017…` becoming
+  /// `88088017…` when the caller's code is already `880`.
+  static String resolvePhone(String raw, {required String dialCode}) {
+    final String digits = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) return '';
+    final String code = dialCode.replaceAll(RegExp(r'[^0-9]'), '');
+    final bool startsWithPlus = raw.trimLeft().startsWith('+');
+
+    // A leading `+` is an explicit, unambiguous country code — never rewrite it.
+    if (startsWithPlus) return digits;
+
+    // No country code on file: the digits are all we have, so use them as-is
+    // rather than inventing a prefix.
+    if (code.isEmpty) return digits;
+
+    final String nationalTrunk = code.startsWith('0')
+        ? code.substring(1)
+        : code;
+
+    // `0` + national number → the same number with the country code, trunk `0`
+    // dropped. `01712345678` → `880` + `1712345678`.
+    if (digits.startsWith('0')) {
+      return '$nationalTrunk${digits.substring(1)}';
+    }
+
+    // Already carries the country code (`8801712…`) → leave it exactly as it is.
+    if (digits.startsWith(nationalTrunk)) return digits;
+
+    // A bare national number with no trunk prefix (`1712345678`) is the one
+    // case that still needs the code glued on.
+    return '$nationalTrunk$digits';
+  }
+
   /// Canonical form used for the `emails/{email}` index.
   static String normaliseEmail(String raw) => raw.trim().toLowerCase();
 
@@ -186,6 +237,31 @@ class RemoteContactService {
   /// Resolves a registered profile for [phone], or reports a miss.
   Future<LookupResult> findByPhone(String phone) async {
     return _resolve(phonesCollection, normalisePhone(phone));
+  }
+
+  /// Resolves a registered profile for a number the user typed, applying the
+  /// caller's country code when the number has none.
+  ///
+  /// Tries the resolved E.164 form first, then the bare digits, so a number
+  /// stored without a country code still resolves. [dialCode] is the caller's
+  /// own country dial code without `+` (e.g. `880`).
+  Future<LookupResult> findByPhoneWithCountry(
+    String phone, {
+    required String dialCode,
+  }) async {
+    final String resolved = resolvePhone(phone, dialCode: dialCode);
+    final String bare = normalisePhone(phone);
+
+    final LookupResult asResolved = await _resolve(phonesCollection, resolved);
+    if (asResolved.isFound || asResolved.isUnavailable) return asResolved;
+
+    // Only worth a second read when the two forms differ — otherwise this is
+    // the same `get` twice.
+    if (bare.isNotEmpty && bare != resolved) {
+      final LookupResult asBare = await _resolve(phonesCollection, bare);
+      if (asBare.isFound || asBare.isUnavailable) return asBare;
+    }
+    return const LookupResult.notFound();
   }
 
   /// Resolves a registered profile for [email], or reports a miss.
@@ -222,7 +298,15 @@ class RemoteContactService {
   /// This is what the smart search bar and the "New contact" phone field call:
   /// the caller does not have to know whether the user typed a phone number, an
   /// email, a `@handle` or a uid.
-  Future<LookupResult> findByAnyIdentifier(String raw) async {
+  ///
+  /// [dialCode] is the caller's own country dial code without `+` (e.g. `880`),
+  /// used only when [raw] is a number written without one — so `01712345678`
+  /// resolves to the same person as `+8801712345678`. Pass an empty string to
+  /// disable that resolution and treat the digits literally.
+  Future<LookupResult> findByAnyIdentifier(
+    String raw, {
+    String dialCode = '',
+  }) async {
     final String value = raw.trim();
     if (value.isEmpty) return Future<LookupResult>.value(const LookupResult.notFound());
 
@@ -235,7 +319,9 @@ class RemoteContactService {
     final String digits = normalisePhone(value);
     // At least 6 digits and nothing else but separators ⇒ treat as a phone.
     if (digits.length >= 6 && RegExp(r'^[+0-9 ()\-]+$').hasMatch(value)) {
-      final LookupResult byPhone = await findByPhone(digits);
+      final LookupResult byPhone = dialCode.isEmpty
+          ? await findByPhone(digits)
+          : await findByPhoneWithCountry(value, dialCode: dialCode);
       if (byPhone.isFound || byPhone.isUnavailable) return byPhone;
       return const LookupResult.notFound();
     }

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_color_scheme.dart';
 import '../../../app/theme/app_tokens.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/models/contact.dart';
 import '../../../core/services/remote_contact_service.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
@@ -28,26 +29,45 @@ final Provider<DirectorySearchService> directorySearchServiceProvider =
 });
 
 /// Results of the live directory search, keyed by the query.
+///
+/// The key is `"<dialCode>|<query>"` rather than the bare query so that a
+/// country change (or a first frame where the dial code is not yet known)
+/// re-runs the search instead of serving a stale result set from the cache.
 final StreamProviderFamily<List<RemoteProfile>, String>
     directorySearchProvider =
-    StreamProvider.family<List<RemoteProfile>, String>((Ref ref, String query) {
+    StreamProvider.family<List<RemoteProfile>, String>((Ref ref, String key) {
   final DirectorySearchService service =
       ref.watch(directorySearchServiceProvider);
+  final int bar = key.indexOf('|');
+  final String dialCode = bar < 0 ? '' : key.substring(0, bar);
+  final String query = bar < 0 ? key : key.substring(bar + 1);
   // Kick the debounced query, then surface the shared result stream. The
   // provider rebuilds per query string, which is what makes the debounce window
   // restart on every keystroke.
-  service.search(query);
+  service.search(query, dialCode: dialCode);
   return service.stream;
 });
+
+/// The query key the search screen uses: dial code and text in one string.
+String searchKeyFor(String dialCode, String query) => '$dialCode|$query';
 
 /// Live lookup of one exact identifier (phone, email, @handle or uid).
 ///
 /// Separate from [directorySearchProvider] because the "New contact" screen
 /// needs a single unambiguous answer — "is this number on Imo LIVE?" — not a
 /// list.
+///
+/// The key is `"<dialCode>|<identifier>"` so a number typed without a country
+/// code resolves against the caller's own, and the cache invalidates when that
+/// code changes.
 final FutureProviderFamily<LookupResult, String> directoryLookupProvider =
-    FutureProvider.family<LookupResult, String>((Ref ref, String identifier) {
-  return ref.watch(remoteContactServiceProvider).findByAnyIdentifier(identifier);
+    FutureProvider.family<LookupResult, String>((Ref ref, String key) {
+  final int bar = key.indexOf('|');
+  final String dialCode = bar < 0 ? '' : key.substring(0, bar);
+  final String identifier = bar < 0 ? key : key.substring(bar + 1);
+  return ref
+      .watch(remoteContactServiceProvider)
+      .findByAnyIdentifier(identifier, dialCode: dialCode);
 });
 
 /// Smart search over the shared Imo LIVE directory.
@@ -239,6 +259,17 @@ class _Results extends ConsumerWidget {
   final String query;
   final DirectoryQueryKind kind;
 
+  /// The caller's own dial code, so a number typed without one can still
+  /// resolve. Empty when it is not yet known — the lookup then treats the
+  /// digits literally rather than guessing a country.
+  String _dialCode(WidgetRef ref) {
+    try {
+      return ref.watch(currentDialCodeProvider);
+    } on Object {
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
@@ -251,11 +282,24 @@ class _Results extends ConsumerWidget {
             AppSpacing.lg,
             AppSpacing.sm,
           ),
-          child: Text(
-            context.l10n.searchingBy(DirectorySearchService.labelFor(kind)),
-            style: context.t.bodySmall?.copyWith(
-              color: context.c.textSecondary,
-            ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  context.l10n.searchingBy(
+                    DirectorySearchService.labelFor(kind),
+                  ),
+                  style: context.t.bodySmall?.copyWith(
+                    color: context.c.textSecondary,
+                  ),
+                ),
+              ),
+              // Shown only while the answer is still in flight, so the user can
+              // tell "nothing yet" from "nothing found".
+              if (kind == DirectoryQueryKind.username ||
+                  kind != DirectoryQueryKind.username)
+                const _SearchingDot(),
+            ],
           ),
         ),
         Expanded(
@@ -269,15 +313,23 @@ class _Results extends ConsumerWidget {
 
   /// Handle prefixes stream, because several people can share one.
   Widget _handleResults(WidgetRef ref) {
-    final AsyncValue<List<RemoteProfile>> async =
-        ref.watch(directorySearchProvider(query));
+    final String dial = _dialCode(ref);
+    final AsyncValue<List<RemoteProfile>> async = ref.watch(
+      directorySearchProvider(searchKeyFor(dial, query)),
+    );
 
     return async.when(
       loading: () => const Center(child: ILoader(size: 26)),
       error: (Object error, StackTrace stack) => const _SearchUnavailable(),
-      data: (List<RemoteProfile> profiles) => profiles.isEmpty
-          ? _InvitePrompt(query: query, kind: kind)
-          : _ProfileList(profiles: profiles, highlight: query),
+      data: (List<RemoteProfile> profiles) {
+        if (profiles.isEmpty) {
+          return _InvitePrompt(query: query, kind: kind);
+        }
+        return _ProfileList(
+          hits: _merge(ref, profiles),
+          highlight: query,
+        );
+      },
     );
   }
 
@@ -288,8 +340,10 @@ class _Results extends ConsumerWidget {
   /// while an unreachable Firestore becomes a neutral "try again" — a network
   /// blip must never be presented as "this person has no account".
   Widget _exactResult(WidgetRef ref) {
-    final AsyncValue<LookupResult> async =
-        ref.watch(directoryLookupProvider(query));
+    final String dial = _dialCode(ref);
+    final AsyncValue<LookupResult> async = ref.watch(
+      directoryLookupProvider(searchKeyFor(dial, query)),
+    );
 
     return async.when(
       loading: () => const Center(child: ILoader(size: 26)),
@@ -298,31 +352,156 @@ class _Results extends ConsumerWidget {
         final RemoteProfile? profile = result.profile;
         if (result.isFound && profile != null) {
           return _ProfileList(
-            profiles: <RemoteProfile>[profile],
+            hits: _merge(ref, <RemoteProfile>[profile]),
             highlight: query,
           );
         }
         if (result.isUnavailable) return const _SearchUnavailable();
+
+        // A registered user was not found by identifier — but the person may
+        // still be a saved contact whose directory entry is missing (an offline
+        // contact, or one saved before they signed up). The local address book
+        // is the last place worth looking before declaring a miss.
+        final List<DirectoryHit> localOnly = _localMatches(ref);
+        if (localOnly.isNotEmpty) {
+          return _ProfileList(hits: localOnly, highlight: query);
+        }
         return _InvitePrompt(query: query, kind: kind);
       },
+    );
+  }
+
+  /// Contacts saved on this device whose name, handle or number matches.
+  ///
+  /// Built from the *contacts* rather than the directory, because these are
+  /// people the local address book knows by a name that may not exist in
+  /// Firestore at all.
+  List<DirectoryHit> _localMatches(WidgetRef ref) {
+    final List<Contact> contacts = ref.watch(allContactsProvider);
+    final List<DirectoryHit> hits = <DirectoryHit>[];
+    for (final Contact contact in contacts) {
+      final int score = scoreHit(
+        query: query,
+        name: contact.fullName,
+        username: contact.username,
+        phone: contact.phone,
+        isContact: true,
+      );
+      if (score <= 0) continue;
+      hits.add(
+        DirectoryHit(
+          profile: RemoteProfile(
+            uid: contact.id,
+            name: contact.fullName,
+            username: contact.username,
+            phone: contact.phone,
+            bio: contact.bio,
+            avatarUrl: contact.avatarPath ?? '',
+            isOnline: contact.isOnline,
+          ),
+          source: SearchResultSource.contact,
+          localName: contact.fullName,
+          relevance: score,
+        ),
+      );
+    }
+    hits.sort((DirectoryHit a, DirectoryHit b) {
+      final int byScore = b.relevance.compareTo(a.relevance);
+      if (byScore != 0) return byScore;
+      return a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase());
+    });
+    return hits;
+  }
+
+  /// Merges directory profiles against the local address book.
+  List<DirectoryHit> _merge(WidgetRef ref, List<RemoteProfile> profiles) {
+    final List<Contact> contacts = ref.watch(allContactsProvider);
+    final List<RemoteProfile> contactProfiles = contacts
+        .map(
+          (Contact c) => RemoteProfile(
+            uid: c.id,
+            name: c.fullName,
+            username: c.username,
+            phone: c.phone,
+            bio: c.bio,
+            avatarUrl: c.avatarPath ?? '',
+            isOnline: c.isOnline,
+          ),
+        )
+        .toList(growable: false);
+
+    return DirectorySearchService.mergeWithContacts(
+      query: query,
+      directoryProfiles: profiles,
+      contacts: contacts
+          .map(
+            (Contact c) => (
+              uid: c.id,
+              name: c.fullName,
+              phone: c.phone,
+              username: c.username,
+            ),
+          )
+          .toList(growable: false),
+      contactProfiles: contactProfiles,
+    );
+  }
+}
+
+/// A small pulsing dot shown beside the "searching by …" line.
+///
+/// Deliberately not a spinner: the label already says what is happening, and a
+/// second full spinner next to the result spinner would be noise.
+class _SearchingDot extends StatefulWidget {
+  const _SearchingDot();
+
+  @override
+  State<_SearchingDot> createState() => _SearchingDotState();
+}
+
+class _SearchingDotState extends State<_SearchingDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0.35, end: 1).animate(_controller),
+      child: Container(
+        width: 7,
+        height: 7,
+        decoration: BoxDecoration(
+          color: context.c.accent,
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 }
 
 /// The shared result list.
 class _ProfileList extends StatelessWidget {
-  const _ProfileList({required this.profiles, required this.highlight});
+  const _ProfileList({required this.hits, required this.highlight});
 
-  final List<RemoteProfile> profiles;
+  final List<DirectoryHit> hits;
   final String highlight;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
-      itemCount: profiles.length,
+      itemCount: hits.length,
       itemBuilder: (BuildContext context, int index) => _ProfileRow(
-        profile: profiles[index],
+        hit: hits[index],
         highlight: highlight,
       ),
     );
@@ -403,9 +582,9 @@ class _InvitePrompt extends ConsumerWidget {
 /// indistinguishable from the text, which is why the avatar owns its own
 /// gesture.
 class _ProfileRow extends ConsumerStatefulWidget {
-  const _ProfileRow({required this.profile, required this.highlight});
+  const _ProfileRow({required this.hit, required this.highlight});
 
-  final RemoteProfile profile;
+  final DirectoryHit hit;
   final String highlight;
 
   @override
@@ -415,7 +594,8 @@ class _ProfileRow extends ConsumerStatefulWidget {
 class _ProfileRowState extends ConsumerState<_ProfileRow> {
   bool _opening = false;
 
-  RemoteProfile get _profile => widget.profile;
+  RemoteProfile get _profile => widget.hit.profile;
+  DirectoryHit get _hit => widget.hit;
 
   /// Saves the person to the contact list and opens (or creates) the chat.
   Future<void> _openChat() async {
@@ -426,7 +606,9 @@ class _ProfileRowState extends ConsumerState<_ProfileRow> {
           .read(chatServiceProvider)
           .openDirectChat(
             contactId: _profile.uid,
-            name: _profile.name.isEmpty ? _profile.handle : _profile.name,
+            // The saved address-book name is what the user recognises, so it
+            // wins over whatever the person calls themselves in the directory.
+            name: _hit.displayName.isEmpty ? _profile.handle : _hit.displayName,
             phone: _profile.phone,
             avatarUrl: _profile.avatarUrl,
             remoteUid: _profile.uid,
@@ -457,7 +639,7 @@ class _ProfileRowState extends ConsumerState<_ProfileRow> {
   @override
   Widget build(BuildContext context) {
     final String title =
-        _profile.name.isEmpty ? _profile.handle : _profile.name;
+        _hit.displayName.isEmpty ? _profile.handle : _hit.displayName;
     final String subtitle = _profile.handle.isNotEmpty
         ? _profile.handle
         : _profile.phone.isNotEmpty
@@ -514,26 +696,11 @@ class _ProfileRowState extends ConsumerState<_ProfileRow> {
                         ],
                       ],
                     ),
-                    if (subtitle.isNotEmpty) ...<Widget>[
-                      SizedBox(height: 2),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.t.bodySmall?.copyWith(
-                          color: context.c.accent,
-                        ),
-                      ),
-                    ],
-                    if (_profile.bio.isNotEmpty) ...<Widget>[
-                      const SizedBox(height: 2),
-                      Text(
-                        _profile.bio,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.t.bodySmall,
-                      ),
-                    ],
+                    const SizedBox(height: 3),
+                    // Where this person was found. A contact row needs no
+                    // handle line — the badge says the useful thing, and the
+                    // address book name is already the title.
+                    _HitBadge(source: _hit.source, subtitle: subtitle, hideSubtitle: _hit.isContact),
                   ],
                 ),
               ),
@@ -554,6 +721,53 @@ class _ProfileRowState extends ConsumerState<_ProfileRow> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// The "In your contacts" / "On Imo LIVE" line under a result name.
+///
+/// The badge is text, not just a colour, because the distinction is the whole
+/// point of the result: a contact is someone the user already knows, whereas a
+/// directory hit is a stranger they are about to message for the first time.
+class _HitBadge extends StatelessWidget {
+  const _HitBadge({
+    required this.source,
+    required this.subtitle,
+    required this.hideSubtitle,
+  });
+
+  final SearchResultSource source;
+  final String subtitle;
+  final bool hideSubtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool inContacts = source == SearchResultSource.contact;
+    final Color colour =
+        inContacts ? context.c.onSuccess : context.c.textSecondary;
+    final IconData icon =
+        inContacts ? Icons.people_alt_rounded : Icons.public_rounded;
+    final String label = inContacts
+        ? context.l10n.inYourContacts
+        : context.l10n.onImoLIVE;
+
+    return Row(
+      children: <Widget>[
+        Icon(icon, size: 12, color: colour),
+        const SizedBox(width: 4),
+        Flexible(
+          child: Text(
+            // When the row is a saved contact the handle is redundant beside
+            // the badge, so the badge stands alone; otherwise the identifier
+            // the person was found by is the more useful second line.
+            hideSubtitle || subtitle.isEmpty ? label : '$label · $subtitle',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.t.bodySmall?.copyWith(color: colour),
+          ),
+        ),
+      ],
     );
   }
 }

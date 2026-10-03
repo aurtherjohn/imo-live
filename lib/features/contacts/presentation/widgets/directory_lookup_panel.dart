@@ -44,6 +44,13 @@ class DirectoryProbeController extends ChangeNotifier {
 
   final RemoteContactService _service;
 
+  /// The caller's own country dial code, digits only (e.g. `880`).
+  ///
+  /// Set by the owning widget from the country picker, so a number typed in the
+  /// national form (`01712345678`) probes the same document as the E.164 form.
+  /// Empty disables resolution and treats the digits literally.
+  String dialCode = '';
+
   Timer? _debounce;
   int _generation = 0;
   bool _disposed = false;
@@ -78,7 +85,8 @@ class DirectoryProbeController extends ChangeNotifier {
 
   Future<void> _run(String query) async {
     final int generation = ++_generation;
-    final LookupResult result = await _service.findByAnyIdentifier(query);
+    final LookupResult result =
+        await _service.findByAnyIdentifier(query, dialCode: dialCode);
     // A later keystroke already started a newer query — drop this one.
     if (_disposed || generation != _generation) return;
 

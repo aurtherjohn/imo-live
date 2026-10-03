@@ -1693,6 +1693,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noResults => 'No results';
 
   @override
+  String get inYourContacts => 'In your contacts';
+
+  @override
+  String get onImoLIVE => 'On Imo LIVE';
+
+  @override
   String get frequentlyAsked => 'Frequently asked';
 
   @override

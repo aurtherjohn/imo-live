@@ -3320,6 +3320,18 @@ abstract class AppLocalizations {
   /// **'No results'**
   String get noResults;
 
+  /// No description provided for @inYourContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'In your contacts'**
+  String get inYourContacts;
+
+  /// No description provided for @onImoLIVE.
+  ///
+  /// In en, this message translates to:
+  /// **'On Imo LIVE'**
+  String get onImoLIVE;
+
   /// No description provided for @frequentlyAsked.
   ///
   /// In en, this message translates to:

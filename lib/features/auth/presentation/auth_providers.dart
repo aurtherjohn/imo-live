@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/country_data.dart';
 import '../../../core/services/e2ee_service.dart';
 import '../../../core/services/firebase_auth_service.dart';
 import '../../../core/services/firestore_chat_service.dart';
@@ -50,6 +51,33 @@ final StreamProvider<User?> authStateProvider =
 /// only need the id and must not rebuild when unrelated profile fields change.
 final Provider<String> currentUidProvider = Provider<String>((Ref ref) {
   return ref.watch(authStateProvider).valueOrNull?.uid ?? '';
+});
+
+/// The signed-in user's own country dial code, digits only (e.g. `880`).
+///
+/// Search needs this to resolve a number typed without a country code:
+/// `01712345678` is only the same person as `+8801712345678` because the
+/// *caller* is in Bangladesh.
+///
+/// The source is the user's own auth address: the phone sign-up flow derives it
+/// from the full E.164 digits (`p8801712345678@phone.imolive.app`), so the code
+/// is recoverable without a network read or an extra profile field. An email
+/// account never carries one, so this falls back to Bangladesh — the same
+/// pre-selection the phone screen and the new-contact form both use
+/// (`countryForIso('BD')`), which keeps all three in step.
+final Provider<String> currentDialCodeProvider = Provider<String>((Ref ref) {
+  final String? email = ref.watch(authStateProvider).valueOrNull?.email;
+  if (email != null && AppConstants.isPhoneAuthEmail(email)) {
+    // `p<digits>@…` — strip the `p` and the domain, then match the code.
+    final String digits = email
+        .substring(0, email.lastIndexOf('@'))
+        .replaceFirst(RegExp(r'^p'), '')
+        .replaceAll(RegExp(r'[^0-9]'), '');
+    final String? code = CountryData.byDialPrefix(digits)?.dialCode;
+    if (code != null && code.isNotEmpty) return code.replaceAll('+', '');
+  }
+  final String? fallback = CountryData.byIso('BD')?.dialCode;
+  return (fallback ?? '+880').replaceAll('+', '');
 });
 
 /// True while the very first auth event has not arrived.

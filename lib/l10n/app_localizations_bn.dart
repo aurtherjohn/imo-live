@@ -1688,6 +1688,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noResults => 'কোনো ফলাফল নেই';
 
   @override
+  String get inYourContacts => 'আপনার পরিচিতিতে';
+
+  @override
+  String get onImoLIVE => 'Imo LIVE-এ';
+
+  @override
   String get frequentlyAsked => 'প্রায়শ জিজ্ঞাসিত';
 
   @override
