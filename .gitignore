@@ -27,15 +27,14 @@ unlinked.ds
 unlinked_spec.ds
 
 # ===== Android related =====
-**/android/**/gradle-wrapper.jar
 .gradle/
 **/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
 *.jks
+# NOTE: gradlew, gradlew.bat, gradle-wrapper.jar are KEPT for CI builds
+# NOTE: gradle-wrapper.properties is KEPT for CI builds
 
 # ===== iOS/XCode related =====
 **/ios/**/*.mode1v3
@@ -194,3 +193,6 @@ imo_live.iml
 # google-services.json     -- Needed for Firebase
 # firestore.rules          -- Firebase rules
 # firestore.rules.draft    -- Draft rules
+# android/gradlew          -- Needed for Android builds
+# android/gradlew.bat      -- Needed for Android builds on Windows
+# android/gradle/wrapper/gradle-wrapper.jar  -- Needed for Gradle
