@@ -124,7 +124,7 @@ class _ReviewList extends ConsumerWidget {
               'audience.'
           : '${channel.name} is told the application was rejected and can '
               're-apply once it grows further.',
-      confirmLabel: approve ? 'Approve' : 'Reject',
+      confirmLabel: approve ? context.l10n.approve : context.l10n.reject,
     );
     if (!ok || !context.mounted) return;
 

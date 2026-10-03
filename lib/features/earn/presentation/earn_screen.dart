@@ -399,7 +399,7 @@ class _WatchCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           ProminentButton(
-            label: busy ? 'Loading ad…' : 'Watch & Earn',
+            label: busy ? 'Loading ad…' : context.l10n.watchEarn,
             icon: busy ? null : Icons.ondemand_video_rounded,
             expanded: true,
             onPressed: capped ? null : onWatch,

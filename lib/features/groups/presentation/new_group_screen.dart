@@ -116,7 +116,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    _photoPath == null ? 'Add group photo' : 'Change photo',
+                    _photoPath == null ? 'Add group photo' : context.l10n.changePhoto,
                     style: context.t.bodySmall?.copyWith(
                       color: context.c.accent,
                     ),
@@ -221,7 +221,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
                     });
                   }),
                   icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-                  label: Text(_members.isEmpty ? 'Add members' : 'Change'),
+                  label: Text(_members.isEmpty ? context.l10n.addMembers : 'Change'),
                 ),
               ],
             ),
@@ -318,7 +318,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
             child: ProminentButton(
               label: _members.isEmpty
                   ? 'Add members to continue'
-                  : 'Create group',
+                  : context.l10n.createGroup,
               icon: Icons.check_rounded,
               expanded: true,
               onPressed: _canCreate && !_creating ? _create : () {},

@@ -228,7 +228,7 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
             child: results.isEmpty
                 ? EmptyState(
                     icon: Icons.person_search_rounded,
-                    title: all.isEmpty ? 'No contacts yet' : 'No matches',
+                    title: all.isEmpty ? context.l10n.noContactsYet : 'No matches',
                     message: all.isEmpty
                         ? 'Add a contact or sync your address book to get '
                             'started.'

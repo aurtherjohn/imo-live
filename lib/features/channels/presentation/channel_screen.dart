@@ -448,7 +448,7 @@ class _Header extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
                 child: ProminentButton(
-                  label: channel.isFollowing ? 'Following' : 'Follow channel',
+                  label: channel.isFollowing ? context.l10n.following : 'Follow channel',
                   icon: channel.isFollowing
                       ? Icons.check_rounded
                       : Icons.add_rounded,

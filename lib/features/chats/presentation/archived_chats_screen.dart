@@ -28,7 +28,7 @@ class ArchivedChatsScreen extends ConsumerWidget {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          archived.isEmpty ? 'Archived' : 'Archived (${archived.length})',
+          archived.isEmpty ? context.l10n.archived : 'Archived (${archived.length})',
         ),
         actions: <Widget>[
           if (archived.isNotEmpty)

@@ -373,7 +373,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                             .read(chatsProvider.notifier)
                             .toggleMute(chat.id);
                         if (mounted) {
-                          iToast(context, v ? 'Muted' : 'Unmuted');
+                          iToast(context, v ? context.l10n.muted : 'Unmuted');
                         }
                       },
               ),
@@ -552,7 +552,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
         ),
         (
           icon: Icons.block_rounded,
-          label: contact.isBlocked ? 'Unblock' : 'Block',
+          label: contact.isBlocked ? context.l10n.unblock : context.l10n.block,
           onTap: () async {
             Navigator.pop(context);
             await ref

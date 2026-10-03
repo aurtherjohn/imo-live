@@ -300,7 +300,7 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(widget.isEditing ? 'Edit contact' : 'New contact'),
+        title: Text(widget.isEditing ? context.l10n.editContact : context.l10n.newContact),
         actions: <Widget>[
           TextButton(
             onPressed: _canSave ? _save : null,
@@ -360,7 +360,7 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
                   Text(
                     _existing?.avatarPath == null
                         ? 'Add photo'
-                        : 'Change photo',
+                        : context.l10n.changePhoto,
                     style: context.t.bodySmall?.copyWith(
                       color: context.c.accent,
                     ),

@@ -235,7 +235,7 @@ class _GiftSheetState extends ConsumerState<_GiftSheet> {
             ),
             const SizedBox(height: AppSpacing.md),
             ProminentButton(
-              label: _sending ? 'Sending…' : 'Send gift',
+              label: _sending ? 'Sending…' : context.l10n.sendGift,
               icon: _sending ? null : Icons.send_rounded,
               expanded: true,
               onPressed: (_sending || isSelf || !affordable) ? null : _send,

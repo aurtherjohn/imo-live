@@ -61,7 +61,7 @@ class ChannelPostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      post.authorName.isEmpty ? 'Channel' : post.authorName,
+                      post.authorName.isEmpty ? context.l10n.channel : post.authorName,
                       style: context.t.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -178,7 +178,7 @@ class ChannelPostCard extends StatelessWidget {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        post.mediaName.isEmpty ? 'Attachment' : post.mediaName,
+                        post.mediaName.isEmpty ? context.l10n.attachment : post.mediaName,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: context.t.bodyMedium,

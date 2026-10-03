@@ -347,7 +347,7 @@ class _StatusViewScreenState extends ConsumerState<StatusViewScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  status.isOwn ? 'You' : status.authorName,
+                  status.isOwn ? context.l10n.you : status.authorName,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,

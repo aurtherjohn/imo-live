@@ -112,7 +112,7 @@ class AccountSettingsScreen extends ConsumerWidget {
                       if (!ok) return;
                       await ref.read(authControllerProvider.notifier).signOut();
                     },
-                    child: Text(signedIn ? 'Sign out' : 'Sign in'),
+                    child: Text(signedIn ? context.l10n.signOut : 'Sign in'),
                   ),
                 ],
               ),

@@ -124,7 +124,7 @@ Future<Object?> showMessageActionSheet(
                   icon: message.isStarred
                       ? Icons.star_rounded
                       : Icons.star_border_rounded,
-                  label: message.isStarred ? 'Unstar' : 'Star',
+                  label: message.isStarred ? context.l10n.unstar : context.l10n.star,
                   onTap: () => pick(MessageAction.star),
                 ),
               if (!message.isDeleted)
@@ -132,7 +132,7 @@ Future<Object?> showMessageActionSheet(
                   icon: message.isPinned
                       ? Icons.push_pin_rounded
                       : Icons.push_pin_outlined,
-                  label: message.isPinned ? 'Unpin' : 'Pin',
+                  label: message.isPinned ? context.l10n.unpin : context.l10n.pin,
                   onTap: () => pick(MessageAction.pin),
                 ),
               if (message.isOutgoing &&

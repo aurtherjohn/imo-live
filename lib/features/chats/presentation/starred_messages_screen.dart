@@ -80,7 +80,7 @@ class _StarredMessagesScreenState extends ConsumerState<StarredMessagesScreen> {
                     ? EmptyState(
                         icon: Icons.star_border_rounded,
                         title: q.isEmpty
-                            ? 'No starred messages'
+                            ? context.l10n.noStarredMessages
                             : 'No matches',
                         message: q.isEmpty
                             ? 'Long-press any message and choose Star to keep '

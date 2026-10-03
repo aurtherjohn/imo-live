@@ -34,7 +34,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          lists.isEmpty ? 'Broadcast lists' : 'Broadcast (${lists.length})',
+          lists.isEmpty ? context.l10n.broadcastLists : 'Broadcast (${lists.length})',
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(

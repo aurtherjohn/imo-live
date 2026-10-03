@@ -32,10 +32,10 @@ class _CommunitiesScreenState extends ConsumerState<CommunitiesScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: Text(_tab == 0 ? 'Communities' : 'Channels'),
+        title: Text(_tab == 0 ? context.l10n.tabCommunities : context.l10n.channels),
         actions: <Widget>[
           IconButton(
-            tooltip: _tab == 0 ? 'New community' : 'New channel',
+            tooltip: _tab == 0 ? context.l10n.newCommunity : context.l10n.newChannel,
             onPressed: () => context.push(
               _tab == 0 ? AppRoutes.newCommunity : AppRoutes.newChannel,
             ),

@@ -53,7 +53,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         actions: <Widget>[
           TextButton(
             onPressed: () => setState(() => _editing = !_editing),
-            child: Text(_editing ? 'Done' : 'Edit'),
+            child: Text(_editing ? context.l10n.done : context.l10n.edit),
           ),
           const SizedBox(width: AppSpacing.xs),
         ],
@@ -181,7 +181,7 @@ class _FavoriteRow extends StatelessWidget {
       ),
       trailing: editing
           ? IconButton(
-              tooltip: contact.isFavorite ? 'Unstar' : 'Star',
+              tooltip: contact.isFavorite ? context.l10n.unstar : context.l10n.star,
               onPressed: onToggle,
               icon: Icon(
                 contact.isFavorite

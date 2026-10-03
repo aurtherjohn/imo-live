@@ -381,7 +381,7 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
               enterKeySends: widget.enterKeySends,
               hint: widget.editing != null
                   ? 'Edit message'
-                  : 'Message',
+                  : context.l10n.message,
             ),
 
           if (_showEmoji && !_isRecording)

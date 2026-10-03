@@ -851,7 +851,7 @@ class DocumentBody extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    attachment?.fileName ?? 'Document',
+                    attachment?.fileName ?? context.l10n.document,
                     style: context.t.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -1120,7 +1120,7 @@ class ContactBody extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    name.isEmpty ? 'Contact' : name,
+                    name.isEmpty ? context.l10n.contact : name,
                     style: context.t.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -1129,7 +1129,7 @@ class ContactBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    attachment?.contactPhone ?? 'Phone number',
+                    attachment?.contactPhone ?? context.l10n.phoneNumber,
                     style: context.t.labelSmall,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -1198,7 +1198,7 @@ class PollBody extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  answeredWrong ? 'Try again' : 'Correct',
+                  answeredWrong ? context.l10n.retry : 'Correct',
                   style: context.t.labelSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: answeredWrong ? answeredWrong ? context.c.onDanger : context.c.onSuccess : answeredWrong ? context.c.onDanger : context.c.onSuccess,

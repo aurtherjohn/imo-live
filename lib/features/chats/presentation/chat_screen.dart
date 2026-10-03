@@ -724,7 +724,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               },
             ),
             SettingsTile(
-              title: chat.isMuted ? 'Unmute notifications' : 'Mute notifications',
+              title: chat.isMuted ? context.l10n.unmuteNotifications : context.l10n.muteNotifications,
               leadingIcon: chat.isMuted
                   ? Icons.notifications_active_outlined
                   : Icons.notifications_off_outlined,
@@ -2140,7 +2140,7 @@ class _MediaViewerState extends State<_MediaViewer> {
                 onPressed: () => Navigator.pop(context),
               ),
               title: Text(
-                attachment?.fileName ?? (isVideo ? 'Video' : 'Photo'),
+                attachment?.fileName ?? (isVideo ? context.l10n.video : context.l10n.photo),
                 style: const TextStyle(color: Colors.white, fontSize: 15),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

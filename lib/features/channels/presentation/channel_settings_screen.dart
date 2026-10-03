@@ -465,7 +465,7 @@ class _MonetizationGroup extends ConsumerWidget {
       children: <Widget>[
         SettingsTile(
           title: switch (status) {
-            MonetizationStatus.approved => 'Monetized',
+            MonetizationStatus.approved => context.l10n.monetized,
             MonetizationStatus.pending => 'Application under review',
             MonetizationStatus.rejected => 'Application was rejected',
             MonetizationStatus.none => channel.isEligibleForMonetization

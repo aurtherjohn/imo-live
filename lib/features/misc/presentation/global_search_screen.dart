@@ -162,7 +162,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
           children: <Widget>[
             for (final MapEntry<SearchKind, List<SearchHit>> entry
                 in grouped.entries) ...<Widget>[
-              SectionHeader(title: _labelFor(entry.key)),
+              SectionHeader(title: _labelFor(context, entry.key)),
               for (final SearchHit hit in entry.value)
                 _SearchResultRow(
                   hit: hit,
@@ -220,20 +220,24 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
     }
   }
 
-  static String _labelFor(SearchKind kind) {
+  /// Section heading for a result group.
+  ///
+  /// Takes a [BuildContext] explicitly: it is `static`, so it has no `context`
+  /// of its own, and the labels are localised.
+  static String _labelFor(BuildContext context, SearchKind kind) {
     switch (kind) {
       case SearchKind.chat:
-        return 'Chats';
+        return context.l10n.tabChats;
       case SearchKind.message:
-        return 'Messages';
+        return context.l10n.messages;
       case SearchKind.contact:
-        return 'Contacts';
+        return context.l10n.tabContacts;
       case SearchKind.group:
-        return 'Groups';
+        return context.l10n.filterGroups;
       case SearchKind.community:
-        return 'Communities';
+        return context.l10n.tabCommunities;
       case SearchKind.channel:
-        return 'Channels';
+        return context.l10n.channels;
     }
   }
 

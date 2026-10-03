@@ -318,7 +318,7 @@ class _ScheduleCallScreenState extends ConsumerState<ScheduleCallScreen> {
             id: 'sched_${DateTime.now().microsecondsSinceEpoch}',
             contactId: _contactId!,
             contactName: _contactName ?? 'Unknown',
-            title: _title.text.trim().isEmpty ? 'Call' : _title.text.trim(),
+            title: _title.text.trim().isEmpty ? context.l10n.call : _title.text.trim(),
             scheduledAt: _date,
             remindMinutesBefore: _remindBefore,
             kind: _kind,

@@ -74,7 +74,7 @@ class AppDrawer extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            me?.fullName ?? 'You',
+                            me?.fullName ?? context.l10n.you,
                             style: context.t.titleMedium,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

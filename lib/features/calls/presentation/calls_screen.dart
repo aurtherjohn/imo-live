@@ -573,7 +573,7 @@ class _CallRow extends StatelessWidget {
               ),
             ),
             IconButton(
-              tooltip: record.kind == CallKind.video ? 'Video call' : 'Voice call',
+              tooltip: record.kind == CallKind.video ? context.l10n.videoCall : context.l10n.voiceCall,
               onPressed: onTap,
               icon: Icon(
                 record.kind == CallKind.video

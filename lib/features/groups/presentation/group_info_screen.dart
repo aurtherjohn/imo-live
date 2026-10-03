@@ -205,7 +205,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
                     return SettingsTile(
                       title: name,
                       subtitle: member.isAdmin
-                          ? 'Admin'
+                          ? context.l10n.admin
                           : contact?.aboutText ?? 'Member',
                       leading: IAvatar(
                         name: name,
@@ -268,7 +268,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
                             .read(chatsProvider.notifier)
                             .toggleMute(chat.id);
                         if (context.mounted) {
-                          iToast(context, v ? 'Muted' : 'Unmuted');
+                          iToast(context, v ? context.l10n.muted : 'Unmuted');
                         }
                       },
               ),
