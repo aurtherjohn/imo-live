@@ -485,7 +485,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         if (mounted) {
           iToast(
             context,
-            message.isStarred ? 'Removed from starred' : 'Added to starred',
+            message.isStarred
+                ? context.l10n.starredRemoved
+                : context.l10n.starredAdded,
           );
         }
       case MessageAction.pin:
@@ -538,7 +540,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       _editing = null;
       _replyTo = ReplyPreview(
         messageId: message.id,
-        senderName: message.isOutgoing ? 'You' : message.senderName,
+        senderName: message.isOutgoing ? context.l10n.you : message.senderName,
         preview: TextUtils.truncate(message.previewText, 120),
         type: message.type,
       );

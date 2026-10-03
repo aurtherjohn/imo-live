@@ -146,7 +146,7 @@
   "accentColor": "Accent color",
   "fontSize": "Font size",
   "country": "Country",
-  "selectCountry": "Select a country",
+  "selectCountry": "Select country",
   "firstName": "First name",
   "lastName": "Last name",
   "username": "Username",
@@ -2299,7 +2299,6 @@
   "phoneSignInSubtitle": "We'll use this number to sign you in. No SMS code needed.",
   "loginWithPhone": "Login with Phone",
   "signUpWithPhone": "Sign up with Phone",
-  "selectCountry": "Select country",
   "searchCountryOrCode": "Search country or code",
   "noCountryMatchesSearch": "No country matches that search",
   "usernameLeaveBlankToGenerate": "Leave blank to generate one automatically",
@@ -2311,5 +2310,64 @@
   "enterYourLastName": "Enter your last name",
   "signInWithGoogle": "Sign in with Google",
   "phoneNumberHint": "1XX XXX XXXX",
-  "usernameInvalid": "Use at least 3 letters, numbers, dots or underscores"
+  "usernameInvalid": "Use at least 3 letters, numbers, dots or underscores",
+  "chatMarkedAsRead": "Marked as read",
+  "chatMarkedAsUnread": "Marked as unread",
+  "pinChat": "Pin chat",
+  "unpinChat": "Unpin chat",
+  "chatPinned": "Chat pinned",
+  "chatUnpinned": "Chat unpinned",
+  "unmuteNotifications": "Unmute notifications",
+  "notificationsOn": "Notifications on",
+  "notificationsMuted": "Notifications muted",
+  "archiveChat": "Archive chat",
+  "unarchiveChat": "Unarchive chat",
+  "chatArchived": "Chat archived",
+  "chatUnarchived": "Chat unarchived",
+  "removedFromFavorites": "Removed from favorites",
+  "addedToFavorites": "Added to favorites",
+  "emptyChatsUnreadTitle": "You're all caught up",
+  "emptyChatsUnreadMessage": "No unread conversations right now.",
+  "emptyChatsFavoritesTitle": "No favorites yet",
+  "emptyChatsFavoritesMessage": "Add chats to your favorites to find them faster.",
+  "emptyChatsGroupsTitle": "No groups yet",
+  "emptyChatsGroupsMessage": "Create a group to chat with several people at once.",
+  "emptyChatsWorkTitle": "No work chats",
+  "emptyChatsWorkMessage": "Work conversations you tag will appear here.",
+  "startAChat": "Start a chat",
+  "starredAdded": "Added to starred",
+  "starredRemoved": "Removed from starred",
+  "channelApproved": "Channel approved",
+  "applicationRejected": "Application rejected",
+  "couldNotLoadAnAd": "Could not load an ad",
+  "locationUnavailable": "Location unavailable.",
+  "appLockDisabled": "App lock disabled",
+  "notAvailableYet": "Not available yet",
+  "hoursCount": "{n} hours",
+  "@hoursCount": {
+    "description": "A duration in whole hours, e.g. 2 hours.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesCount": "{n} minutes",
+  "@minutesCount": {
+    "description": "A duration in whole minutes.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "secondsCount": "{n} seconds",
+  "@secondsCount": {
+    "description": "A duration in whole seconds.",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

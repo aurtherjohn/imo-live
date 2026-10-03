@@ -8,18 +8,15 @@
   therefore must be a full-bleed fill, never a shape with corners — the corners
   get cropped and the icon looks off-centre on a circular launcher.
 
-  Flat `AppColors.darkSurface` (#141417), deliberately.
+  Flat white (#FFFFFF), matching the opaque `applogo.jpg` plate the launcher
+  icon is specified to use. The mark is a two-tone blue/green speech bubble:
+  the blue ring and the green "Live" flag both hold up against white, and the
+  "Live" lettering is white-on-green rather than white-on-white, so nothing in
+  the artwork disappears into the plate.
 
-  The mark is a gradient ring running deep indigo (bottom-left) through magenta
-  to amber (top-right). Two other treatments were rendered and rejected:
-
-    * the brand gradient as the background — the ring's own gradient runs along
-      the same axis, so the left half of the ring vanished into it;
-    * white — legible, but a white plate on the home screen is the exact
-      "this app is not finished" defect this adaptive icon was added to remove.
-
-  A flat dark tile keeps the whole ring readable at every density and matches
-  the dark-first UI the icon opens into.
+  The previous dark #141417 tile existed because the old mark was a magenta
+  gradient ring that vanished against a matching gradient background. That
+  artwork is gone, so the dark tile went with it.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -29,5 +26,5 @@
 
     <path
         android:pathData="M0,0 h108 v108 h-108 z"
-        android:fillColor="#FF141417" />
+        android:fillColor="#FFFFFFFF" />
 </vector>

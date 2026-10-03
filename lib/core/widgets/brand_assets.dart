@@ -18,8 +18,9 @@ import '../utils/l10n.dart';
 ///   `flutter_svg`. They are line icons and third-party provider marks, which
 ///   are single-colour or few-colour flat shapes that stay crisp at any density.
 /// * [BrandMark] assets are **rasters**, the app's own logo. That mark is a
-///   gradient illustration rather than a flat glyph, so it cannot be
-///   reconstructed by tinting a vector — it ships pre-rendered instead.
+///   two-tone illustration — a blue speech bubble carrying a green "Live" flag —
+///   so it cannot be reconstructed by tinting a single-colour vector. It ships
+///   pre-rendered instead.
 class BrandAssets {
   const BrandAssets._();
 
@@ -32,11 +33,10 @@ class BrandAssets {
 
   /// The same mark on an opaque white plate. Used by the one surface that
   /// presents the brand as a card rather than compositing it onto the app's
-  /// background — see `about_screen.dart`.
+  /// background — the QR card in `qr_screen.dart`.
   ///
-  /// Both files frame the mark identically (72.2% of the canvas, equal relative
-  /// margins), so passing the same `size` to [BrandMark] renders the mark at
-  /// the same scale from either one.
+  /// Both files are cropped tight to the mark and squared, so passing the same
+  /// `size` to [BrandMark] renders the mark at the same scale from either one.
   static const String logoPlate = '$_imagesDir/app_logo.jpg';
 
   /// Multi-colour Google "G".
@@ -101,10 +101,10 @@ class BrandIcon extends StatelessWidget {
 
 /// Renders the app's own logo.
 ///
-/// Unlike [BrandIcon] this never tints: the mark is a gradient illustration and
+/// Unlike [BrandIcon] this never tints: the mark is a two-tone illustration and
 /// its own colours *are* the brand, so a `BlendMode.srcIn` filter would flatten
 /// it to a silhouette. It is a raster for the same reason — a single-colour
-/// vector cannot carry the gradient.
+/// vector cannot carry both hues.
 ///
 /// [size] is the edge of the drawn mark, not of some padded box: both files in
 /// `assets/images/` are cropped tight to the artwork, so an N-pixel request
@@ -128,9 +128,9 @@ class BrandMark extends StatelessWidget {
       width: size,
       height: size,
       fit: BoxFit.contain,
-      // The transparent asset is 361 px and is drawn as small as 22 px. The
-      // default filter is tuned for photos and lets the thin gradient ring
-      // alias; the high-quality filter is what keeps it clean at tab-bar size.
+      // The transparent asset is 377 px and is drawn as small as 22 px. The
+      // default filter is tuned for photos and lets the thin outlines alias;
+      // the high-quality filter is what keeps it clean at tab-bar size.
       filterQuality: FilterQuality.high,
       semanticLabel: semanticLabel,
       // A missing asset must not take the screen down — same contract as
@@ -170,14 +170,17 @@ class BrandLockup extends StatelessWidget {
       children: <Widget>[
         DecoratedBox(
           decoration: BoxDecoration(
-            // The mark is a transparent ring, not an opaque tile, so the
+            // The mark has a transparent backing, not an opaque tile, so the
             // rounded-rect drop shadow that used to sit here would have traced
-            // a square that is no longer in the artwork. A blurred circle reads
-            // as light coming off the ring instead of a box behind it.
+            // a square that is not in the artwork. A blurred circle reads as
+            // light coming off the mark instead of a box behind it.
+            //
+            // The glow is the mark's own blue rather than the UI accent: a pink
+            // halo around a blue/green logo reads as two different brands.
             shape: BoxShape.circle,
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: AppColors.accent.withValues(alpha: 0.30),
+                color: AppColors.brandBlue.withValues(alpha: 0.34),
                 blurRadius: size * 0.46,
                 spreadRadius: size * 0.02,
               ),

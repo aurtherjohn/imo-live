@@ -324,7 +324,9 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
-          SnackBar(content: Text(result.error ?? 'Location unavailable.')),
+          SnackBar(
+            content: Text(result.error ?? context.l10n.locationUnavailable),
+          ),
         );
       return;
     }

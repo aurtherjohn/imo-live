@@ -8,6 +8,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/models/chat.dart';
 import '../../../../core/widgets/common_widgets.dart';
 import '../../../../core/widgets/i_avatar.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../auth/presentation/auth_providers.dart';
 import '../../../chats/presentation/providers.dart';
 import '../../../contacts/presentation/dialogs/confirm_dialog.dart';
 import '../../../contacts/presentation/dialogs/disappearing_messages_sheet.dart';
@@ -111,7 +113,7 @@ class _ChatActionsSheet extends StatelessWidget {
                 leadingIcon: Icons.mark_chat_read_outlined,
                 onTap: () => run(
                   () => notifier.markRead(chat.id),
-                  'Marked as read',
+                  context.l10n.chatMarkedAsRead,
                 ),
               )
             else
@@ -120,63 +122,73 @@ class _ChatActionsSheet extends StatelessWidget {
                 leadingIcon: Icons.mark_chat_unread_outlined,
                 onTap: () => run(
                   () => notifier.markUnread(chat.id),
-                  'Marked as unread',
+                  context.l10n.chatMarkedAsUnread,
                 ),
               ),
 
             SettingsTile(
-              title: chat.isPinned ? 'Unpin chat' : 'Pin chat',
+              title: chat.isPinned ? context.l10n.unpinChat : context.l10n.pinChat,
               leadingIcon: chat.isPinned
                   ? Icons.push_pin_outlined
                   : Icons.push_pin_rounded,
               onTap: () => run(
                 () => notifier.togglePin(chat.id),
-                chat.isPinned ? 'Chat unpinned' : 'Chat pinned',
+                chat.isPinned
+                    ? context.l10n.chatUnpinned
+                    : context.l10n.chatPinned,
               ),
             ),
 
             SettingsTile(
-              title: chat.isMuted ? 'Unmute notifications' : 'Mute notifications',
+              title: chat.isMuted
+                  ? context.l10n.unmuteNotifications
+                  : context.l10n.muteNotifications,
               leadingIcon: chat.isMuted
                   ? Icons.notifications_active_outlined
                   : Icons.notifications_off_outlined,
               onTap: () => run(
                 () => notifier.toggleMute(chat.id),
-                chat.isMuted ? 'Notifications on' : 'Notifications muted',
+                chat.isMuted
+                    ? context.l10n.notificationsOn
+                    : context.l10n.notificationsMuted,
               ),
             ),
 
             SettingsTile(
-              title: chat.isArchived ? 'Unarchive chat' : 'Archive chat',
+              title: chat.isArchived
+                  ? context.l10n.unarchiveChat
+                  : context.l10n.archiveChat,
               leadingIcon: chat.isArchived
                   ? Icons.unarchive_outlined
                   : Icons.archive_outlined,
               onTap: () => run(
                 () => notifier.toggleArchive(chat.id),
-                chat.isArchived ? 'Chat unarchived' : 'Chat archived',
+                chat.isArchived
+                    ? context.l10n.chatUnarchived
+                    : context.l10n.chatArchived,
               ),
             ),
 
             SettingsTile(
               title: chat.isFavorite
-                  ? 'Remove from favorites'
-                  : 'Add to favorites',
+                  ? context.l10n.removeFromFavorites
+                  : context.l10n.addToFavorites,
               leadingIcon: chat.isFavorite
                   ? Icons.star_rounded
                   : Icons.star_border_rounded,
               onTap: () => run(
                 () => notifier.toggleFavorite(chat.id),
                 chat.isFavorite
-                    ? 'Removed from favorites'
-                    : 'Added to favorites',
+                    ? context.l10n.removedFromFavorites
+                    : context.l10n.addedToFavorites,
               ),
             ),
 
             SettingsTile(
               title: context.l10n.disappearingMessages,
               subtitle: chat.disappearingSeconds == 0
-                  ? 'Off'
-                  : _disappearingLabel(chat.disappearingSeconds),
+                  ? context.l10n.off
+                  : _disappearingLabel(context.l10n, chat.disappearingSeconds),
               leadingIcon: Icons.timer_outlined,
               onTap: () {
                 close();
@@ -199,7 +211,7 @@ class _ChatActionsSheet extends StatelessWidget {
                 leadingIcon: Icons.info_outline_rounded,
                 onTap: () {
                   close();
-                  context.push('${AppRoutes.chatInfo}/${chat.id}');
+                  _openChatInfo(context);
                 },
               ),
 
@@ -250,13 +262,36 @@ class _ChatActionsSheet extends StatelessWidget {
       ),
     );
   }
+
+  /// Opens the info page for a direct chat.
+  ///
+  /// This tile used to push `'${AppRoutes.chatInfo}/${chat.id}'`. No route was
+  /// ever registered for that path, so tapping it dropped the user straight
+  /// onto the router's "That screen doesn't exist." error page — a dead end
+  /// `flutter analyze` cannot see and the router test did not cover.
+  ///
+  /// A direct chat's [Chat.id] is the composite `uidA_uidB`, not a uid, so the
+  /// peer has to be resolved from `memberIds`. This mirrors
+  /// `ChatScreen._openChatInfo` exactly, so both entry points agree.
+  void _openChatInfo(BuildContext context) {
+    if (chat.isChannel || chat.isBroadcast) {
+      iToast(context, context.l10n.channelsAndBroadcastsHaveNo);
+      return;
+    }
+    final String? peerUid = chat.peerUid(ref.read(currentUidProvider));
+    if (peerUid == null) {
+      iToast(context, context.l10n.thisChatHasNoLinked, isError: true);
+      return;
+    }
+    context.push('${AppRoutes.contactInfo}/$peerUid');
+  }
 }
 
-String _disappearingLabel(int seconds) {
-  if (seconds >= 86400 * 90) return '90 days';
-  if (seconds >= 86400 * 7) return '7 days';
-  if (seconds >= 86400) return '24 hours';
-  if (seconds >= 3600) return '${seconds ~/ 3600} hours';
-  if (seconds >= 60) return '${seconds ~/ 60} minutes';
-  return '$seconds seconds';
+String _disappearingLabel(AppLocalizations l10n, int seconds) {
+  if (seconds >= 86400 * 90) return l10n.s90Days;
+  if (seconds >= 86400 * 7) return l10n.s7Days;
+  if (seconds >= 86400) return l10n.s24Hours;
+  if (seconds >= 3600) return l10n.hoursCount(seconds ~/ 3600);
+  if (seconds >= 60) return l10n.minutesCount(seconds ~/ 60);
+  return l10n.secondsCount(seconds);
 }

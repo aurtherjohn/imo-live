@@ -344,6 +344,9 @@ class _ChannelSettingsScreenState
       ],
     );
     if (value == null) return;
+    // `showChoiceSheet` is an async gap the user can dismiss the screen under;
+    // without this guard a `setState` on a disposed element throws.
+    if (!mounted) return;
     setState(() => _category = value);
   }
 

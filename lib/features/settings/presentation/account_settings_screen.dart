@@ -183,13 +183,18 @@ class AccountSettingsScreen extends ConsumerWidget {
                       .read(privacySettingsProvider.notifier)
                       .apply((p) => p.copyWith(appLock: value));
                   if (context.mounted) {
-                    iToast(context, value ? 'App lock enabled' : 'App lock disabled');
+                    iToast(
+                      context,
+                      value
+                          ? context.l10n.appLockEnabled
+                          : context.l10n.appLockDisabled,
+                    );
                   }
                 },
               ),
               SettingsValueRow(
                 label: context.l10n.twoStepVerification,
-                value: 'Not available yet',
+                value: context.l10n.notAvailableYet,
                 leadingIcon: Icons.security_rounded,
                 onTap: () => showBackendRequiredDialog(
                   context,

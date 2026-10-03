@@ -125,7 +125,11 @@ class AppRoutes {
   static const String calls = '/calls';
 
   static const String chat = '/chat';
-  static const String chatInfo = '/chat/info';
+  // NOTE: there is deliberately no `chatInfo` constant here. One existed —
+  // `/chat/info` — and was never backed by a registered route, so the
+  // long-press "Chat info" tile pushed the user onto the router's "That screen
+  // doesn't exist." page. A direct chat's info lives at
+  // `contactInfo/:peerUid`; see `ChatActionsSheet._openChatInfo`.
   static const String chatSearch = '/chat/search';
   static const String contactInfo = '/contact';
   static const String starred = '/starred';

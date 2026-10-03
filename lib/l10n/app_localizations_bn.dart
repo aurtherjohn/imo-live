@@ -4710,4 +4710,118 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get usernameInvalid =>
       'কমপক্ষে ৩টি অক্ষর, সংখ্যা, ডট বা আন্ডারস্কোর ব্যবহার করুন';
+
+  @override
+  String get chatMarkedAsRead => 'পঠিত হিসেবে চিহ্নিত';
+
+  @override
+  String get chatMarkedAsUnread => 'অপঠিত হিসেবে চিহ্নিত';
+
+  @override
+  String get pinChat => 'চ্যাট পিন করুন';
+
+  @override
+  String get unpinChat => 'চ্যাট আনপিন করুন';
+
+  @override
+  String get chatPinned => 'চ্যাট পিন করা হয়েছে';
+
+  @override
+  String get chatUnpinned => 'চ্যাট আনপিন করা হয়েছে';
+
+  @override
+  String get unmuteNotifications => 'নোটিফিকেশন চালু করুন';
+
+  @override
+  String get notificationsOn => 'নোটিফিকেশন চালু';
+
+  @override
+  String get notificationsMuted => 'নোটিফিকেশন বন্ধ';
+
+  @override
+  String get archiveChat => 'চ্যাট আর্কাইভ করুন';
+
+  @override
+  String get unarchiveChat => 'চ্যাট আনআর্কাইভ করুন';
+
+  @override
+  String get chatArchived => 'চ্যাট আর্কাইভ করা হয়েছে';
+
+  @override
+  String get chatUnarchived => 'চ্যাট আনআর্কাইভ করা হয়েছে';
+
+  @override
+  String get removedFromFavorites => 'প্রিয় তালিকা থেকে সরানো হয়েছে';
+
+  @override
+  String get addedToFavorites => 'প্রিয় তালিকায় যোগ করা হয়েছে';
+
+  @override
+  String get emptyChatsUnreadTitle => 'সব পড়া হয়ে গেছে';
+
+  @override
+  String get emptyChatsUnreadMessage => 'এই মুহূর্তে কোনো অপঠিত কথোপকথন নেই।';
+
+  @override
+  String get emptyChatsFavoritesTitle => 'এখনো কোনো প্রিয় নেই';
+
+  @override
+  String get emptyChatsFavoritesMessage =>
+      'দ্রুত খুঁজে পেতে চ্যাটগুলো প্রিয় তালিকায় যোগ করুন।';
+
+  @override
+  String get emptyChatsGroupsTitle => 'এখনো কোনো গ্রুপ নেই';
+
+  @override
+  String get emptyChatsGroupsMessage =>
+      'একসাথে অনেকের সাথে চ্যাট করতে একটি গ্রুপ তৈরি করুন।';
+
+  @override
+  String get emptyChatsWorkTitle => 'কোনো কাজের চ্যাট নেই';
+
+  @override
+  String get emptyChatsWorkMessage =>
+      'আপনি যেসব কথোপকথন কাজ হিসেবে চিহ্নিত করবেন সেগুলো এখানে দেখা যাবে।';
+
+  @override
+  String get startAChat => 'একটি চ্যাট শুরু করুন';
+
+  @override
+  String get starredAdded => 'স্টার করা হয়েছে';
+
+  @override
+  String get starredRemoved => 'স্টার থেকে সরানো হয়েছে';
+
+  @override
+  String get channelApproved => 'চ্যানেল অনুমোদিত';
+
+  @override
+  String get applicationRejected => 'আবেদন প্রত্যাখ্যাত';
+
+  @override
+  String get couldNotLoadAnAd => 'বিজ্ঞাপন লোড করা যায়নি';
+
+  @override
+  String get locationUnavailable => 'অবস্থান পাওয়া যায়নি।';
+
+  @override
+  String get appLockDisabled => 'অ্যাপ লক বন্ধ';
+
+  @override
+  String get notAvailableYet => 'এখনো উপলব্ধ নয়';
+
+  @override
+  String hoursCount(int n) {
+    return '$n ঘণ্টা';
+  }
+
+  @override
+  String minutesCount(int n) {
+    return '$n মিনিট';
+  }
+
+  @override
+  String secondsCount(int n) {
+    return '$n সেকেন্ড';
+  }
 }

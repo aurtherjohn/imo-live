@@ -164,7 +164,6 @@ const List<String> _routeConstants = <String>[
   AppRoutes.communities,
   AppRoutes.calls,
   AppRoutes.chat,
-  AppRoutes.chatInfo,
   AppRoutes.chatSearch,
   AppRoutes.contactInfo,
   AppRoutes.starred,

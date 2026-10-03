@@ -733,27 +733,27 @@ class _EmptyChats extends ConsumerWidget {
       ChatFilter.all => (
           Icons.chat_bubble_outline_rounded,
           context.l10n.noChatsYet,
-          'Start a conversation and it will show up here.',
+          context.l10n.noChatsMessage,
         ),
       ChatFilter.unread => (
           Icons.mark_chat_read_outlined,
-          'You\'re all caught up',
-          'No unread conversations right now.',
+          context.l10n.emptyChatsUnreadTitle,
+          context.l10n.emptyChatsUnreadMessage,
         ),
       ChatFilter.favorites => (
           Icons.star_border_rounded,
-          'No favorites yet',
-          'Add chats to your favorites to find them faster.',
+          context.l10n.emptyChatsFavoritesTitle,
+          context.l10n.emptyChatsFavoritesMessage,
         ),
       ChatFilter.groups => (
           Icons.groups_outlined,
-          'No groups yet',
-          'Create a group to chat with several people at once.',
+          context.l10n.emptyChatsGroupsTitle,
+          context.l10n.emptyChatsGroupsMessage,
         ),
       ChatFilter.work => (
           Icons.work_outline_rounded,
-          'No work chats',
-          'Work conversations you tag will appear here.',
+          context.l10n.emptyChatsWorkTitle,
+          context.l10n.emptyChatsWorkMessage,
         ),
     };
 
@@ -766,7 +766,7 @@ class _EmptyChats extends ConsumerWidget {
       icon: icon,
       title: title,
       message: message,
-      actionLabel: filter == ChatFilter.all ? 'Start a chat' : null,
+      actionLabel: filter == ChatFilter.all ? context.l10n.startAChat : null,
       onAction: filter == ChatFilter.all
           ? () => context.push(AppRoutes.selectContact)
           : null,

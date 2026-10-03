@@ -161,18 +161,18 @@ flutter:
 
   # Asset bundles.
   #
-  # `assets/brand/` — third-party provider marks (Google, Facebook) and the
-  # shared line icons. Vectors stay crisp at any density, are a few hundred
-  # bytes each and need no @2x/@3x variants, so the whole set costs far less
-  # than a single PNG logo would at four densities. Rendered through
-  # flutter_svg.
+  # `assets/brand/` — the third-party provider mark (Google) and the shared
+  # line icons. Vectors stay crisp at any density, are a few hundred bytes each
+  # and need no @2x/@3x variants, so the whole set costs far less than a single
+  # PNG logo would at four densities. Rendered through flutter_svg.
   #
   # `assets/images/` — the app's own logo, as raster. `app_logo_transparent.png`
-  # is the working asset: the mark is a gradient illustration, not a flat glyph,
-  # so it cannot be reproduced by tinting a single-colour vector. `app_logo.jpg`
-  # is the same artwork on an opaque white plate, used by the one surface
-  # (About) that presents the brand as a card rather than sitting it on the
-  # app's own background.
+  # is the working asset: the mark is a two-tone illustration (a blue speech
+  # bubble carrying a green "Live" flag), not a flat glyph, so it cannot be
+  # reproduced by tinting a single-colour vector. `app_logo.jpg` is the same
+  # artwork on an opaque white plate, used by the one surface (the QR card) that
+  # presents the brand as a card rather than sitting it on the app's own
+  # background.
   #
   # Both files are cropped tight to the mark and squared, so the two are
   # interchangeable and a widget that asks for an N-pixel logo draws an N-pixel

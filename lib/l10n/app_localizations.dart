@@ -8335,6 +8335,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use at least 3 letters, numbers, dots or underscores'**
   String get usernameInvalid;
+
+  /// No description provided for @chatMarkedAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as read'**
+  String get chatMarkedAsRead;
+
+  /// No description provided for @chatMarkedAsUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as unread'**
+  String get chatMarkedAsUnread;
+
+  /// No description provided for @pinChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin chat'**
+  String get pinChat;
+
+  /// No description provided for @unpinChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin chat'**
+  String get unpinChat;
+
+  /// No description provided for @chatPinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat pinned'**
+  String get chatPinned;
+
+  /// No description provided for @chatUnpinned.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat unpinned'**
+  String get chatUnpinned;
+
+  /// No description provided for @unmuteNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute notifications'**
+  String get unmuteNotifications;
+
+  /// No description provided for @notificationsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications on'**
+  String get notificationsOn;
+
+  /// No description provided for @notificationsMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications muted'**
+  String get notificationsMuted;
+
+  /// No description provided for @archiveChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive chat'**
+  String get archiveChat;
+
+  /// No description provided for @unarchiveChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive chat'**
+  String get unarchiveChat;
+
+  /// No description provided for @chatArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat archived'**
+  String get chatArchived;
+
+  /// No description provided for @chatUnarchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat unarchived'**
+  String get chatUnarchived;
+
+  /// No description provided for @removedFromFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from favorites'**
+  String get removedFromFavorites;
+
+  /// No description provided for @addedToFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to favorites'**
+  String get addedToFavorites;
+
+  /// No description provided for @emptyChatsUnreadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all caught up'**
+  String get emptyChatsUnreadTitle;
+
+  /// No description provided for @emptyChatsUnreadMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No unread conversations right now.'**
+  String get emptyChatsUnreadMessage;
+
+  /// No description provided for @emptyChatsFavoritesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet'**
+  String get emptyChatsFavoritesTitle;
+
+  /// No description provided for @emptyChatsFavoritesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add chats to your favorites to find them faster.'**
+  String get emptyChatsFavoritesMessage;
+
+  /// No description provided for @emptyChatsGroupsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No groups yet'**
+  String get emptyChatsGroupsTitle;
+
+  /// No description provided for @emptyChatsGroupsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a group to chat with several people at once.'**
+  String get emptyChatsGroupsMessage;
+
+  /// No description provided for @emptyChatsWorkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No work chats'**
+  String get emptyChatsWorkTitle;
+
+  /// No description provided for @emptyChatsWorkMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Work conversations you tag will appear here.'**
+  String get emptyChatsWorkMessage;
+
+  /// No description provided for @startAChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a chat'**
+  String get startAChat;
+
+  /// No description provided for @starredAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to starred'**
+  String get starredAdded;
+
+  /// No description provided for @starredRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from starred'**
+  String get starredRemoved;
+
+  /// No description provided for @channelApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel approved'**
+  String get channelApproved;
+
+  /// No description provided for @applicationRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Application rejected'**
+  String get applicationRejected;
+
+  /// No description provided for @couldNotLoadAnAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load an ad'**
+  String get couldNotLoadAnAd;
+
+  /// No description provided for @locationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Location unavailable.'**
+  String get locationUnavailable;
+
+  /// No description provided for @appLockDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'App lock disabled'**
+  String get appLockDisabled;
+
+  /// No description provided for @notAvailableYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available yet'**
+  String get notAvailableYet;
+
+  /// A duration in whole hours, e.g. 2 hours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} hours'**
+  String hoursCount(int n);
+
+  /// A duration in whole minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} minutes'**
+  String minutesCount(int n);
+
+  /// A duration in whole seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} seconds'**
+  String secondsCount(int n);
 }
 
 class _AppLocalizationsDelegate

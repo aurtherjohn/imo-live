@@ -84,7 +84,11 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
 
       if (!await ads.load()) {
         if (!mounted) return;
-        iToast(context, ads.lastError ?? 'Could not load an ad', isError: true);
+        iToast(
+          context,
+          ads.lastError ?? context.l10n.couldNotLoadAnAd,
+          isError: true,
+        );
         return;
       }
 

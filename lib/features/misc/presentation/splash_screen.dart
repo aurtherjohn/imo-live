@@ -134,7 +134,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   center: const Alignment(0, -0.15),
                   radius: 0.9,
                   colors: <Color>[
-                    AppColors.accent.withValues(alpha: 0.14),
+                    // The mark's own blue. The old pink accent glow belonged to
+                    // the previous magenta logo and clashed with this one.
+                    AppColors.brandBlue.withValues(alpha: 0.18),
                     AppColors.darkBg,
                   ],
                 ),

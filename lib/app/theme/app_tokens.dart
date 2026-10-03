@@ -15,6 +15,17 @@ class AppColors {
   static const Color accentLight = Color(0xFFFF5C7A);
   static const Color accentSoft = Color(0x33FF2D55);
 
+  // ------------------------------------------------------------- logo palette
+  /// The two hues of the app mark itself: a blue speech bubble carrying a green
+  /// "Live" flag. Used only where the UI has to echo the logo — the glow that
+  /// sits behind it on splash / auth / About. The general interface accent
+  /// stays [accent]; these are not a second accent ramp.
+  ///
+  /// Sampled from the artwork (mean of the blue and green pixel families), not
+  /// eyeballed, so the glow is the mark's own colour rather than a near-miss.
+  static const Color brandBlue = Color(0xFF1FA6ED);
+  static const Color brandGreen = Color(0xFF20C282);
+
   /// Secondary brand tint used for links and info affordances.
   static const Color info = Color(0xFF3BA9FF);
   static const Color success = Color(0xFF25D366);

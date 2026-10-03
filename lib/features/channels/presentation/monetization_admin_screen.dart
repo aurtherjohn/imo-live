@@ -132,6 +132,9 @@ class _ReviewList extends ConsumerWidget {
         .read(channelFirestoreProvider)
         .setMonetizationStatus(channel.id, status);
     if (!context.mounted) return;
-    iToast(context, approve ? 'Channel approved' : 'Application rejected');
+    iToast(
+      context,
+      approve ? context.l10n.channelApproved : context.l10n.applicationRejected,
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/channel_models.dart';
@@ -84,18 +85,24 @@ final StreamProviderFamily<List<String>, String> channelFollowerIdsProvider =
 final StreamProvider<bool> isAppAdminProvider = StreamProvider<bool>((Ref ref) {
   final String uid = ref.watch(channelViewerUidProvider);
   if (uid.isEmpty) return Stream<bool>.value(false);
-  try {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .snapshots()
-        .map(
-          (DocumentSnapshot<Map<String, dynamic>> doc) =>
-              doc.data()?['isAdmin'] as bool? ?? false,
-        );
-  } on Object {
-    return Stream<bool>.value(false);
-  }
+  // ⚠️ A `try`/`catch` around this is useless: `snapshots()` returns
+  // synchronously, so a *listener* error — a denied read, a dropped
+  // connection — never reaches it. That mattered here because a Firestore
+  // snapshot stream **closes when it errors**, and every consumer reads this
+  // as `.valueOrNull ?? false`: the admin entry points would just quietly
+  // disappear with nothing in the log. Handling the error explicitly keeps the
+  // degradation to `false` *and* makes it visible.
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .snapshots()
+      .map(
+        (DocumentSnapshot<Map<String, dynamic>> doc) =>
+            doc.data()?['isAdmin'] as bool? ?? false,
+      )
+      .handleError((Object error) {
+        debugPrint('isAppAdminProvider($uid) failed: $error');
+      });
 });
 
 /// Channels waiting on a monetization decision, for the admin screen.

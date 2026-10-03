@@ -4724,4 +4724,118 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get usernameInvalid =>
       'Use at least 3 letters, numbers, dots or underscores';
+
+  @override
+  String get chatMarkedAsRead => 'Marked as read';
+
+  @override
+  String get chatMarkedAsUnread => 'Marked as unread';
+
+  @override
+  String get pinChat => 'Pin chat';
+
+  @override
+  String get unpinChat => 'Unpin chat';
+
+  @override
+  String get chatPinned => 'Chat pinned';
+
+  @override
+  String get chatUnpinned => 'Chat unpinned';
+
+  @override
+  String get unmuteNotifications => 'Unmute notifications';
+
+  @override
+  String get notificationsOn => 'Notifications on';
+
+  @override
+  String get notificationsMuted => 'Notifications muted';
+
+  @override
+  String get archiveChat => 'Archive chat';
+
+  @override
+  String get unarchiveChat => 'Unarchive chat';
+
+  @override
+  String get chatArchived => 'Chat archived';
+
+  @override
+  String get chatUnarchived => 'Chat unarchived';
+
+  @override
+  String get removedFromFavorites => 'Removed from favorites';
+
+  @override
+  String get addedToFavorites => 'Added to favorites';
+
+  @override
+  String get emptyChatsUnreadTitle => 'You\'re all caught up';
+
+  @override
+  String get emptyChatsUnreadMessage => 'No unread conversations right now.';
+
+  @override
+  String get emptyChatsFavoritesTitle => 'No favorites yet';
+
+  @override
+  String get emptyChatsFavoritesMessage =>
+      'Add chats to your favorites to find them faster.';
+
+  @override
+  String get emptyChatsGroupsTitle => 'No groups yet';
+
+  @override
+  String get emptyChatsGroupsMessage =>
+      'Create a group to chat with several people at once.';
+
+  @override
+  String get emptyChatsWorkTitle => 'No work chats';
+
+  @override
+  String get emptyChatsWorkMessage =>
+      'Work conversations you tag will appear here.';
+
+  @override
+  String get startAChat => 'Start a chat';
+
+  @override
+  String get starredAdded => 'Added to starred';
+
+  @override
+  String get starredRemoved => 'Removed from starred';
+
+  @override
+  String get channelApproved => 'Channel approved';
+
+  @override
+  String get applicationRejected => 'Application rejected';
+
+  @override
+  String get couldNotLoadAnAd => 'Could not load an ad';
+
+  @override
+  String get locationUnavailable => 'Location unavailable.';
+
+  @override
+  String get appLockDisabled => 'App lock disabled';
+
+  @override
+  String get notAvailableYet => 'Not available yet';
+
+  @override
+  String hoursCount(int n) {
+    return '$n hours';
+  }
+
+  @override
+  String minutesCount(int n) {
+    return '$n minutes';
+  }
+
+  @override
+  String secondsCount(int n) {
+    return '$n seconds';
+  }
 }

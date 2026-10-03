@@ -35,7 +35,9 @@ class AboutScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: <BoxShadow>[
                       BoxShadow(
-                        color: c.accent.withValues(alpha: 0.30),
+                        // The mark's own blue, not the UI accent: a pink glow
+                        // under a blue/green logo reads as two brands.
+                        color: AppColors.brandBlue.withValues(alpha: 0.30),
                         blurRadius: 46,
                         spreadRadius: 2,
                       ),

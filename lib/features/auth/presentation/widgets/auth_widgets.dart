@@ -35,8 +35,11 @@ class AuthScaffold extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           if (showGlow) ...<Widget>[
-            // A soft pink halo behind the logo, plus a second, much dimmer one
-            // low down. Two light sources stop the page reading as flat.
+            // A soft halo behind the logo, plus a second, much dimmer one low
+            // down. Two light sources stop the page reading as flat. Both use
+            // the mark's own hues rather than the UI accent — the logo sits on
+            // top of them, and a pink halo under a blue/green mark reads as two
+            // different brands.
             Positioned(
               top: -140,
               left: 0,
@@ -49,7 +52,7 @@ class AuthScaffold extends StatelessWidget {
                       center: const Alignment(0, 0.35),
                       radius: 0.75,
                       colors: <Color>[
-                        AppColors.accent.withValues(alpha: 0.22),
+                        AppColors.brandBlue.withValues(alpha: 0.24),
                         Colors.transparent,
                       ],
                     ),
@@ -69,7 +72,7 @@ class AuthScaffold extends StatelessWidget {
                       center: Alignment.center,
                       radius: 0.7,
                       colors: <Color>[
-                        AppColors.accentDark.withValues(alpha: 0.13),
+                        AppColors.brandGreen.withValues(alpha: 0.12),
                         Colors.transparent,
                       ],
                     ),
