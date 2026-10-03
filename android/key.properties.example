@@ -1,0 +1,30 @@
+# Release signing template.
+#
+# Copy this file to `android/key.properties` and fill in real values:
+#
+#     cp android/key.properties.example android/key.properties
+#
+# `android/key.properties` is gitignored, along with `**/*.keystore` and
+# `**/*.jks`. Never commit a keystore, and never commit this file once it holds
+# real passwords — keep the secrets in a password manager or CI secret store.
+#
+# Create the upload keystore once, and keep it forever: Play identifies an app by
+# its signing key, so losing it means you can no longer publish updates to an
+# existing listing (unless Play App Signing is enabled and you rotate the upload
+# key).
+#
+#     keytool -genkey -v \
+#       -keystore upload-keystore.jks \
+#       -storetype JKS \
+#       -keyalg RSA -keysize 2048 -validity 10000 \
+#       -alias upload
+#
+# Then, for CI, pass the values in as environment variables instead of writing
+# this file, and generate it during the build step.
+
+# Absolute path to the .jks/.keystore file. Absolute is strongly preferred: a
+# relative path is resolved against `android/app/`.
+storeFile=/absolute/path/to/upload-keystore.jks
+storePassword=REPLACE_WITH_STORE_PASSWORD
+keyAlias=upload
+keyPassword=REPLACE_WITH_KEY_PASSWORD

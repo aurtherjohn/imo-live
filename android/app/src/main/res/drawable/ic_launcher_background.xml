@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive icon background (Android 8+).
+
+  The launcher masks this 108x108dp layer down to whatever shape the OEM uses
+  (circle, squircle, rounded square, teardrop), so only the centre 72dp is
+  guaranteed visible and only the centre 66dp is guaranteed safe. A background
+  therefore must be a full-bleed fill, never a shape with corners — the corners
+  get cropped and the icon looks off-centre on a circular launcher.
+
+  Flat `AppColors.darkSurface` (#141417), deliberately.
+
+  The mark is a gradient ring running deep indigo (bottom-left) through magenta
+  to amber (top-right). Two other treatments were rendered and rejected:
+
+    * the brand gradient as the background — the ring's own gradient runs along
+      the same axis, so the left half of the ring vanished into it;
+    * white — legible, but a white plate on the home screen is the exact
+      "this app is not finished" defect this adaptive icon was added to remove.
+
+  A flat dark tile keeps the whole ring readable at every density and matches
+  the dark-first UI the icon opens into.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:pathData="M0,0 h108 v108 h-108 z"
+        android:fillColor="#FF141417" />
+</vector>

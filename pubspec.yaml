@@ -1,0 +1,187 @@
+name: imo_live
+description: "Imo LIVE - a modern, offline-first messaging application."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Firebase backbone. `firebase_core` must be initialised before any other
+  # Firebase plugin is touched; `Firebase.initializeApp()` reads the values from
+  # android/app/google-services.json.
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.1
+  cloud_firestore: ^5.6.1
+  # Push delivery. Registration tokens are written to `users/{uid}.fcmTokens`
+  # by PushNotificationService; sending is server-side (or a Cloud Function),
+  # because the client must never hold a FCM server key.
+  firebase_messaging: ^15.1.3
+  # NOTE: Firebase Storage is deliberately NOT a dependency. Storage is not
+  # enabled on the project; all binary media (voice notes, images, files) goes to
+  # Cloudflare R2 through the S3-compatible API below. See
+  # lib/core/services/storage_service.dart.
+
+  # End-to-end encryption for 1:1 chats. `cryptography` is pure Dart (no
+  # platform channel, so it is unit-testable) and provides X25519 + AES-GCM.
+  # The private key never leaves the device: it is stored in the Android
+  # Keystore / iOS Keychain through flutter_secure_storage.
+  cryptography: ^2.7.0
+  # Pinned to the 10.x line already present in the tree as a transitive
+  # dependency — declaring ^9.x would have downgraded it and its platform
+  # implementations underneath another plugin.
+  flutter_secure_storage: ^10.0.0
+
+  # Cloudflare R2 object storage. R2 speaks the S3 API, so a MinIO/S3 client
+  # works against it unchanged — the only R2-specific detail is the `auto`
+  # region and the `*.r2.cloudflarestorage.com` endpoint.
+  minio: ^3.5.8
+
+  # Plain HTTP for the Agora token server (`agora_token_client.dart`), retained
+  # on the same terms as `agora_rtc_engine` above: unused, kept only so the file
+  # compiles. Pure Dart with no native code, so unlike the Agora AAR it costs
+  # the APK nothing and there is no urgency to remove it.
+  http: ^1.2.2
+
+  # Auth providers. `google_sign_in` uses the platform account picker; the
+  # phone flow needs no SDK at all — it is an ordinary email/password account
+  # under an address derived from the number, so it costs nothing here.
+  #
+  # `flutter_facebook_auth` was removed on 2026-10-03: the app's third provider
+  # is now phone sign-in, and the Facebook SDK was shipping its native code and
+  # a `com.facebook.FacebookActivity` declaration into every APK while holding
+  # a placeholder app id that could never have worked.
+  google_sign_in: ^6.2.2
+  flutter_web_auth_2: ^5.1.0
+  webview_flutter: ^4.10.0
+
+  # Vector assets — every logo and icon ships as SVG so it stays crisp at any
+  # size and adds a few KB to the APK instead of a few MB of PNGs.
+  flutter_svg: ^2.0.17
+
+  # Remote images with a disk cache.
+  cached_network_image: ^3.4.1
+
+  # Full-screen media viewer. Pure Dart (no platform channel), so unlike the
+  # Agora AAR it adds no native code to the APK. Provides the pinch-zoom,
+  # double-tap-zoom and page-to-page swipe the WhatsApp-style viewer needs,
+  # which `InteractiveViewer` alone does not.
+  photo_view: ^0.15.0
+
+  # Stable ids for locally-created documents.
+  uuid: ^4.5.1
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Navigation
+  go_router: ^14.6.2
+
+  # Local persistence
+  shared_preferences: ^2.3.3
+  path_provider: ^2.1.5
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Media / device capabilities
+  # Camera capture is done through image_picker (ImageSource.camera) inside
+  # MediaService, so the standalone `camera` plugin is not needed. Its
+  # camera_android_camerax module fails to compile against camera-core 1.5.3
+  # (missing androidx.concurrent.futures.CallbackToFutureAdapter on the
+  # javac classpath), and it pulled a large amount of unused native code.
+  image_picker: ^1.1.2
+  # NOTE: record 5.x has a broken dependency range: it allows
+  # record_platform_interface ^1.2.0, which resolves to 1.6.0, but the only
+  # record_linux in its `>=0.5.0 <1.0.0` range (0.7.2) does not implement the
+  # `request` parameter that 1.6.0 added. Flutter's generated
+  # dart_plugin_registrant imports every platform implementation
+  # unconditionally, so that mismatch breaks the Android build too.
+  # record 7.x keeps the whole platform family on the same generation.
+  record: ^7.1.1
+  just_audio: ^0.9.42
+  file_picker: ^8.1.4
+  geolocator: ^13.0.2
+  permission_handler: ^11.3.1
+  share_plus: ^10.1.2
+  connectivity_plus: ^6.1.0
+  flutter_local_notifications: ^18.0.1
+  qr_flutter: ^4.1.0
+  url_launcher: ^6.3.1
+  intl: ^0.20.3
+  flutter_contacts: ^1.1.9+2
+  timezone: ^0.10.1
+  # Real-time voice/video through Agora's managed SFU.
+  #
+  # ⚠️ NOT IN USE as of 2026-09-29. The project moved to WebRTC only:
+  # `callServiceProvider` selects `WebRtcCallService`, and `AgoraCallService`
+  # is kept on disk but is unreachable from any code path.
+  #
+  # This dependency is retained for exactly one reason: `agora_call_service.dart`
+  # still imports it, and `flutter analyze` compiles every file in the package,
+  # so removing it would break the build while that file exists. It is not free —
+  # the AAR's native libraries ship in every APK, which is a large part of why
+  # `--split-per-abi` is mandatory here.
+  #
+  # To remove it properly: delete `lib/core/services/agora_call_service.dart`
+  # and `agora_token_client.dart`, drop this line, and drop the `Agora
+  # Credentials` section of `app_secrets.dart`. That is the whole change.
+  #
+  # NOTE: the Agora AAR declares READ_PHONE_STATE in its own manifest, which the
+  # manifest merger will pull into the final APK. That permission was removed
+  # from this project deliberately (see AndroidManifest.xml). Blocking it again
+  # requires a `tools:node="remove"` entry in the app manifest.
+  agora_rtc_engine: ^6.6.4
+  # The call stack, and now the only one: peer-to-peer audio/video with
+  # Firestore as the signalling channel. See WebRtcCallService.
+  flutter_webrtc: ^1.6.2+hotfix.3
+  fl_chart: ^1.2.0
+  google_mobile_ads: ^9.1.0
+  video_player: ^2.14.0
+  # NOTE: `web_socket_channel`, `device_info_plus` and `battery_plus` are NOT
+  # dependencies. They existed only to feed the removed background stack (a
+  # persistent socket to a third-party server plus device fingerprinting) and
+  # nothing in the app references them any more.
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  # Asset bundles.
+  #
+  # `assets/brand/` — third-party provider marks (Google, Facebook) and the
+  # shared line icons. Vectors stay crisp at any density, are a few hundred
+  # bytes each and need no @2x/@3x variants, so the whole set costs far less
+  # than a single PNG logo would at four densities. Rendered through
+  # flutter_svg.
+  #
+  # `assets/images/` — the app's own logo, as raster. `app_logo_transparent.png`
+  # is the working asset: the mark is a gradient illustration, not a flat glyph,
+  # so it cannot be reproduced by tinting a single-colour vector. `app_logo.jpg`
+  # is the same artwork on an opaque white plate, used by the one surface
+  # (About) that presents the brand as a card rather than sitting it on the
+  # app's own background.
+  #
+  # Both files are cropped tight to the mark and squared, so the two are
+  # interchangeable and a widget that asks for an N-pixel logo draws an N-pixel
+  # mark. The presentation margin the source artwork carried is applied by the
+  # layout instead.
+  #
+  # The launcher icon is deliberately NOT sourced from here: it is pre-rendered
+  # into android/app/src/main/res/mipmap-*dpi and drawable-*dpi, because the
+  # platform has to draw it before Flutter has started.
+  assets:
+    - assets/brand/
+    - assets/images/

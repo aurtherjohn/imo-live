@@ -1,0 +1,37 @@
+// Force every Android subproject to compile against the same API level the app
+// uses.
+//
+// Several Flutter plugins still hardcode `compileSdk 34` in their own
+// android/build.gradle (audio_session, connectivity_plus, file_picker,
+// flutter_contacts, flutter_local_notifications, just_audio,
+// permission_handler_android, share_plus, ...). Meanwhile the Flutter engine
+// and flutter_plugin_android_lifecycle are built against API 36 and their AAR
+// metadata requires dependents to compile against 36 or later, which fails the
+// :app:checkDebugAarMetadata task:
+//
+//   Dependency ':flutter_plugin_android_lifecycle' requires libraries and
+//   applications that depend on it to compile against version 36 or later of
+//   the Android APIs. :file_picker is currently compiled against android-34.
+//
+// Rather than patching each plugin, raise compileSdk for all of them. This only
+// affects compilation (which APIs are visible); it does not change targetSdk or
+// minSdk, so runtime behaviour and device support are unaffected.
+//
+// This is a Groovy script on purpose: it is applied from build.gradle.kts, and
+// Groovy's dynamic dispatch lets us reach the AGP extension without importing
+// AGP classes onto the build script classpath.
+
+subprojects { subproject ->
+    subproject.afterEvaluate {
+        def androidExtension = subproject.extensions.findByName('android')
+        if (androidExtension == null) {
+            return
+        }
+        try {
+            androidExtension.compileSdkVersion(36)
+        } catch (Exception ignored) {
+            // Extension does not expose compileSdkVersion (e.g. a non-Android
+            // module) - nothing to do.
+        }
+    }
+}

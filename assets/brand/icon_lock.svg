@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- padlock -->
+  <g fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="10.5" width="16" height="10.5" rx="3"/>
+    <path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/>
+    <circle cx="12" cy="15.8" r="1.35" fill="currentColor" stroke="none"/>
+  </g>
+</svg>

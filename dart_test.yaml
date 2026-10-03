@@ -1,0 +1,31 @@
+# Test configuration.
+#
+# `integration` marks a test that talks to a real network service (the deployed
+# Agora token Worker, `*.r2.dev`). Declaring the tag here only *labels* those
+# tests — it does not exclude them, and never did. Exclusion is done in the test
+# files themselves, with `skip:` on the group that touches the network, so the
+# default run stays offline, hermetic and deterministic.
+#
+# Why `exclude_tags` is NOT used here:
+#
+#   * `Configuration.merge` *unions* `excludeTags`, so an exclusion written in
+#     this file cannot be lifted by any CLI flag. `--exclude-tags none` parses as
+#     a tag literally named "none" and changes nothing — it would be a one-way
+#     door with no way to run the live tests again.
+#   * `loader.dart` drops an excluded suite at load (`return;`) rather than
+#     marking it skipped, so those tests would not show up as "skipped" — they
+#     would silently vanish from the run, which is exactly the failure mode this
+#     project keeps getting bitten by.
+#   * A tag-level `skip:` on the tag definition is worse still: it is
+#     unconditional, so `--tags integration` prints "All tests skipped".
+#
+# `skip:` plus `--run-skipped` avoids all three. `engine.dart` only honours a
+# `skip` when `runSkipped` is false, so `--run-skipped` genuinely executes the
+# marked groups, and a skipped group never runs its `setUpAll` (so nothing hits
+# the network). No other test in this suite uses `skip:`, so nothing else is
+# dragged along. Run the live tests deliberately:
+#
+#   ./run_flutter.sh test test/core/agora_two_peer_integration_test.dart --run-skipped
+#   ./run_flutter.sh test --run-skipped        # every live test at once
+tags:
+  integration:

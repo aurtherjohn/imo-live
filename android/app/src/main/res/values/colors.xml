@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Matches AppColors.darkBg in lib/app/theme/app_tokens.dart.
+
+      The app is dark-first: the very first Flutter frame paints a near-black
+      surface. The stock Flutter template leaves the launch window white (or
+      theme-dependent), which produced a visible white flash on light-mode
+      devices before the UI appeared. Pinning the window background to the brand
+      colour makes the hand-off from the Android splash to Flutter seamless.
+    -->
+    <color name="imo_background">#FF0B0B0D</color>
+</resources>

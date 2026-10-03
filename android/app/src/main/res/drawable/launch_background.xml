@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launch window shown by Android before Flutter's first frame.
+
+     Intentionally a flat brand colour with no logo.
+
+     Flutter's own splash screen
+     (lib/features/misc/presentation/splash_screen.dart) draws the mark, the app
+     name and the publisher line. Painting a second, differently-positioned logo
+     here made startup look like two stacked loading screens: the platform mark,
+     then the Flutter mark. Matching this window to the Flutter splash
+     background means the user perceives a single screen that finishes drawing. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/imo_background" />
+</layer-list>

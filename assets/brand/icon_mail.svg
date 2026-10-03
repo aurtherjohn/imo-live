@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!--
+    Shared icon set. One file per glyph, all on a 24×24 grid with a 1.8 px
+    stroke, so chat, settings, profile and auth screens pull from a single
+    consistent family instead of mixing Material filled and outlined styles.
+  -->
+  <g fill="none" stroke="currentColor" stroke-width="1.8"
+     stroke-linecap="round" stroke-linejoin="round">
+    <!-- envelope -->
+    <rect x="2.5" y="5" width="19" height="14" rx="3"/>
+    <path d="M3.2 7.4 11.1 12.6a1.6 1.6 0 0 0 1.8 0l7.9-5.2"/>
+  </g>
+</svg>

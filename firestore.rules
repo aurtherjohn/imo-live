@@ -1,0 +1,236 @@
+rules_version = '2';
+
+// ============================================================================
+// Imo LIVE — Firestore security rules
+// ============================================================================
+//
+// ⚠️ READ THIS BEFORE DEPLOYING
+//
+// This file did not exist before 2026-10-03. The project was running on rules
+// configured by hand in the Firebase console, and those rules were:
+//
+//     match /{document=**} { allow read, write: if request.auth != null; }
+//
+// i.e. **any signed-in user could read and write every document in the
+// database** — every chat, every message, every profile, every E2EE public key.
+// That is the single largest outstanding risk in this app.
+//
+// ### Why the collections below are enumerated instead of using a catch-all
+//
+// Firestore rules are OR'd: if *any* `match` block grants access, access is
+// granted. A permissive `match /{document=**} { allow read, write: if signedIn }`
+// would therefore silently undo every restriction in this file — including the
+// `user_secrets` lock. The collections have to be listed explicitly, and a new
+// collection that is not listed here is **denied** (Firestore's default).
+//
+// That fail-closed direction is deliberate: an unlisted collection shows up as
+// a feature that breaks, which is loud and fixable, rather than as data that
+// leaks, which is silent and permanent.
+//
+// ### Still to do
+//
+// The collections under "app data" are pinned at the same permissiveness the
+// console rules had — signed-in users can read and write them. That is a
+// *floor*, not a target. Each one needs the same treatment the directory just
+// got: `chats` and `messages` should be restricted to their participants,
+// `points_transactions` should not be client-writable at all, and
+// `channel_keys` should be readable only by members. Those changes need the
+// per-collection data model, which is a separate piece of work.
+//
+// ### Deploying
+//
+// `firebase.json` in this repo now points at this file. Deployment is
+//   firebase deploy --only firestore:rules
+// and it is NOT part of the Android build — writing this file changes nothing
+// until that command is run.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------ helpers
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    /// Rejects a write that tries to park password material on a profile.
+    ///
+    /// This is a guard rail, not the security boundary. The boundary is that
+    /// the phone flow never puts a secret in Firestore at all — the PIN goes to
+    /// the auth backend, which salts and hashes it server-side. This rule exists
+    /// so a future change cannot quietly reintroduce the design that was
+    /// rejected: a 6-digit PIN hashed client-side is brute-forced offline in
+    /// under a second, and on a world-readable `users/{uid}` it would be a
+    /// published hash.
+    function noPasswordMaterial() {
+      return !request.resource.data.keys().hasAny(
+        ['password', 'passwordHash', 'pin', 'pinHash', 'salt']
+      );
+    }
+
+    // ======================================================================
+    // The user directory
+    // ======================================================================
+
+    /// The shared profile directory.
+    ///
+    /// World-readable to any signed-in user *on purpose*: it is what makes
+    /// search, chat headers, contact cards and @handle resolution work. It holds
+    /// no secret — which is why the phone flow keeps its PIN out of here.
+    match /users/{uid} {
+      allow read: if signedIn();
+      allow create, update: if isSelf(uid) && noPasswordMaterial();
+      allow delete: if isSelf(uid);
+
+      /// Subcollections of a profile: `list` (the user's contacts),
+      /// `points_transactions` and `notifications`.
+      ///
+      /// Deliberately wider than the parent document: transferring points or
+      /// sending a gift writes a transaction into the *recipient's*
+      /// subcollection, so the writer is by definition not the owner. Locking
+      /// this to `isSelf` would break gifting. Narrowing it means restricting by
+      /// recipient, which needs the points model.
+      ///
+      /// ⚠️ The `{sub}` segment is load-bearing — do not simplify this back to
+      ///     match /users/{uid}/{document=**} { allow read, write: if signedIn(); }
+      ///
+      /// A recursive wildcard matches **zero or more** segments, so that
+      /// spelling also matches `/users/{uid}` ITSELF. Rules are OR'd, so the
+      /// permissive branch would win and re-open the parent profile to every
+      /// signed-in user — making the `isSelf` check and `noPasswordMaterial()`
+      /// above dead code. Confirmed against the emulator on 2026-10-03: with the
+      /// `{document=**}` spelling, a write of `{passwordHash: …}` to *another*
+      /// user's profile returned 200. Requiring a real segment fixes it.
+      match /{sub}/{doc=**} {
+        allow read, write: if signedIn();
+      }
+    }
+
+    /// Handle → uid. Read by search and by the "is this taken?" check.
+    match /usernames/{handle} {
+      allow read: if signedIn();
+      // A handle document only ever maps a name to its owner, so the claim is
+      // valid exactly when it points at the caller.
+      allow create, update: if isSelf(request.resource.data.uid);
+      allow delete: if isSelf(resource.data.uid);
+    }
+
+    /// Phone number → uid. Also the atomic uniqueness guard for the phone
+    /// signup: the claim runs in a transaction, and these rules are what stop
+    /// two accounts from taking the same number.
+    match /phones/{number} {
+      allow read: if signedIn();
+      allow create, update: if isSelf(request.resource.data.uid);
+      allow delete: if isSelf(resource.data.uid);
+    }
+
+    /// Email address → uid.
+    match /emails/{email} {
+      allow read: if signedIn();
+      allow create, update: if isSelf(request.resource.data.uid);
+      allow delete: if isSelf(resource.data.uid);
+    }
+
+    /// Reserved for material that must never be client-readable.
+    ///
+    /// ⚠️ Empty today, and that is the point. The phone flow stores no password
+    /// material in Firestore, so there is nothing here to protect yet. The
+    /// collection exists so that when something genuinely secret does need
+    /// storing — a recovery-code hash, a TOTP seed — it has an obvious,
+    /// already-locked home instead of being bolted onto `users/{uid}` beside
+    /// fields that every signed-in user can read.
+    match /user_secrets/{uid} {
+      allow read, write: if false;
+    }
+
+    // ======================================================================
+    // App data
+    //
+    // Pinned at the console rules' permissiveness so deploying this file cannot
+    // break a feature. Tightening these is the next piece of work — see the
+    // header.
+    // ======================================================================
+
+    // Each block splits the document from its subcollections so the
+    // subcollection wildcard cannot match the document itself — see the
+    // `{sub}` note on `users` above. Behaviourally identical to the
+    // `{document=**}` spelling today, because both levels are `signedIn()`;
+    // it matters the moment one of these is tightened.
+
+    match /chats/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /calls/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /status/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /contacts/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /channels/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /channel_usernames/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /channel_keys/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /points_transactions/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    match /notifications/{id} {
+      allow read, write: if signedIn();
+      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    // ======================================================================
+    // Collection group queries
+    // ======================================================================
+
+    /// `ChannelService.watchMyReactions` runs `collectionGroup('reactions')`
+    /// filtered by `uid` — one listener for a 50-post feed instead of fifty.
+    ///
+    /// ⚠️ A collection-group query spans parents, so a rule scoped to one parent
+    /// (`channels/{id}/{sub}/{doc=**}`) matches these very documents but is NOT
+    /// provable for the query: Firestore rejects the whole thing with
+    /// "No matching allow statements". Verified against the emulator on
+    /// 2026-10-03 — without this block the reaction state in the channel feed
+    /// silently stops loading.
+    ///
+    /// So the rule has to be anchored at the root. This is not a widening in
+    /// practice: `reactions` only ever exists under `channels/{id}/posts/`, and
+    /// the grant is the same `signedIn()` the `channels` block already gives.
+    /// `read` alone is enough — reaction writes go through the `channels` block
+    /// (`postRef.collection('reactions').doc(uid)`).
+    match /{path=**}/reactions/{reactionId} {
+      allow read: if signedIn();
+    }
+
+    // Anything not listed above falls through to here, and Firestore's default
+    // is deny. Keep it that way: an explicit `allow` on `{document=**}` would
+    // re-open the whole database, which is the state this file exists to end.
+  }
+}

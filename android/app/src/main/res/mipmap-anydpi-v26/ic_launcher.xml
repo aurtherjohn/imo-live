@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive launcher icon (Android 8.0 / API 26+).
+
+  Before this file existed the app shipped only legacy square PNGs, so on any
+  modern Android the launcher shrank that artwork and parked it on a white
+  plate with a mismatched border — the single most visible "this app is not
+  finished" tell on the home screen.
+
+  The layers are now bitmaps rather than vectors, because the mark is a
+  gradient illustration rather than a flat glyph: the foreground is rendered at
+  five densities into `drawable-*dpi/ic_launcher_foreground.png`, with the
+  artwork held inside the 66dp/108dp safe zone so no OEM mask clips the ring.
+
+  `ic_launcher_round.xml` is byte-identical and is what `android:roundIcon`
+  resolves to on API 26+; the legacy `mipmap-*dpi/ic_launcher_round.png` covers
+  API 24–25.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <!-- Android 13+ themed icons. This is a separate silhouette, not the
+         full-colour foreground: the launcher replaces every pixel with the
+         wallpaper palette, so a colour layer would collapse into a solid blob.
+         The silhouette keeps the ring, the wordmark and the broadcast pill, and
+         punches the "LIVE" letterforms back out so they survive the tint. -->
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome" />
+</adaptive-icon>

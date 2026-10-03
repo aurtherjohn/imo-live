@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launch window shown by Android before Flutter's first frame (API 21+).
+
+     Intentionally a flat brand colour with no logo, so it reads as the same
+     single screen as the Flutter splash rather than a second loading page. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/imo_background" />
+</layer-list>

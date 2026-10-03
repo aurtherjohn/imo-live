@@ -1,0 +1,69 @@
+// Pin every Java and Kotlin compile task in the build to the same JVM target.
+//
+// Kotlin Gradle Plugin 2.4.0 resolves Kotlin's `jvmTarget` from the toolchain
+// when a module does not set one, which on this machine means the Gradle JDK
+// (25). AGP independently gives the Java compile tasks in plugin subprojects
+// their own default (11). Kotlin 2.4 promotes that mismatch from a warning to a
+// hard failure:
+//
+//   Execution failed for task ':flutter_facebook_auth:compileReleaseKotlin'.
+//   > Inconsistent JVM-target compatibility detected for tasks
+//     'compileReleaseJavaWithJavac' (11) and 'compileReleaseKotlin' (25).
+//
+// The failure was latent for a long time because nothing had forced that module
+// to recompile; it only appeared once a dependency version changed and
+// invalidated its compile classpath.
+//
+// ### Why the Java half has to happen in afterEvaluate
+//
+// Configuring `JavaCompile` tasks eagerly does not stick: AGP writes
+// `sourceCompatibility` / `targetCompatibility` onto them when it configures
+// each variant, which happens *after* the root project has run. Setting the
+// Android extension's `compileOptions` inside `afterEvaluate` is the level AGP
+// actually reads from, so the value survives.
+//
+// This is a Groovy script on purpose: applied from build.gradle.kts, Groovy's
+// dynamic dispatch reaches AGP and Kotlin types without importing them onto the
+// build script classpath.
+
+subprojects { subproject ->
+    // Kotlin is safe to configure eagerly — `configureEach` is lazy, and the
+    // Kotlin plugin only reads the value at execution time.
+    subproject.tasks
+        .withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile)
+        .configureEach { task ->
+            task.compilerOptions.jvmTarget.set(
+                org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+            )
+        }
+
+    subproject.afterEvaluate {
+        def androidExtension = subproject.extensions.findByName('android')
+        if (androidExtension != null) {
+            try {
+                androidExtension.compileOptions {
+                    sourceCompatibility = JavaVersion.VERSION_17
+                    targetCompatibility = JavaVersion.VERSION_17
+                }
+            } catch (Throwable ignored) {
+                // Not an AGP module, or the extension shape changed — the task
+                // level override below still applies.
+            }
+        }
+
+        def javaExtension = subproject.extensions.findByType(
+            org.gradle.api.plugins.JavaPluginExtension
+        )
+        if (javaExtension != null) {
+            javaExtension.sourceCompatibility = JavaVersion.VERSION_17
+            javaExtension.targetCompatibility = JavaVersion.VERSION_17
+        }
+
+        subproject.tasks
+            .withType(org.gradle.api.tasks.compile.JavaCompile)
+            .configureEach { task ->
+                task.sourceCompatibility = '17'
+                task.targetCompatibility = '17'
+            }
+    }
+}

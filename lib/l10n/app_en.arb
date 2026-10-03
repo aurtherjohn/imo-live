@@ -1,0 +1,2313 @@
+{
+  "@@locale": "en",
+  "appName": "Imo LIVE",
+  "appTagline": "Fast. Private. Yours.",
+  "tabChats": "Chats",
+  "tabUpdates": "Updates",
+  "tabCommunities": "Communities",
+  "tabCalls": "Calls",
+  "tabContacts": "Contacts",
+  "search": "Search",
+  "searchOrAsk": "Ask Imo LIVE or Search",
+  "searchHint": "Search",
+  "cancel": "Cancel",
+  "save": "Save",
+  "done": "Done",
+  "delete": "Delete",
+  "edit": "Edit",
+  "close": "Close",
+  "ok": "OK",
+  "retry": "Try again",
+  "next": "Next",
+  "back": "Back",
+  "continueLabel": "Continue",
+  "skip": "Skip",
+  "create": "Create",
+  "add": "Add",
+  "remove": "Remove",
+  "send": "Send",
+  "share": "Share",
+  "copy": "Copy",
+  "select": "Select",
+  "reply": "Reply",
+  "forward": "Forward",
+  "star": "Star",
+  "unstar": "Unstar",
+  "react": "React",
+  "translate": "Translate",
+  "archive": "Archive",
+  "unarchive": "Unarchive",
+  "pin": "Pin",
+  "unpin": "Unpin",
+  "mute": "Mute",
+  "unmute": "Unmute",
+  "markAsRead": "Mark as read",
+  "markAsUnread": "Mark as unread",
+  "clearChat": "Clear chat",
+  "chatInfo": "Chat info",
+  "addToFavorites": "Add to favorites",
+  "removeFromFavorites": "Remove from favorites",
+  "readAll": "Read all",
+  "clearAll": "Clear all",
+  "unblock": "Unblock",
+  "block": "Block",
+  "yesterday": "Yesterday",
+  "today": "Today",
+  "filterAll": "All",
+  "filterUnread": "Unread",
+  "filterFavorites": "Favorites",
+  "filterGroups": "Groups",
+  "filterWork": "Work",
+  "noChatsYet": "No chats yet",
+  "noChatsMessage": "Start a conversation and it will show up here.",
+  "noRecentCalls": "No recent calls",
+  "noRecentCallsMessage": "Calls you make and receive will appear here.",
+  "noStarredMessages": "No starred messages",
+  "noStarredMessage": "Tap and hold a message to star it for later.",
+  "noArchivedChats": "No archived chats",
+  "noArchivedMessage": "Chats you archive are kept here.",
+  "noBlockedContacts": "No blocked contacts",
+  "noBlockedMessage": "Contacts you block will appear here.",
+  "noChannels": "Follow channels to see updates",
+  "noChannelsMessage": "Channels let you follow updates from people and organisations.",
+  "noUpdates": "No updates yet",
+  "noUpdatesMessage": "Status updates from your contacts appear here for 24 hours.",
+  "stayConnected": "Stay connected with a community",
+  "stayConnectedMessage": "Communities bring members together in topic-based groups, and let you send announcement groups easily.",
+  "startYourCommunity": "Start your community",
+  "seeExampleCommunities": "See example communities",
+  "messageDeleted": "This message was deleted",
+  "edited": "edited",
+  "forwarded": "Forwarded",
+  "typing": "typing...",
+  "online": "online",
+  "offline": "offline",
+  "lastSeenRecently": "last seen recently",
+  "typeAMessage": "Type a message",
+  "noInternetConnection": "No internet connection",
+  "backOnline": "Back online",
+  "newGroup": "New group",
+  "newContact": "New contact",
+  "newCommunity": "New community",
+  "newChannel": "New channel",
+  "broadcastLists": "Broadcast lists",
+  "linkedDevices": "Linked devices",
+  "starredMessages": "Starred messages",
+  "archivedChats": "Archived chats",
+  "settings": "Settings",
+  "earnPoints": "Earn points",
+  "unreadChats": "Unread chats",
+  "you": "You",
+  "subscriptions": "Subscriptions",
+  "account": "Account",
+  "privacy": "Privacy",
+  "lists": "Lists",
+  "chats": "Chats",
+  "notifications": "Notifications",
+  "storageAndData": "Storage and data",
+  "accessibility": "Accessibility",
+  "appearance": "Appearance",
+  "language": "Language",
+  "help": "Help",
+  "about": "About",
+  "profile": "Profile",
+  "wallpaper": "Wallpaper",
+  "appLock": "App lock",
+  "twoStepVerification": "Two-step verification",
+  "changeNumber": "Change number",
+  "deleteAccount": "Delete account",
+  "blockedContacts": "Blocked contacts",
+  "disappearingMessages": "Disappearing messages",
+  "securityNotifications": "Security notifications",
+  "call": "Call",
+  "schedule": "Schedule",
+  "keypad": "Keypad",
+  "favorites": "Favorites",
+  "endCall": "End call",
+  "muteAction": "Mute",
+  "speaker": "Speaker",
+  "bluetooth": "Bluetooth",
+  "addPerson": "Add person",
+  "switchCamera": "Switch camera",
+  "photo": "Photo",
+  "video": "Video",
+  "document": "Document",
+  "location": "Location",
+  "contact": "Contact",
+  "audio": "Audio",
+  "poll": "Poll",
+  "event": "Event",
+  "gallery": "Gallery",
+  "camera": "Camera",
+  "attachment": "Attachment",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System default",
+  "accentColor": "Accent color",
+  "fontSize": "Font size",
+  "country": "Country",
+  "selectCountry": "Select a country",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "username": "Username",
+  "phone": "Phone",
+  "bio": "Bio",
+  "aboutField": "About",
+  "createGroup": "Create group",
+  "groupName": "Group name",
+  "groupDescription": "Group description",
+  "members": "Members",
+  "admins": "Admins",
+  "exitGroup": "Exit group",
+  "inviteLink": "Invite link",
+  "myStatus": "My status",
+  "recentUpdates": "Recent updates",
+  "viewedUpdates": "Viewed updates",
+  "mutedUpdates": "Muted updates",
+  "addStatus": "Add status",
+  "follow": "Follow",
+  "following": "Following",
+  "explore": "Explore",
+  "yes": "Yes",
+  "no": "No",
+  "confirm": "Confirm",
+  "discard": "Discard",
+  "saved": "Saved",
+  "copied": "Copied to clipboard",
+  "messageSent": "Message sent",
+  "permissionNeeded": "Permission needed",
+  "openSettings": "Open settings",
+  "comingWithBackend": "This will be available in a later version.",
+  "somethingWentWrongOnThis": "Something went wrong on this screen",
+  "myLocation": "My location",
+  "approximateLocation": "Approximate location",
+  "signInToStartEarning": "Sign in to start earning",
+  "couldNotAddPointsCheck": "Could not add points — check your connection",
+  "signInFirst": "Sign in first",
+  "premiumActiveUntil": "Premium active until ",
+  "couldNotActivatePremiumCheck": "Could not activate premium — check your connection",
+  "thisContactHasNoAccount": "This contact has no account to receive a gift",
+  "couldNotSendTheGift": "Could not send the gift — check your connection",
+  "ad": "Ad",
+  "takeAPhoto": "Take a photo",
+  "opensTheDeviceCamera": "Opens the device camera",
+  "thisWindowIsInsideImo": "This window is inside Imo LIVE",
+  "secureSignIn": "Secure sign-in",
+  "google": "Google",
+  "facebook": "Facebook",
+  "orContinueWithEmail": "Or continue with email",
+  "emailAddress": "Email address",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "resetPassword": "Reset password",
+  "sendLink": "Send link",
+  "verifyYourEmail": "Verify your email",
+  "openTheLinkInThe": "Open the link in the email to confirm this address. ",
+  "resendNow": "Resend now",
+  "verify": "Verify",
+  "setUpYourProfile": "Set up your profile",
+  "thisIsHowOtherPeople": "This is how other people find you on Imo LIVE.",
+  "addAPhoto": "Add a photo",
+  "yourName": "Your name",
+  "gender": "Gender",
+  "createAccount": "Create Account",
+  "joinImoLIVEInA": "Join Imo LIVE in a few seconds.",
+  "orSignUpWithEmail": "Or sign up with email",
+  "fullName": "Full name",
+  "confirmPassword": "Confirm password",
+  "clearCallLog": "Clear call log",
+  "newCall": "New call",
+  "voiceCall": "Voice call",
+  "videoCall": "Video call",
+  "scheduleACall": "Schedule a call",
+  "removeFromLog": "Remove from log",
+  "clearCallLog2": "Clear call log?",
+  "everyCallEntryOnThis": "Every call entry on this device is deleted. Contacts and ",
+  "clearLog": "Clear log",
+  "scheduledCalls": "Scheduled calls",
+  "decline": "Decline",
+  "simulated": "SIMULATED",
+  "favourites": "Favourites",
+  "searchContacts": "Search contacts",
+  "pasteANumber": "Paste a number",
+  "clear": "Clear",
+  "remindersFireFromTheLocal": "Reminders fire from the local notification plugin. They are ",
+  "who": "Who",
+  "title": "Title",
+  "when": "When",
+  "date": "Date",
+  "time": "Time",
+  "remindMe": "Remind me",
+  "type": "Type",
+  "scheduleWith": "Schedule with",
+  "atTheScheduledTime": "At the scheduled time",
+  "s5MinutesBefore": "5 minutes before",
+  "s10MinutesBefore": "10 minutes before",
+  "s30MinutesBefore": "30 minutes before",
+  "s1HourBefore": "1 hour before",
+  "removeReminder": "Remove reminder?",
+  "analytics": "Analytics",
+  "followerGrowth": "Follower growth",
+  "netNewFollowersPerDay": "Net new followers per day · last 28 days",
+  "postReach": "Post reach",
+  "postImpressionsPerDayLast": "Post impressions per day · last 28 days",
+  "reactions": "Reactions",
+  "breakdownAcrossAllPosts": "Breakdown across all posts",
+  "topPosts": "Top posts",
+  "rankedByViews": "Ranked by views",
+  "followers": "Followers",
+  "net28d": "Net 28d",
+  "reach": "Reach",
+  "noDataForThisPeriod": "No data for this period yet",
+  "joinRequests": "Join requests",
+  "noPendingRequests": "No pending requests",
+  "shareTheSecretKeyWith": "Share the secret key with the people you want to let in. ",
+  "reject": "Reject",
+  "approve": "Approve",
+  "channel": "Channel",
+  "channelNotFound": "Channel not found",
+  "itIsNotOnThis": "It is not on this device and could not be loaded from the ",
+  "channelActions": "Channel actions",
+  "postToYourChannel": "Post to your channel",
+  "writeSomethingForYourFollowers": "Write something for your followers…",
+  "deleteThisPost": "Delete this post?",
+  "itDisappearsForEveryFollower": "It disappears for every follower immediately.",
+  "sendGiftToOwner": "Send gift to owner",
+  "channelSettings": "Channel settings",
+  "copyInviteLink": "Copy invite link",
+  "showQRCode": "Show QR code",
+  "monetized": "Monetized",
+  "thisChannelIsPrivate": "This channel is private",
+  "postsAreOnlyVisibleTo": "Posts are only visible to members. Send a request and the owner ",
+  "requestToJoin": "Request to join",
+  "premiumChannel": "Premium channel",
+  "thisChannelIsReservedFor": "This channel is reserved for premium members. Earn points by ",
+  "getPremium": "Get premium",
+  "noPostsYet": "No posts yet",
+  "couldNotLoadThisChannel": "Could not load this channel",
+  "couldNotLoadPosts": "Could not load posts",
+  "couldNotPublishThePost": "Could not publish the post",
+  "nSubscribers": "{count} subscribers",
+  "@nSubscribers": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "channelInfo": "Channel info",
+  "onlyAdminsCanSendMessages": "Only admins can send messages in this channel",
+  "writeAPost": "Write a post",
+  "writeYourFirstPost": "Write your first post",
+  "nothingHasBeenPostedYet": "Nothing has been posted in this channel yet",
+  "monetization": "Monetization",
+  "status": "Status",
+  "requirement": "Requirement",
+  "subscribers": "Subscribers",
+  "subscriberProgress": "Subscriber progress",
+  "reactionProgress": "Reaction progress",
+  "estimatedRPM": "Estimated RPM",
+  "views": "Views",
+  "estimatedRevenue": "Estimated revenue",
+  "estimatedCostPerView": "Estimated cost per view",
+  "applyForMonetization": "Apply for Monetization",
+  "sendThisChannelForReview": "Send this channel for review",
+  "applyForMonetization2": "Apply for monetization?",
+  "yourChannelMeetsTheRequirements": "Your channel meets the requirements. A reviewer will ",
+  "apply": "Apply",
+  "ownerTools": "Owner tools",
+  "followerGrowthReachAndReactions": "Follower growth, reach and reactions over 28 days",
+  "tapToChangeTheChannel": "Tap to change the channel photo",
+  "identity": "Identity",
+  "channelName": "Channel name",
+  "approveOrRejectPeopleWho": "Approve or reject people who have the key",
+  "category": "Category",
+  "rotateTheSecretKey": "Rotate the secret key?",
+  "everyoneCurrentlyUsingTheOld": "Everyone currently using the old key keeps their access, but ",
+  "generate": "Generate",
+  "aReviewerWillCheckThat": "A reviewer will check that your channel meets the ",
+  "monetizationReview": "Monetization review",
+  "reviewersOnly": "Reviewers only",
+  "thisScreenIsLimitedTo": "This screen is limited to project reviewers.",
+  "nothingToReview": "Nothing to review",
+  "channelsAppearHereOnceThey": "Channels appear here once they pass the follower and reaction ",
+  "channelPhoto": "Channel photo",
+  "details": "Details",
+  "secretKey": "Secret key",
+  "copyClose": "Copy & close",
+  "archiveActions": "Archive actions",
+  "markAllAsRead": "Mark all as read",
+  "unarchiveAll": "Unarchive all",
+  "nothingArchived": "Nothing archived",
+  "archivedChatsAreHiddenFrom": "Archived chats are hidden from the main list but keep all ",
+  "newList": "New list",
+  "aBroadcastSendsAnIndividual": "A broadcast sends an individual copy of your message to each ",
+  "noBroadcastLists": "No broadcast lists",
+  "createAListOfUp": "Create a list of up to 256 recipients and message them ",
+  "actions": "Actions",
+  "rename": "Rename",
+  "renameList": "Rename list",
+  "listName": "List name",
+  "editRecipients": "Edit recipients",
+  "deleteList": "Delete list",
+  "theListIsDeletedExisting": "The list is deleted. Existing conversations with its ",
+  "newBroadcastList": "New broadcast list",
+  "addRecipients": "Add recipients",
+  "message": "Message",
+  "sendABroadcast": "Send a broadcast",
+  "localStorageCouldNotBe": "Local storage could not be opened, so your chats, contacts ",
+  "menu": "Menu",
+  "moreOptions": "More options",
+  "archived": "Archived",
+  "noChatsFound": "No chats found",
+  "tryADifferentNameOr": "Try a different name or keyword.",
+  "newChat": "New chat",
+  "saveSomeoneToThisDevice": "Save someone to this device",
+  "broadcastToAnUnlimitedAudience": "Broadcast to an unlimited audience",
+  "groupRelatedChatsTogether": "Group related chats together",
+  "contactsOnThisDevice": "Contacts on this device",
+  "newBroadcast": "New broadcast",
+  "forwardTo": "Forward to",
+  "viewContact": "View contact",
+  "sendGift": "Send gift",
+  "mediaLinksAndDocs": "Media, links and docs",
+  "searchInChat": "Search in chat",
+  "deleteChat": "Delete chat",
+  "saveAttachment": "Save attachment",
+  "cancelSelection": "Cancel selection",
+  "pinnedMessage": "Pinned message",
+  "mediaUnavailable": "Media unavailable",
+  "thisImageCouldNotBe": "This image could not be opened",
+  "thisFileIsNoLonger": "This file is no longer on the device",
+  "couldNotLoadThisAttachment": "Could not load this attachment",
+  "unstarAll": "Unstar all",
+  "searchStarredMessages": "Search starred messages",
+  "openChat": "Open chat",
+  "copyText": "Copy text",
+  "removeStar": "Remove star",
+  "removeAllStars": "Remove all stars?",
+  "messageInfo": "Message info",
+  "sent": "Sent",
+  "addOption": "Add option",
+  "allowMultipleAnswers": "Allow multiple answers",
+  "createEvent": "Create event",
+  "eventName": "Event name",
+  "stickers": "Stickers",
+  "clearThisChat": "Clear this chat?",
+  "allMessagesInThisConversation": "All messages in this conversation will be removed from this device. ",
+  "noEmojiFound": "No emoji found",
+  "tryAnotherKeyword": "Try another keyword.",
+  "frequentlyUsed": "Frequently used",
+  "searchEmoji": "Search emoji",
+  "deleteForMe": "Delete for me",
+  "deleteForEveryone": "Delete for everyone",
+  "saveToDevice": "Save to device",
+  "locationPreview": "Location preview",
+  "event2": "EVENT",
+  "going": "Going",
+  "maybe": "Maybe",
+  "emoji": "Emoji",
+  "attach": "Attach",
+  "holdToRecordAVoice": "Hold to record a voice note",
+  "sendMessage": "Send message",
+  "editingMessage": "Editing message",
+  "noCommunitiesYet": "No communities yet",
+  "aCommunityGroupsRelatedChats": "A community groups related chats under one announcement channel. ",
+  "communityActions": "Community actions",
+  "openCommunity": "Open community",
+  "openChannel": "Open channel",
+  "unfollow": "Unfollow",
+  "deleteCommunity": "Delete community",
+  "theCommunityAndItsAnnouncement": "The community and its announcement group are removed from ",
+  "noChannelsYet": "No channels yet",
+  "channelsBroadcastOneWayTo": "Channels broadcast one-way to followers. Create one, or follow a ",
+  "community": "Community",
+  "communityNotFound": "Community not found",
+  "itWasDeletedFromThis": "It was deleted from this device.",
+  "tapToEdit": "Tap to edit",
+  "groupsInThisCommunity": "Groups in this community",
+  "createAGroupHere": "Create a group here",
+  "newGroupThatIsAutomatically": "New group that is automatically part of this community",
+  "addExistingGroups": "Add existing groups",
+  "linkGroupsYouAlreadyCreated": "Link groups you already created",
+  "invitePeople": "Invite people",
+  "addContactsToThisCommunity": "Add contacts to this community",
+  "dangerZone": "Danger zone",
+  "removeTheCommunityAndIts": "Remove the community and its announcement group",
+  "communityName": "Community name",
+  "communityDescription": "Community description",
+  "whatIsThisCommunityAbout": "What is this community about?",
+  "addGroups": "Add groups",
+  "theCommunityIsRemovedFrom": "The community is removed from this device. Groups inside it stay ",
+  "addACommunityPhoto": "Add a community photo",
+  "addMembers": "Add members",
+  "syncDeviceContacts": "Sync device contacts",
+  "contactNotFound": "Contact not found",
+  "thisPersonIsNotIn": "This person is not in your contacts and has no Imo LIVE ",
+  "contactInfo": "Contact info",
+  "editContact": "Edit contact",
+  "more": "More",
+  "mediaActivity": "Media & activity",
+  "sharedMedia": "Shared media",
+  "mediaAttachesToConversationsOpen": "Media attaches to conversations. Open the chat and use ",
+  "statusUpdates": "Status updates",
+  "muteAlertsForThisConversation": "Mute alerts for this conversation",
+  "openTheChatAndChoose": "Open the chat and choose Disappearing messages ",
+  "removesThisConversationAndIts": "Removes this conversation and its messages",
+  "deleteChat2": "Delete chat?",
+  "deleteContact": "Delete contact",
+  "theContactIsRemovedFrom": "The contact is removed from your list. Existing chats ",
+  "shareContact": "Share contact",
+  "copyPhoneNumber": "Copy phone number",
+  "chooseACountry": "Choose a country",
+  "searchCountryCodeOrDial": "Search country, code or dial prefix",
+  "numberAlreadySaved": "Number already saved",
+  "saveAnyway": "Save anyway",
+  "deleteContact2": "Delete contact?",
+  "inviteToImoLIVE": "Invite to Imo LIVE",
+  "invite": "Invite",
+  "favouritesOnly": "Favourites only",
+  "addressBookUnavailable": "Address book unavailable",
+  "imoLIVECouldNotRead": "Imo LIVE could not read your device contacts. Grant the contacts ",
+  "newMessagesInThisChat": "New messages in this chat will disappear after the ",
+  "thisNumberIsNotOn": "This number is not on Imo LIVE yet. Invite them?",
+  "redeem": "Redeem",
+  "watchToEarn": "Watch to Earn",
+  "yourPoints": "Your points",
+  "premium": "PREMIUM",
+  "watchEarn": "Watch & Earn",
+  "premium2": "Premium",
+  "noAds": "No ads",
+  "nothingToWatchBeforeYour": "Nothing to watch before your content",
+  "exclusiveBadge": "Exclusive badge",
+  "aPremiumMarkOnYour": "A premium mark on your profile",
+  "premiumChannels": "Premium channels",
+  "openChannelsReservedForMembers": "Open channels reserved for members",
+  "earningHistory": "Earning history",
+  "couldNotLoadYourHistory": "Could not load your history.",
+  "noActivityYet": "No activity yet",
+  "watchYourFirstAdTo": "Watch your first ad to start earning.",
+  "couldNotLoadNotifications": "Could not load notifications",
+  "checkYourConnectionAndTry": "Check your connection and try again.",
+  "noNotificationsYet": "No notifications yet",
+  "giftsYouReceiveWillShow": "Gifts you receive will show up here.",
+  "groupInfo": "Group info",
+  "groupNotFound": "Group not found",
+  "thisGroupWasDeletedOr": "This group was deleted or never existed on this device.",
+  "editGroup": "Edit group",
+  "admin": "Admin",
+  "groupSettings": "Group settings",
+  "muteNotifications": "Mute notifications",
+  "silenceAlertsForThisGroup": "Silence alerts for this group",
+  "openTheConversationAndTap": "Open the conversation and tap the search icon to filter ",
+  "adminPermissions": "Admin permissions",
+  "sendMessages": "Send messages",
+  "allowMembersToSendMessages": "Allow members to send messages in the group",
+  "editGroupInfo": "Edit group info",
+  "allowMembersToChangeThe": "Allow members to change the name, photo and description",
+  "allowMembersToAddOther": "Allow members to add other people",
+  "inviteViaLink": "Invite via link",
+  "anyoneWithTheInviteLink": "Anyone with the invite link can join",
+  "approveNewMembers": "Approve new members",
+  "adminsMustApproveEveryoneWho": "Admins must approve everyone who tries to join",
+  "theInviteCodeIsGenerated": "The invite code is generated locally. Joining via a link needs ",
+  "resetInviteLink": "Reset invite link",
+  "invalidateTheCurrentCodeAnd": "Invalidate the current code and issue a new one",
+  "invalidatingAnInviteLinkIs": "Invalidating an invite link is a server action — old ",
+  "clearMessages": "Clear messages",
+  "deleteEveryMessageInThis": "Delete every message in this group, keeping the group",
+  "clearAllMessages": "Clear all messages?",
+  "deleteGroup": "Delete group",
+  "removeTheGroupAndIts": "Remove the group and its entire history",
+  "whatIsThisGroupAbout": "What is this group about?",
+  "addMembersDirectly": "Add members directly",
+  "removeFromGroup": "Remove from group",
+  "youLeaveTheGroupYour": "You leave the group. Your existing messages stay in the conversation ",
+  "theGroupItsMembersAnd": "The group, its members and every message are permanently deleted ",
+  "noMembersYet": "No members yet",
+  "aGroupNeedsAtLeast": "A group needs at least one other person. You will be added ",
+  "youWillBeTheGroup": "You will be the group admin",
+  "adminsCanAddOrRemove": "Admins can add or remove members, edit the group photo, ",
+  "imoLIVESyncsThroughFirebase": "Imo LIVE syncs through Firebase — Authentication and Cloud ",
+  "build": "Build",
+  "appName2": "App name",
+  "version": "Version",
+  "architecture": "Architecture",
+  "imoLIVEFollowsAClean": "Imo LIVE follows a clean, feature-first layout.",
+  "everyScreenDependsOnAn": "Every screen depends on an abstract repository interface. Chats ",
+  "whatStillNeedsConfiguring": "What still needs configuring",
+  "everythingBelowAlreadyHasIts": "Everything below already has its interface and local ",
+  "searchEverything": "Search everything",
+  "recent": "Recent",
+  "searchIn": "Search in",
+  "everything": "Everything",
+  "messages": "Messages",
+  "channels": "Channels",
+  "noResults": "No results",
+  "frequentlyAsked": "Frequently asked",
+  "copyCode": "Copy code",
+  "theCodeCarriesAnImo": "The code carries an Imo LIVE identifier. Another person can ",
+  "shareCode": "Share code",
+  "fromImoLIVEINC": "From Imo LIVE, INC",
+  "editProfile": "Edit profile",
+  "yourNameIsVisibleTo": "Your name is visible to everyone you message.",
+  "requiredLabel": "Required",
+  "optional": "Optional",
+  "about2": "ABOUT",
+  "writeSomethingAboutYourself": "Write something about yourself",
+  "myQRCode": "My QR code",
+  "lastSeen": "Last seen",
+  "searchImoLIVEBy": "Search Imo LIVE by",
+  "phoneNumber": "Phone number",
+  "userID": "User ID",
+  "theUidShownOnA": "The uid shown on a profile",
+  "searchUnavailable": "Search unavailable",
+  "imoLIVECouldNotBe": "Imo LIVE could not be reached. Check your connection and ",
+  "inviteThemToImoLIVE": "Invite them to Imo LIVE and you can start chatting as soon ",
+  "passkeys": "Passkeys",
+  "enterANewPhoneNumber": "Enter a new phone number (stored locally only)",
+  "verifiedNumber": "Verified number",
+  "accountActivity": "Account activity",
+  "clearAllLocalData": "Clear all local data",
+  "deletesChatsMessagesContactsStatuses": "Deletes chats, messages, contacts, statuses and settings ",
+  "clearAllLocalData2": "Clear all local data?",
+  "everyChatMessageContactAnd": "Every chat, message, contact and setting stored by Imo ",
+  "clearEverything": "Clear everything",
+  "theme": "Theme",
+  "system": "System",
+  "reset": "Reset",
+  "restoreDefaultAppearance": "Restore default appearance",
+  "darkThemeRoseAccent100": "Dark theme, rose accent, 100% text size",
+  "blockAContact": "Block a contact",
+  "blockedContactsCannotMessageOr": "Blocked contacts cannot message or call you from this ",
+  "unblockingRestoresTheContactTo": "Unblocking restores the contact to your chat list and ",
+  "unknownSenders": "Unknown senders",
+  "blockUnknownSenders": "Block unknown senders",
+  "blockedCallers": "Blocked callers",
+  "blockedContactsAreAlsoPrevented": "Blocked contacts are also prevented from calling",
+  "display": "Display",
+  "enterKeySendsMessage": "Enter key sends message",
+  "pressEnterToSendInstead": "Press Enter to send instead of adding a new line",
+  "mediaVisibility": "Media visibility",
+  "showNewlyDownloadedMediaIn": "Show newly downloaded media in your device gallery",
+  "chatHistory": "Chat history",
+  "keepChatsArchived": "Keep chats archived",
+  "newMessagesStayInThe": "New messages stay in the archive instead of returning the ",
+  "chatBackup": "Chat backup",
+  "backUpOver": "Back up over",
+  "daily": "Daily",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "autoDownload": "Auto-download",
+  "appliesToMediaYouReceive": "Applies to media you receive while on a mobile or Wi-Fi network.",
+  "photos": "Photos",
+  "documents": "Documents",
+  "housekeeping": "Housekeeping",
+  "resetChatSettings": "Reset chat settings",
+  "restoreEveryChatPreferenceTo": "Restore every chat preference to its default",
+  "resetChatSettings2": "Reset chat settings?",
+  "chatPreferencesReturnToTheir": "Chat preferences return to their defaults. No chats or ",
+  "syncContactsOnSave": "Sync contacts on save",
+  "offerToAddANumber": "Offer to add a number to your device address book when you ",
+  "appLanguage": "App language",
+  "appDisplayLanguage": "App display language",
+  "translationsAreBundledWithThe": "Translations are bundled with the app as ARB resources. ",
+  "comingSoon": "Coming soon",
+  "switchAnyway": "Switch anyway",
+  "region": "Region",
+  "bangladesh": "Bangladesh",
+  "dialCode880": "Dial code +880",
+  "india": "India",
+  "dialCode91": "Dial code +91",
+  "unitedStates": "United States",
+  "dialCode1": "Dial code +1",
+  "unitedKingdom": "United Kingdom",
+  "dialCode44": "Dial code +44",
+  "pakistan": "Pakistan",
+  "dialCode92": "Dial code +92",
+  "unitedArabEmirates": "United Arab Emirates",
+  "dialCode971": "Dial code +971",
+  "saudiArabia": "Saudi Arabia",
+  "dialCode966": "Dial code +966",
+  "indonesia": "Indonesia",
+  "dialCode62": "Dial code +62",
+  "timeFormat": "Time format",
+  "imoLIVEFollowsYourDevice": "Imo LIVE follows your device setting so timestamps stay ",
+  "pairingASecondDeviceIs": "Pairing a second device is not available yet. This screen ",
+  "linkADevice": "Link a device",
+  "openImoLIVEOnAnother": "Open Imo LIVE on another device and scan this code. ",
+  "pairADevice": "Pair a device",
+  "unlink": "Unlink",
+  "security": "Security",
+  "linkWithPhoneNumber": "Link with phone number",
+  "logOutOfAllDevices": "Log out of all devices",
+  "removeAllLinkedDevices": "Remove all linked devices?",
+  "everyNonCurrentEntryIs": "Every non-current entry is deleted from this ",
+  "removeAll": "Remove all",
+  "builtInLists": "Built-in lists",
+  "aListIsASaved": "A list is a saved filter over your chats. Tapping one applies ",
+  "customLists": "Custom lists",
+  "theWorkListIsA": "The Work list is a flag stored on each chat, so it survives ",
+  "manage": "Manage",
+  "pickAFilterAndApply": "Pick a filter and apply it to the Chats tab",
+  "showAllChats": "Show all chats",
+  "clearTheActiveFilter": "Clear the active filter",
+  "chatsInWork": "Chats in \"Work\"",
+  "group": "Group",
+  "directChat": "Direct chat",
+  "pickTheChatsThisList": "Pick the chats this list will always show.",
+  "chatsYouStarred": "Chats you starred",
+  "groupsCommunities": "Groups & communities",
+  "everyone": "Everyone",
+  "noFiltering": "No filtering",
+  "notificationsAreDeliveredLocallyBy": "Notifications are delivered locally by the OS. There is no ",
+  "messageNotifications": "Message notifications",
+  "showNotifications": "Show notifications",
+  "masterSwitchForEveryMessage": "Master switch for every message alert",
+  "vibrate": "Vibrate",
+  "popup": "Popup",
+  "showABannerWhileYou": "Show a banner while you are using another app",
+  "inApp": "In-app",
+  "inAppSounds": "In-app sounds",
+  "inAppVibration": "In-app vibration",
+  "tryItOut": "Try it out",
+  "sendATestNotification": "Send a test notification",
+  "postsALocalNotificationThrough": "Posts a local notification through the OS",
+  "resetNotificationSettings": "Reset notification settings",
+  "restoreEveryNotificationOptionTo": "Restore every notification option to its default",
+  "theseSwitchesControlWhatImo": "These switches control what Imo LIVE stores and displays on ",
+  "whoCanSeeMyPersonal": "Who can see my personal info",
+  "changingLastSeenAlsoAffects": "Changing \"Last seen\" also affects read receipts in a backed ",
+  "lastSeenAndOnline": "Last seen and online",
+  "whoCanCallMe": "Who can call me",
+  "silenceUnknownCallers": "Silence unknown callers",
+  "muteCallNotificationsFromPeople": "Mute call notifications from people you have not saved",
+  "appSecurity": "App security",
+  "requireADeviceCredentialBefore": "Require a device credential before opening the app",
+  "appLockEnabled": "App lock enabled",
+  "imoLIVEWillAskFor": "Imo LIVE will ask for your device credential on next ",
+  "liveLocation": "Live location",
+  "allowSharingYourCurrentLocation": "Allow sharing your current location inside chats. Location ",
+  "advancedPrivacySettings": "Advanced privacy settings",
+  "advancedPrivacy": "Advanced privacy",
+  "imoLIVEDoesNotClaim": "Imo LIVE does not claim end-to-end encryption. Messages ",
+  "storage": "Storage",
+  "resetPrivacySettings": "Reset privacy settings",
+  "restoreEveryPrivacyOptionTo": "Restore every privacy option to its default",
+  "resetPrivacySettings2": "Reset privacy settings?",
+  "allPrivacyOptionsReturnTo": "All privacy options return to their defaults. Your ",
+  "onDevicePrivacyModelSyncs": "On-device privacy model · syncs via Cloud Firestore",
+  "mediaStoredOnThisDevice": "Media stored on this device",
+  "deleteAllMediaFiles": "Delete all media files",
+  "removesEveryFileKeptIn": "Removes every file kept in the folders above",
+  "deleteAllMedia": "Delete all media?",
+  "deleteEverything": "Delete everything",
+  "muted": "Muted",
+  "noChannelSubscriptions": "No channel subscriptions",
+  "followAChannelFromThe": "Follow a channel from the Updates tab and it will appear ",
+  "followedChannels": "Followed channels",
+  "mutingAChannelKeepsIt": "Muting a channel keeps it in your list but silences its ",
+  "createOrJoinOneFrom": "Create or join one from the Communities tab",
+  "discover": "Discover",
+  "findChannels": "Find channels",
+  "browsePublicChannelsByCategory": "Browse public channels by category",
+  "createAChannelOfYour": "Create a channel of your own",
+  "startACommunityWithAnnouncement": "Start a community with announcement groups",
+  "notificationDefaults": "Notification defaults",
+  "channelNotifications": "Channel notifications",
+  "lastRefreshed": "Last refreshed",
+  "chatWallpaper": "Chat wallpaper",
+  "chooseFromGallery": "Choose from gallery",
+  "preview": "Preview",
+  "current": "Current",
+  "chooseAWallpaper": "Choose a wallpaper",
+  "custom": "Custom",
+  "useAPhotoFromYour": "Use a photo from your device",
+  "captureANewWallpaperWith": "Capture a new wallpaper with the camera",
+  "removeCustomWallpaper": "Remove custom wallpaper",
+  "deleteTheFileAndReturn": "Delete the file and return to the default",
+  "removeWallpaper": "Remove wallpaper?",
+  "theCopiedImageFileIs": "The copied image file is deleted and the default ",
+  "clearChat2": "Clear chat?",
+  "allMessagesInThisChat": "All messages in this chat will be deleted from this device. ",
+  "thisConversationAndAllIts": "This conversation and all its messages will be removed from ",
+  "newUpdate": "New update",
+  "playVideo": "Play",
+  "pauseVideo": "Pause",
+  "rewind10": "Rewind 10 seconds",
+  "forward10": "Forward 10 seconds",
+  "textStatus": "Text status",
+  "photoOrVideo": "Photo or video",
+  "typeAStatus": "Type a status",
+  "addAPhotoOrVideo": "Add a photo or video",
+  "pickMediaFromYourGallery": "Pick media from your gallery to use as a status update.",
+  "chooseMedia": "Choose media",
+  "videoStatus": "Video status",
+  "smallerText": "Smaller text",
+  "aa": "Aa",
+  "largerText": "Larger text",
+  "thisMediaFileIsNo": "This media file is no longer available.",
+  "deleteUpdate": "Delete update?",
+  "thisUpdateIsRemovedFor": "This update is removed for everyone immediately.",
+  "sendAMessage": "Send a message…",
+  "statusPrivacy": "Status privacy",
+  "theRestOfTheApp": "The rest of the app keeps working. Go back and try again.",
+  "goToChats": "Go to Chats",
+  "login": "Login",
+  "byContinuingYouAgreeTo": "By continuing you agree to the Imo LIVE Terms and Privacy Policy.",
+  "aboutAShortLineAbout": "About — a short line about you",
+  "age": "Age",
+  "signOut": "Sign out",
+  "scheduled": "Scheduled",
+  "accept": "Accept",
+  "minimise": "Minimise",
+  "flipCamera": "Flip camera",
+  "noContactsYet": "No contacts yet",
+  "addContactsThenStarThe": "Add contacts, then star the people you call most to ",
+  "noFavouritesYet": "No favourites yet",
+  "tapEditAndStarThe": "Tap Edit and star the contacts you call most ",
+  "otherContacts": "Other contacts",
+  "notes": "Notes",
+  "anythingToRemember": "Anything to remember?",
+  "saveReminder": "Save reminder",
+  "upcoming": "Upcoming",
+  "dismiss": "Dismiss",
+  "removeAttachment": "Remove attachment",
+  "attachAPhoto": "Attach a photo",
+  "attachAVideo": "Attach a video",
+  "attachAFile": "Attach a file",
+  "description": "Description",
+  "discovery": "Discovery",
+  "publicChannel": "Public channel",
+  "changesAreWrittenToFirestore": "Changes are written to Firestore immediately. Followers see them ",
+  "whatDoesThisChannelPost": "What does this channel post about?",
+  "visibility": "Visibility",
+  "a12CharacterSecretKey": "A 12-character secret key is generated when you ",
+  "deletePost": "Delete post",
+  "tapToPlay": "Tap to play",
+  "videos": "Videos",
+  "docs": "Docs",
+  "voice": "Voice",
+  "polls": "Polls",
+  "events": "Events",
+  "fromThem": "From them",
+  "thisMessageIsQueuedOn": "This message is queued on your device and has not ",
+  "starts": "Starts",
+  "ends": "Ends",
+  "locationOptional": "Location (optional)",
+  "descriptionOptional": "Description (optional)",
+  "shareAContact": "Share a contact",
+  "noContacts": "No contacts",
+  "addAContactFirstTo": "Add a contact first to share it in a chat.",
+  "deleteForEveryone2": "Delete for everyone?",
+  "theMessageIsRemovedFrom": "The message is removed from this device and replaced with a \"deleted\" ",
+  "photoUnavailable": "Photo unavailable",
+  "cancelReply": "Cancel reply",
+  "announcements": "Announcements",
+  "everyoneInTheCommunityReceives": "Everyone in the community receives announcement messages. ",
+  "openAnnouncementChat": "Open announcement chat",
+  "everyoneYouAddBecomesA": "Everyone you add becomes a member of the announcement group. ",
+  "pickPeopleFromYourContacts": "Pick people from your contacts",
+  "adminOnlyAnnouncements": "Admin-only announcements",
+  "onlyYouAndOtherAdmins": "Only you and other admins can post announcements",
+  "communitiesLiveOnThisDevice": "Communities live on this device. Invite links are generated ",
+  "noMatchingCountry": "No matching country",
+  "tryADifferentNameOr2": "Try a different name or dialling code.",
+  "optionalHandle": "Optional handle",
+  "heyThereIAmUsing": "Hey there! I am using Imo LIVE.",
+  "saveToDeviceContacts": "Save to device contacts",
+  "searchNameOrNumber": "Search name or number",
+  "checkingImoLIVE": "Checking Imo LIVE…",
+  "couldNotReachImoLIVE": "Could not reach Imo LIVE. The number is saved locally.",
+  "thisUserIsOnImo": "This user is on Imo LIVE",
+  "groupNAME": "GROUP NAME",
+  "description2": "DESCRIPTION",
+  "mode": "Mode",
+  "capabilities": "Capabilities",
+  "theseAreTheBoundariesOf": "These are the boundaries of this build. Each one is honest ",
+  "connected": "Connected",
+  "emailGoogleAndFacebookSign": "Email, Google and phone sign-in, profile and people ",
+  "worksOffline": "Works offline",
+  "chatsMessagesMediaVoiceNotes": "Chats, messages, media, voice notes, polls, events, ",
+  "needsConfiguration": "Needs configuration",
+  "cloudflareR2CredentialsTheFacebook": "Cloudflare R2 credentials, push ",
+  "whereToNext": "Where to next",
+  "helpFAQ": "Help & FAQ",
+  "licences": "Licences",
+  "madeWithFlutter": "Made with Flutter",
+  "contactUs": "Contact us",
+  "theseActionsHandOffTo": "These actions hand off to your own apps — nothing is sent by ",
+  "emailSupport": "Email support",
+  "changePhoto": "Change photo",
+  "removePhoto": "Remove photo?",
+  "yourProfilePhotoIsDeleted": "Your profile photo is deleted from this device.",
+  "yourNameAboutTextAnd": "Your name, about text and photo are saved on this device and ",
+  "myDetails": "My details",
+  "name": "Name",
+  "myActivity": "My activity",
+  "sharing": "Sharing",
+  "shareMyQRCode": "Share my QR code",
+  "letSomeoneScanToAdd": "Let someone scan to add you",
+  "shareMyContactCard": "Share my contact card",
+  "sendYourNameAndNumber": "Send your name and number",
+  "resultsComeLiveFromImo": "Results come live from Imo LIVE. People who have not ",
+  "signOut2": "Sign out?",
+  "yourChatsStayOnThis": "Your chats stay on this device, but they stop ",
+  "twoStepVerificationAndEnd": "Two-step verification and end-to-end encryption require a ",
+  "requireADeviceCredentialTo": "Require a device credential to open Imo LIVE",
+  "accentColour": "Accent colour",
+  "a": "A",
+  "thisIsHowYourMessages": "This is how your messages will look at ",
+  "resetTextSize": "Reset text size",
+  "chatTheme": "Chat theme",
+  "appIcon": "App icon",
+  "changingTheLauncherIconIs": "Changing the launcher icon is a platform action. The choice is ",
+  "thisContactWillBeAble": "This contact will be able to reach you again ",
+  "small": "Small",
+  "defaultLabel": "Default",
+  "large": "Large",
+  "extraLarge": "Extra large",
+  "devices": "Devices",
+  "unlinkingRemovesADeviceFrom": "Unlinking removes a device from this list. Because pairing ",
+  "theDeviceIsRemovedFrom": "The device is removed from this local ",
+  "off": "Off",
+  "keepMessagesForever": "Keep messages forever",
+  "s24Hours": "24 hours",
+  "s7Days": "7 days",
+  "s90Days": "90 days",
+  "chatSettings": "Chat settings",
+  "notificationsStorage": "Notifications & storage",
+  "appExperience": "App experience",
+  "theSwitchMatchesTheSystem": "The switch matches the system while \"System\" is selected. ",
+  "darkMode": "Dark mode",
+  "themeMode": "Theme mode",
+  "support": "Support",
+  "reviewer": "Reviewer",
+  "fromImoLIVE": "from Imo LIVE",
+  "nothingStoredYet": "Nothing stored yet",
+  "photosVideosVoiceNotesAnd": "Photos, videos, voice notes and documents you send or ",
+  "breakdown": "Breakdown",
+  "messageData": "Message data",
+  "purgeExpiredMessages": "Purge expired messages",
+  "removesMessagesWhoseDisappearingTimer": "Removes messages whose disappearing timer already ",
+  "addACaption": "Add a caption…",
+  "deleteUpdate2": "Delete update",
+  "reply2": "Reply…",
+  "shareATextPhotoOr": "Share a text, photo or video update. It disappears ",
+  "updatesAreStoredOnThis": "Updates are stored on this device only. Expiry after 24 ",
+  "followBroadcastChannelsYouSubscribe": "Follow broadcast channels you subscribe to",
+  "createAChannel": "Create a channel",
+  "broadcastToFollowersWithoutA": "Broadcast to followers without a group",
+  "groupNotifications": "Group notifications",
+  "showPreview": "Show preview",
+  "includeMessageTextInThe": "Include message text in the notification",
+  "notifyWhenSomeoneReactsTo": "Notify when someone reacts to your message",
+  "callsStatus": "Calls & status",
+  "callNotifications": "Call notifications",
+  "statusNotifications": "Status notifications",
+  "soundVibration": "Sound & vibration",
+  "sound": "Sound",
+  "notificationTone": "Notification tone",
+  "profilePhoto": "Profile photo",
+  "messaging": "Messaging",
+  "readReceipts": "Read receipts",
+  "sendDeliveryAndReadTicks": "Send delivery and read ticks. Turning this off stops the ",
+  "whoCanAddMeTo": "Who can add me to groups",
+  "defaultMessageTimer": "Default message timer",
+  "pickAnExistingPhotoOr": "Pick an existing photo or video",
+  "openTheLinkInThe2": "Open the link in the email to confirm this address. This screen finishes on its own.",
+  "everyCallEntryOnThis2": "Every call entry on this device is deleted. Contacts and scheduled calls are kept.",
+  "addContactsThenStarThe2": "Add contacts, then star the people you call most to reach them from here.",
+  "tapEditAndStarThe2": "Tap Edit and star the contacts you call most often. They appear here for quick dialling.",
+  "remindersFireFromTheLocal2": "Reminders fire from the local notification plugin. They are not invitations — the other person is not notified.",
+  "shareTheSecretKeyWith2": "Share the secret key with the people you want to let in. Their requests will appear here.",
+  "itIsNotOnThis2": "It is not on this device and could not be loaded from the server. Check your connection and try again.",
+  "postsAreOnlyVisibleTo2": "Posts are only visible to members. Send a request and the owner will decide whether to let you in.",
+  "thisChannelIsReservedFor2": "This channel is reserved for premium members. Earn points by watching ads, then redeem them for premium to read it.",
+  "yourChannelMeetsTheRequirements2": "Your channel meets the requirements. A reviewer will check it and you will be notified of the decision.",
+  "premiumOnly": "Premium only",
+  "coverImage": "Cover image",
+  "tapToCopyThisIs": "Tap to copy — this is the only time it is shown",
+  "changesAreWrittenToFirestore2": "Changes are written to Firestore immediately. Followers see them on their next sync.",
+  "everyoneCurrentlyUsingTheOld2": "Everyone currently using the old key keeps their access, but the old key can no longer be used to request a join.",
+  "aReviewerWillCheckThat2": "A reviewer will check that your channel meets the audience and engagement requirements.",
+  "channelsAppearHereOnceThey2": "Channels appear here once they pass the follower and reaction thresholds and apply.",
+  "a12CharacterSecretKey2": "A 12-character secret key is generated when you create the channel. You will see it once — share it with the people you want to let in.",
+  "archivedChatsAreHiddenFrom2": "Archived chats are hidden from the main list but keep all their messages. Swipe a chat and choose Archive to move it here.",
+  "aBroadcastSendsAnIndividual2": "A broadcast sends an individual copy of your message to each recipient. Replies arrive as normal one-to-one chats.",
+  "createAListOfUp2": "Create a list of up to 256 recipients and message them all at once. Each person receives a private copy.",
+  "theListIsDeletedExisting2": "The list is deleted. Existing conversations with its recipients are kept.",
+  "localStorageCouldNotBe2": "Local storage could not be opened, so your chats, contacts and settings are not being saved. Messages will be lost when the app closes.",
+  "fromMe": "From me",
+  "delivered": "Delivered",
+  "read": "Read",
+  "thisMessageIsQueuedOn2": "This message is queued on your device and has not been sent yet. It will go out on its own as soon as you are back online.",
+  "allMessagesInThisConversation2": "All messages in this conversation will be removed from this device. This cannot be undone.",
+  "aCommunityGroupsRelatedChats2": "A community groups related chats under one announcement channel. Create one to organise a club, a class or a neighbourhood.",
+  "theCommunityAndItsAnnouncement2": "The community and its announcement group are removed from this device. Member chats are kept.",
+  "channelsBroadcastOneWayTo2": "Channels broadcast one-way to followers. Create one, or follow a channel to see its updates here.",
+  "everyoneInTheCommunityReceives2": "Everyone in the community receives announcement messages. Only admins can post.",
+  "theCommunityIsRemovedFrom2": "The community is removed from this device. Groups inside it stay as normal groups.",
+  "everyoneYouAddBecomesA2": "Everyone you add becomes a member of the announcement group. You can add more people later.",
+  "communitiesLiveOnThisDevice2": "Communities live on this device. Invite links are generated locally, so another person cannot open them yet.",
+  "thisPersonIsNotIn2": "This person is not in your contacts and has no Imo LIVE account, so there is no profile to show.",
+  "mediaAttachesToConversationsOpen2": "Media attaches to conversations. Open the chat and use the search icon to filter photos, videos, links and documents for this person.",
+  "openTheChatAndChoose2": "Open the chat and choose Disappearing messages from the menu to change this setting. It applies to new messages only.",
+  "theContactIsRemovedFrom2": "The contact is removed from your list. Existing chats stay in place.",
+  "importNamesAndNumbersFrom": "Import names and numbers from your address book",
+  "imoLIVECouldNotRead2": "Imo LIVE could not read your device contacts. Grant the contacts permission in your system settings and try again.",
+  "newMessagesInThisChat2": "New messages in this chat will disappear after the selected time. Messages sent before the change keep their original timer.",
+  "openTheConversationAndTap2": "Open the conversation and tap the search icon to filter media, links and documents shared in this group.",
+  "theInviteCodeIsGenerated2": "The invite code is generated locally. Joining via a link needs a server to resolve the code into a group.",
+  "invalidatingAnInviteLinkIs2": "Invalidating an invite link is a server action — old codes must stop resolving globally. Locally a new code can be generated but the old one keeps working.",
+  "youLeaveTheGroupYour2": "You leave the group. Your existing messages stay in the conversation unless you delete it.",
+  "theGroupItsMembersAnd2": "The group, its members and every message are permanently deleted from this device.",
+  "aGroupNeedsAtLeast2": "A group needs at least one other person. You will be added as the creator and first admin.",
+  "adminsCanAddOrRemove2": "Admins can add or remove members, edit the group photo, name and description, and delete messages. Members can send messages and share media.",
+  "imoLIVESyncsThroughFirebase2": "Imo LIVE syncs through Firebase — Authentication and Cloud Firestore — and stores media in Cloudflare R2. An on-device copy keeps every screen working without a connection.",
+  "theseAreTheBoundariesOf2": "These are the boundaries of this build. Each one is honest about what works today versus what still needs configuring.",
+  "emailGoogleAndFacebookSign2": "Email, Google and phone sign-in, profile and people directory, real-time chat and message sync, and media upload through Cloudflare R2",
+  "chatsMessagesMediaVoiceNotes2": "Chats, messages, media, voice notes, polls, events, location shares, statuses, channels, communities, calls UI, settings and localisation",
+  "cloudflareR2CredentialsTheFacebook2": "Cloudflare R2 credentials, push delivery, device pairing and end-to-end encryption",
+  "everyScreenDependsOnAn2": "Every screen depends on an abstract repository interface. Chats and messages are read from the Hive cache and mirrored from Cloud Firestore, and media goes to Cloudflare R2 through the same MediaRepository interface — so no screen talks to the network directly.",
+  "everythingBelowAlreadyHasIts2": "Everything below already has its interface and local implementation in place, so wiring it up is additive — no screen has to change.",
+  "theseActionsHandOffTo2": "These actions hand off to your own apps — nothing is sent by Imo LIVE itself.",
+  "openTheWebsite": "Open the website",
+  "diagnostics": "Diagnostics",
+  "locallyStoredCountsAndStorage": "Locally stored counts and storage usage",
+  "legal": "Legal",
+  "termsOfService": "Terms of service",
+  "privacyPolicy": "Privacy policy",
+  "imoLIVECollectsNoAnalytics": "Imo LIVE collects no analytics. Your profile, chats and messages are stored on this device and synchronised to Cloud Firestore under your account; media is uploaded to Cloudflare R2 so the recipient can fetch it. Deleting the app removes the on-device copy but not your account data — clear that from Account settings first.",
+  "theCodeCarriesAnImo2": "The code carries an Imo LIVE identifier. Another person can look your user id up in Search, but scanning a code from inside the app is not supported yet.",
+  "optionalHandleOthersCanSearch": "Optional handle others can search for",
+  "yourNameAboutTextAnd2": "Your name, about text and photo are saved on this device and published to your Imo LIVE account so contacts can find you. Edit them freely — nothing is shared beyond your profile.",
+  "resultsComeLiveFromImo2": "Results come live from Imo LIVE. People who have not joined yet can be invited from the contact screen.",
+  "imoLIVECouldNotBe2": "Imo LIVE could not be reached. Check your connection and try again.",
+  "inviteThemToImoLIVE2": "Invite them to Imo LIVE and you can start chatting as soon as they join.",
+  "yourChatsStayOnThis2": "Your chats stay on this device, but they stop syncing until you sign back in.",
+  "twoStepVerificationAndEnd2": "Two-step verification and end-to-end encryption require a server and key-exchange layer, which is not part of this local build. Nothing here pretends those protections are active.",
+  "deletesChatsMessagesContactsStatuses2": "Deletes chats, messages, contacts, statuses and settings from this device",
+  "everyChatMessageContactAnd2": "Every chat, message, contact and setting stored by Imo LIVE on this device is removed. Your account is not deleted, so your chats are restored from the cloud the next time you are online.",
+  "textSize": "Text size",
+  "textSizeScalesEveryScreen": "Text size scales every screen. Chat bubbles additionally honour the per-chat font size in Chat settings.",
+  "changingTheLauncherIconIs2": "Changing the launcher icon is a platform action. The choice is saved here and applied by the host app shell.",
+  "blockedContactsCannotMessageOr2": "Blocked contacts cannot message or call you from this device. Use the + button to block someone.",
+  "unblockingRestoresTheContactTo2": "Unblocking restores the contact to your chat list and removes the block flag.",
+  "thisContactWillBeAble2": "This contact will be able to reach you again from this device.",
+  "newMessagesStayInThe2": "New messages stay in the archive instead of returning the chat to your main list",
+  "chatPreferencesReturnToTheir2": "Chat preferences return to their defaults. No chats or messages are deleted.",
+  "offerToAddANumber2": "Offer to add a number to your device address book when you save a new contact",
+  "translationsAreBundledWithThe2": "Translations are bundled with the app as ARB resources. Languages marked \"Coming soon\" are listed so the roadmap is visible, but switching to them leaves the interface in English.",
+  "imoLIVEFollowsYourDevice2": "Imo LIVE follows your device setting so timestamps stay consistent with the rest of your phone. Change it in your system settings.",
+  "pairingASecondDeviceIs2": "Pairing a second device is not available yet. This screen lists the device you are using and explains what pairing would do — it never fabricates a successful link.",
+  "openImoLIVEOnAnother2": "Open Imo LIVE on another device and scan this code. Pairing is not available yet, so this code will not complete a link.",
+  "unlinkingRemovesADeviceFrom2": "Unlinking removes a device from this list. Because pairing is not implemented, revoking a real session is not possible yet.",
+  "theDeviceIsRemovedFrom2": "The device is removed from this local list. No remote session exists to revoke.",
+  "aListIsASaved2": "A list is a saved filter over your chats. Tapping one applies it to the Chats tab immediately.",
+  "theWorkListIsA2": "The Work list is a flag stored on each chat, so it survives restarts and applies on every device. Use Manage to choose which chats belong to it.",
+  "notificationsAreDeliveredLocallyBy2": "Notifications are delivered locally by the OS. There is no push service, so nothing arrives while the app is fully closed — scheduled call reminders still fire because they are posted through the platform scheduler.",
+  "theseSwitchesControlWhatImo2": "These switches control what Imo LIVE stores and displays on this device. Enforcing them for other people — hiding your last seen from their phone, for example — needs the other side to honour it, which is not implemented yet.",
+  "changingLastSeenAlsoAffects2": "Changing \"Last seen\" also affects read receipts in a backed build. Locally they are independent switches.",
+  "sendDeliveryAndReadTicks2": "Send delivery and read ticks. Turning this off stops the local tick upgrade for new messages.",
+  "imoLIVEWillAskFor2": "Imo LIVE will ask for your device credential on next launch. Biometric prompts are handled by the OS, so no biometric data ever reaches this app.",
+  "allowSharingYourCurrentLocation2": "Allow sharing your current location inside chats. Location is only read the moment you press send.",
+  "imoLIVEDoesNotClaim2": "Imo LIVE does not claim end-to-end encryption. Messages travel over TLS to Cloud Firestore and media goes to Cloudflare R2, so those servers can read them. Add a real key-exchange and encryption layer before advertising any encryption guarantee.",
+  "allPrivacyOptionsReturnTo2": "All privacy options return to their defaults. Your chats, contacts and messages are untouched.",
+  "theSwitchMatchesTheSystem2": "The switch matches the system while \"System\" is selected. Flipping it pins light or dark until you change it again.",
+  "photosVideosVoiceNotesAnd2": "Photos, videos, voice notes and documents you send or receive are saved here and counted below.",
+  "removesMessagesWhoseDisappearingTimer2": "Removes messages whose disappearing timer already elapsed",
+  "followAChannelFromThe2": "Follow a channel from the Updates tab and it will appear here with its notification settings.",
+  "mutingAChannelKeepsIt2": "Muting a channel keeps it in your list but silences its updates badge.",
+  "theCopiedImageFileIs2": "The copied image file is deleted and the default pattern is restored.",
+  "allMessagesInThisChat2": "All messages in this chat will be deleted from this device. This cannot be undone.",
+  "thisConversationAndAllIts2": "This conversation and all its messages will be removed from this device.",
+  "changeMedia": "Change media",
+  "shareATextPhotoOr2": "Share a text, photo or video update. It disappears for everyone after 24 hours.",
+  "updatesAreStoredOnThis2": "Updates are stored on this device only. Expiry after 24 hours is enforced locally.",
+  "enterYourEmailFirstThen": "Enter your email first, then tap Forgot password.",
+  "aNewCodeIsOn": "A new code is on its way",
+  "thePhotoCouldNotBe": "The photo could not be uploaded. It is saved on this device and will sync once R2 storage is configured.",
+  "profileSaved": "Profile saved",
+  "callLogCleared": "Call log cleared",
+  "reminderCancelled": "Reminder cancelled",
+  "clipboardIsEmpty": "Clipboard is empty",
+  "addAContactFirst": "Add a contact first",
+  "reminderRemoved": "Reminder removed",
+  "pickATimeInThe": "Pick a time in the future",
+  "reminderSaved": "Reminder saved",
+  "requestRejected": "Request rejected",
+  "galleryPermissionIsRequired": "Gallery permission is required",
+  "videoPermissionIsRequired": "Video permission is required",
+  "writeSomethingOrAttachA": "Write something or attach a file first",
+  "uploadFailedThePostWas": "Upload failed — the post was not published",
+  "couldNotPublishCheckYour": "Could not publish — check your connection",
+  "postDeleted": "Post deleted",
+  "thisAttachmentHasNoUsable": "This attachment has no usable link",
+  "noAppOnThisDevice": "No app on this device can open that file",
+  "requestSentTheOwnerWill": "Request sent — the owner will review it",
+  "inviteLinkCopied": "Invite link copied",
+  "applicationSentForReview": "Application sent for review",
+  "secretKeyCopied": "Secret key copied",
+  "uploadFailedCheckTheStorage": "Upload failed — check the storage configuration",
+  "aChannelNeedsAName": "A channel needs a name",
+  "couldNotSaveIsThe": "Could not save — is the network up?",
+  "channelUpdated": "Channel updated",
+  "applicationSubmitted": "Application submitted",
+  "savedOnThisDeviceThe": "Saved on this device — the server write failed, so followers cannot see it yet",
+  "allChatsRestored": "All chats restored",
+  "listRenamed": "List renamed",
+  "listDeleted": "List deleted",
+  "recipientsUpdated": "Recipients updated",
+  "addAtLeastOneRecipient": "Add at least one recipient first",
+  "couldNotReadTheCaptured": "Could not read the captured photo",
+  "thisConversationIsNoLonger": "This conversation is no longer available",
+  "messageUpdated": "Message updated",
+  "messageCopied": "Message copied",
+  "thatMessageIsTooOld": "That message is too old to delete for everyone",
+  "chatCleared": "Chat cleared",
+  "channelsAndBroadcastsHaveNo": "Channels and broadcasts have no personal profile",
+  "thisChatHasNoLinked": "This chat has no linked profile yet",
+  "thisMessageHasNothingTo": "This message has nothing to save",
+  "savedToDeviceStorage": "Saved to device storage",
+  "thisMessageHasNothingTo2": "This message has nothing to share",
+  "thatMessageIsNoLonger": "That message is no longer available",
+  "thisMediaIsNotAvailable": "This media is not available on this device",
+  "coordinatesAreUnavailable": "Coordinates are unavailable",
+  "noMapApplicationIsInstalled": "No map application is installed",
+  "thisContactIsNotIn": "This contact is not in your list",
+  "thisFileIsNotAvailable": "This file is not available",
+  "noLinkFoundInThat": "No link found in that message",
+  "thatLinkIsNotValid": "That link is not valid",
+  "noBrowserOnThisDevice": "No browser on this device could open that link",
+  "thisAttachmentIsNotAvailable": "This attachment is not available on this device",
+  "nothingToCopy": "Nothing to copy",
+  "copied2": "Copied",
+  "starRemoved": "Star removed",
+  "allStarsRemoved": "All stars removed",
+  "announcementChatIsNotReady": "Announcement chat is not ready yet",
+  "communityRenamed": "Community renamed",
+  "descriptionUpdated": "Description updated",
+  "everyGroupIsAlreadyIn": "Every group is already in this community",
+  "communityDeleted": "Community deleted",
+  "noContactsFoundCheckContacts": "No contacts found. Check contacts permission in system settings.",
+  "aboutUpdated": "About updated",
+  "phoneNumberCopied": "Phone number copied",
+  "chatDeleted": "Chat deleted",
+  "contactDeleted": "Contact deleted",
+  "noProfilePhotoSet": "No profile photo set",
+  "aFirstNameAndPhone": "A first name and phone number are required",
+  "noNewContactsFoundIn": "No new contacts found in your address book",
+  "watchTheWholeAdTo": "Watch the whole ad to earn points",
+  "groupMessagesCleared": "Group messages cleared",
+  "groupNameUpdated": "Group name updated",
+  "groupDeleted": "Group deleted",
+  "couldNotReadTheSelected": "Could not read the selected image",
+  "groupCreated": "Group created",
+  "noAppCanHandleThat": "No app can handle that link",
+  "allChatsMarkedAsRead": "All chats marked as read",
+  "aFirstNameIsRequired": "A first name is required",
+  "profileUpdated": "Profile updated",
+  "photoUpdatedTapSaveTo": "Photo updated — tap Save to keep it",
+  "numberUpdatedOnThisDevice": "Number updated on this device",
+  "allLocalDataCleared": "All local data cleared",
+  "appearanceRestoredToDefaults": "Appearance restored to defaults",
+  "everyContactIsAlreadyBlocked": "Every contact is already blocked",
+  "chatSettingsReset": "Chat settings reset",
+  "linkedDevicesCleared": "Linked devices cleared",
+  "showingAllChats": "Showing all chats",
+  "noChatsToOrganiseYet": "No chats to organise yet",
+  "testNotificationPosted": "Test notification posted",
+  "notificationSettingsReset": "Notification settings reset",
+  "privacySettingsReset": "Privacy settings reset",
+  "noMediaFilesToDelete": "No media files to delete",
+  "allMediaFilesDeleted": "All media files deleted",
+  "subscriptionsRefreshed": "Subscriptions refreshed",
+  "defaultRestored": "Default restored",
+  "wallpaperRemoved": "Wallpaper removed",
+  "wallpaperApplied": "Wallpaper applied",
+  "updateShared": "Update shared",
+  "statusRepliesNeedAChat": "Status replies need a chat thread — open your chat with the author.",
+  "english": "English",
+  "bengali": "Bengali",
+  "hindi": "Hindi",
+  "arabic": "Arabic",
+  "spanish": "Spanish",
+  "french": "French",
+  "portuguese": "Portuguese",
+  "russian": "Russian",
+  "indonesian": "Indonesian",
+  "turkish": "Turkish",
+  "chinese": "Chinese",
+  "japanese": "Japanese",
+  "roundedBubbles": "Rounded bubbles",
+  "compact": "Compact",
+  "outlined": "Outlined",
+  "imoRose": "Imo Rose",
+  "monochrome": "Monochrome",
+  "midnight": "Midnight",
+  "classic": "Classic",
+  "images": "Images",
+  "voiceMessages": "Voice messages",
+  "profilePhotos": "Profile photos",
+  "wallpapers": "Wallpapers",
+  "statusMedia": "Status media",
+  "anyImoLiveUser": "Any Imo LIVE user",
+  "myContacts": "My contacts",
+  "peopleYouSaved": "People you saved",
+  "nobody": "Nobody",
+  "hideCompletely": "Hide completely",
+  "seconds3": "3s",
+  "seconds5": "5s",
+  "seconds10": "10s",
+  "seconds30": "30s",
+  "unreadMessagesCount": "{count} unread messages",
+  "@unreadMessagesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resetLinkSentTo": "Reset link sent to {email}",
+  "@resetLinkSentTo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "channelCreatedName": "{name} created",
+  "@channelCreatedName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "shareSecretKeyFor": "Share this with the people you want to let into {channel}. It is shown only once.",
+  "@shareSecretKeyFor": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "countSelected": "{count} selected",
+  "@countSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nameIsTyping": "{name} is typing...",
+  "@nameIsTyping": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pollGoingMaybe": "{going} going · {maybe} maybe",
+  "@pollGoingMaybe": {
+    "placeholders": {
+      "going": {
+        "type": "int"
+      },
+      "maybe": {
+        "type": "int"
+      }
+    }
+  },
+  "communityCreatedName": "{name} created",
+  "@communityCreatedName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "featureNotAvailableYet": "{feature} is not available yet",
+  "@featureNotAvailableYet": {
+    "placeholders": {
+      "feature": {
+        "type": "String"
+      }
+    }
+  },
+  "sendInviteTo": "Send {target} an invite so they can join you on Imo LIVE?",
+  "@sendInviteTo": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "inviteSentTo": "Invite sent to {target}",
+  "@inviteSentTo": {
+    "placeholders": {
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "nothingMatchesQuery": "Nothing matches \"{query}\". Try a different word or filter.",
+  "@nothingMatchesQuery": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "countrySetTo": "Country set to {country}",
+  "@countrySetTo": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "whatShouldListContain": "What should \"{name}\" contain?",
+  "@whatShouldListContain": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "listCreatedAndApplied": "\"{name}\" created and applied",
+  "@listCreatedAndApplied": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "channelStats": "{handle} · {followers} followers · {reactions} reactions",
+  "@channelStats": {
+    "placeholders": {
+      "handle": {
+        "type": "Object"
+      },
+      "followers": {
+        "type": "Object"
+      },
+      "reactions": {
+        "type": "Object"
+      }
+    }
+  },
+  "recipientsCount": "{count, plural, =1{1 recipient} other{{count} recipients}}",
+  "@recipientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "searchTitle": "Search {title}",
+  "@searchTitle": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "resultsCount": "{count, plural, =1{1 result} other{{count} results}}",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "starredMessagesUnstarred": "{count, plural, =1{1 starred message is unstarred. The messages themselves are untouched.} other{{count} starred messages are unstarred. The messages themselves are untouched.}}",
+  "@starredMessagesUnstarred": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "membersCount": "{count, plural, =1{1 member} other{{count} members}}",
+  "@membersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contactsImported": "{count, plural, =1{Imported 1 contact} other{Imported {count} contacts}}",
+  "@contactsImported": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "xRemovedFromYourList": "{name} is removed from your list. Existing chats stay in place.",
+  "@xRemovedFromYourList": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "addedX": "{name} added",
+  "@addedX": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "membersAdded": "{count, plural, =1{Added 1 member} other{Added {count} members}}",
+  "@membersAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "thisDeviceShowsYouAs": "This device shows you as {state}",
+  "@thisDeviceShowsYouAs": {
+    "placeholders": {
+      "state": {
+        "type": "Object"
+      }
+    }
+  },
+  "platformLastActive": "Platform: {platform}\nLast active: {lastActive}\n{note}",
+  "@platformLastActive": {
+    "placeholders": {
+      "platform": {
+        "type": "Object"
+      },
+      "lastActive": {
+        "type": "Object"
+      },
+      "note": {
+        "type": "Object"
+      }
+    }
+  },
+  "thisChat": "this chat",
+  "thisContact": "This contact",
+  "thisIsTheDeviceYou": "This is the device you are using now.",
+  "linkedDeviceEntriesAre": "Linked device entries are stored locally.",
+  "resendInS": "Resend in {secondsLeft}s",
+  "@resendInS": {
+    "placeholders": {
+      "secondsLeft": {
+        "type": "Object"
+      }
+    }
+  },
+  "onIsDeleted": "{title} on {fullTimestamp} is deleted.",
+  "@onIsDeleted": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      },
+      "fullTimestamp": {
+        "type": "Object"
+      }
+    }
+  },
+  "canNowJoin": "{displayName} can now join",
+  "@canNowJoin": {
+    "placeholders": {
+      "displayName": {
+        "type": "Object"
+      }
+    }
+  },
+  "postedTo": "Posted to {nameValue}",
+  "@postedTo": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "followers2": "{category} · {compactCount} followers",
+  "@followers2": {
+    "placeholders": {
+      "category": {
+        "type": "Object"
+      },
+      "compactCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "followersWillFindYouAs": "Followers will find you as @{handle}",
+  "@followersWillFindYouAs": {
+    "placeholders": {
+      "handle": {
+        "type": "Object"
+      }
+    }
+  },
+  "restored": "{title} restored",
+  "@restored": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "delete2": "Delete {nameValue}?",
+  "@delete2": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "created": "{trim} created",
+  "@created": {
+    "placeholders": {
+      "trim": {
+        "type": "Object"
+      }
+    }
+  },
+  "broadcastToPeople": "Broadcast to {length} people",
+  "@broadcastToPeople": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "recipients": "{length} recipients",
+  "@recipients": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "forwardedTo": "Forwarded to {title}",
+  "@forwardedTo": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "messageSDeleted": "{length} message(s) deleted",
+  "@messageSDeleted": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "messageSStarred": "{length} message(s) starred",
+  "@messageSStarred": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotSaveTheFile": "Could not save the file: {e}",
+  "@couldNotSaveTheFile": {
+    "placeholders": {
+      "e": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotShare": "Could not share: {e}",
+  "@couldNotShare": {
+    "placeholders": {
+      "e": {
+        "type": "Object"
+      }
+    }
+  },
+  "links": "Links ({length})",
+  "@links": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "option": "Option {index}",
+  "@option": {
+    "placeholders": {
+      "index": {
+        "type": "Object"
+      }
+    }
+  },
+  "points": "{grouped} points",
+  "@points": {
+    "placeholders": {
+      "grouped": {
+        "type": "Object"
+      }
+    }
+  },
+  "delete3": "Delete {nameValue}?",
+  "@delete3": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "added": "{nameValue} added",
+  "@added": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "inviteTo": "Invite to {nameValue}",
+  "@inviteTo": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "members2": "Members ({length})",
+  "@members2": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "theWholeConversationWithAnd": "The whole conversation with {fullName} and its messages are removed from this device.",
+  "@theWholeConversationWithAnd": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "removesFromYourContactList": "Removes {fullName} from your contact list",
+  "@removesFromYourContactList": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "delete4": "Delete {fullName}?",
+  "@delete4": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "countriesAndTerritoriesStoresYour": "{length} countries and territories · {appName} stores your choice locally",
+  "@countriesAndTerritoriesStoresYour": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      },
+      "appName": {
+        "type": "Object"
+      }
+    }
+  },
+  "alreadyUsesSaveAnotherContact": "{fullName} already uses {normalised}. Save another contact with the same number?",
+  "@alreadyUsesSaveAnotherContact": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      },
+      "normalised": {
+        "type": "Object"
+      }
+    }
+  },
+  "contactUpdated": "Contact updated: {labelFor}",
+  "@contactUpdated": {
+    "placeholders": {
+      "labelFor": {
+        "type": "Object"
+      }
+    }
+  },
+  "contactSaved": "Contact saved: {labelFor}",
+  "@contactSaved": {
+    "placeholders": {
+      "labelFor": {
+        "type": "Object"
+      }
+    }
+  },
+  "continueWith": "Continue with {length}",
+  "@continueWith": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "getOfPremium": "Get {nameValue} of Premium?",
+  "@getOfPremium": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "thisSpendsPointsFromYour": "This spends {grouped} points from your balance. Your remaining points stay yours.",
+  "@thisSpendsPointsFromYour": {
+    "placeholders": {
+      "grouped": {
+        "type": "Object"
+      }
+    }
+  },
+  "earnPointsPerAd": "Earn {pointsPerAd} points per ad",
+  "@earnPointsPerAd": {
+    "placeholders": {
+      "pointsPerAd": {
+        "type": "Object"
+      }
+    }
+  },
+  "ofAds": "{watched} of {dailyAdLimit} ads",
+  "@ofAds": {
+    "placeholders": {
+      "watched": {
+        "type": "Object"
+      },
+      "dailyAdLimit": {
+        "type": "Object"
+      }
+    }
+  },
+  "premiumIsActiveDaysLeft": "Premium is active — {premiumDaysLeft} days left. Buying more extends it.",
+  "@premiumIsActiveDaysLeft": {
+    "placeholders": {
+      "premiumDaysLeft": {
+        "type": "Object"
+      }
+    }
+  },
+  "points2": "{grouped} points",
+  "@points2": {
+    "placeholders": {
+      "grouped": {
+        "type": "Object"
+      }
+    }
+  },
+  "group2": "Group · {members}",
+  "@group2": {
+    "placeholders": {
+      "members": {
+        "type": "Object"
+      }
+    }
+  },
+  "created2": "Created {relative}",
+  "@created2": {
+    "placeholders": {
+      "relative": {
+        "type": "Object"
+      }
+    }
+  },
+  "members3": "{memberCount} members",
+  "@members3": {
+    "placeholders": {
+      "memberCount": {
+        "type": "Object"
+      }
+    }
+  },
+  "inviteMorePeopleTo": "Invite more people to {nameValue}",
+  "@inviteMorePeopleTo": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "leave": "Leave {nameValue}",
+  "@leave": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "everyMessageInIsPermanently": "Every message in {nameValue} is permanently deleted from this device. The group and its members stay in place.",
+  "@everyMessageInIsPermanently": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "inviteTo2": "Invite to {nameValue}",
+  "@inviteTo2": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "message2": "Message {firstName}",
+  "@message2": {
+    "placeholders": {
+      "firstName": {
+        "type": "Object"
+      }
+    }
+  },
+  "remove2": "Remove {fullName}?",
+  "@remove2": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "isRemovedFromGroupsAre": "{firstName} is removed from {nameValue}. Groups are stored on this device, so nobody else is notified.",
+  "@isRemovedFromGroupsAre": {
+    "placeholders": {
+      "firstName": {
+        "type": "Object"
+      },
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "removed": "{firstName} removed",
+  "@removed": {
+    "placeholders": {
+      "firstName": {
+        "type": "Object"
+      }
+    }
+  },
+  "exit": "Exit {nameValue}?",
+  "@exit": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "youLeft": "You left {nameValue}",
+  "@youLeft": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "delete5": "Delete {nameValue}?",
+  "@delete5": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "createdTheGroup": "{myName} created the group \"{nameValue}\"",
+  "@createdTheGroup": {
+    "placeholders": {
+      "myName": {
+        "type": "Object"
+      },
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "selected": "{length} selected",
+  "@selected": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "add2": "Add {length}",
+  "@add2": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "version2": "Version {appVersion}",
+  "@version2": {
+    "placeholders": {
+      "appVersion": {
+        "type": "Object"
+      }
+    }
+  },
+  "searchResult": "Search result {title}",
+  "@searchResult": {
+    "placeholders": {
+      "title": {
+        "type": "Object"
+      }
+    }
+  },
+  "appVersionNChatsNContactsNStarred": "App version: {appVersion}\nChats: {read}\nContacts: {read2}\nStarred messages: {read3}\nMedia stored: {read4} bytes\nNetwork: Firebase Authentication + Cloud Firestore",
+  "@appVersionNChatsNContactsNStarred": {
+    "placeholders": {
+      "appVersion": {
+        "type": "Object"
+      },
+      "read": {
+        "type": "Object"
+      },
+      "read2": {
+        "type": "Object"
+      },
+      "read3": {
+        "type": "Object"
+      },
+      "read4": {
+        "type": "Object"
+      }
+    }
+  },
+  "searchingBy": "Searching by {labelFor}",
+  "@searchingBy": {
+    "placeholders": {
+      "labelFor": {
+        "type": "Object"
+      }
+    }
+  },
+  "sendAnInviteToSo": "Send an invite to {target} so they can join you on {appName}?",
+  "@sendAnInviteToSo": {
+    "placeholders": {
+      "target": {
+        "type": "Object"
+      },
+      "appName": {
+        "type": "Object"
+      }
+    }
+  },
+  "thisIsHowYourMessages2": "This is how your messages will look at {round}%.",
+  "@thisIsHowYourMessages2": {
+    "placeholders": {
+      "round": {
+        "type": "Object"
+      }
+    }
+  },
+  "appIconSetTo": "App icon set to {label}",
+  "@appIconSetTo": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "blocked": "{length} blocked",
+  "@blocked": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "unblock2": "Unblock {fullName}?",
+  "@unblock2": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "unblocked": "{fullName} unblocked",
+  "@unblocked": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "blocked2": "{fullName} blocked",
+  "@blocked2": {
+    "placeholders": {
+      "fullName": {
+        "type": "Object"
+      }
+    }
+  },
+  "languageSetTo": "Language set to {native}",
+  "@languageSetTo": {
+    "placeholders": {
+      "native": {
+        "type": "Object"
+      }
+    }
+  },
+  "isComingSoon": "{native} is coming soon",
+  "@isComingSoon": {
+    "placeholders": {
+      "native": {
+        "type": "Object"
+      }
+    }
+  },
+  "stringsHaveNotBeenTranslated": "{label} strings have not been translated yet. Add them by creating a new ARB file in lib/l10n and running the localization generator.",
+  "@stringsHaveNotBeenTranslated": {
+    "placeholders": {
+      "label": {
+        "type": "Object"
+      }
+    }
+  },
+  "selectedFallingBackToEnglish": "{native} selected — falling back to English",
+  "@selectedFallingBackToEnglish": {
+    "placeholders": {
+      "native": {
+        "type": "Object"
+      }
+    }
+  },
+  "unlink2": "Unlink {nameValue}?",
+  "@unlink2": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "unlinked": "Unlinked {nameValue}",
+  "@unlinked": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "chatsFlaggedAsWork": "{length} chats flagged as work",
+  "@chatsFlaggedAsWork": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotReadLocalStorage": "Could not read local storage: {error}",
+  "@couldNotReadLocalStorage": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "clear2": "Clear {folder}?",
+  "@clear2": {
+    "placeholders": {
+      "folder": {
+        "type": "Object"
+      }
+    }
+  },
+  "thisPermanentlyDeletesOfLocal": "This permanently deletes {formatBytes} of local files. Chat messages stay in place but their attachments will no longer open.",
+  "@thisPermanentlyDeletesOfLocal": {
+    "placeholders": {
+      "formatBytes": {
+        "type": "Object"
+      }
+    }
+  },
+  "cleared": "{folder} cleared",
+  "@cleared": {
+    "placeholders": {
+      "folder": {
+        "type": "Object"
+      }
+    }
+  },
+  "removesOfImagesVideosAudio": "Removes {formatBytes} of images, videos, audio, voice notes and documents from this device. This cannot be undone.",
+  "@removesOfImagesVideosAudio": {
+    "placeholders": {
+      "formatBytes": {
+        "type": "Object"
+      }
+    }
+  },
+  "followers3": "{members} followers · {category}",
+  "@followers3": {
+    "placeholders": {
+      "members": {
+        "type": "Object"
+      },
+      "category": {
+        "type": "Object"
+      }
+    }
+  },
+  "groupsMembers": "{length} groups · {length2} members",
+  "@groupsMembers": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      },
+      "length2": {
+        "type": "Object"
+      }
+    }
+  },
+  "wallpaperSetTo": "Wallpaper set to {nameValue}",
+  "@wallpaperSetTo": {
+    "placeholders": {
+      "nameValue": {
+        "type": "Object"
+      }
+    }
+  },
+  "videoPlaybackNeedsAVideo": "Video playback needs a video player package.\nThe file is saved at:\n{path}",
+  "@videoPlaybackNeedsAVideo": {
+    "placeholders": {
+      "path": {
+        "type": "Object"
+      }
+    }
+  },
+  "expiresIn": "Expires in {remaining}",
+  "@expiresIn": {
+    "placeholders": {
+      "remaining": {
+        "type": "Object"
+      }
+    }
+  },
+  "thatScreenDoesnTExist": "That screen doesn't exist.",
+  "typing2": "typing",
+  "weLlEmailYouA": "We'll email you a link to choose a new password.",
+  "weSentACodeTo": "We sent a code to ",
+  "username2": "username",
+  "nameUsernameDescriptionAvatarAnd": "Name, @username, description, avatar and cover",
+  "uniqueUsername": "Unique @username",
+  "uniqueUsernameRequired": "Unique @username (required)",
+  "searchNameHandlePhoneOr": "Search name, @handle, phone or email",
+  "draft": "Draft: ",
+  "theMessageIsRemovedFrom2": "The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient's copy the next time their device syncs.\n\nYou can only do this within one hour of sending.",
+  "alsoWriteThisPersonInto": "Also write this person into your phone's address book",
+  "eGWeekendRiders": "e.g. Weekend Riders",
+  "coreModelsServicesWidgetsConstants": "core/  — models, services, widgets, constants and formatters\n\napp/  — theme tokens, router and the root widget\n\nfeatures/<feature>/domain  — repository contracts\nfeatures/<feature>/data  — local implementations\nfeatures/<feature>/presentation  — screens, widgets, providers\n\nlocal/  — Hive database and file storage",
+  "liveNowSignInEmail": "Live now\n• Sign-in — email, Google and phone\n• Chat & message sync — Cloud Firestore, real time\n• People directory — phone, email, @handle or user id\n\nNeeds a value or a service\n• Cloudflare R2 — set the credentials in R2Config\n• Push delivery — FCM / APNs, so alerts arrive when closed\n• Device pairing — companion sessions\n\nNot implemented\n• End-to-end encryption — no key exchange or ciphertext transport\n• WebRTC — real-time audio and video calls",
+  "imoLIVEIsALocal": "Imo LIVE is a local-first messaging application. It provides no messaging service, no account and no data transmission. You are responsible for the content you create on this device.\n\nThis build ships no proprietary WhatsApp, Meta or third-party branding, and contains no code owned by those companies.",
+  "eG8801711234567": "e.g. +880 1711 234567",
+  "phoneEmailUsernameOrUser": "Phone, email, @username or user ID",
+  "eG8801712345678": "e.g. +880 1712 345678",
+  "eGImouser042117": "e.g. @imouser_042117",
+  "eGNameExampleCom": "e.g. name@example.com",
+  "blockingHidesAContactS": "Blocking hides a contact's chats and calls on this device. The block is not sent to your account, so it applies here only.",
+  "everyNonCurrentEntryIs2": "Every non-current entry is deleted from this device's list. Remote sessions cannot be revoked yet.",
+  "pickedImagesAreCopiedInto": "Picked images are copied into the app's private storage, so they keep working even if you delete the original.",
+  "heyHowDoesThisWallpaper": "Hey! How does this wallpaper look?",
+  "looksGreatInDarkMode": "Looks great in dark mode.",
+  "tryADifferentOneFrom": "Try a different one from the grid below.",
+  "pointsAwarded": "+{points} points",
+  "@pointsAwarded": {
+    "placeholders": {
+      "points": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotAddPoints": "Could not add points — check your connection",
+  "youNeedMorePointsFor": "You need {short} more points for {name}",
+  "@youNeedMorePointsFor": {
+    "placeholders": {
+      "short": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotActivatePremium": "Could not activate premium — check your connection",
+  "youNeedMorePointsForAGift": "You need {short} more points for a {name}",
+  "@youNeedMorePointsForAGift": {
+    "placeholders": {
+      "short": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "giftSent": "{emoji} {name} sent",
+  "@giftSent": {
+    "placeholders": {
+      "emoji": {
+        "type": "Object"
+      },
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "locationServicesAreOff": "Location services are turned off on this device.",
+  "couldNotDetermineYourLocation": "Could not determine your location. {error}",
+  "@couldNotDetermineYourLocation": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "microphoneAccessWasNot": "Microphone access was not granted.",
+  "microphoneStillHeldByCall": "The microphone is still held by a call. Hang up and try again.",
+  "couldNotStartRecording": "Could not start recording. {error}",
+  "@couldNotStartRecording": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "noRecordingInProgress": "No recording in progress.",
+  "recordingCouldNotBeSaved": "The recording could not be saved.",
+  "couldNotFinishRecording": "Could not finish the recording. {error}",
+  "@couldNotFinishRecording": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotLoadTheImage": "Could not load the selected image. {error}",
+  "@couldNotLoadTheImage": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "cameraIsUnavailable": "Camera is unavailable right now. {error}",
+  "@cameraIsUnavailable": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotLoadTheVideo": "Could not load the selected video. {error}",
+  "@couldNotLoadTheVideo": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "couldNotOpenThatAudioFile": "Could not open that audio file. {error}",
+  "@couldNotOpenThatAudioFile": {
+    "placeholders": {
+      "error": {
+        "type": "Object"
+      }
+    }
+  },
+  "scheduledCallWith": "Scheduled call with {name}",
+  "@scheduledCallWith": {
+    "placeholders": {
+      "name": {
+        "type": "Object"
+      }
+    }
+  },
+  "notifNewDirectMessages": "Notifications for new direct messages",
+  "notifGroupMessages": "Notifications for group messages",
+  "notifIncomingCalls": "Incoming call notifications",
+  "notifStatusUpdates": "Notifications about status updates",
+  "notifScheduledReminders": "Scheduled call reminders",
+  "notifChannelMessages": "Messages",
+  "notifChannelCalls": "Calls",
+  "notifChannelStatus": "Status",
+  "notifChannelReminders": "Reminders",
+  "donTHaveAnAccount": "Don't have an account?",
+  "alreadyHaveAnAccount": "Already have an account?",
+  "youCreatedTheGroup": "You created the group",
+  "doesImoLIVEHaveEnd": "Does Imo LIVE have end-to-end encryption?",
+  "noAndThisAppDeliberately": "No — and this app deliberately does not claim it. Your messages travel over an encrypted connection (TLS) to Cloud Firestore, and media goes to Cloudflare R2, but the servers can read them: end-to-end means only the two participants hold the keys, and no key exchange is implemented yet.",
+  "doINeedAnAccount": "Do I need an account or phone number?",
+  "anAccountYesSignIn": "An account, yes. Sign in with email, Google or a phone number so your chats and profile can sync and so people can find you. A phone number is just one of the ways someone can look you up, alongside your email, @handle and user id.",
+  "whereAreMyPhotosAnd": "Where are my photos and voice notes stored?",
+  "aCopyStaysInThe": "A copy stays in the app's private folder on this device, split into images, videos, audio, voice notes, documents, profile photos, wallpapers and status media, and it is uploaded to Cloudflare R2 so the recipient can fetch it. Storage and data shows exactly how much space each category uses and lets you clear any of them.",
+  "willMyMessagesDisappear": "Will my messages disappear?",
+  "onlyIfYouTurnOn": "Only if you turn on a disappearing-message timer for a chat. Otherwise messages stay until you delete them. The Storage screen has a \"purge expired messages\" action that removes messages whose timer already elapsed.",
+  "howDoIMoveMy": "How do I move my chats to a new phone?",
+  "signInWithTheSame": "Sign in with the same account on the new phone and your chats are restored from the cloud. Messages sent from either device appear on both, so nothing has to be exported by hand.",
+  "whyCanTILink": "Why can't I link a second device?",
+  "companionPairingNeedsASession": "Companion pairing needs a session handshake that has not been built yet. The Linked devices screen shows the device you are signed in on and explains what pairing would do, rather than faking a successful link.",
+  "canIUseImoLIVE": "Can I use Imo LIVE in my own language?",
+  "yesEnglishAndShipWith": "Yes — English and বাংলা ship with complete translations. More languages can be added by dropping a new ARB file into lib/l10n and running the localization generator.",
+  "howDoIReportA": "How do I report a problem?",
+  "useContactUsBelowReports": "Use \"Contact us\" below. Reports open in your email app so you can see exactly what is being sent.",
+  "verifyingASecondFactorIs": "Verifying a second factor is not implemented yet. The row is present so the setting has an obvious home.",
+  "passkeysAreNotImplementedYet": "Passkeys are not implemented yet. They will be bound to your account when they are.",
+  "devicePairing": "Device pairing",
+  "aLinkedDeviceAuthenticatesAgainst": "A linked device authenticates against your account and syncs a message history snapshot. Neither step has been built yet. The repository boundary (SettingsRepository.getLinkedDevices / saveLinkedDevices) is already in place, so an implementation plugs in without UI changes.",
+  "linkingWithAPhoneNumber": "Linking with a phone number",
+  "allChannels": "All channels",
+  "photoPost": "Photo post",
+  "textPost": "Post",
+  "usernameTakenWithSuggestions": "@{username} is taken — try {suggestions}",
+  "@usernameTakenWithSuggestions": {
+    "description": "Shown when a requested channel @handle is already in use and alternatives exist.",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      },
+      "suggestions": {
+        "type": "String"
+      }
+    }
+  },
+  "usernameTaken": "@{username} is taken",
+  "@usernameTaken": {
+    "description": "Shown when a requested channel @handle is already in use and no alternative could be suggested.",
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "anythingWithABadge": "Anything with a badge",
+  "continueWithPhone": "Continue with Phone",
+  "orContinueWithPhone": "Or continue with phone",
+  "phoneSignInTitle": "Your phone number",
+  "phoneSignInSubtitle": "We'll use this number to sign you in. No SMS code needed.",
+  "loginWithPhone": "Login with Phone",
+  "signUpWithPhone": "Sign up with Phone",
+  "selectCountry": "Select country",
+  "searchCountryOrCode": "Search country or code",
+  "noCountryMatchesSearch": "No country matches that search",
+  "usernameLeaveBlankToGenerate": "Leave blank to generate one automatically",
+  "pinAtLeastSixDigits": "Use at least 6 digits",
+  "pinStoredSecurely": "Your PIN is stored securely and is never shown to anyone.",
+  "enterYourPhoneNumber": "Enter your phone number",
+  "enterAValidPhoneNumber": "That phone number doesn't look right",
+  "enterYourFirstName": "Enter your first name",
+  "enterYourLastName": "Enter your last name",
+  "signInWithGoogle": "Sign in with Google",
+  "phoneNumberHint": "1XX XXX XXXX",
+  "usernameInvalid": "Use at least 3 letters, numbers, dots or underscores"
+}

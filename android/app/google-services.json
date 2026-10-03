@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "94934649737",
+    "project_id": "imo-live-inc",
+    "storage_bucket": "imo-live-inc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94934649737:android:6b735a158bf0630de42f58",
+        "android_client_info": {
+          "package_name": "com.imo.live"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94934649737-u36e55gh0t74ap62uj2p8pf3g4gvfi30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.imo.live",
+            "certificate_hash": "2110f8fc92306862f8f6b4949597a0819be972f0"
+          }
+        },
+        {
+          "client_id": "94934649737-u5km3h7mhj27htj3s2ajpdd75m8pbnjf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbLnJoocTjeHIoeOZjmfU5qYzbzTXPyac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94934649737-u5km3h7mhj27htj3s2ajpdd75m8pbnjf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
