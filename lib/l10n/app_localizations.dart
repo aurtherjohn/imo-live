@@ -1172,6 +1172,12 @@ abstract class AppLocalizations {
   /// **'Something went wrong on this screen'**
   String get somethingWentWrongOnThis;
 
+  /// No description provided for @somethingWentWrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get somethingWentWrong;
+
   /// No description provided for @myLocation.
   ///
   /// In en, this message translates to:

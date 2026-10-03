@@ -179,6 +179,7 @@
   "openSettings": "Open settings",
   "comingWithBackend": "This will be available in a later version.",
   "somethingWentWrongOnThis": "Something went wrong on this screen",
+  "somethingWentWrong": "Something went wrong",
   "myLocation": "My location",
   "approximateLocation": "Approximate location",
   "signInToStartEarning": "Sign in to start earning",

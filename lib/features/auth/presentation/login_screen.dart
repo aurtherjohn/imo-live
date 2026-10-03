@@ -122,8 +122,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (!mounted) return;
       iToast(context, context.l10n.resetLinkSentTo(message));
     } on Object catch (error) {
+      debugPrint('password reset failed: $error');
       if (!mounted) return;
-      iToast(context, '$error', isError: true);
+      iToast(context, context.l10n.somethingWentWrong, isError: true);
     }
   }
 

@@ -551,6 +551,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get somethingWentWrongOnThis => 'এই স্ক্রিনে কিছু সমস্যা হয়েছে';
 
   @override
+  String get somethingWentWrong => 'কিছু একটা ভুল হয়েছে';
+
+  @override
   String get myLocation => 'আমার অবস্থান';
 
   @override

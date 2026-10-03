@@ -604,7 +604,7 @@ class _Feed extends StatelessWidget {
       ),
       error: (Object e, StackTrace s) => Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: ErrorState(message: '$e'),
+        child: errorStateFor(context, e),
       ),
       data: (List<ChannelPost> list) {
         if (list.isEmpty) {

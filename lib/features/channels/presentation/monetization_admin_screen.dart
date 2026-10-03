@@ -46,7 +46,7 @@ class _ReviewList extends ConsumerWidget {
 
     return pending.when(
       loading: () => const Center(child: ILoader(size: 26)),
-      error: (Object e, StackTrace s) => ErrorState(message: '$e'),
+      error: (Object e, StackTrace s) => errorStateFor(context, e),
       data: (List<Channel> channels) {
         if (channels.isEmpty) {
           return EmptyState(

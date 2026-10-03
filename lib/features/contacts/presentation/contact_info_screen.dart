@@ -47,7 +47,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
       loading: () => const Scaffold(body: Center(child: ILoader(size: 26))),
       error: (Object e, StackTrace s) => Scaffold(
         appBar: AppTopBar(title: context.l10n.contact, showBack: true),
-        body: ErrorState(message: '$e'),
+        body: errorStateFor(context, e),
       ),
       data: (Contact? contact) {
         if (contact != null) return _buildBody(contact);

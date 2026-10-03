@@ -1406,5 +1406,6 @@
   "notAvailableYet": "এখনো উপলব্ধ নয়",
   "hoursCount": "{n} ঘণ্টা",
   "minutesCount": "{n} মিনিট",
-  "secondsCount": "{n} সেকেন্ড"
+  "secondsCount": "{n} সেকেন্ড",
+  "somethingWentWrong": "কিছু একটা ভুল হয়েছে"
 }

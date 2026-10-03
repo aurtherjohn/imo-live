@@ -551,6 +551,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get somethingWentWrongOnThis => 'Something went wrong on this screen';
 
   @override
+  String get somethingWentWrong => 'Something went wrong';
+
+  @override
   String get myLocation => 'My location';
 
   @override

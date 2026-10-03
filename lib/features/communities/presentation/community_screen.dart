@@ -29,7 +29,7 @@ class CommunityScreen extends ConsumerWidget {
           loading: () => const Scaffold(body: Center(child: ILoader(size: 26))),
           error: (Object e, StackTrace s) => Scaffold(
             appBar: AppTopBar(title: context.l10n.community, showBack: true),
-            body: ErrorState(message: '$e'),
+            body: errorStateFor(context, e),
           ),
           data: (Community? community) {
             if (community == null) {

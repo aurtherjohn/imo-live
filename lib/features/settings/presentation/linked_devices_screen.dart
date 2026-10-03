@@ -27,7 +27,7 @@ class LinkedDevicesScreen extends ConsumerWidget {
       appBar: AppTopBar(title: context.l10n.linkedDevices, showBack: true),
       body: devicesAsync.when(
         loading: () => const Center(child: ILoader()),
-        error: (Object e, StackTrace s) => ErrorState(message: '$e'),
+        error: (Object e, StackTrace s) => errorStateFor(context, e),
         data: (List<LinkedDevice> devices) {
           return ListView(
             padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),

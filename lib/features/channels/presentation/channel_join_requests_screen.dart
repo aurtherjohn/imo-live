@@ -28,7 +28,7 @@ class ChannelJoinRequestsScreen extends ConsumerWidget {
       appBar: AppTopBar(title: context.l10n.joinRequests, showBack: true),
       body: requests.when(
         loading: () => const Center(child: ILoader(size: 26)),
-        error: (Object e, StackTrace s) => ErrorState(message: '$e'),
+        error: (Object e, StackTrace s) => errorStateFor(context, e),
         data: (List<ChannelJoinRequest> list) {
           if (list.isEmpty) {
             return EmptyState(

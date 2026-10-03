@@ -726,13 +726,17 @@ class EmptyState extends StatelessWidget {
 class ErrorState extends StatelessWidget {
   const ErrorState({
     super.key,
-    this.title = 'Something went wrong',
+    this.title,
     required this.message,
     this.onRetry,
     this.icon = Icons.error_outline_rounded,
   });
 
-  final String title;
+  /// Overrides the default title.
+  ///
+  /// Null resolves to [context.l10n.somethingWentWrong] in [build] — a
+  /// hardcoded default here would leak English into every other locale.
+  final String? title;
   final String message;
   final VoidCallback? onRetry;
   final IconData icon;
@@ -749,7 +753,7 @@ class ErrorState extends StatelessWidget {
             Icon(icon, size: 44, color: context.c.onWarning),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              title,
+              title ?? context.l10n.somethingWentWrong,
               style: context.t.titleMedium,
               textAlign: TextAlign.center,
             ),
@@ -773,6 +777,22 @@ class ErrorState extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Logs [error] and returns a generic [ErrorState].
+///
+/// Use this instead of `ErrorState(message: '$e')`. The raw exception belongs in
+/// the debug log, not on the user's screen, and the message must be localised.
+ErrorState errorStateFor(
+  BuildContext context,
+  Object error, {
+  VoidCallback? onRetry,
+}) {
+  debugPrint('ErrorState: $error');
+  return ErrorState(
+    message: context.l10n.theRestOfTheApp,
+    onRetry: onRetry,
+  );
 }
 
 /// Shimmer placeholder used while lists load.

@@ -38,7 +38,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
       loading: () => const Scaffold(body: Center(child: ILoader(size: 26))),
       error: (Object e, StackTrace s) => Scaffold(
         appBar: AppTopBar(title: context.l10n.groupInfo, showBack: true),
-        body: ErrorState(message: '$e'),
+        body: errorStateFor(context, e),
       ),
       data: (Group? group) {
         if (group == null) {

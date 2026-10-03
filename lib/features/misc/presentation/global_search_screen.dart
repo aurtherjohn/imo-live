@@ -137,7 +137,7 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
   Widget _buildResults(AsyncValue<List<SearchHit>> async, String q) {
     return async.when(
       loading: () => const Center(child: ILoader(size: 26)),
-      error: (Object e, StackTrace s) => ErrorState(message: '$e'),
+      error: (Object e, StackTrace s) => errorStateFor(context, e),
       data: (List<SearchHit> hits) {
         final List<SearchHit> visible = _filter == null
             ? hits
