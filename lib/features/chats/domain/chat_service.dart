@@ -11,6 +11,8 @@ import '../../../core/models/settings.dart';
 import '../../../core/services/firestore_chat_service.dart';
 import '../../../core/services/remote_contact_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../core/utils/formatters.dart';
+import '../../../core/utils/l10n.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../presentation/providers.dart';
 import 'repositories.dart';
@@ -474,8 +476,21 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
           // received could be dropped by `blockUnknownSenders`.
           final String liveUid = ref.read(currentUidProvider);
           final String uid = liveUid.isNotEmpty ? liveUid : initialUid;
-          for (final RemoteMessage message in remote) {
-            final Message mapped = _toLocal(message, uid);
+
+          // Map the page once. The quote resolver needs the whole page, and
+          // mapping per-message would rebuild every attachment twice over.
+          final List<Message> mapped = <Message>[
+            for (final RemoteMessage raw in remote) _toLocal(raw, uid),
+          ];
+          final Map<String, Message> page = <String, Message>{
+            for (final Message m in mapped) m.id: m,
+          };
+          // Names resolved during this pass, so a conversation where several
+          // messages quote the same person costs one lookup, not one each.
+          final Map<String, String> names = <String, String>{};
+
+          for (int i = 0; i < mapped.length; i++) {
+            final Message message = mapped[i];
 
             // "Block unknown senders" is enforced here, at the only point an
             // incoming message crosses from the transport into the local store.
@@ -485,13 +500,32 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
             // receipt for it either — which is why the tick update below is
             // skipped along with the save.
             if (privacy.blockUnknownSenders &&
-                !mapped.isOutgoing &&
-                mapped.senderId.isNotEmpty &&
-                await contacts.findById(mapped.senderId) == null) {
+                !message.isOutgoing &&
+                message.senderId.isNotEmpty &&
+                await contacts.findById(message.senderId) == null) {
               continue;
             }
 
-            await local.save(mapped);
+            // The wire carries only the id a reply points at, so the recipient
+            // used to get no quote at all — see [quoteFor].
+            final String replyId = remote[i].replyTo ?? '';
+            final Message? quoted = replyId.isEmpty
+                ? null
+                // The page first: a reply nearly always points at a message
+                // that is already here, and that costs no I/O. Only a reply
+                // older than the page falls back to the store.
+                : (page[replyId] ?? await local.findById(replyId));
+            final ReplyPreview? quote = quoteFor(
+              replyId: replyId,
+              target: quoted,
+              senderName: quoted == null
+                  ? ''
+                  : await _quoteNameFor(quoted, contacts, names),
+            );
+
+            await local.save(
+              quote == null ? message : message.copyWith(replyTo: quote),
+            );
 
             // Only the *recipient* can honestly report delivery, so this fires
             // for messages arriving here — never for our own, which would light
@@ -501,11 +535,11 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
             // It advances `sent` → `delivered` and nothing else: once the server
             // already says delivered there is nothing left to report, and a
             // `read` must never be walked back.
-            if (!mapped.isOutgoing && mapped.status == MessageStatus.sent) {
+            if (!message.isOutgoing && message.status == MessageStatus.sent) {
               unawaited(
                 firestore.updateMessageStatus(
                   chatId: chatId,
-                  messageId: mapped.id,
+                  messageId: message.id,
                   status: FirestoreMessageStatus.delivered,
                 ),
               );
@@ -514,6 +548,57 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
         },
       );
 });
+
+/// Builds the quote shown above a reply, or null when there is nothing to show.
+///
+/// The wire carries only the **id** of the message being replied to. The
+/// recipient's copy therefore arrived with `replyTo == null` and the quote was
+/// simply absent — every reply lost its context on the other device. The
+/// sender's own copy was fine, which is exactly why it stayed hidden: the device
+/// that sent the message is the one device that cannot see the bug.
+///
+/// Null when [target] could not be found — a reply older than the page, or one
+/// whose original the user removed for themselves. That is deliberate: a quote
+/// box with nothing in it reads as a rendering fault, whereas no quote reads as
+/// "there is nothing to show".
+///
+/// Pure and public so the rule can be tested without a backend.
+@visibleForTesting
+ReplyPreview? quoteFor({
+  required String replyId,
+  required Message? target,
+  required String senderName,
+}) {
+  if (replyId.isEmpty || target == null) return null;
+  return ReplyPreview(
+    messageId: target.id,
+    senderName: senderName,
+    // Bounded, like the sender's own preview — this value is persisted.
+    preview: TextUtils.truncate(target.previewText, 120),
+    type: target.type,
+  );
+}
+
+/// The display name to show above a quote.
+///
+/// "You" for the user's own message — the same word the composer's reply banner
+/// uses — and otherwise the name from the contact list.
+///
+/// It cannot come from the message itself: `Message.senderName` is empty on
+/// every incoming row, because the bubble takes the name from the chat rather
+/// than the message.
+Future<String> _quoteNameFor(
+  Message target,
+  ContactRepository contacts,
+  Map<String, String> names,
+) async {
+  if (target.isOutgoing) return L10nRef.current.you;
+  // `containsKey`, not a null check: an unknown sender caches the empty name
+  // too, otherwise every quote from them repeats the same failing lookup.
+  if (names.containsKey(target.senderId)) return names[target.senderId]!;
+  final Contact? contact = await contacts.findById(target.senderId);
+  return names[target.senderId] = contact?.fullName ?? '';
+}
 
 /// Converts a Firestore message into the app's own model.
 ///
