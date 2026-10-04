@@ -160,6 +160,7 @@ _*.log
 /_*.csv
 /_*.stdout
 /_*.out
+/_*.mjs
 
 # ----- Bash run scripts and batch files (root-level scratch) -----
 run_flutter.sh

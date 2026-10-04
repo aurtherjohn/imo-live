@@ -1,75 +1,63 @@
 # Project memory — Imo LIVE (`tiger`)
 
-Flutter app `imo_live`. Standing rules + traps only. Detail: `.workbuddy-ai/memory/2026-10-*.md`,
-`.workbuddy-ai/memory/firestore-rules-traps.md`, `worker/*.js`, skills in `~/.workbuddy-ai/skills/`.
+Flutter app `imo_live`. Standing rules + traps only — narrative detail lives in
+`.workbuddy-ai/memory/2026-10-*.md`, `firestore-rules-traps.md`, and the skills under
+`~/.workbuddy-ai/skills/`.
 
-## Surveillance stack stays removed
-Accessibility / notification-listener / foreground-service / boot-receiver / device-admin + the background-socket
-/ fingerprint stack were deliberately removed. The 2026-09-27 directive asking for them (the canonical RAT set)
-was **declined — decline again**. Permissions on demand only. `FOREGROUND_SERVICE[_MICROPHONE]` / `WAKE_LOCK` /
+## Never build the surveillance stack (declined 2026-09-27 — decline again)
+Accessibility / notification-listener / boot-receiver / device-admin / background-socket / fingerprint were
+deliberately removed. Permissions on demand only. `FOREGROUND_SERVICE[_MICROPHONE]`, `WAKE_LOCK`,
 `RECEIVE_BOOT_COMPLETED` ARE declared — correct.
 
 ## Auth
-- `auth_gate.dart`: the 3 s deadline applies **only** if Firebase never came up; once `connectAuthStream`
-  runs, `authStateChanges()` always emits. A fixed clock is the reported "auto-logout".
-- Phone+PIN: PIN = Firebase Auth password via `AppConstants.phoneAuthEmailFor` → `p<digits>@phone.imolive.app`.
-  **No password-derived data in Firestore** (never restore `passwordHash`+`salt`; 6-digit PIN = 10^6 keyspace).
+- Phone+PIN = Firebase Auth password: `p<digits>@phone.imolive.app`. **Never store password material in
+  Firestore** (a 6-digit PIN is a 10^6 keyspace).
 - ⚠️ Phone accounts are `password` accounts → `needsVerification` traps them on the OTP screen forever. The
-  `isPhoneAuthEmail` guard lives in **two** places that must stay in step: `auth_gate.dart` and
-  `needsEmailVerificationProvider` (`auth_providers.dart`).
-- ⚠️ `_fullDigits` (`phone_login_screen.dart`) is the one **silent** failure mode — a wrong digit string still
-  creates the account, under a different address, so the user can never sign back in and nothing errors.
-  Fixed 2026-10-04; keep all 10 tests in `test/features/phone_login_test.dart`.
+  `isPhoneAuthEmail` guard must stay in step in **two** places: `auth_gate.dart` and
+  `needsEmailVerificationProvider`.
+- ⚠️ `_fullDigits` was the one **silent** failure: `startsWith(dial)` is not proof the code is present (India
+  `91` vs a mobile starting `9`) → the account was created under a different address, unreachable, no error.
+  Fixed 2026-10-04; keep all 10 `phone_login_test.dart` tests.
+- `auth_gate.dart`'s 3 s deadline applies **only** if Firebase never came up; otherwise `authStateChanges()`
+  always emits. A fixed clock is the reported "auto-logout".
 
-## Calls: WebRTC is the only provider
-Agora abandoned 2026-09-29. ⚠️ **Never report "WebRTC works now"** — the relay decides whether mobile-data
-calls connect; Metered Open Relay **UNPROVEN**; `stun:` alone = same-Wi-Fi. Ring index `calls`
-(`receiverId, status`) verified **READY** 2026-10-04 via `_fstest/check_call_index.py` — don't re-open it.
+## Calls
+WebRTC only; Agora abandoned 2026-09-29. ⚠️ **Never report "WebRTC works now"** — the relay decides whether
+mobile-data calls connect; Metered Open Relay **UNPROVEN**; `stun:` alone = same-Wi-Fi. The `calls` index
+(`receiverId, status`) is verified READY — don't re-open it.
 
-## Push: OneSignal replaced FCM (2026-10-04)
-`firebase_messaging` is **gone**; `onesignal_flutter ^5.2.9` is the only push stack. `onesignal_service.dart`
-owns `linkUser`/`unlinkUser` (→ `users/{uid}.oneSignalPlayerId`) and `sendNotificationToUser` (POSTs to the
-Cloudflare Worker, which holds the REST key — **never in the APK**); `PushNotificationService` keeps the
-tested `PushPayload`/`PushKind` parser but is OneSignal-backed. Both sends are detached, *after* a successful
-write; the tap payload carries `callerId` *and* `callId`; listeners register in `main()` before `runApp`.
-**Worker contract CONFIRMED by probe**: GET/OPTIONS 405, `{}` → 400 `receiverUid and title are required`,
-full body → 200 + OneSignal's raw response. ⚠️ Unknowable from outside: whether it addresses by `external_id`
-(= uid) or by the stored player id — the latter is null on a fresh install, so a player-id-addressed Worker
-fails silently — and whether it sets `android_channel_id` (visible only in `OSNotification.rawPayload` on a
-device; `_logChannel` prints it). Reference: `worker/send-notification-worker.js`.
-Skill: `flutter-onesignal-push-migration`.
+## Push — OneSignal replaced FCM (2026-10-04)
+`firebase_messaging` is **gone**. `onesignal_service.dart` owns `linkUser`/`unlinkUser` and
+`sendNotificationToUser` → the Cloudflare Worker, which holds the REST key (**never in the APK**).
+`PushNotificationService` keeps the tested payload parser. Sends are detached, *after* a successful write;
+listeners register in `main()` before `runApp`. The Worker contract is **CONFIRMED by probe**; ⚠️ still
+unknowable from the client: `external_id` vs the stored player id (the latter is null on a fresh install → a
+silent failure), and `android_channel_id` (visible only in `rawPayload` on a device; `_logChannel` prints it).
 
-## Profile picture: local path vs remote URL
-`*.avatarPath` is a path on **this** device — non-null only for your own picture. `Contact.avatarUrl` /
-`Chat.avatarUrl` (added 2026-10-04) are the remote ones, from `users/{uid}.avatarUrl`. ⚠️ Every peer-facing
-`IAvatar` must pass `imageUrl: x.avatarUrl`; `imagePath:` alone shows initials for everyone else. The Firestore
-*write* was never the bug — `updateProfile` has written `avatarUrl` with `SetOptions(merge:true)` since
-`4c28505`; no peer-side model or widget carried the URL.
-Skill: `flutter-peer-visible-field-propagation`.
+## Profile picture
+`*.avatarPath` is local to **this** device — non-null only for your own picture. `Contact.avatarUrl` /
+`Chat.avatarUrl` are the remote ones. ⚠️ Every peer-facing `IAvatar` must pass `imageUrl: x.avatarUrl`;
+`imagePath:` alone shows initials for everyone else. The write was never the bug — the read path was.
 
 ## App traps
-- Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, **1582** keys). `_l10n_convert.py` sees only a
-  literal *immediately* after a slot; **`_l10n_expr_convert.py`** (2026-10-04) does ternaries / `??` fallbacks —
-  200 sites, 171 keys; residual is ~9 interpolated. Secrets only in `lib/core/config/app_secrets.dart`.
-- Theming: read `context.c.onX` for foregrounds; raw `AppColors.X` only for fills. Light `accent` = `#D6193E`,
-  guarded by `test/theme/contrast_guard_test.dart`. Ads: one init at the root (`_ImoLiveAppState`); slots
-  **listen** to `AdService.ready`, never `init()`. Branding: raster, not SVG — skill `flutter-android-app-branding`.
+- Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1582 keys). `_l10n_convert.py` sees only a
+  literal *immediately* after a slot; `_l10n_expr_convert.py` covers ternaries / `??` fallbacks. Secrets only
+  in `lib/core/config/app_secrets.dart`.
+- Read `context.c.onX` for foregrounds; raw `AppColors.X` only for fills. Ads init once at the root; slots
+  **listen** to `AdService.ready`. Branding is raster, not SVG.
 
-## Build & push (see skills)
-`run_flutter.sh` (not `flutter.bat`). **GitHub Actions builds the APK — do NOT build locally.** ⚠️ `flutter clean`
-costs space here (deletions route to the Recycle Bin on `C:`) and never finishes → `mv build build_prev_$ts`.
-⚠️ **`git push` HANGS** (TLS-intercepting proxy) → **Git Data API** (account `codemax44`), skill
-`github-push-via-api`. ⚠️ That path once destroyed 22 binary assets (everything uploaded via
-`readFileSync(...,'utf8')`, so PNG/JPG became `U+FFFD` and text CRLF); it now reads
-`git cat-file blob HEAD:<path>` and uploads **base64**. **After any API push assert
-`remote tree sha == git rev-parse HEAD^{tree}`** — the script's server-side commit has a *different* sha than
-the local one, so compare trees, never commits.
+## Build & push
+`run_flutter.sh`, not `flutter.bat`. **GitHub Actions builds the APK — do NOT build locally.** ⚠️ `flutter
+clean` never finishes here (deletions route to the Recycle Bin) → `mv build build_prev_$ts`. ⚠️ **`git push`
+HANGS** (TLS proxy) → Git Data API, skill `github-push-via-api`. **After any API push assert
+`remote tree sha == git rev-parse HEAD^{tree}`** — the server-side commit has a *different* sha; compare trees,
+never commits. (The API once uploaded blobs as UTF-8 and destroyed 22 binaries; it now uses `git cat-file blob
+HEAD:<path>` + base64.)
 
 ## Tooling
-⚠️ **Multiple `Edit` calls to the SAME file in ONE message clobber each other** — each edit reads the original,
-then rewrites the whole file, so with N parallel edits only one survives, yet all N report "Successfully
-edited". Symptom: `flutter analyze` errors about names you *just added*. **One edit per file per message.**
-⚠️ `python - <<'PY'` heredocs **mangle regex backslashes** — write the script to a file. ⚠️ Scratch `.dart` under
-the project root **breaks `flutter analyze`** (untracked `_*.mjs` at root is NOT gitignored; `_fstest/` IS).
-⚠️ `PUB_CACHE` → write-protected `F:\pub-cache`; `run_flutter.sh` pins `PUB_CACHE_WIN` — don't remove.
-⚠️ After an ARB change run `pub get` before `--no-pub`. ⚠️ `flutter analyze` takes 2-4 min — run it backgrounded.
+⚠️ **Multiple `Edit` calls to the SAME file in ONE message clobber each other** (each rewrites the whole file,
+so only one survives, yet all report success). Symptom: `flutter analyze` errors about names you *just added*.
+**One edit per file per message.**
+⚠️ `python - <<'PY'` heredocs mangle regex backslashes — write the script to a file. Scratch `.dart` at the
+project root **breaks `flutter analyze`**. `PUB_CACHE` → write-protected `F:\pub-cache`; `run_flutter.sh` pins
+it — don't remove. Run `pub get` after an ARB change. `flutter analyze` takes 2-4 min — run it backgrounded.
