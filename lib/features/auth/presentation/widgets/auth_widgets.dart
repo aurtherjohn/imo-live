@@ -22,11 +22,24 @@ class AuthScaffold extends StatelessWidget {
     required this.child,
     this.showGlow = true,
     this.resizeToAvoidBottomInset = true,
+    this.topRight,
   });
 
   final Widget child;
   final bool showGlow;
   final bool resizeToAvoidBottomInset;
+
+  /// Pinned to the top-right corner, above the scrolling page.
+  ///
+  /// A slot rather than a built-in control: the login, signup and phone screens
+  /// all want the settings gear there, but the OTP screen deliberately does not
+  /// (a signed-in-but-unverified user has no business changing the app
+  /// language mid-verification). Making it opt-in keeps that decision at the
+  /// call site instead of hiding it behind a flag.
+  ///
+  /// Rendered *outside* the `SingleChildScrollView` so it stays put when the
+  /// page scrolls or the keyboard opens.
+  final Widget? topRight;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +126,13 @@ class AuthScaffold extends StatelessWidget {
               },
             ),
           ),
+          if (topRight != null)
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: topRight,
+              ),
+            ),
         ],
       ),
     );

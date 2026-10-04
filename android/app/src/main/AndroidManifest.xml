@@ -103,6 +103,20 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="imo" android:host="auth-callback"/>
             </intent-filter>
+
+            <!-- Email-verification return path. `sendEmailVerification` is
+                 called with an ActionCodeSettings continue URL of
+                 `imo://verify-email` (see `FirebaseAuthService.
+                 emailVerificationSettings`), so tapping the confirmation link
+                 in the mailbox re-opens Imo LIVE instead of leaving the user in
+                 a browser. `autoVerify` stays false: this is a custom scheme
+                 with no App Links asset-links file behind it. -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="imo" android:host="verify-email"/>
+            </intent-filter>
         </activity>
 
         <!--

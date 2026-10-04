@@ -627,6 +627,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verifyYourEmail => 'Verify your email';
 
   @override
+  String get weSentAConfirmationLinkTo => 'We sent a confirmation link to ';
+
+  @override
+  String get openYourInboxAndClickLink =>
+      'Open your email inbox and click the confirmation link.';
+
+  @override
+  String get checkYourSpamFolder =>
+      'If you don\'t see it, check your spam folder.';
+
+  @override
+  String get returnToAppAfterConfirming =>
+      'After confirming, return to this app.';
+
+  @override
+  String get resendEmail => 'Resend email';
+
+  @override
+  String get iHaveConfirmedMyEmail => 'I\'ve confirmed my email';
+
+  @override
+  String get emailNotConfirmedYet =>
+      'Not confirmed yet. Click the link in your email, then try again.';
+
+  @override
+  String get emailResent => 'Confirmation email sent again';
+
+  @override
   String get openTheLinkInThe =>
       'Open the link in the email to confirm this address. ';
 

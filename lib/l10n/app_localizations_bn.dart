@@ -626,6 +626,34 @@ class AppLocalizationsBn extends AppLocalizations {
   String get verifyYourEmail => 'আপনার ইমেইল যাচাই করুন';
 
   @override
+  String get weSentAConfirmationLinkTo =>
+      'আমরা একটি নিশ্চিতকরণ লিংক পাঠিয়েছি ';
+
+  @override
+  String get openYourInboxAndClickLink =>
+      'আপনার ইমেইল ইনবক্স খুলে নিশ্চিতকরণ লিংকে ক্লিক করুন।';
+
+  @override
+  String get checkYourSpamFolder => 'না দেখলে স্প্যাম ফোল্ডারে দেখুন।';
+
+  @override
+  String get returnToAppAfterConfirming =>
+      'নিশ্চিত করার পর এই অ্যাপে ফিরে আসুন।';
+
+  @override
+  String get resendEmail => 'ইমেইল আবার পাঠান';
+
+  @override
+  String get iHaveConfirmedMyEmail => 'আমি আমার ইমেইল নিশ্চিত করেছি';
+
+  @override
+  String get emailNotConfirmedYet =>
+      'এখনও নিশ্চিত হয়নি। ইমেইলের লিংকে ক্লিক করে আবার চেষ্টা করুন।';
+
+  @override
+  String get emailResent => 'নিশ্চিতকরণ ইমেইল আবার পাঠানো হয়েছে';
+
+  @override
   String get openTheLinkInThe =>
       'এই ঠিকানা নিশ্চিত করতে ইমেইলের লিংকটি খুলুন। ';
 

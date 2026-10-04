@@ -12,6 +12,7 @@ import '../../../../core/utils/l10n.dart';
 import '../../../../core/widgets/brand_assets.dart';
 import '../../../../core/widgets/common_widgets.dart';
 import '../auth_providers.dart';
+import '../widgets/auth_settings_button.dart';
 import '../widgets/auth_widgets.dart';
 import '../widgets/country_picker_sheet.dart';
 
@@ -192,6 +193,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   Widget build(BuildContext context) {
     final bool isSignUp = _mode == PhoneAuthMode.signUp;
     return AuthScaffold(
+      topRight: const AuthSettingsButton(),
       child: Form(
         key: _formKey,
         child: Padding(

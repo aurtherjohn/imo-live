@@ -39,15 +39,23 @@ jobs:
         run: flutter pub get
 
       - name: Analyze project
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
         continue-on-error: true
 
       - name: Run tests
         run: flutter test
         continue-on-error: true
 
+      # GOOGLE_OAUTH_CLIENT_ID is a build-time dart-define, not a runtime value:
+      # it is read by `String.fromEnvironment` in `in_app_oauth_service.dart` and
+      # baked into the APK. Without it the WebView fallback throws
+      # "Google sign-in needs a client id", which is exactly the error this
+      # step exists to prevent. The value lives in the repo secret of the same
+      # name, so no client id is committed here.
       - name: Build APK (split per ABI)
-        run: flutter build apk --release --split-per-abi
+        run: |
+          flutter build apk --release --split-per-abi \
+            --dart-define=GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4

@@ -95,9 +95,10 @@ class FirebaseAuthService {
         email: normalisedEmail,
         username: username,
       );
-      // Firebase sends its own verification message; the OTP screen in the app
-      // re-sends it on demand and polls for the verified flag.
-      await user.sendEmailVerification();
+      // Firebase sends the verification mail; the app cannot, and the link in
+      // it is what flips `emailVerified`. The Verify-Email screen re-sends it on
+      // demand and polls for the flag.
+      await _sendVerification(user);
       return user.uid;
     } on FirebaseAuthException catch (error) {
       throw _translate(error);
@@ -143,9 +144,82 @@ class FirebaseAuthService {
       throw const AuthException('You are not signed in.');
     }
     try {
-      await user.sendEmailVerification();
+      await _sendVerification(user);
     } on FirebaseAuthException catch (error) {
       throw _translate(error);
+    }
+  }
+
+  /// The continue URL the confirmation link comes back to.
+  ///
+  /// A custom scheme, registered in `AndroidManifest.xml` as an intent-filter
+  /// on `MainActivity` (`imo://verify-email`), so tapping the link in the
+  /// mailbox re-opens Imo LIVE instead of leaving the user parked in a browser
+  /// tab with no way back. It reuses the `imo` scheme the OAuth callback
+  /// already claims — one scheme, one intent-filter family, nothing new to
+  /// register with the OS.
+  static const String emailVerificationContinueUrl = 'imo://verify-email';
+
+  /// The settings handed to `sendEmailVerification`.
+  ///
+  /// `handleCodeInApp: false` on purpose, and it is not a shortcut: this is
+  /// email *verification*, not email-link sign-in. Verification has to happen
+  /// on Firebase's hosted page — the client cannot see the link, so it cannot
+  /// complete it — and the continue URL is where that page sends the user
+  /// afterwards. `handleCodeInApp: true` would be for a different feature
+  /// (passwordless sign-in), where the app itself parses the link.
+  static ActionCodeSettings get _verificationSettings => ActionCodeSettings(
+        url: emailVerificationContinueUrl,
+        handleCodeInApp: false,
+        androidPackageName: 'com.imo.live',
+        androidInstallApp: false,
+        androidMinimumVersion: '1',
+      );
+
+  /// Sends the verification mail, preferring the deep-link variant.
+  ///
+  /// The fallback is load-bearing, not defensive padding. A continue URL has to
+  /// be authorised for the project, and an unauthorised one makes
+  /// `sendEmailVerification` throw `unauthorized-continue-uri` — it does not
+  /// silently drop the URL. A signup must never fail over a redirect that is
+  /// only a convenience: verification works identically without it, and the
+  /// user simply returns to the app by hand instead of automatically.
+  Future<void> _sendVerification(User user) async {
+    try {
+      await user.sendEmailVerification(_verificationSettings);
+    } on FirebaseAuthException catch (error) {
+      debugPrint(
+        'sendEmailVerification with continue URL failed (${error.code}); '
+        'retrying without it.',
+      );
+      await user.sendEmailVerification();
+    }
+  }
+
+  /// Adopts a phone account that already holds the derived address.
+  ///
+  /// Used by [signUpWithPhone] when `createUserWithEmailAndPassword` reports
+  /// `email-already-in-use`. The same number *and* the same PIN is the same
+  /// person by definition of the credential, so a successful sign-in here means
+  /// the caller may carry on and finish the (idempotent) Firestore claim.
+  ///
+  /// Returns null when the PIN does not match — the honest "that number is not
+  /// yours" case. Nothing is deleted on that path: the account belongs to
+  /// whoever created it, and `delete()` here would be an attempt to destroy
+  /// someone else's account.
+  Future<User?> _recoverExistingPhoneAccount({
+    required String email,
+    required String pin,
+  }) async {
+    try {
+      final UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: pin,
+      );
+      return credential.user;
+    } on FirebaseAuthException catch (error) {
+      debugPrint('phone account recovery for $email failed: ${error.code}');
+      return null;
     }
   }
 
@@ -564,17 +638,60 @@ class FirebaseAuthService {
     final String fullName =
         <String>[first, last].where((String p) => p.isNotEmpty).join(' ');
 
+    // Logged so a failed signup can be traced to the exact address the account
+    // was created under — the derived address is the one thing about this flow
+    // that is invisible to the user, and a mismatch here is the silent bug that
+    // makes an account unreachable.
+    debugPrint('signUpWithPhone: derived address=$email (digits=$digits)');
+
     User? created;
+    // True when the account was not created here but *adopted* — see the
+    // `email-already-in-use` branch below. A recovered account must never be
+    // rolled back: `_rollback` deletes the auth user, and on that path the user
+    // is the caller's own account rather than a half-created one of ours.
+    bool recovered = false;
     try {
-      final UserCredential credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: pin,
-      );
-      created = credential.user;
+      try {
+        final UserCredential credential =
+            await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: pin,
+        );
+        created = credential.user;
+      } on FirebaseAuthException catch (error) {
+        // Only this one code is recoverable; everything else is a real failure.
+        if (error.code != 'email-already-in-use') rethrow;
+
+        // `email-already-in-use` on a *derived* address does not necessarily
+        // mean the number belongs to someone else. It is also what a previous
+        // attempt leaves behind when it created the auth account and then died
+        // before — or while — writing the Firestore claim, and the rollback
+        // could not delete it (`delete()` needs a recent login and can be
+        // refused). The account is then a ghost: it holds the address, has no
+        // profile document, and blocks the number forever while the user is
+        // told to "log in instead" to an account they cannot usefully log into.
+        //
+        // So try the PIN the user just typed against the existing account. Same
+        // number, same PIN — same person by definition of the credential. A
+        // wrong PIN means it really is someone else's number, and the recovery
+        // returns null so the honest message is shown instead.
+        debugPrint(
+          'signUpWithPhone($digits): derived address already exists; '
+          'attempting recovery with the submitted PIN.',
+        );
+        final User? adopted = await _recoverExistingPhoneAccount(
+          email: email,
+          pin: pin,
+        );
+        if (adopted == null) throw _translatePhoneSignUp(error);
+        created = adopted;
+        recovered = true;
+      }
+
       if (created == null) {
         throw const AuthException('The account could not be created.');
       }
-      await created.updateDisplayName(fullName);
+      if (!recovered) await created.updateDisplayName(fullName);
 
       // The handle is claimed together with the number, inside one transaction.
       // A collision is resolved by widening the numeric suffix and retrying,
@@ -602,6 +719,9 @@ class FirebaseAuthService {
         );
       }
 
+      // Idempotent by construction: `_createUserDocument` writes with
+      // `merge: true`, so re-running it for a recovered account fills in
+      // whatever the failed attempt left missing rather than overwriting it.
       await _createUserDocument(
         uid: created.uid,
         name: fullName.isEmpty ? digits : fullName,
@@ -616,14 +736,15 @@ class FirebaseAuthService {
       );
       return created.uid;
     } on FirebaseAuthException catch (error) {
-      await _rollback(created);
+      debugPrint('signUpWithPhone($digits) failed: ${error.code}');
+      if (!recovered) await _rollback(created);
       throw _translatePhoneSignUp(error);
     } on AuthException {
-      await _rollback(created);
+      if (!recovered) await _rollback(created);
       rethrow;
     } on Object catch (error) {
       debugPrint('signUpWithPhone failed: $error');
-      await _rollback(created);
+      if (!recovered) await _rollback(created);
       throw const AuthException('The account could not be created.');
     }
   }
@@ -884,19 +1005,42 @@ class FirebaseAuthService {
 
   /// Signup-side translation for the phone flow.
   ///
-  /// `email-already-in-use` is the one that matters: the address is derived from
-  /// the number, so that code means "this number is taken" — and telling the
-  /// user an *email* is in use would be nonsense when they never typed one.
+  /// Every code this flow can actually raise is named here, so the user gets a
+  /// sentence that says what to do rather than the generic fallback. The real
+  /// code is also carried on the exception (`AuthException.code`) and printed by
+  /// [signUpWithPhone], which is what makes a failure diagnosable from a log
+  /// rather than from a screenshot.
+  ///
+  /// `email-already-in-use` is the one that matters most: the address is derived
+  /// from the number, so that code means "this number is taken" — and telling
+  /// the user an *email* is in use would be nonsense when they never typed one.
+  ///
+  /// `invalid-credential` / `wrong-password` arrive from the recovery sign-in in
+  /// [signUpWithPhone], not from the create itself: they mean the address exists
+  /// but the PIN does not match it — the same fact as `email-already-in-use`, so
+  /// the same sentence.
   static AuthException _translatePhoneSignUp(FirebaseAuthException error) {
     return switch (error.code) {
-      'email-already-in-use' => const AuthException(
-          'That number already has an account. Log in instead.',
+      'email-already-in-use' ||
+      'invalid-credential' ||
+      'wrong-password' =>
+        const AuthException(
+          'This number is already registered. Try logging in.',
           code: 'phone-already-in-use',
         ),
       'invalid-email' =>
-        const AuthException('Enter a valid phone number.'),
+        const AuthException('Invalid phone number format.'),
       'weak-password' =>
-        const AuthException('Use a PIN with at least 6 digits.'),
+        const AuthException('PIN must be at least 6 characters.'),
+      'network-request-failed' => const AuthException(
+          'No internet connection. Check your network and try again.',
+        ),
+      'too-many-requests' => const AuthException(
+          'Too many attempts. Wait a moment and try again.',
+        ),
+      'operation-not-allowed' => const AuthException(
+          'Phone sign-up is not enabled for this project yet.',
+        ),
       _ => _translate(error),
     };
   }

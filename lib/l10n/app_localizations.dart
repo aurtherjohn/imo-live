@@ -1316,6 +1316,54 @@ abstract class AppLocalizations {
   /// **'Verify your email'**
   String get verifyYourEmail;
 
+  /// No description provided for @weSentAConfirmationLinkTo.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a confirmation link to '**
+  String get weSentAConfirmationLinkTo;
+
+  /// No description provided for @openYourInboxAndClickLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your email inbox and click the confirmation link.'**
+  String get openYourInboxAndClickLink;
+
+  /// No description provided for @checkYourSpamFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'If you don\'t see it, check your spam folder.'**
+  String get checkYourSpamFolder;
+
+  /// No description provided for @returnToAppAfterConfirming.
+  ///
+  /// In en, this message translates to:
+  /// **'After confirming, return to this app.'**
+  String get returnToAppAfterConfirming;
+
+  /// No description provided for @resendEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend email'**
+  String get resendEmail;
+
+  /// No description provided for @iHaveConfirmedMyEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve confirmed my email'**
+  String get iHaveConfirmedMyEmail;
+
+  /// No description provided for @emailNotConfirmedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not confirmed yet. Click the link in your email, then try again.'**
+  String get emailNotConfirmedYet;
+
+  /// No description provided for @emailResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation email sent again'**
+  String get emailResent;
+
   /// No description provided for @openTheLinkInThe.
   ///
   /// In en, this message translates to:

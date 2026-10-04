@@ -85,7 +85,20 @@ class OAuthException implements Exception {
 /// the app's third provider is now the phone flow, and a half-configured
 /// Facebook app id was shipping dead SDK code and manifest entries.
 class InAppOAuthService {
-  InAppOAuthService();
+  InAppOAuthService() {
+    // Logged the first time the service is constructed — i.e. at app startup,
+    // since the provider that owns it is read while the auth screens build.
+    //
+    // This exists because the failure mode is otherwise invisible until a user
+    // taps Google: a build that forgot
+    // `--dart-define=GOOGLE_OAUTH_CLIENT_ID=…` compiles and runs fine, and the
+    // only symptom is the WebView fallback refusing to start. Printing the
+    // state here makes a mis-built APK obvious in `adb logcat` immediately.
+    debugPrint(
+      'InAppOAuthService: GOOGLE_OAUTH_CLIENT_ID '
+      '${_googleClientId.isEmpty ? 'is MISSING — Google sign-in will fail' : 'is configured'}',
+    );
+  }
 
   /// Populated whenever a flow ends without an ID token, so the calling screen
   /// can show *why* rather than a generic failure.

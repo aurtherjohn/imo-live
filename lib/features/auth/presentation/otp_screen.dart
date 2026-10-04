@@ -1,30 +1,46 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../app/theme/app_color_scheme.dart';
 
 import '../../../app/app.dart';
+import '../../../app/theme/app_color_scheme.dart';
 import '../../../app/theme/app_tokens.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/l10n.dart';
 import '../../../core/widgets/brand_assets.dart';
 import '../../../core/widgets/common_widgets.dart';
 import 'auth_providers.dart';
 import 'widgets/auth_widgets.dart';
-import '../../../core/utils/l10n.dart';
 
 /// Email verification.
 ///
-/// Shown between signup and the rest of the app. The account exists but is not
-/// active, so this screen is the gate: it re-sends the verification mail, polls
-/// the server for the verified flag, and animates the outcome — a scaled-in
-/// checkmark on success, a shake on a wrong or expired code.
+/// ### What this screen is, and what it is not
 ///
-/// The poll (rather than a deep link) is deliberate: an email link cannot be
-/// observed from inside the app, and the honest question is simply "has the
-/// server flipped the flag yet?".
+/// It used to be an OTP screen — six digit boxes. That was wrong: Firebase's
+/// `sendEmailVerification()` sends a **link**, not a code, so there was nothing
+/// for those boxes to receive. A user could sit there typing a code that never
+/// existed, with no way forward.
+///
+/// What replaces them is an honest description of the real flow:
+///
+///   1. the account exists but is not active;
+///   2. a confirmation link is sitting in the user's inbox;
+///   3. the link is what verifies the address — the app cannot do it;
+///   4. the app finds out by asking the server (`user.reload()`), because the
+///      click happens outside the process and cannot be observed directly.
+///
+/// So there is one job here: tell the user what to do, and watch for the flag
+/// to flip. Two paths do the watching — a 5-second poll, and the "I've confirmed
+/// my email" button for a user who does not want to wait for the next tick.
+///
+/// ### Why the route is still called `otp`
+///
+/// `AppRoutes.otp` and the auth gate's redirect both name this screen, and the
+/// gate is what actually holds an unverified user here. Renaming the route
+/// would mean touching the gate's route sets for a cosmetic gain, so the path
+/// keeps its name while the screen no longer has anything to do with codes.
 class OtpScreen extends ConsumerStatefulWidget {
   const OtpScreen({super.key});
 
@@ -32,25 +48,25 @@ class OtpScreen extends ConsumerStatefulWidget {
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends ConsumerState<OtpScreen>
-    with SingleTickerProviderStateMixin {
-  static const int _length = 6;
-  static const int _resendSeconds = 30;
+class _OtpScreenState extends ConsumerState<OtpScreen> {
+  /// Firebase throttles re-sends to roughly one a minute, so the cooldown
+  /// matches it: a shorter button would just invite a request the backend
+  /// refuses.
+  static const int _resendSeconds = 60;
 
-  final List<TextEditingController> _controllers =
-      List<TextEditingController>.generate(_length, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes =
-      List<FocusNode>.generate(_length, (_) => FocusNode());
-
-  late final AnimationController _shake = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 520),
-  );
+  /// How often the screen asks the server whether the address is verified yet.
+  ///
+  /// Five seconds is the balance this needs: fast enough that a user who
+  /// confirms in their mail app and switches back sees the screen move on its
+  /// own, slow enough that an idle screen is not a busy loop against the auth
+  /// backend.
+  static const Duration _pollInterval = Duration(seconds: 5);
 
   int _secondsLeft = _resendSeconds;
   Timer? _countdown;
   Timer? _poll;
-  bool _verifying = false;
+  bool _checking = false;
+  bool _resending = false;
   bool _verified = false;
   String? _error;
 
@@ -58,8 +74,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
   void initState() {
     super.initState();
     _startCountdown();
-    // Poll from the moment the screen opens: the user may confirm in their mail
-    // client and come straight back.
+    // Poll from the moment the screen opens: the user may have already
+    // confirmed in their mail client before this screen was even reached.
     _startPolling();
   }
 
@@ -67,19 +83,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
   void dispose() {
     _countdown?.cancel();
     _poll?.cancel();
-    _shake.dispose();
-    for (final TextEditingController c in _controllers) {
-      c.dispose();
-    }
-    for (final FocusNode f in _focusNodes) {
-      f.dispose();
-    }
     super.dispose();
   }
-
-  String get _code => _controllers.map((TextEditingController c) => c.text).join();
-
-  bool get _isComplete => _code.length == _length;
 
   void _startCountdown() {
     _countdown?.cancel();
@@ -101,7 +106,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
   /// Watches for the server-side verified flag flipping.
   void _startPolling() {
     _poll?.cancel();
-    _poll = Timer.periodic(const Duration(seconds: 3), (Timer timer) async {
+    _poll = Timer.periodic(_pollInterval, (Timer timer) async {
       if (!mounted) {
         timer.cancel();
         return;
@@ -110,6 +115,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
         timer.cancel();
         return;
       }
+      // Never overlaps the manual check: both call `user.reload()`, and two
+      // reloads in flight at once is a wasted round trip, not a faster answer.
+      if (_checking) return;
       final bool done = await ref
           .read(authControllerProvider.notifier)
           .confirmEmailVerified();
@@ -122,10 +130,11 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
     if (_verified) return;
     setState(() {
       _verified = true;
-      _verifying = false;
+      _checking = false;
       _error = null;
     });
     _poll?.cancel();
+    _countdown?.cancel();
     // Let the checkmark finish its scale-in before moving on, so the success
     // state is actually seen rather than being a single-frame flash.
     await Future<void>.delayed(const Duration(milliseconds: 900));
@@ -135,22 +144,11 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
     context.go(AppRoutes.profileSetup);
   }
 
-  void _fail(String message) {
+  /// The manual "I've confirmed my email" path.
+  Future<void> _checkNow() async {
+    if (_verified || _checking) return;
     setState(() {
-      _error = message;
-      _verifying = false;
-    });
-    _shake.forward(from: 0);
-    HapticFeedback.heavyImpact();
-  }
-
-  Future<void> _verify() async {
-    if (!_isComplete) {
-      _fail('Enter all $_length digits from the email.');
-      return;
-    }
-    setState(() {
-      _verifying = true;
+      _checking = true;
       _error = null;
     });
 
@@ -160,61 +158,33 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
 
     if (!mounted) return;
     if (done) {
-      _onVerified();
+      await _onVerified();
       return;
     }
-    _fail(
-      'That code isn\'t confirmed yet. Tap the link in your email, then try '
-      'again.',
-    );
+    setState(() {
+      _checking = false;
+      _error = context.l10n.emailNotConfirmedYet;
+    });
   }
 
   Future<void> _resend() async {
+    if (_secondsLeft > 0 || _resending) return;
+    setState(() {
+      _resending = true;
+      _error = null;
+    });
+
     final AuthOutcome outcome =
         await ref.read(authControllerProvider.notifier).resendVerification();
+
     if (!mounted) return;
+    setState(() => _resending = false);
     if (outcome.isFailure) {
       iToast(context, outcome.error!, isError: true);
       return;
     }
-    iToast(context, context.l10n.aNewCodeIsOn);
+    iToast(context, context.l10n.emailResent);
     _startCountdown();
-  }
-
-  void _onDigitChanged(int index, String value) {
-    // Pasting the whole code lands in the first box; distribute it.
-    if (value.length > 1) {
-      final String digits = value.replaceAll(RegExp(r'[^0-9]'), '');
-      for (int i = 0; i < _length; i++) {
-        _controllers[i].text = i < digits.length ? digits[i] : '';
-      }
-      final int next = digits.length.clamp(0, _length - 1);
-      _focusNodes[next].requestFocus();
-      setState(() => _error = null);
-      if (_isComplete) _verify();
-      return;
-    }
-
-    setState(() => _error = null);
-    if (value.isNotEmpty && index < _length - 1) {
-      _focusNodes[index + 1].requestFocus();
-    }
-    if (_isComplete) _verify();
-  }
-
-  /// Backspace in an empty box steps back rather than doing nothing.
-  KeyEventResult _onKey(int index, KeyEvent event) {
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
-    if (event.logicalKey != LogicalKeyboardKey.backspace) {
-      return KeyEventResult.ignored;
-    }
-    if (_controllers[index].text.isEmpty && index > 0) {
-      _controllers[index - 1].clear();
-      _focusNodes[index - 1].requestFocus();
-      setState(() => _error = null);
-      return KeyEventResult.handled;
-    }
-    return KeyEventResult.ignored;
   }
 
   @override
@@ -244,7 +214,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                 color: Colors.white70,
               ),
             ),
-            const SizedBox(height: AppSpacing.xxl),
+            const SizedBox(height: AppSpacing.xl),
             FadeSlideIn(
               child: Center(
                 child: BrandIcon(
@@ -263,7 +233,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                   Text(
                     context.l10n.verifyYourEmail,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 25,
                       fontWeight: FontWeight.w700,
@@ -274,7 +244,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                   Text.rich(
                     TextSpan(
                       children: <InlineSpan>[
-                        TextSpan(text: context.l10n.weSentACodeTo),
+                        TextSpan(text: context.l10n.weSentAConfirmationLinkTo),
                         TextSpan(
                           text: email.isEmpty ? 'your email' : email,
                           style: const TextStyle(
@@ -294,47 +264,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.xxxl),
+            const SizedBox(height: AppSpacing.xl),
 
-            // ------------------------------------------------- otp boxes
+            // ------------------------------------------------ instructions
             FadeSlideIn(
               delay: const Duration(milliseconds: 120),
               child: _verified
                   ? const _SuccessCheck()
-                  : AnimatedBuilder(
-                      animation: _shake,
-                      builder: (BuildContext context, Widget? child) {
-                        // A damped horizontal shake: four decreasing swings
-                        // read as "no" without the violence of a full-amplitude
-                        // oscillation.
-                        final double t = _shake.value;
-                        final double offset = _error == null
-                            ? 0
-                            : (1 - t) *
-                                12 *
-                                (t < 0.5
-                                    ? (t * 8).round().isEven ? 1 : -1
-                                    : (t * 8).round().isOdd ? 1 : -1);
-                        return Transform.translate(
-                          offset: Offset(offset, 0),
-                          child: child,
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          for (int i = 0; i < _length; i++)
-                            _OtpBox(
-                              controller: _controllers[i],
-                              focusNode: _focusNodes[i],
-                              hasError: _error != null,
-                              enabled: !_verifying,
-                              onChanged: (String v) => _onDigitChanged(i, v),
-                              onKey: (KeyEvent event) => _onKey(i, event),
-                            ),
-                        ],
-                      ),
-                    ),
+                  : const _InstructionsCard(),
             ),
 
             AnimatedSize(
@@ -356,21 +293,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                     ),
             ),
 
-            const SizedBox(height: AppSpacing.xxl),
+            const SizedBox(height: AppSpacing.xl),
 
-            // Not a code field — an email confirmation link — so be explicit
-            // about what "verify" checks.
-            Text(
-              context.l10n.openTheLinkInThe2,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                height: 1.45,
-                color: Colors.white.withValues(alpha: 0.42),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
+            // ------------------------------------------------------ resend
             Center(
               child: _secondsLeft > 0
                   ? Text(
@@ -382,14 +307,14 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                       ),
                     )
                   : TextButton(
-                      onPressed: _resend,
+                      onPressed: _resending ? null : _resend,
                       style: TextButton.styleFrom(
                         minimumSize: const Size(0, 40),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text(
-                        context.l10n.resendNow,
-                        style: TextStyle(
+                        context.l10n.resendEmail,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: AppColors.accentLight,
@@ -398,12 +323,13 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
                     ),
             ),
 
-            const SizedBox(height: AppSpacing.xl),
+            const Spacer(),
+            const SizedBox(height: AppSpacing.lg),
             AuthPrimaryButton(
-              label: context.l10n.verify,
-              loading: _verifying,
+              label: context.l10n.iHaveConfirmedMyEmail,
+              loading: _checking,
               icon: Icons.verified_rounded,
-              onPressed: _verified ? null : _verify,
+              onPressed: _verified ? null : _checkNow,
             ),
             const SizedBox(height: AppSpacing.lg),
           ],
@@ -413,71 +339,72 @@ class _OtpScreenState extends ConsumerState<OtpScreen>
   }
 }
 
-/// One digit of the code.
-class _OtpBox extends StatelessWidget {
-  const _OtpBox({
-    required this.controller,
-    required this.focusNode,
-    required this.hasError,
-    required this.enabled,
-    required this.onChanged,
-    required this.onKey,
-  });
-
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final bool hasError;
-  final bool enabled;
-  final ValueChanged<String> onChanged;
-  final KeyEventResult Function(KeyEvent) onKey;
+/// The three-step explanation of what the user has to do.
+///
+/// A numbered card rather than a paragraph: the user is looking for the one
+/// action they are missing, and three lines they can scan find it faster than
+/// prose they have to read.
+class _InstructionsCard extends StatelessWidget {
+  const _InstructionsCard();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 46,
-      height: 58,
-      child: AnimatedContainer(
-        duration: AppDurations.fast,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.055),
-          borderRadius: AppRadius.rMd,
-          border: Border.all(
-            color: hasError
-                ? context.c.onDanger
-                : focusNode.hasFocus
-                    ? AppColors.accent
-                    : Colors.white.withValues(alpha: 0.12),
-            width: focusNode.hasFocus || hasError ? 1.6 : 1,
-          ),
-        ),
-        child: Focus(
-          onKeyEvent: (FocusNode node, KeyEvent event) => onKey(event),
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            enabled: enabled,
-            autofocus: false,
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 6,
-            inputFormatters: <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            cursorColor: AppColors.accent,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 23,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
+    final List<String> steps = <String>[
+      context.l10n.openYourInboxAndClickLink,
+      context.l10n.checkYourSpamFolder,
+      context.l10n.returnToAppAfterConfirming,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: AppRadius.rLg,
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          for (int i = 0; i < steps.length; i++) ...<Widget>[
+            if (i > 0) const SizedBox(height: AppSpacing.md),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 22,
+                  height: 22,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.accent.withValues(alpha: 0.16),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '${i + 1}',
+                    style: const TextStyle(
+                      color: AppColors.accentLight,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Text(
+                    steps[i],
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.78),
+                      fontSize: 13,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            decoration: const InputDecoration(
-              counterText: '',
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.zero,
-            ),
-            onChanged: onChanged,
-          ),
-        ),
+          ],
+        ],
       ),
     );
   }
@@ -490,7 +417,7 @@ class _SuccessCheck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 58,
+      height: 96,
       child: Center(
         child: TweenAnimationBuilder<double>(
           tween: Tween<double>(begin: 0, end: 1),
@@ -499,8 +426,8 @@ class _SuccessCheck extends StatelessWidget {
           builder: (BuildContext context, double value, Widget? child) =>
               Transform.scale(scale: value, child: child),
           child: Container(
-            width: 58,
-            height: 58,
+            width: 72,
+            height: 72,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: kAuthPrimaryGradient,
@@ -515,7 +442,7 @@ class _SuccessCheck extends StatelessWidget {
             child: const Icon(
               Icons.check_rounded,
               color: Colors.white,
-              size: 34,
+              size: 40,
             ),
           ),
         ),
