@@ -218,7 +218,8 @@ class PremiumPlan {
   ];
 }
 
-/// A user's points balance and premium state, as read from `users/{uid}`.
+/// A user's points balance, premium state and daily ad-allowance state, as read
+/// from `users/{uid}`.
 @immutable
 class PointsAccount {
   const PointsAccount({
@@ -227,6 +228,10 @@ class PointsAccount {
     this.isPremium = false,
     this.premiumUntil,
     this.adsWatchedToday = 0,
+    this.lastAdWatchedAt,
+    this.lastAdResetAt,
+    this.dailyAdLimit = 24,
+    this.adCooldownSeconds = 180,
   });
 
   final String uid;
@@ -241,9 +246,28 @@ class PointsAccount {
   /// When the current plan runs out, or null when there is none.
   final DateTime? premiumUntil;
 
-  /// Rewarded ads watched today, already reset to 0 when the stored day is
-  /// stale. The UI reads this directly to show "7 of 20 today".
+  /// Ads watched inside the current 24-hour window, already reset to 0 when the
+  /// window has rolled over. The UI reads this directly for "Today's ads: 7/24".
   final int adsWatchedToday;
+
+  /// When the last ad was completed. Drives the 3-minute cooldown.
+  ///
+  /// Server-stamped, so it is the same instant for every device signed into the
+  /// account. Null before the first ad ever watched.
+  final DateTime? lastAdWatchedAt;
+
+  /// When the current 24-hour window started.
+  ///
+  /// The window is anchored here rather than at midnight: the counter resets
+  /// exactly 24 hours after the *first* ad of the window, which is what makes
+  /// "come back in 24 hours" an honest statement.
+  final DateTime? lastAdResetAt;
+
+  /// How many ads the window allows.
+  final int dailyAdLimit;
+
+  /// How long the user must wait between two ads.
+  final int adCooldownSeconds;
 
   static const PointsAccount empty = PointsAccount();
 
@@ -262,6 +286,28 @@ class PointsAccount {
     final Duration left = until.difference(DateTime.now());
     return left.isNegative ? 0 : left.inDays;
   }
+
+  /// The window's length. Kept next to [lastAdResetAt] so the two cannot drift.
+  static const Duration adWindow = Duration(hours: 24);
+
+  Duration get adCooldown => Duration(seconds: adCooldownSeconds);
+
+  /// The daily allowance is used up.
+  bool get adLimitReached => adsWatchedToday >= dailyAdLimit;
+
+  /// When the current window rolls over, or null when no window is running.
+  DateTime? get adsResetAt => lastAdResetAt?.add(adWindow);
+
+  /// How long until the next ad may be watched.
+  ///
+  /// Zero when the button is free. The limit is *not* considered here — a caller
+  /// that needs "can I watch right now" must also check [adLimitReached].
+  Duration cooldownRemainingAt(DateTime now) {
+    final DateTime? last = lastAdWatchedAt;
+    if (last == null) return Duration.zero;
+    final Duration left = last.add(adCooldown).difference(now);
+    return left.isNegative ? Duration.zero : left;
+  }
 }
 
 /// The outcome of trying to claim a rewarded-ad payout.
@@ -269,8 +315,11 @@ enum AdRewardOutcome {
   /// Points were granted.
   granted,
 
-  /// The daily cap is already used up.
+  /// The 24-hour window's allowance is already used up.
   dailyLimitReached,
+
+  /// Not enough time has passed since the previous ad.
+  cooldown,
 
   /// No signed-in account to credit.
   notSignedIn,
@@ -288,6 +337,7 @@ class AdRewardResult {
     this.balance = 0,
     this.adsWatchedToday = 0,
     this.message = '',
+    this.retryAfter,
   });
 
   final AdRewardOutcome outcome;
@@ -299,6 +349,10 @@ class AdRewardResult {
 
   final int adsWatchedToday;
   final String message;
+
+  /// When the next ad becomes available, for [AdRewardOutcome.cooldown] and
+  /// [AdRewardOutcome.dailyLimitReached]. Null for the other outcomes.
+  final DateTime? retryAfter;
 
   bool get isSuccess => outcome == AdRewardOutcome.granted;
 }

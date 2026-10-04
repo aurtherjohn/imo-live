@@ -42,6 +42,7 @@ import '../features/misc/presentation/splash_screen.dart';
 import '../features/profile/presentation/edit_profile_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/misc/presentation/global_search_screen.dart';
+import '../features/premium/presentation/premium_screen.dart';
 import '../features/settings/presentation/account_settings_screen.dart';
 import '../features/settings/presentation/appearance_screen.dart';
 import '../features/settings/presentation/blocked_contacts_screen.dart';
@@ -385,6 +386,12 @@ final GoRouter appRouter = GoRouter(
       name: 'subscriptions',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const SubscriptionsScreen()),
+    ),
+    GoRoute(
+      path: AppRoutes.premium,
+      name: 'premium',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const PremiumScreen()),
     ),
 
     // ----------------------------------------------------------- profile

@@ -311,6 +311,30 @@ class LocalDatabase {
     }
   }
 
+  /// Wipes **every** box, including the settings and profile boxes.
+  ///
+  /// This is the sign-out path, and it is deliberately wider than [clearAll].
+  /// The reported bug was the previous account's chats, contacts, profile and
+  /// phone number still being on screen after signing in as somebody else, and
+  /// the cause was that nothing local was cleared at all. Clearing only the
+  /// "content" boxes would have fixed the visible half and left the profile box
+  /// — which holds the signed-in user's own name, phone and avatar — as the
+  /// next leak.
+  ///
+  /// The cost is that device-level preferences (theme, language, wallpaper)
+  /// reset to their defaults on sign-out. That is a real regression, and it is
+  /// accepted on purpose: this app has no per-device preference store separate
+  /// from the per-user one, so keeping the settings box is keeping a slice of
+  /// the previous account.
+  ///
+  /// Boxes are cleared rather than deleted from disk so they stay open for the
+  /// next account and no caller has to re-run [init].
+  Future<void> clearUserData() async {
+    for (final String name in _allBoxes) {
+      await clearBox(name);
+    }
+  }
+
   /// Rough on-disk footprint of the key-value store, in bytes.
   int estimateBytes() {
     int total = 0;

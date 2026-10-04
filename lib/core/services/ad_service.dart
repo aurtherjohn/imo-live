@@ -5,39 +5,87 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// Every AdMob unit id this app uses.
 ///
-/// ## Test ids, deliberately
+/// ## Debug uses Google's test units, release uses ours
 ///
-/// These are Google's **official published test units**. They serve real ads
-/// that pay nothing, which is exactly what a development build wants: a real
-/// unit id used from a device that is not registered as a test device is how
-/// projects get an invalid-traffic strike, and a strike is not appealable in
-/// practice.
+/// A real unit id served from a device that AdMob has not been told is a test
+/// device is how a project collects an invalid-traffic strike, and a strike is
+/// not appealable. So the ids are selected on [kDebugMode]:
 ///
-/// ## TODO: replace before production
+///   * **debug / profile** — Google's published test units. Real ad requests,
+///     no revenue, zero strike risk. Every unit renders the "Test Ad" label.
+///   * **release** — the project's own units. These are the only ids that can
+///     earn, and the only ones that must never be exercised from a debug build.
 ///
-/// Replace every id here **and** the `com.google.android.gms.ads.APPLICATION_ID`
-/// value in `android/app/src/main/AndroidManifest.xml` with the project's own
-/// AdMob ids. Nothing else has to change — every call site reads through
-/// [AdIds], so this file is the single swap point.
+/// The app id in `AndroidManifest.xml` is a build-time constant and cannot be
+/// switched at runtime, so it is the **real** app id (`ca-app-pub-1422297723856857`).
+/// That combination is the correct one: the SDK is initialised for the real
+/// account, while every ad *request* in a debug build still goes to a test
+/// unit. An invalid-traffic strike is triggered by real units, not by a real
+/// app id.
+///
+/// Every call site reads through [AdIds], so this file is the single swap
+/// point — see also `RewardedAdService`, which reads [rewarded] and
+/// [rewardedInterstitial] rather than holding its own copy.
 class AdIds {
   const AdIds._();
 
-  static const String androidAppId = 'ca-app-pub-3940256099942544~3347511713';
+  // ------------------------------------------------------- Google test units
+  //
+  // Published by Google for exactly this purpose. Safe to ship in a debug
+  // build, and useless (deliberately) in a release one.
 
-  static const String androidInterstitial =
+  static const String testAndroidAppId =
+      'ca-app-pub-3940256099942544~3347511713';
+  static const String _testAndroidInterstitial =
       'ca-app-pub-3940256099942544/1033173712';
-  static const String androidRewarded = 'ca-app-pub-3940256099942544/5224354917';
+  static const String _testAndroidRewarded =
+      'ca-app-pub-3940256099942544/5224354917';
+  static const String _testAndroidRewardedInterstitial =
+      'ca-app-pub-3940256099942544/5354046379';
+  static const String _testIosInterstitial =
+      'ca-app-pub-3940256099942544/4411468910';
+  static const String _testIosRewarded =
+      'ca-app-pub-3940256099942544/1712485313';
+  static const String _testIosRewardedInterstitial =
+      'ca-app-pub-3940256099942544/6978759866';
 
-  /// iOS equivalent of the interstitial unit above.
-  static const String iosInterstitial = 'ca-app-pub-3940256099942544/4411468910';
-  static const String iosRewarded = 'ca-app-pub-3940256099942544/1712485313';
+  // --------------------------------------------------------- project's units
+  //
+  // Imo LIVE — AdMob account `ca-app-pub-1422297723856857`.
+
+  /// The AdMob application id. Must match
+  /// `com.google.android.gms.ads.APPLICATION_ID` in `AndroidManifest.xml`.
+  static const String appId = 'ca-app-pub-1422297723856857~4467434947';
+
+  static const String interstitialAndroid =
+      'ca-app-pub-1422297723856857/9498512184';
+  static const String rewardedAndroid =
+      'ca-app-pub-1422297723856857/9604211556';
+  static const String rewardedInterstitialAndroid =
+      'ca-app-pub-1422297723856857/2028973866';
+
+  /// iOS has no unit of its own yet — the project ships Android only. Falling
+  /// back to the Android ids keeps this a compile-time error-free swap point
+  /// rather than a null; an iOS release needs real iOS units added here.
+  static const String interstitialIos = interstitialAndroid;
+  static const String rewardedIos = rewardedAndroid;
+  static const String rewardedInterstitialIos = rewardedInterstitialAndroid;
 
   /// Uses [defaultTargetPlatform] rather than `dart:io`'s `Platform` so the
   /// ids can be read in a unit test, where there is no platform.
   static bool get _isIOS => defaultTargetPlatform == TargetPlatform.iOS;
 
-  static String get interstitial => _isIOS ? iosInterstitial : androidInterstitial;
-  static String get rewarded => _isIOS ? iosRewarded : androidRewarded;
+  static String get interstitial => kDebugMode
+      ? (_isIOS ? _testIosInterstitial : _testAndroidInterstitial)
+      : (_isIOS ? interstitialIos : interstitialAndroid);
+
+  static String get rewarded => kDebugMode
+      ? (_isIOS ? _testIosRewarded : _testAndroidRewarded)
+      : (_isIOS ? rewardedIos : rewardedAndroid);
+
+  static String get rewardedInterstitial => kDebugMode
+      ? (_isIOS ? _testIosRewardedInterstitial : _testAndroidRewardedInterstitial)
+      : (_isIOS ? rewardedInterstitialIos : rewardedInterstitialAndroid);
 }
 
 /// The event that made an interstitial a candidate.

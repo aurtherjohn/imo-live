@@ -589,13 +589,11 @@ class _TopBar extends StatelessWidget {
             icon: const Icon(Icons.menu_rounded),
             tooltip: context.l10n.menu,
           ),
-          // The brand mark sits with the title rather than replacing it: the
-          // wordmark is what makes the header scannable, and the mark is what
-          // makes it recognisable. Unlabelled for semantics — the adjacent text
-          // already announces the app name, and labelling both would make a
-          // screen reader say "Imo LIVE, Imo LIVE".
-          BrandMark(size: 26),
-          const SizedBox(width: AppSpacing.sm),
+          // Text-only wordmark, by request. The logo used to sit beside it, but
+          // the mark plus the name read as two competing brand elements in a
+          // 58dp bar. The rest of the app keeps its branding (splash, auth,
+          // About, the QR plate); only this header is wordmark-only.
+          const SizedBox(width: AppSpacing.xs),
           Expanded(
             child: Text(
               AppConstants.appName,

@@ -129,13 +129,17 @@
           AdMob application id — required by google_mobile_ads. Without this
           entry the SDK aborts the process on first launch.
 
-          ⚠️ This is Google's official *test* app id. Replace it with the real
-          AdMob app id before shipping, and replace the rewarded ad unit id in
-          lib/features/earn/domain/ad_config.dart at the same time.
+          This is the project's REAL AdMob app id (account
+          ca-app-pub-1422297723856857). It is a build-time constant and cannot
+          be switched at runtime, so it is always the real one — which is safe,
+          because invalid-traffic strikes are triggered by serving real *ad
+          units*, not by a real app id. Every ad request from a debug build
+          still uses Google's test units; see `AdIds` in
+          lib/core/services/ad_service.dart, which is the single swap point.
         -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-1422297723856857~4467434947"/>
 
         <meta-data android:name="flutterEmbedding" android:value="2" />
 

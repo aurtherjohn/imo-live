@@ -169,8 +169,23 @@ class E2eeService {
   /// Shown in place of a body that could not be opened.
   static const String undecryptablePreview = 'Could not decrypt this message';
 
-  static const String _privateKeyStorageKey = 'imo_e2ee_private_key';
-  static const String _publicKeyStorageKey = 'imo_e2ee_public_key';
+  /// ⚠️ The key material is stored **per uid**, not per device.
+  ///
+  /// It used to be two fixed keys, which meant every account on the device
+  /// shared one identity: account B, signing in after account A, would read
+  /// A's private key out of the keystore and publish A's public key as its own.
+  /// That is an account-isolation defect — the two accounts' messages became
+  /// mutually readable — and it is why the key names carry the uid.
+  ///
+  /// The unsuffixed names are kept only as a migration source: the first run
+  /// after this change adopts an existing identity under the uid that is
+  /// signed in, then deletes the legacy entry so a later account cannot adopt
+  /// it. See [ensureIdentity].
+  static const String _legacyPrivateKeyStorageKey = 'imo_e2ee_private_key';
+  static const String _legacyPublicKeyStorageKey = 'imo_e2ee_public_key';
+
+  static String _privateKeyStorageKey(String uid) => 'imo_e2ee_private_key_$uid';
+  static String _publicKeyStorageKey(String uid) => 'imo_e2ee_public_key_$uid';
 
   /// AES-GCM; 12-byte nonce, 128-bit tag, as required by the cipher.
   static final AesGcm _aes = AesGcm.with256bits();
@@ -227,12 +242,12 @@ class E2eeService {
 
     try {
       final FlutterSecureStorage store = _storage;
-      final String? privateB64 = await store.read(key: _privateKeyStorageKey);
-      final String? publicB64 = await store.read(key: _publicKeyStorageKey);
+      final ({String? private, String? public}) stored =
+          await _readIdentity(store, uid);
 
-      if (privateB64 != null && publicB64 != null) {
-        final Uint8List? private = E2eeEnvelope._decode(privateB64);
-        final Uint8List? public = E2eeEnvelope._decode(publicB64);
+      if (stored.private != null && stored.public != null) {
+        final Uint8List? private = E2eeEnvelope._decode(stored.private!);
+        final Uint8List? public = E2eeEnvelope._decode(stored.public!);
         if (private != null &&
             public != null &&
             private.length == 32 &&
@@ -253,11 +268,11 @@ class E2eeService {
       final Uint8List privateBytes = Uint8List.fromList(private);
 
       await store.write(
-        key: _privateKeyStorageKey,
+        key: _privateKeyStorageKey(uid),
         value: base64Url.encode(privateBytes),
       );
       await store.write(
-        key: _publicKeyStorageKey,
+        key: _publicKeyStorageKey(uid),
         value: base64Url.encode(publicBytes),
       );
 
@@ -268,6 +283,70 @@ class E2eeService {
       // A missing keystore (some Android emulators, a rooted device) must not
       // take messaging down with it. Encryption simply stays unavailable.
       debugPrint('E2EE identity unavailable: $error');
+    }
+  }
+
+  /// Reads this uid's stored identity, migrating a pre-per-uid one if needed.
+  ///
+  /// The migration exists so that the change to per-uid key names does not
+  /// orphan every message already sealed on this device: the very first
+  /// `ensureIdentity` after the upgrade finds the old fixed-name entry, adopts
+  /// it under the signed-in uid, and **deletes the old entry**. Deleting it is
+  /// the part that matters — leaving it in place would let the next account to
+  /// sign in adopt the same key, which is the defect this whole change fixes.
+  Future<({String? private, String? public})> _readIdentity(
+    FlutterSecureStorage store,
+    String uid,
+  ) async {
+    final String? ownPrivate =
+        await store.read(key: _privateKeyStorageKey(uid));
+    final String? ownPublic = await store.read(key: _publicKeyStorageKey(uid));
+    if (ownPrivate != null && ownPublic != null) {
+      return (private: ownPrivate, public: ownPublic);
+    }
+
+    final String? legacyPrivate =
+        await store.read(key: _legacyPrivateKeyStorageKey);
+    final String? legacyPublic =
+        await store.read(key: _legacyPublicKeyStorageKey);
+    if (legacyPrivate == null || legacyPublic == null) {
+      return (private: null, public: null);
+    }
+
+    await store.write(key: _privateKeyStorageKey(uid), value: legacyPrivate);
+    await store.write(key: _publicKeyStorageKey(uid), value: legacyPublic);
+    await purgeLegacyKeys();
+    debugPrint('E2EE: adopted the pre-per-uid identity for $uid');
+    return (private: legacyPrivate, public: legacyPublic);
+  }
+
+  /// Deletes the pre-per-uid key material, if any is still on the device.
+  ///
+  /// Called on sign-out as well as after a migration, so a device that upgrades
+  /// and then switches accounts cannot hand the first account's private key to
+  /// the second.
+  Future<void> purgeLegacyKeys() async {
+    try {
+      final FlutterSecureStorage store = _storage;
+      await store.delete(key: _legacyPrivateKeyStorageKey);
+      await store.delete(key: _legacyPublicKeyStorageKey);
+    } on Object catch (error) {
+      debugPrint('E2EE: purging legacy keys failed: $error');
+    }
+  }
+
+  /// Deletes [uid]'s stored key pair. Used by account deletion, never by a plain
+  /// sign-out — the key has to survive that, or signing back in could not read
+  /// the account's own history.
+  Future<void> forgetStoredIdentity(String uid) async {
+    if (uid.isEmpty) return;
+    try {
+      final FlutterSecureStorage store = _storage;
+      await store.delete(key: _privateKeyStorageKey(uid));
+      await store.delete(key: _publicKeyStorageKey(uid));
+      if (uid == _uid) reset();
+    } on Object catch (error) {
+      debugPrint('E2EE: forgetting $uid failed: $error');
     }
   }
 

@@ -3,12 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/gift.dart';
 import '../../../core/services/ad_service.dart';
 import '../../../core/services/points_service.dart';
+import '../../../core/services/premium_service.dart';
 import '../../../core/services/rewarded_ad_service.dart';
 import '../../auth/presentation/auth_providers.dart';
 
 /// Points, premium and gifting, backed by Firestore.
 final Provider<PointsService> pointsServiceProvider =
     Provider<PointsService>((Ref ref) => PointsService());
+
+/// Premium purchases: the manual payment rail, the points rail and the
+/// entitlement. Separate from [pointsServiceProvider] because it owns its own
+/// collection (`premium_requests`) — the points service only knows the ledger.
+final Provider<PremiumService> premiumServiceProvider =
+    Provider<PremiumService>((Ref ref) => PremiumService());
+
+/// The signed-in user's own premium purchase requests, newest first.
+///
+/// Watched rather than fetched so an admin approving a request updates the
+/// screen without a reload.
+final StreamProvider<List<PremiumRequest>> premiumRequestsProvider =
+    StreamProvider<List<PremiumRequest>>((Ref ref) {
+  final String uid = ref.watch(currentUidProvider);
+  return ref.watch(premiumServiceProvider).watchMyRequests(uid);
+});
 
 /// The session-wide AdMob service — banner factory, interstitial pacing and the
 /// foreground clock.

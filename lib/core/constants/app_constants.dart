@@ -172,6 +172,7 @@ class AppRoutes {
   static const String blocked = '/settings/blocked';
   static const String wallpaper = '/settings/wallpaper';
   static const String subscriptions = '/settings/subscriptions';
+  static const String premium = '/settings/premium';
 
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';

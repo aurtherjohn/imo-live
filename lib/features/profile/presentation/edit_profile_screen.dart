@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_color_scheme.dart';
 import '../../../app/theme/app_tokens.dart';
 import '../../../core/models/contact.dart';
+import '../../../core/services/firebase_auth_service.dart';
 import '../../../core/services/media_service.dart';
+import '../../../core/services/storage_service.dart';
 import '../../../core/widgets/camera_sheet.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
+import '../../auth/presentation/auth_providers.dart';
 import '../../settings/presentation/widgets/settings_widgets.dart';
 import '../../chats/presentation/providers.dart';
 import '../../contacts/presentation/dialogs/confirm_dialog.dart';
@@ -31,6 +34,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Contact _original = const Contact(id: 'self', firstName: 'You');
   String? _avatarPath;
+
+  /// The R2 **public URL** of a photo picked in this session, or null when the
+  /// user has not changed it.
+  ///
+  /// Distinct from [_avatarPath] on purpose, and the distinction is the whole
+  /// profile-picture bug: `avatarPath` is a device-local file path, which is
+  /// what the editor and this device render, while `avatarUrl` is the only
+  /// thing another account can fetch. Before this field existed, picking a
+  /// photo stored the local path and uploaded the bytes to R2 *without keeping
+  /// the URL it returned* — so `users/{uid}.avatarUrl` was never written and
+  /// nobody else could ever see the picture.
+  ///
+  /// Null means "unchanged", so saving a name edit cannot blank out an avatar
+  /// that was set on another device (or by Google at sign-in).
+  String? _avatarUrl;
+
+  /// True while the picked photo is uploading, so the UI can show progress
+  /// instead of appearing frozen.
+  bool _uploadingAvatar = false;
+
   bool _ready = false;
   bool _saving = false;
 
@@ -76,16 +99,32 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.dispose();
   }
 
+  /// True when anything the user may actually change has been edited.
+  ///
+  /// The phone number is deliberately absent: it is fixed at signup and the
+  /// field is read-only, so counting it here would leave "Save" permanently
+  /// enabled (or, worse, permanently disabled) for a value nobody can move.
   bool get _dirty =>
       _first.text.trim() != _original.firstName ||
       _last.text.trim() != _original.lastName ||
       _username.text.trim() != _original.username ||
-      _phone.text.trim() != _original.phone ||
       _bio.text.trim() != _original.bio ||
-      _avatarPath != _original.avatarPath;
+      _avatarPath != _original.avatarPath ||
+      _avatarUrl != null;
 
   bool get _valid => _first.text.trim().isNotEmpty;
 
+  /// Saves locally **and** publishes the change to `users/{uid}`.
+  ///
+  /// The local write is what this device renders immediately. The Firestore
+  /// write is what every other account reads — without it the name, handle,
+  /// about text and avatar only ever existed on one phone, which is why a
+  /// second device saw a blank profile for a user who had clearly filled one
+  /// in.
+  ///
+  /// `avatarUrl` is only sent when the user actually picked a photo this
+  /// session (see [_avatarUrl]), so an ordinary name edit cannot wipe an avatar
+  /// set elsewhere.
   Future<void> _save() async {
     if (!_valid) {
       iToast(context, context.l10n.aFirstNameIsRequired, isError: true);
@@ -93,20 +132,62 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
     setState(() => _saving = true);
 
+    final String first = _first.text.trim();
+    final String last = _last.text.trim();
+    final String fullName = <String>[first, last]
+        .where((String part) => part.isNotEmpty)
+        .join(' ');
+
     await ref.read(selfProfileProvider.notifier).save(
           _original.copyWith(
-            firstName: _first.text.trim(),
-            lastName: _last.text.trim(),
+            firstName: first,
+            lastName: last,
             username: _username.text.trim(),
-            phone: _phone.text.trim(),
+            // The stored number is the signup one, never the field's contents —
+            // the field is read-only, so re-sending it would only risk writing
+            // a stale value back over a number changed by support.
+            phone: _original.phone,
             bio: _bio.text.trim(),
             avatarPath: _avatarPath,
             isSelf: true,
           ),
         );
 
+    String? remoteError;
+    try {
+      await ref.read(firebaseAuthServiceProvider).updateProfile(
+            name: fullName.isEmpty ? _original.fullName : fullName,
+            username: _username.text.trim(),
+            bio: _bio.text.trim(),
+            avatarUrl: _avatarUrl,
+          );
+    } on AuthException catch (error) {
+      // The common case is a taken @handle. The local save already happened, so
+      // the honest report is "saved here, not published" rather than a blanket
+      // failure.
+      remoteError = error.message;
+    } on Object catch (error) {
+      debugPrint('Publishing profile to Firestore failed: $error');
+      remoteError = 'Your profile was saved on this device but could not be '
+          'published. Check your connection and save again.';
+    }
+
     if (!mounted) return;
-    setState(() => _saving = false);
+    setState(() {
+      _saving = false;
+      _original = _original.copyWith(
+        firstName: first,
+        lastName: last,
+        username: _username.text.trim(),
+        bio: _bio.text.trim(),
+      );
+      _avatarUrl = null;
+    });
+
+    if (remoteError != null) {
+      iToast(context, remoteError, isError: true);
+      return;
+    }
     iToast(context, context.l10n.profileUpdated);
     if (context.canPop()) context.pop();
   }
@@ -164,7 +245,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       right: 0,
                       bottom: 0,
                       child: GestureDetector(
-                        onTap: () => _pickPhoto(fromCamera: true),
+                        onTap: _uploadingAvatar
+                            ? null
+                            : () => _pickPhoto(fromCamera: true),
                         child: Container(
                           width: 38,
                           height: 38,
@@ -176,11 +259,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               width: 3,
                             ),
                           ),
-                          child: const Icon(
-                            Icons.photo_camera_rounded,
-                            size: 17,
-                            color: Colors.white,
-                          ),
+                          child: _uploadingAvatar
+                              ? const Padding(
+                                  padding: EdgeInsets.all(9),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(
+                                  Icons.photo_camera_rounded,
+                                  size: 17,
+                                  color: Colors.white,
+                                ),
                         ),
                       ),
                     ),
@@ -316,13 +407,73 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             capitalization: TextCapitalization.none,
             onChanged: () => setState(() {}),
           ),
-          _ProfileField(
-            controller: _phone,
-            label: context.l10n.phone,
-            hint: context.l10n.eG8801711234567,
-            keyboardType: TextInputType.phone,
-            maxLength: 20,
-            onChanged: () => setState(() {}),
+          // ------------------------------------------------------------ phone
+          //
+          // Locked on purpose. The number is the account's credential — it is
+          // what the derived sign-in address is built from — so allowing it to
+          // be edited here would let a user point their login at a number they
+          // do not own, or strand themselves with an address they can no longer
+          // authenticate against. Changing it is a support operation, not a
+          // profile edit.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.xl,
+              AppSpacing.lg,
+              0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.lock_rounded,
+                      size: 13,
+                      color: context.c.textSecondary,
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        context.l10n.phone.toUpperCase(),
+                        style: context.t.labelMedium?.copyWith(
+                          color: context.c.textSecondary,
+                          letterSpacing: 0.7,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                ITextField(
+                  controller: _phone,
+                  hint: context.l10n.eG8801711234567,
+                  keyboardType: TextInputType.phone,
+                  maxLength: 20,
+                  enabled: false,
+                  suffix: Icon(
+                    Icons.lock_rounded,
+                    size: 16,
+                    color: context.c.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Phone number cannot be changed.',
+                  style: context.t.bodySmall?.copyWith(
+                    color: context.c.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Contact support to change your phone number.',
+                  style: context.t.bodySmall?.copyWith(
+                    color: context.c.textSecondary.withValues(alpha: 0.8),
+                  ),
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(height: AppSpacing.xl),
@@ -354,7 +505,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   ///
   /// `fromCamera` used to be ignored entirely, so the camera badge opened the
   /// gallery picker — indistinguishable from the button right below it.
+  ///
+  /// ### Why the upload is awaited here and not deferred
+  ///
+  /// This is the one place a local path is not enough. An avatar has to be
+  /// *fetchable by other accounts*, so the file must reach R2 before the save
+  /// can promise anything, and the URL R2 returns is what gets written to
+  /// `users/{uid}.avatarUrl`. The old code fired the upload off with `unawaited`
+  /// and threw the returned URL away, which is why the picture never left the
+  /// device. The cost is a spinner for the duration of the upload, which is
+  /// exactly what [_uploadingAvatar] is for.
   Future<void> _pickPhoto({bool fromCamera = false}) async {
+    if (_uploadingAvatar) return;
+
     final MediaService media = ref.read(mediaServiceProvider);
     final MediaPickResult result = fromCamera
         ? await media.capturePhoto()
@@ -377,9 +540,36 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       iToast(context, context.l10n.couldNotReadTheSelected, isError: true);
       return;
     }
+
+    // The local copy is imported first so the avatar renders instantly and
+    // survives a failed upload.
     final String stored = await ref.read(mediaRepositoryProvider).upload(path);
     if (!mounted) return;
-    setState(() => _avatarPath = stored);
+    setState(() {
+      _avatarPath = stored;
+      _uploadingAvatar = true;
+    });
+
+    final String uid = ref.read(currentUidProvider);
+    final String? url = uid.isEmpty
+        ? null
+        : await ref.read(storageServiceProvider).uploadAvatar(stored, uid);
+
+    if (!mounted) return;
+    setState(() {
+      _uploadingAvatar = false;
+      if (url != null && url.isNotEmpty) _avatarUrl = url;
+    });
+
+    if (url == null || url.isEmpty) {
+      iToast(
+        context,
+        'The photo was saved on this device but could not be uploaded, so '
+        'others will not see it yet. Check your connection and try again.',
+        isError: true,
+      );
+      return;
+    }
     iToast(context, context.l10n.photoUpdatedTapSaveTo);
   }
 }
@@ -393,7 +583,6 @@ class _ProfileField extends StatelessWidget {
     this.prefix,
     this.maxLines = 1,
     this.maxLength,
-    this.keyboardType,
     this.capitalization = TextCapitalization.sentences,
     this.onChanged,
     this.hideLabel = false,
@@ -405,7 +594,6 @@ class _ProfileField extends StatelessWidget {
   final String? prefix;
   final int maxLines;
   final int? maxLength;
-  final TextInputType? keyboardType;
   final TextCapitalization capitalization;
   final VoidCallback? onChanged;
   final bool hideLabel;
@@ -438,7 +626,6 @@ class _ProfileField extends StatelessWidget {
             hint: hint,
             maxLines: maxLines,
             maxLength: maxLength,
-            keyboardType: keyboardType,
             textCapitalization: capitalization,
             onChanged: (_) => onChanged?.call(),
           ),

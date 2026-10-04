@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import 'e2ee_service.dart';
+import '../utils/stream_retry.dart';
 
 /// Transport-level state of an outgoing message, mirrored in Firestore.
 ///
@@ -297,29 +298,41 @@ class FirestoreChatService {
   /// everything downstream of this stream (the local cache, the chat screen)
   /// only ever sees readable text. Decryption needs `await`, which is why this
   /// is `asyncMap` and not `map`.
+  ///
+  /// ⚠️ Wrapped in [retryStream], not `handleError`. This listener is the *only*
+  /// way a message written on another device reaches this one, and it used to
+  /// be a bare `handleError` — which, because a returning handler marks the
+  /// error handled, closed the listener permanently on the first transient
+  /// failure. The user-visible symptom was exactly "messages stopped arriving
+  /// and only a restart brought them back". See [retryStream].
   Stream<List<RemoteMessage>> watchMessages(String chatId, {int limit = 200}) {
     final FirebaseFirestore? db = _db;
     if (db == null || chatId.isEmpty) {
       return Stream<List<RemoteMessage>>.value(const <RemoteMessage>[]);
     }
-    return db
-        .collection(chatsCollection)
-        .doc(chatId)
-        .collection(messagesSubcollection)
-        .orderBy('timestamp', descending: true)
-        .limit(limit)
-        .snapshots()
-        .asyncMap((QuerySnapshot<Map<String, dynamic>> snapshot) async {
-      final List<RemoteMessage> messages = <RemoteMessage>[];
-      for (final DocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
-        final RemoteMessage? message = RemoteMessage.fromDoc(chatId, doc);
-        if (message == null) continue;
-        messages.add(await _openIfSealed(message));
-      }
-      return messages.reversed.toList(growable: false);
-    }).handleError((Object error) {
-      debugPrint('watchMessages($chatId) failed: $error');
-    });
+    return retryStream<List<RemoteMessage>>(
+      () => db
+          .collection(chatsCollection)
+          .doc(chatId)
+          .collection(messagesSubcollection)
+          .orderBy('timestamp', descending: true)
+          .limit(limit)
+          .snapshots()
+          .asyncMap((QuerySnapshot<Map<String, dynamic>> snapshot) async {
+        final List<RemoteMessage> messages = <RemoteMessage>[];
+        for (final DocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+          final RemoteMessage? message = RemoteMessage.fromDoc(chatId, doc);
+          if (message == null) continue;
+          messages.add(await _openIfSealed(message));
+        }
+        return messages.reversed.toList(growable: false);
+      }),
+      // Unbounded: the screen cancels this when it closes, and until then a
+      // dropped connection must not be allowed to end the conversation.
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('watchMessages($chatId) failed (attempt $attempt): $error'),
+    );
   }
 
   /// Replaces a sealed body with its plaintext, or an honest placeholder when
@@ -344,22 +357,30 @@ class FirestoreChatService {
   }
 
   /// Live conversations the user takes part in.
+  ///
+  /// ⚠️ Also wrapped in [retryStream]. This one matters as much as the message
+  /// listener: `liveChatsStreamProvider` consumes it with `await for`, so an
+  /// error that escaped here would tear down the whole chat-list stream — a
+  /// conversation started on another device would simply never appear, with no
+  /// error on screen. See [retryStream].
   Stream<List<RemoteChat>> watchChats(String uid) {
     final FirebaseFirestore? db = _db;
     if (db == null || uid.isEmpty) {
       return Stream<List<RemoteChat>>.value(const <RemoteChat>[]);
     }
-    return db
-        .collection(chatsCollection)
-        .where('participants', arrayContains: uid)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
-            .map(RemoteChat.fromDoc)
-            .whereType<RemoteChat>()
-            .toList(growable: false))
-        .handleError((Object error) {
-      debugPrint('watchChats($uid) failed: $error');
-    });
+    return retryStream<List<RemoteChat>>(
+      () => db
+          .collection(chatsCollection)
+          .where('participants', arrayContains: uid)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+              .map(RemoteChat.fromDoc)
+              .whereType<RemoteChat>()
+              .toList(growable: false)),
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('watchChats($uid) failed (attempt $attempt): $error'),
+    );
   }
 
   /// Writes a message, marks it `sent`, and updates the chat header.
@@ -376,7 +397,13 @@ class FirestoreChatService {
   /// When it is present but the peer has published no key, [E2eeService.seal]
   /// returns null and the message goes out in the clear rather than not going
   /// out at all.
-  Future<void> sendMessage({
+  ///
+  /// Returns `true` when the message and the chat header were written, `false`
+  /// when the write failed. The result used to be discarded, which is why a
+  /// message that never reached Firestore still showed a single "sent" tick
+  /// forever — indistinguishable from a delivered one. [ChatService] turns a
+  /// `false` into a visible `failed` state.
+  Future<bool> sendMessage({
     required String chatId,
     required String messageId,
     required String senderId,
@@ -388,7 +415,7 @@ class FirestoreChatService {
     String? peerUid,
   }) async {
     final FirebaseFirestore? db = _db;
-    if (db == null) return;
+    if (db == null) return false;
     final DocumentReference<Map<String, dynamic>> chat =
         db.collection(chatsCollection).doc(chatId);
 
@@ -438,8 +465,10 @@ class FirestoreChatService {
         },
         SetOptions(merge: true),
       );
+      return true;
     } on Object catch (error) {
       debugPrint('sendMessage($chatId/$messageId) failed: $error');
+      return false;
     }
   }
 

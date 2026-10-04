@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import '../utils/stream_retry.dart';
+
 /// Where a call document has got to.
 ///
 /// Mirrored into `calls/{callId}.status` as [name].
@@ -478,30 +480,22 @@ class CallSignalingService {
   ///
   /// A permanent cause — a missing composite index, a rules denial — costs
   /// [attempts] quick failures and then surfaces. Visible beats silent.
+  ///
+  /// Delegates to [retryStream] so there is one implementation of this pattern
+  /// rather than one per service. `maxDelay: delay` keeps the fixed interval
+  /// this call path has always used; the shared helper's backoff is opt-in.
   @visibleForTesting
   static Stream<T> retrying<T>(
     Stream<T> Function() open, {
     int attempts = ringAttempts,
     Duration delay = const Duration(seconds: 2),
     void Function(Object error, int attempt)? onError,
-  }) async* {
-    for (int attempt = 1; attempt <= attempts; attempt++) {
-      try {
-        // `await for` and not `yield*`: an error from a `yield*` source is
-        // forwarded straight to the consumer and the `yield*` expression itself
-        // completes normally, so a `catch` around it never fires and the retry
-        // would silently never happen. `await for` rethrows it here, where it
-        // can be handled.
-        await for (final T value in open()) {
-          yield value;
-        }
-        // The source completed on its own; there is nothing to retry.
-        return;
-      } on Object catch (error) {
-        onError?.call(error, attempt);
-        if (attempt == attempts) rethrow;
-      }
-      await Future<void>.delayed(delay);
-    }
-  }
+  }) =>
+      retryStream<T>(
+        open,
+        attempts: attempts,
+        delay: delay,
+        maxDelay: delay,
+        onError: onError,
+      );
 }

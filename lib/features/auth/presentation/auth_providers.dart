@@ -13,7 +13,16 @@ import '../../../core/services/firebase_auth_service.dart';
 import '../../../core/services/firestore_chat_service.dart';
 import '../../../core/services/in_app_oauth_service.dart';
 import '../../../core/services/remote_contact_service.dart';
+import '../../../core/services/session_reset.dart';
+import '../../chats/domain/chat_service.dart' show chatMirrorProvider;
+import '../../chats/domain/remote_chats_sync.dart'
+    show firestoreChatsStreamProvider, liveChatsStreamProvider;
 import '../../chats/presentation/providers.dart';
+import '../../earn/presentation/providers.dart'
+    show
+        appNotificationsProvider,
+        pointsAccountProvider,
+        pointsHistoryProvider;
 
 /// The Firebase Authentication facade.
 final Provider<FirebaseAuthService> firebaseAuthServiceProvider =
@@ -359,8 +368,94 @@ class AuthController extends Notifier<AsyncValue<void>> {
 
   Future<void> signOut() async {
     state = const AsyncLoading<void>();
+    // `FirebaseAuthService.signOut` marks presence offline and clears the
+    // session. The local wipe runs after it so the offline-presence write still
+    // has an authenticated request behind it.
     await _auth.signOut();
+    await _resetSessionState();
     state = const AsyncData<void>(null);
+  }
+
+  /// Erases everything this account left on the device.
+  ///
+  /// Two halves, and **both** are required:
+  ///
+  /// 1. **Storage** — [SessionReset.wipeLocalData] clears every Hive box, every
+  ///    SharedPreferences key, the Firestore offline cache and the in-memory
+  ///    image cache.
+  /// 2. **In-memory state** — the repository and notifier providers were built
+  ///    for the previous account and hold their data in Dart objects, not in
+  ///    Hive. Clearing storage alone leaves the old chat list on screen until
+  ///    the process restarts, which is exactly the "old data leaking into the
+  ///    new account" the wipe exists to stop. Invalidating each provider
+  ///    disposes it and rebuilds it from the (now empty) store on next read.
+  ///
+  /// `currentUidProvider` needs no invalidation: it derives from
+  /// `authStateProvider`, so it is already `''` by the time this runs.
+  Future<void> _resetSessionState() async {
+    // The pre-per-uid E2EE key must not survive to be adopted by whoever signs
+    // in next. The per-uid keys *do* survive — signing back in has to be able
+    // to read the account's own history.
+    await ref.read(e2eeServiceProvider).purgeLegacyKeys();
+
+    await SessionReset.wipeLocalData();
+
+    _invalidateUserProviders();
+  }
+
+  /// Drops every provider that was built for a particular account.
+  ///
+  /// Called on the way out (after the wipe) *and* on the way in: a session that
+  /// was adopted while an old container still held the previous account's rows
+  /// would show them under the new uid.
+  void _invalidateUserProviders() {
+    // Repositories — these own the in-memory caches.
+    ref.invalidate(chatRepositoryProvider);
+    ref.invalidate(messageRepositoryProvider);
+    ref.invalidate(contactRepositoryProvider);
+    ref.invalidate(groupRepositoryProvider);
+    ref.invalidate(communityRepositoryProvider);
+    ref.invalidate(channelRepositoryProvider);
+    ref.invalidate(statusRepositoryProvider);
+    ref.invalidate(callRepositoryProvider);
+    ref.invalidate(settingsRepositoryProvider);
+
+    // Content notifiers.
+    ref.invalidate(chatsProvider);
+    ref.invalidate(contactsProvider);
+    ref.invalidate(selfProfileProvider);
+    ref.invalidate(groupsProvider);
+    ref.invalidate(communitiesProvider);
+    ref.invalidate(channelsProvider);
+    ref.invalidate(statusesProvider);
+    ref.invalidate(callsProvider);
+    ref.invalidate(starredMessagesProvider);
+    ref.invalidate(messageSelectionProvider);
+    ref.invalidate(chatFilterProvider);
+
+    // Live mirrors — the family variants are invalidated wholesale.
+    ref.invalidate(liveChatsStreamProvider);
+    ref.invalidate(firestoreChatsStreamProvider);
+    ref.invalidate(messagesProvider);
+    ref.invalidate(chatMirrorProvider);
+    ref.invalidate(chatByIdProvider);
+    ref.invalidate(chatStreamProvider);
+    ref.invalidate(remoteProfileProvider);
+
+    // Points, premium and notifications.
+    ref.invalidate(pointsAccountProvider);
+    ref.invalidate(pointsHistoryProvider);
+    ref.invalidate(appNotificationsProvider);
+
+    // Device preferences live in the same settings box that was just cleared,
+    // so their notifiers have to re-read rather than keep serving the old
+    // account's values.
+    ref.invalidate(appearanceProvider);
+    ref.invalidate(notificationSettingsProvider);
+    ref.invalidate(privacySettingsProvider);
+    ref.invalidate(chatSettingsProvider);
+    ref.invalidate(wallpaperProvider);
+    ref.invalidate(languageProvider);
   }
 
   /// Re-sends the verification email from the OTP screen.
@@ -381,9 +476,12 @@ class AuthController extends Notifier<AsyncValue<void>> {
 
   /// Runs once a session is adopted: gives the local stores a clean slate for
   /// the new user and starts mirroring the remote conversation list.
+  ///
+  /// The wipe belongs to sign-out, but the invalidation belongs here too: a
+  /// provider that survived the previous session — a repository that was still
+  /// mounted, a notifier nothing had disposed — would otherwise answer the new
+  /// account's first read with the old account's rows.
   Future<void> _adoptSession() async {
-    ref.invalidate(remoteProfileProvider);
-    ref.invalidate(chatsProvider);
-    ref.invalidate(contactsProvider);
+    _invalidateUserProviders();
   }
 }

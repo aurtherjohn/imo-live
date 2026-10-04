@@ -299,6 +299,12 @@ class ChatService {
   /// When R2 is unconfigured or the upload fails, the local path is sent
   /// instead. That is deliberate: a text message must still arrive, and a
   /// same-device recipient can still resolve the path.
+  ///
+  /// A failed Firestore write is reported on the bubble as [MessageStatus.failed]
+  /// rather than swallowed. Before this, a message that never reached the
+  /// server kept its "sent" tick forever, so "the message didn't arrive" and
+  /// "the message arrived and was ignored" looked identical from the sender's
+  /// side — which is precisely how the messaging bug stayed hidden.
   Future<void> _publishRemote({
     required String chatId,
     required Message message,
@@ -311,7 +317,7 @@ class ChatService {
     // `sendMessage` fires this detached, so an escaping error would land in
     // `PlatformDispatcher.onError` as an unhandled async error with nothing
     // pointing at the cause. The local copy is already saved by then, so the
-    // honest outcome is "this message stayed on this device" — log it and stop.
+    // honest outcome is "this message stayed on this device" — mark it and stop.
     try {
       String mediaUrl = attachment?.localPath ?? '';
       final String? localPath = attachment?.localPath;
@@ -326,7 +332,7 @@ class ChatService {
         if (remote != null) mediaUrl = remote;
       }
 
-      await _firestore.sendMessage(
+      final bool written = await _firestore.sendMessage(
         chatId: chatId,
         messageId: message.id,
         senderId: message.senderId,
@@ -341,9 +347,20 @@ class ChatService {
         replyTo: replyTo?.messageId,
         peerUid: peerUid,
       );
+
+      if (!written) {
+        await ref
+            .read(messageRepositoryProvider)
+            .updateStatus(message.id, MessageStatus.failed);
+        await ref.read(chatsProvider.notifier).refresh();
+      }
     } on Object catch (error, stack) {
       debugPrint('_publishRemote($chatId/${message.id}) failed: $error');
       debugPrintStack(stackTrace: stack);
+      await ref
+          .read(messageRepositoryProvider)
+          .updateStatus(message.id, MessageStatus.failed);
+      await ref.read(chatsProvider.notifier).refresh();
     }
   }
 
@@ -383,7 +400,10 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
   if (chatId.isEmpty) return Stream<void>.value(null);
 
   final FirestoreChatService firestore = ref.watch(firestoreChatServiceProvider);
-  final String uid = ref.watch(currentUidProvider);
+  // Watched so this provider re-subscribes when the account changes, and kept
+  // as the fallback for a snapshot that arrives before the auth stream has
+  // produced its first event — see the note inside the mapping below.
+  final String initialUid = ref.watch(currentUidProvider);
   final MessageRepository local = ref.read(messageRepositoryProvider);
   final ContactRepository contacts = ref.read(contactRepositoryProvider);
   final PrivacySettings privacy =
@@ -392,6 +412,17 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
 
   return firestore.watchMessages(chatId).asyncMap(
         (List<RemoteMessage> remote) async {
+          // Read the uid *here*, at emission time, not once when the provider
+          // was built. `currentUidProvider` is '' until the auth stream's first
+          // event, and this provider is `ref.read` by the chat screen — so a
+          // value captured at build time can be the empty string for the whole
+          // life of the subscription. `_toLocal` decides outgoing-vs-incoming
+          // from it, and getting it wrong is not cosmetic: every message the
+          // *user sent* would be filed as incoming (firing a bogus delivery
+          // receipt and lighting their own double tick), and every message they
+          // received could be dropped by `blockUnknownSenders`.
+          final String liveUid = ref.read(currentUidProvider);
+          final String uid = liveUid.isNotEmpty ? liveUid : initialUid;
           for (final RemoteMessage message in remote) {
             final Message mapped = _toLocal(message, uid);
 

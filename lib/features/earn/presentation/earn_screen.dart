@@ -44,6 +44,19 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
   /// transaction returned rather than the expected one.
   AdRewardResult? _lastReward;
 
+  /// Which rewarded format the next tap will request.
+  ///
+  /// Alternated rather than picked at random: a random choice can serve the
+  /// same format five times running, which is exactly the monotony the mix is
+  /// meant to break up.
+  RewardedAdFormat _nextFormat = RewardedAdFormat.video;
+
+  /// Repaints the cooldown countdown once a second.
+  ///
+  /// Only armed while there is something to count down, so an idle screen is
+  /// not rebuilding every second for nothing.
+  Timer? _ticker;
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +64,35 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
     // instead of waiting out a load. Failure is ignored — the tap will retry.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      unawaited(ref.read(rewardedAdServiceProvider).load());
+      unawaited(ref.read(rewardedAdServiceProvider).load(format: _nextFormat));
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  /// Starts or stops the once-a-second countdown repaint.
+  ///
+  /// Called from `build`, so the actual timer work is deferred to a post-frame
+  /// callback: mutating state (or arming a timer) mid-build is the kind of thing
+  /// that turns into "setState() called during build" the moment anything else
+  /// in the tree changes.
+  void _syncTicker(Duration remaining) {
+    final bool wanted = remaining > Duration.zero;
+    if (wanted == (_ticker != null)) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (wanted) {
+        _ticker ??= Timer.periodic(const Duration(seconds: 1), (_) {
+          if (mounted) setState(() {});
+        });
+      } else {
+        _ticker?.cancel();
+        _ticker = null;
+      }
     });
   }
 
@@ -64,25 +105,31 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
     }
 
     // Checked here purely to avoid showing an ad that cannot be paid for; the
-    // real limit is enforced inside the transaction, because this read can be
+    // real rules are enforced inside the transaction, because this read can be
     // stale.
-    final PointsAccount? account = ref.read(pointsAccountProvider).valueOrNull;
-    if ((account?.adsWatchedToday ?? 0) >= PointsService.dailyAdLimit) {
+    final PointsAccount account =
+        ref.read(pointsAccountProvider).valueOrNull ?? PointsAccount.empty;
+    if (account.adLimitReached) {
+      iToast(context, PointsService.dailyLimitMessage, isError: true);
+      return;
+    }
+    final Duration cooldown = account.cooldownRemainingAt(DateTime.now());
+    if (cooldown > Duration.zero) {
       iToast(
         context,
-        "That's all ${PointsService.dailyAdLimit} ads for today — "
-        'come back tomorrow',
+        'Next ad in ${PointsService.countdown(cooldown)}',
         isError: true,
       );
       return;
     }
 
+    final RewardedAdFormat format = _nextFormat;
     setState(() => _watching = true);
     try {
       final RewardedAdService ads = ref.read(rewardedAdServiceProvider);
       final PointsService points = ref.read(pointsServiceProvider);
 
-      if (!await ads.load()) {
+      if (!await ads.load(format: format)) {
         if (!mounted) return;
         iToast(
           context,
@@ -92,11 +139,15 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
         return;
       }
 
+      _lastReward = null;
       // `show` only returns true once the credit has landed, so `_lastReward`
       // is always populated by the time it is read below.
       final bool earned = await ads.show(
         onReward: () async {
-          _lastReward = await points.claimAdReward(uid);
+          _lastReward = await points.claimAdReward(
+            uid,
+            viaRewardedInterstitial: format == RewardedAdFormat.interstitial,
+          );
         },
       );
 
@@ -104,11 +155,24 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
       final AdRewardResult? result = _lastReward;
       if (earned && result != null) {
         iToast(context, result.message, isError: !result.isSuccess);
+        // Only advance the rotation once an ad was actually served, so a failed
+        // load does not silently skip a format.
+        if (result.isSuccess) {
+          setState(() {
+            _nextFormat = format == RewardedAdFormat.video
+                ? RewardedAdFormat.interstitial
+                : RewardedAdFormat.video;
+          });
+        }
       } else if (!earned) {
         iToast(context, context.l10n.watchTheWholeAdTo, isError: true);
       }
     } finally {
-      if (mounted) setState(() => _watching = false);
+      if (mounted) {
+        setState(() => _watching = false);
+        // Preload the next format so the following tap is instant.
+        unawaited(ref.read(rewardedAdServiceProvider).load(format: _nextFormat));
+      }
     }
   }
 
@@ -173,6 +237,7 @@ class _EarnScreenState extends ConsumerState<EarnScreen> {
               account: account.valueOrNull ?? PointsAccount.empty,
               busy: _watching,
               onWatch: _watching ? null : _watchAd,
+              onTick: _syncTicker,
             ),
             const SizedBox(height: AppSpacing.lg),
             _PremiumSection(
@@ -306,23 +371,73 @@ class _BalanceCard extends StatelessWidget {
 }
 
 /// The Watch & Earn control, plus today's progress against the daily cap.
+///
+/// Three states, in priority order:
+///
+///   1. **Locked** — 24 ads watched, the window has not rolled over. The button
+///      is disabled and says when it reopens.
+///   2. **Cooling down** — fewer than 3 minutes since the last ad. The button
+///      counts down in `m:ss`.
+///   3. **Ready** — the button is live.
 class _WatchCard extends StatelessWidget {
   const _WatchCard({
     required this.account,
     required this.busy,
     required this.onWatch,
+    required this.onTick,
   });
 
   final PointsAccount account;
   final bool busy;
   final VoidCallback? onWatch;
 
+  /// Called with the current cooldown so the screen can arm its countdown
+  /// repaint only while there is something to count.
+  final void Function(Duration remaining) onTick;
+
+  /// `12 Oct, 14:05` — enough to know when to come back, without a locale
+  /// dependency this card does not otherwise need.
+  static String _lockedUntil(DateTime at) {
+    const List<String> months = <String>[
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    final String hh = at.hour.toString().padLeft(2, '0');
+    final String mm = at.minute.toString().padLeft(2, '0');
+    return '${at.day} ${months[at.month - 1]}, $hh:$mm';
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppColorScheme c = context.c;
     final int watched = account.adsWatchedToday;
-    final double progress = (watched / PointsService.dailyAdLimit).clamp(0.0, 1.0);
-    final bool capped = watched >= PointsService.dailyAdLimit;
+    final int limit = account.dailyAdLimit;
+    final double progress = limit == 0 ? 0 : (watched / limit).clamp(0.0, 1.0);
+    final bool capped = account.adLimitReached;
+    final Duration cooldown = account.cooldownRemainingAt(DateTime.now());
+    final DateTime? resetAt = account.adsResetAt;
+
+    // Drive the once-a-second repaint from here so the widget owns nothing.
+    onTick(capped ? Duration.zero : cooldown);
+
+    final String status;
+    final String buttonLabel;
+    if (capped) {
+      status = resetAt == null
+          ? PointsService.dailyLimitMessage
+          : 'Locked until ${_lockedUntil(resetAt)}. '
+              '${PointsService.dailyLimitMessage}';
+      buttonLabel = 'Locked for 24 hours';
+    } else if (cooldown > Duration.zero) {
+      status = 'Next ad in ${PointsService.countdown(cooldown)}';
+      buttonLabel = 'Next ad in ${PointsService.countdown(cooldown)}';
+    } else {
+      status = 'Up to ${TextUtils.grouped(PointsService.dailyAdPointsCap)} '
+          'points a day from ads.';
+      buttonLabel = context.l10n.watchEarn;
+    }
+
+    final bool blocked = capped || cooldown > Duration.zero;
 
     return ICard(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -363,19 +478,22 @@ class _WatchCard extends StatelessWidget {
           Row(
             children: <Widget>[
               Text(
-                context.l10n.today,
+                "Today's ads",
                 style: context.t.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const Spacer(),
               Text(
-                context.l10n.ofAds(watched, PointsService.dailyAdLimit),
-                style: context.t.bodySmall,
+                '$watched / $limit',
+                style: context.t.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: capped ? context.c.onWarning : c.accent,
+                ),
               ),
             ],
           ),
-          SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.sm),
           ClipRRect(
             borderRadius: AppRadius.rPill,
             child: LinearProgressIndicator(
@@ -383,26 +501,24 @@ class _WatchCard extends StatelessWidget {
               minHeight: 6,
               backgroundColor: c.divider,
               valueColor: AlwaysStoppedAnimation<Color>(
-                capped ? capped ? context.c.onWarning : c.accent : c.accent,
+                capped ? context.c.onWarning : c.accent,
               ),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
-            capped
-                ? 'Daily limit reached. Resets tomorrow — up to '
-                    '${TextUtils.grouped(PointsService.dailyAdPointsCap)} '
-                    'points a day.'
-                : 'Up to ${TextUtils.grouped(PointsService.dailyAdPointsCap)} '
-                    'points a day from ads.',
-            style: context.t.bodySmall?.copyWith(color: c.textSecondary),
+            status,
+            style: context.t.bodySmall?.copyWith(
+              color: blocked ? context.c.onWarning : c.textSecondary,
+              fontWeight: blocked ? FontWeight.w600 : FontWeight.w400,
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           ProminentButton(
-            label: busy ? 'Loading ad…' : context.l10n.watchEarn,
-            icon: busy ? null : Icons.ondemand_video_rounded,
+            label: busy ? 'Loading ad…' : buttonLabel,
+            icon: busy || blocked ? null : Icons.ondemand_video_rounded,
             expanded: true,
-            onPressed: capped ? null : onWatch,
+            onPressed: blocked ? null : onWatch,
           ),
         ],
       ),

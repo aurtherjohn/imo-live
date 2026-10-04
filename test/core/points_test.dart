@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:imo_live/core/models/gift.dart';
 import 'package:imo_live/core/services/points_service.dart';
+import 'package:imo_live/core/services/premium_service.dart';
 
 void main() {
   group('PointsService.dayKey', () {
@@ -314,8 +315,165 @@ void main() {
       );
     });
 
-    test('the daily limit is 20 ads', () {
-      expect(PointsService.dailyAdLimit, 20);
+    test('the daily limit is 24 ads', () {
+      expect(PointsService.dailyAdLimit, 24);
+    });
+
+    test('the cooldown is 3 minutes and the window is 24 hours', () {
+      expect(PointsService.adCooldown, const Duration(minutes: 3));
+      expect(PointsService.adWindow, const Duration(hours: 24));
+    });
+
+    test('the lock message names the same number the cap enforces', () {
+      // The message is shown verbatim to the user; if the cap changes and this
+      // does not, the app tells them to come back after a number of ads it no
+      // longer uses.
+      expect(PointsService.dailyLimitMessage, contains('24 ads'));
+      expect(PointsService.dailyLimitMessage, contains('24 hours'));
+    });
+  });
+
+  group('PointsService.earnWindowFrom', () {
+    test('reads the rolling window out of the earn map', () {
+      final DateTime now = DateTime(2026, 10, 4, 12);
+      final ({int watched, DateTime? lastWatched, DateTime? lastReset}) window =
+          PointsService.earnWindowFrom(<String, dynamic>{
+        'earn': <String, dynamic>{
+          'adsWatchedToday': 5,
+          'lastAdWatchedAt': Timestamp.fromDate(
+            now.subtract(const Duration(minutes: 10)),
+          ),
+          'lastAdResetAt': Timestamp.fromDate(
+            now.subtract(const Duration(hours: 2)),
+          ),
+          'dailyLimit': 24,
+          'cooldownSeconds': 180,
+        },
+      }, now);
+
+      expect(window.watched, 5);
+      expect(window.lastWatched, isNotNull);
+      expect(window.lastReset, isNotNull);
+    });
+
+    test('a window older than 24 hours reads as zero watched', () {
+      final DateTime now = DateTime(2026, 10, 4, 12);
+      final ({int watched, DateTime? lastWatched, DateTime? lastReset}) window =
+          PointsService.earnWindowFrom(<String, dynamic>{
+        'earn': <String, dynamic>{
+          'adsWatchedToday': 24,
+          'lastAdResetAt': Timestamp.fromDate(
+            now.subtract(const Duration(hours: 24, minutes: 1)),
+          ),
+        },
+      }, now);
+
+      expect(window.watched, 0);
+      // No running window, so the next claim opens a fresh one.
+      expect(window.lastReset, isNull);
+    });
+
+    test('a stored count is clamped to the cap', () {
+      // A hand-edited or corrupted document must not report more ads watched
+      // than the cap allows — the UI renders this number directly.
+      final DateTime now = DateTime(2026, 10, 4, 12);
+      final ({int watched, DateTime? lastWatched, DateTime? lastReset}) window =
+          PointsService.earnWindowFrom(<String, dynamic>{
+        'earn': <String, dynamic>{
+          'adsWatchedToday': 9999,
+          'lastAdResetAt': Timestamp.fromDate(
+            now.subtract(const Duration(minutes: 5)),
+          ),
+        },
+      }, now);
+
+      expect(window.watched, PointsService.dailyAdLimit);
+    });
+
+    test('an absent document is an empty window, not a crash', () {
+      final ({int watched, DateTime? lastWatched, DateTime? lastReset}) window =
+          PointsService.earnWindowFrom(null, DateTime(2026, 10, 4, 12));
+
+      expect(window.watched, 0);
+      expect(window.lastWatched, isNull);
+      expect(window.lastReset, isNull);
+    });
+  });
+
+  group('PointsService.countdown', () {
+    test('formats as m:ss and pads the seconds', () {
+      expect(PointsService.countdown(const Duration(minutes: 2, seconds: 45)),
+          '2:45');
+      expect(PointsService.countdown(const Duration(seconds: 9)), '0:09');
+      expect(PointsService.countdown(Duration.zero), '0:00');
+    });
+
+    test('a negative remainder clamps to zero rather than rendering -1:-5', () {
+      expect(PointsService.countdown(const Duration(seconds: -65)), '0:00');
+    });
+  });
+
+  group('PointsAccount ad gating', () {
+    test('the limit reads as reached at exactly the cap', () {
+      const PointsAccount atCap = PointsAccount(adsWatchedToday: 24);
+      const PointsAccount under = PointsAccount(adsWatchedToday: 23);
+
+      expect(atCap.adLimitReached, isTrue);
+      expect(under.adLimitReached, isFalse);
+    });
+
+    test('the cooldown counts down from the last ad, and expires', () {
+      final DateTime now = DateTime(2026, 10, 4, 12);
+      final PointsAccount account = PointsAccount(
+        adsWatchedToday: 3,
+        lastAdWatchedAt: now.subtract(const Duration(seconds: 75)),
+      );
+
+      // 180 s cooldown, 75 s elapsed → 105 s left.
+      expect(account.cooldownRemainingAt(now), const Duration(seconds: 105));
+
+      final DateTime later = now.add(const Duration(minutes: 3));
+      expect(account.cooldownRemainingAt(later), Duration.zero);
+    });
+
+    test('no cooldown before the first ad', () {
+      const PointsAccount fresh = PointsAccount();
+      expect(fresh.cooldownRemainingAt(DateTime(2026, 10, 4, 12)), Duration.zero);
+    });
+  });
+
+  group('PremiumService pricing', () {
+    test('a month of premium costs a month of the maximum ad allowance', () {
+      // The points rail is only an honest alternative to paying if the ads
+      // really do pay for it — so this must stay equal to
+      // `pointsPerAd * dailyAdLimit * 30`.
+      expect(
+        PremiumService.calculatePointsForPremium(),
+        PointsService.pointsPerAd * PointsService.dailyAdLimit * 30,
+      );
+      expect(PremiumService.calculatePointsForPremium(), 18000);
+    });
+
+    test('the points plan is a 30-day plan at the calculated price', () {
+      final PremiumPlan plan = PremiumService.pointsPlan;
+
+      expect(plan.days, PremiumService.duration.inDays);
+      expect(plan.points, PremiumService.calculatePointsForPremium());
+    });
+
+    test('every payment method round-trips through its stored id', () {
+      for (final PremiumPaymentMethod method in PremiumPaymentMethod.values) {
+        expect(PremiumPaymentMethod.fromId(method.id), method);
+      }
+    });
+
+    test('every payment method has a destination to show the user', () {
+      for (final PremiumPaymentMethod method in PremiumPaymentMethod.values) {
+        final PremiumPaymentTarget target =
+            PremiumPaymentTarget.targets[method]!;
+        expect(target.destination, isNotEmpty);
+        expect(target.instructions, isNotEmpty);
+      }
     });
   });
 }

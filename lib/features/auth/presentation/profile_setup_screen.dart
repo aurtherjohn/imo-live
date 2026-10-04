@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +5,8 @@ import '../../../app/theme/app_color_scheme.dart';
 
 import '../../../app/app.dart';
 import '../../../app/theme/app_tokens.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/country_data.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/services/firebase_auth_service.dart';
 import '../../../core/services/storage_service.dart';
@@ -21,9 +21,12 @@ import '../../../core/utils/l10n.dart';
 
 /// The last step of onboarding: who you are.
 ///
-/// Name, handle, bio, age, gender and a photo. The handle is checked against
-/// the directory live, so the user finds out it is taken while typing rather
-/// than after tapping Save.
+/// Only the things the user actually chooses are editable — name, about, age,
+/// gender and a photo. The **handle, phone number and country are generated at
+/// signup** and shown here read-only: the handle is how other people find the
+/// account, and the phone number is the account's identity, so neither can be
+/// quietly rewritten from an onboarding form. See
+/// `FirebaseAuthService._createUserDocument`.
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   const ProfileSetupScreen({super.key, this.isOnboarding = true});
 
@@ -44,10 +47,14 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   bool _saving = false;
   bool _loading = true;
 
-  /// Live handle availability: null while unknown or unchecked.
-  bool? _usernameAvailable;
-  bool _checkingUsername = false;
-  Timer? _usernameDebounce;
+  /// The number the account was created with, and the country it implies.
+  ///
+  /// Both are read-only here. They are resolved from the stored digits rather
+  /// than read back as separate fields so the country has exactly one source of
+  /// truth — the same `CountryData.byDialPrefix` the signup writer used.
+  String _phone = '';
+  String _countryLabel = '';
+
   String? _error;
 
   /// Locally picked avatar before upload.
@@ -62,7 +69,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
   @override
   void dispose() {
-    _usernameDebounce?.cancel();
     _name.dispose();
     _username.dispose();
     _bio.dispose();
@@ -94,31 +100,29 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     } else {
       _name.text = auth.currentUser?.displayName ?? '';
     }
-    _usernameAvailable = true; // their own handle is always available
+
+    _phone = remote?.phone ?? '';
+    // A phone signup always has the number on the profile; the auth address is
+    // the fallback for a document that predates the field, because the digits
+    // are encoded in it (`p8801712345678@phone.imolive.app`).
+    final String digits = _digits(_phone.isEmpty
+        ? _digitsFromAuthEmail(auth.currentUser?.email ?? '')
+        : _phone);
+    _countryLabel = CountryData.byDialPrefix(digits)?.name ?? '';
+
     setState(() => _loading = false);
   }
 
-  Future<void> _checkUsername(String value) async {
-    _usernameDebounce?.cancel();
-    final String candidate = RemoteContactService.normaliseUsername(value);
-    if (candidate.isEmpty) {
-      setState(() {
-        _usernameAvailable = null;
-        _checkingUsername = false;
-      });
-      return;
-    }
-    setState(() => _checkingUsername = true);
-    // Debounced so a fast typist produces one query, not ten.
-    _usernameDebounce = Timer(const Duration(milliseconds: 420), () async {
-      final bool free =
-          await ref.read(firebaseAuthServiceProvider).isUsernameAvailable(candidate);
-      if (!mounted) return;
-      setState(() {
-        _usernameAvailable = free;
-        _checkingUsername = false;
-      });
-    });
+  /// `+8801712345678` → `8801712345678`.
+  static String _digits(String value) =>
+      value.replaceAll(RegExp(r'[^0-9]'), '');
+
+  /// Recovers the E.164 digits from a derived phone address.
+  static String _digitsFromAuthEmail(String email) {
+    if (!AppConstants.isPhoneAuthEmail(email)) return '';
+    final int at = email.lastIndexOf('@');
+    if (at <= 0) return '';
+    return _digits(email.substring(0, at));
   }
 
   Future<void> _pickAvatar() async {
@@ -154,10 +158,6 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     final String name = _name.text.trim();
     if (name.length < 2) {
       setState(() => _error = 'Enter your name.');
-      return;
-    }
-    if (_usernameAvailable == false) {
-      setState(() => _error = 'That handle is taken. Pick another one.');
       return;
     }
 
@@ -332,56 +332,34 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     hint: context.l10n.username2,
                     iconAsset: BrandAssets.userCheck,
                     prefixText: '@',
-                    enabled: !_saving,
-                    onChanged: _checkUsername,
+                    // Read-only: the handle is generated at signup and is how
+                    // other people find this account, so an onboarding form must
+                    // not be able to rewrite it.
+                    enabled: false,
                   ),
-                  if (_checkingUsername || _usernameAvailable != null)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: AppSpacing.md,
-                        top: AppSpacing.sm,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          if (_checkingUsername)
-                            SizedBox(
-                              width: 12,
-                              height: 12,
-                              child: CircularProgressIndicator(strokeWidth: 1.6),
-                            )
-                          else
-                            Icon(
-                              _usernameAvailable == true
-                                  ? Icons.check_circle_rounded
-                                  : Icons.cancel_rounded,
-                              size: 14,
-                              color: _usernameAvailable == true
-                                  ? context.c.onSuccess
-                                  : context.c.onDanger,
-                            ),
-                          SizedBox(width: 6),
-                          Text(
-                            _checkingUsername
-                                ? 'Checking…'
-                                : _usernameAvailable == true
-                                    ? 'Available'
-                                    : 'Already taken',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: _checkingUsername
-                                  ? Colors.white54
-                                  : _usernameAvailable == true
-                                      ? context.c.onSuccess
-                                      : context.c.onDanger,
-                            ),
-                          ),
-                        ],
-                      ),
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      left: AppSpacing.md,
+                      top: AppSpacing.sm,
                     ),
+                    child: _LockHint(
+                      text: 'Your handle was generated for you and cannot be '
+                          'changed here.',
+                    ),
+                  ),
                 ],
               ),
             ),
+            if (_phone.isNotEmpty || _countryLabel.isNotEmpty) ...<Widget>[
+              const SizedBox(height: AppSpacing.md),
+              FadeSlideIn(
+                delay: const Duration(milliseconds: 155),
+                child: _LockedIdentity(
+                  phone: _phone,
+                  country: _countryLabel,
+                ),
+              ),
+            ],
             const SizedBox(height: AppSpacing.md),
             FadeSlideIn(
               delay: const Duration(milliseconds: 170),
@@ -459,6 +437,123 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// A one-line explanation under a field that cannot be edited.
+class _LockHint extends StatelessWidget {
+  const _LockHint({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Icon(
+          Icons.lock_outline_rounded,
+          size: 13,
+          color: Colors.white.withValues(alpha: 0.45),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.3,
+              color: Colors.white.withValues(alpha: 0.45),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The phone number and country the account was created with, read-only.
+///
+/// Rendered as a locked card rather than two disabled inputs: a greyed-out
+/// `TextField` still looks like something the user is expected to fill in, and
+/// the point here is the opposite — these values were decided at signup and
+/// there is nothing to type.
+class _LockedIdentity extends StatelessWidget {
+  const _LockedIdentity({required this.phone, required this.country});
+
+  final String phone;
+  final String country;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.055),
+        borderRadius: AppRadius.rMd,
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (phone.isNotEmpty) ...<Widget>[
+            _row('Phone number', phone.startsWith('+') ? phone : '+$phone'),
+            if (country.isNotEmpty) const SizedBox(height: AppSpacing.md),
+          ],
+          if (country.isNotEmpty) _row('Country', country),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Icon(
+                Icons.lock_outline_rounded,
+                size: 13,
+                color: Colors.white.withValues(alpha: 0.45),
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  'Set from your number at signup. Contact support to change '
+                  'your phone number.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.3,
+                    color: Colors.white.withValues(alpha: 0.45),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _row(String label, String value) {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          width: 108,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.white.withValues(alpha: 0.55),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

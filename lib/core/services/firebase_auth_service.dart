@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../constants/app_constants.dart';
+import '../constants/country_data.dart';
 import 'remote_contact_service.dart';
 
 /// A failure the UI can present verbatim.
@@ -181,6 +182,19 @@ class FirebaseAuthService {
   }) async {
     final String trimmedName = name.trim();
     final String phoneDigits = RemoteContactService.normalisePhone(phone);
+    // Derived from the number, not asked for. `8801712345678` is a Bangladeshi
+    // number and nothing else, so the country is knowable at signup — making
+    // the user pick it from a 240-entry list would be asking them to retype
+    // something the number already says. Null for an email account, which has
+    // no number to read it from.
+    //
+    // The type is inferred rather than written: `CountryData` works with the
+    // picker's `Country` (settings.dart), and there is a second, unrelated
+    // `Country` in models/country.dart. Naming it here would mean choosing one
+    // of the two, which is exactly the ambiguity that produced this bug.
+    final country = phoneDigits.isEmpty
+        ? null
+        : CountryData.byDialPrefix(phoneDigits);
     final WriteBatch batch = _db.batch();
     batch.set(
       _db.collection(usersCollection).doc(uid),
@@ -192,6 +206,11 @@ class FirebaseAuthService {
         'username': username,
         'email': email,
         'phone': phoneDigits,
+        // ISO 3166-1 alpha-2 and the E.164 dial code, both digits-only on the
+        // code side so every consumer strips the `+` the same way.
+        if (country != null) 'countryIso': country.iso,
+        if (country != null)
+          'countryCode': country.dialCode.replaceAll('+', ''),
         'bio': '',
         'age': 0,
         'gender': '',
@@ -551,7 +570,7 @@ class FirebaseAuthService {
       // handle and therefore could not have checked availability first.
       String handle = username.trim().isNotEmpty
           ? RemoteContactService.normaliseUsername(username)
-          : generateUsernameFromName(firstName: first, lastName: last);
+          : generateLocalUsername();
 
       bool claimed = false;
       for (int attempt = 0; attempt < 8 && !claimed; attempt++) {
@@ -562,11 +581,7 @@ class FirebaseAuthService {
           authEmail: email,
         );
         if (!claimed) {
-          handle = generateUsernameFromName(
-            firstName: first,
-            lastName: last,
-            suffixDigits: 3 + (attempt ~/ 3),
-          );
+          handle = generateLocalUsername(digits: 6 + (attempt ~/ 3));
         }
       }
       if (!claimed) {
@@ -707,12 +722,30 @@ class FirebaseAuthService {
     }
   }
 
+  /// Generates `imouser_XXXXXX` for a phone signup.
+  ///
+  /// Purely local and deliberately *not* checked against the directory: the
+  /// caller is mid-signup, and the rules deny a signed-out read of
+  /// `usernames/{handle}`. Uniqueness is enforced by the atomic claim in
+  /// [signUpWithPhone], which retries with a wider suffix on a collision — so a
+  /// 10^6 space never has to be checked up front to be safe.
+  ///
+  /// Digits rather than a name slug: the user has not told us their name yet at
+  /// this point in the phone flow, and a number is unambiguous where
+  /// transliterated names are not.
+  static String generateLocalUsername({int digits = 6}) {
+    final int width = digits.clamp(4, 12);
+    final int bound = pow(10, width).toInt();
+    final String suffix =
+        Random.secure().nextInt(bound).toString().padLeft(width, '0');
+    return '$_handlePrefix$suffix';
+  }
+
   /// Builds a `first.lastNNN` handle from a name — `Tanvir Ahmed` →
   /// `tanvir.ahmed482`.
   ///
-  /// Purely local: it does **not** consult the directory, because the caller may
-  /// still be signed out and the rules deny a signed-out read. Uniqueness is
-  /// enforced later by the atomic claim, which retries with a wider suffix.
+  /// Kept for a caller that has a name to work from; the phone flow uses
+  /// [generateLocalUsername] instead.
   static String generateUsernameFromName({
     required String firstName,
     required String lastName,

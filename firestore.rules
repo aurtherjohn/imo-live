@@ -37,6 +37,20 @@ rules_version = '2';
 // `channel_keys` should be readable only by members. Those changes need the
 // per-collection data model, which is a separate piece of work.
 //
+// ### 2026-10-04: what this pass did add
+//
+//   * `users/{uid}.phone` is now immutable after creation (`phoneUnchanged`),
+//     which is what makes the locked field on the edit-profile screen real.
+//   * `users/{uid}.isAdmin` can no longer be written by a client
+//     (`noServerFields`).
+//   * the Earn-Points counter can no longer be rewound to farm ads
+//     (`earnMonotonic`) — though `points` itself is still client-writable, so
+//     the counter is not yet *trustworthy*; that needs server-side crediting.
+//   * `premium_requests` exists and is enumerated (owner creates a `pending`
+//     claim; only an admin may approve). It was previously unlisted, which
+//     meant the fail-closed default **denied** it and the flow could not have
+//     worked at all.
+//
 // ### Deploying
 //
 // `firebase.json` in this repo now points at this file. Deployment is
@@ -72,6 +86,66 @@ service cloud.firestore {
       );
     }
 
+    /// True when the caller is a reviewer/admin.
+    ///
+    /// `isAdmin` is a field the client can never write — see the `users` block
+    /// below, which strips it from any client update — so it can only be set
+    /// from the console or an Admin SDK. The `get()` is one extra document read
+    /// per evaluation, which is why this is only used on the two admin paths
+    /// (premium approvals, monetization review) and not on ordinary reads.
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid))
+             .data.isAdmin == true;
+    }
+
+    /// True when an update does not change the phone number.
+    ///
+    /// `affectedKeys()` only lists keys whose value actually changed, so a
+    /// screen that re-writes the same phone number unchanged is allowed and only
+    /// a genuine edit is refused. This is the enforcement half of "the phone
+    /// number is locked after signup" — the disabled field in
+    /// `edit_profile_screen.dart` is the other half, and on its own it is only a
+    /// suggestion: anyone with the API key can write the field directly.
+    function phoneUnchanged() {
+      return !request.resource.data.diff(resource.data)
+                .affectedKeys().hasAny(['phone']);
+    }
+
+    /// True when an update leaves the server-managed fields alone.
+    ///
+    /// `isAdmin` and `isPremium` are set by an admin (or an Admin SDK) and are
+    /// what every privileged screen gates on. A client that could write them
+    /// could grant itself the reviewer tools or premium for free.
+    function noServerFields() {
+      return !request.resource.data.diff(resource.data)
+                .affectedKeys().hasAny(['isAdmin']);
+    }
+
+    /// True when the Earn-Points counter only moved the way the feature moves
+    /// it: at most one ad per write, and the 24-hour window anchor never
+    /// rewound.
+    ///
+    /// This closes the obvious cheat — reset `lastAdResetAt` to now (or clear
+    /// `adsWatchedToday`) and keep watching past 24 ads. It does **not** make
+    /// the counter trustworthy: `points` itself is still client-writable, so a
+    /// modified build can mint points directly. Closing that needs the credit to
+    /// happen server-side (a Cloud Function or the Admin SDK), which is the
+    /// honest fix and is not in place yet.
+    function earnMonotonic() {
+      return !request.resource.data.diff(resource.data)
+                .affectedKeys().hasAny(['earn'])
+        // First ad ever: there is no previous map to compare against.
+        || !resource.data.keys().hasAny(['earn'])
+        || (
+             request.resource.data.earn.lastAdResetAt
+               >= resource.data.earn.lastAdResetAt
+             && request.resource.data.earn.adsWatchedToday
+                  <= resource.data.earn.adsWatchedToday + 1
+           );
+    }
+
     // ======================================================================
     // The user directory
     // ======================================================================
@@ -83,7 +157,17 @@ service cloud.firestore {
     /// no secret — which is why the phone flow keeps its PIN out of here.
     match /users/{uid} {
       allow read: if signedIn();
-      allow create, update: if isSelf(uid) && noPasswordMaterial();
+
+      // Create and update are split on purpose. The phone number is written
+      // once, at signup, and `phoneUnchanged()` is what keeps it that way; a
+      // combined `allow create, update` could not express the difference
+      // because on create there is no `resource.data` to diff against.
+      allow create: if isSelf(uid) && noPasswordMaterial();
+      allow update: if isSelf(uid)
+        && noPasswordMaterial()
+        && noServerFields()
+        && phoneUnchanged()
+        && earnMonotonic();
       allow delete: if isSelf(uid);
 
       /// Subcollections of a profile: `list` (the user's contacts),
@@ -204,6 +288,30 @@ service cloud.firestore {
     match /notifications/{id} {
       allow read, write: if signedIn();
       match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    }
+
+    // ---------------------------------------------------------- premium
+    /// A manual premium payment awaiting confirmation.
+    ///
+    /// Tighter than the blocks above, because this is money. The shape is:
+    ///
+    ///   * a user may create a request **for themselves only**, and only with
+    ///     `status: 'pending'` — the client cannot self-approve;
+    ///   * a user may read their own requests and nothing else;
+    ///   * only an admin may move a request out of `pending`, which is what
+    ///     switches premium on.
+    ///
+    /// The entitlement itself (`users/{uid}.isPremium` / `.premiumUntil`) is
+    /// *not* writable here: approving a request is an admin action, and an
+    /// admin's write is validated by the `users` block, not this one.
+    match /premium_requests/{id} {
+      allow read: if isSelf(resource.data.uid) || isAdmin();
+      allow create: if isSelf(request.resource.data.uid)
+        && request.resource.data.status == 'pending'
+        && request.resource.data.method in ['bkash', 'nagad', 'crypto']
+        && request.resource.data.amountUsd is number;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
     // ======================================================================

@@ -7,12 +7,14 @@ import '../../../core/models/chat.dart';
 import '../../../app/theme/app_tokens.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/models/contact.dart';
+import '../../../core/utils/formatters.dart';
 import '../../../core/utils/l10n.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../auth/presentation/auth_providers.dart';
 import '../../channels/presentation/providers.dart';
 import '../../chats/presentation/providers.dart';
+import '../../earn/presentation/providers.dart';
 import 'widgets/settings_widgets.dart';
 
 /// The root settings screen.
@@ -28,7 +30,6 @@ class SettingsScreen extends ConsumerWidget {
     final Contact profile =
         self.valueOrNull ?? const Contact(id: 'self', firstName: 'You');
     final List<Chat> chats = ref.watch(chatsProvider).orEmpty;
-    final int occupied = ref.watch(chatCountProvider);
     final int starred = ref.watch(starCountProvider);
     final int archived = ref.watch(archivedChatsProvider).length;
 
@@ -49,6 +50,28 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const InfoBanner(),
+
+          // ------------------------------------------------------------ premium
+          // Placed above the account group so the upgrade is the first thing
+          // seen, and its value line tells a paying user they are already
+          // covered rather than nagging them again.
+          SettingsGroup(
+            children: <Widget>[
+              SettingsValueRow(
+                label: 'Go Premium',
+                value: ref.watch(isPremiumProvider)
+                    ? 'Active · '
+                        '${ref.watch(pointsAccountProvider).valueOrNull?.premiumDaysLeft ?? 0} days left'
+                    : '\$9.90 / month · no ads',
+                leadingIcon: Icons.workspace_premium_rounded,
+                leadingIconColor: context.c.accent,
+                valueColor: ref.watch(isPremiumProvider)
+                    ? context.c.onSuccess
+                    : context.c.accent,
+                onTap: () => context.push(AppRoutes.premium),
+              ),
+            ],
+          ),
 
           // ------------------------------------------------------------ account
           SettingsGroup(
@@ -105,7 +128,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               SettingsValueRow(
                 label: context.l10n.lists,
-                value: '${chats.length} chats, $occupied indexed',
+                value: '${chats.length} chats',
                 leadingIcon: Icons.list_alt_rounded,
                 onTap: () => context.push(AppRoutes.lists),
               ),
@@ -146,9 +169,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               SettingsValueRow(
                 label: context.l10n.storageAndData,
-                value: ref.watch(totalStorageProvider) == 0
-                    ? 'No media yet'
-                    : '${ref.watch(starCountProvider)} starred',
+                value: _storageValue(ref),
                 leadingIcon: Icons.storage_rounded,
                 onTap: () => context.push(AppRoutes.storage),
               ),
@@ -283,6 +304,17 @@ class SettingsScreen extends ConsumerWidget {
     return profile.phone.isEmpty
         ? AppConstants.unsetPhoneLabel
         : profile.phone;
+  }
+
+  /// Human-readable media usage, e.g. `12.4 MB`.
+  ///
+  /// This row used to print the **starred message count** — a copy-paste from
+  /// the row above it — so "Storage and data" read "3 starred", which says
+  /// nothing about storage and hid the fact that media was accumulating.
+  String _storageValue(WidgetRef ref) {
+    final int bytes = ref.watch(totalStorageProvider);
+    if (bytes <= 0) return 'No media yet';
+    return SizeFormatter.format(bytes);
   }
 }
 
