@@ -95,12 +95,11 @@ class _CallsScreenState extends ConsumerState<CallsScreen> {
                             ? Icons.phone_missed_outlined
                             : Icons.call_outlined,
                         title: _filter == _CallFilter.missed
-                            ? 'No missed calls'
-                            : 'No calls yet',
+                            ? context.l10n.noMissedCalls
+                            : context.l10n.noCallsYet,
                         message: _filter == _CallFilter.missed
-                            ? 'Missed and declined calls will show up here.'
-                            : 'Start a voice or video call from a chat, a '
-                                'contact or the list below.',
+                            ? context.l10n.missedAndDeclinedCallsWill
+                            : context.l10n.startAVoiceOrVideo,
                         actionLabel: context.l10n.newCall,
                         onAction: () => context.push(AppRoutes.selectContact),
                       ),
@@ -317,7 +316,7 @@ class _FilterBar extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.sm),
           _Chip(
-            label: missedCount == 0 ? 'Missed' : 'Missed ($missedCount)',
+            label: missedCount == 0 ? context.l10n.missed : 'Missed ($missedCount)',
             selected: value == _CallFilter.missed,
             onTap: () => onChanged(_CallFilter.missed),
           ),

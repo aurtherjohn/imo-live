@@ -205,7 +205,7 @@ class _MyStatusRow extends StatelessWidget {
       subtitle: has
           ? '${statuses.length} update${statuses.length == 1 ? '' : 's'} · '
               '${statuses.first.timeAgo}'
-          : 'Tap to add a status update',
+          : context.l10n.tapToAddAStatus,
       leading: Stack(
         clipBehavior: Clip.none,
         children: <Widget>[

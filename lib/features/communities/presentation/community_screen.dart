@@ -131,8 +131,8 @@ class _Body extends ConsumerWidget {
               SettingsTile(
                 title: context.l10n.openAnnouncementChat,
                 subtitle: community.announcementChatId == null
-                    ? 'Not created yet'
-                    : 'Broadcast to all members',
+                    ? context.l10n.notCreatedYet
+                    : context.l10n.broadcastToAllMembers,
                 leadingIcon: Icons.campaign_outlined,
                 leadingIconColor: context.c.accent,
                 onTap: () {

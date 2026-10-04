@@ -742,7 +742,7 @@ class _IncomingLayout extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  isVideo ? 'Incoming video call' : 'Incoming voice call',
+                  isVideo ? context.l10n.incomingVideoCall : context.l10n.incomingVoiceCall,
                   style: const TextStyle(
                     color: CallTokens.secondary,
                     fontSize: 15,
@@ -1335,7 +1335,7 @@ class _MinimisedCallBar extends StatelessWidget {
                       Text(
                         connected
                             ? DateFormatter.duration(elapsed)
-                            : 'Ringing…',
+                            : context.l10n.ringing,
                         style: const TextStyle(
                           color: CallTokens.secondary,
                           fontSize: 12,

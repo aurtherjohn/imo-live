@@ -67,7 +67,7 @@ class _KeypadScreenState extends ConsumerState<KeypadScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                   child: Text(
-                    _number.isEmpty ? 'Enter a number' : _number,
+                    _number.isEmpty ? context.l10n.enterANumber : _number,
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -85,8 +85,8 @@ class _KeypadScreenState extends ConsumerState<KeypadScreen> {
                 if (_number.isNotEmpty)
                   Text(
                     TextUtils.isValidPhone(_number)
-                        ? 'Looks like a phone number'
-                        : 'Keep typing…',
+                        ? context.l10n.looksLikeAPhoneNumber
+                        : context.l10n.keepTyping,
                     style: context.t.bodySmall?.copyWith(
                       color: context.c.textSecondary,
                     ),

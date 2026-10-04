@@ -262,9 +262,9 @@ class _ChatSearchScreenState extends ConsumerState<ChatSearchScreen> {
               padding: const EdgeInsets.only(top: AppSpacing.xxxl),
               child: EmptyState(
                 icon: Icons.search_off_rounded,
-                title: q.isEmpty ? 'Pick a filter' : 'No matches',
+                title: q.isEmpty ? context.l10n.pickAFilter : context.l10n.noMatches,
                 message: q.isEmpty
-                    ? 'Choose a message type or sender to filter this chat.'
+                    ? context.l10n.chooseAMessageTypeOr
                     : '"${_query.text.trim()}" does not appear in this chat.',
               ),
             )

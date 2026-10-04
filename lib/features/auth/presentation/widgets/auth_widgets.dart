@@ -3,6 +3,7 @@ import '../../../../app/theme/app_color_scheme.dart';
 
 import '../../../../app/theme/app_tokens.dart';
 import '../../../../core/widgets/brand_assets.dart';
+import '../../../../core/utils/l10n.dart';
 
 /// The shared look of the auth screens.
 ///
@@ -419,7 +420,7 @@ class AuthField extends StatelessWidget {
             : Padding(
                 padding: const EdgeInsets.only(right: 6),
                 child: IconButton(
-                  tooltip: obscure ? 'Show password' : 'Hide password',
+                  tooltip: obscure ? context.l10n.showPassword : context.l10n.hidePassword,
                   onPressed: onToggleObscure,
                   icon: BrandIcon(
                     obscure ? BrandAssets.eyeOff : BrandAssets.eye,

@@ -92,7 +92,7 @@ class _EmojiPickerState extends State<EmojiPicker> {
                         ),
                       SliverToBoxAdapter(
                         child: _EmojiSection(
-                          title: searching ? 'Results' : emojiCategories[_categoryIndex].name,
+                          title: searching ? context.l10n.results : emojiCategories[_categoryIndex].name,
                           emoji: visible,
                           onSelected: widget.onSelected,
                         ),

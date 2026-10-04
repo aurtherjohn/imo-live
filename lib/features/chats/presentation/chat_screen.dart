@@ -1001,8 +1001,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       iToast(
         context,
         (chat?.isDirect ?? false)
-            ? 'This chat has no one to call yet'
-            : 'Group calls are not available yet',
+            ? context.l10n.thisChatHasNoOne
+            : context.l10n.groupCallsAreNotAvailable,
         isError: true,
       );
       return;
@@ -1025,8 +1025,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       iToast(
         context,
         (chat.isDirect || !chat.isGroup)
-            ? 'This chat has no one to send a gift to'
-            : 'Gifts are for one-to-one chats',
+            ? context.l10n.thisChatHasNoOne2
+            : context.l10n.giftsAreForOneTo,
         isError: true,
       );
       return;
@@ -1091,10 +1091,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     HapticFeedback.lightImpact();
     if (mounted) {
       iToast(context, switch (status) {
-        RsvpStatus.going => 'You are going',
-        RsvpStatus.maybe => 'Marked as maybe',
-        RsvpStatus.notGoing => 'Marked as not going',
-        RsvpStatus.none => 'Response cleared',
+        RsvpStatus.going => context.l10n.youAreGoing,
+        RsvpStatus.maybe => context.l10n.markedAsMaybe,
+        RsvpStatus.notGoing => context.l10n.markedAsNotGoing,
+        RsvpStatus.none => context.l10n.responseCleared,
       });
     }
   }
@@ -1118,7 +1118,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     if (!mounted) return;
     iToast(
       context,
-      message.isPinned ? 'Unpinned from this chat' : 'Pinned to this chat',
+      message.isPinned ? context.l10n.unpinnedFromThisChat : context.l10n.pinnedToThisChat,
     );
   }
 
@@ -2064,11 +2064,10 @@ class _EmptyConversation extends StatelessWidget {
   Widget build(BuildContext context) {
     return EmptyState(
       icon: Icons.waving_hand_rounded,
-      title: chat == null ? 'Say hello' : 'Start the conversation',
+      title: chat == null ? context.l10n.sayHello : context.l10n.startTheConversation,
       message: chat?.disappearingSeconds != 0
-          ? 'Messages in this chat disappear automatically.'
-          : 'Messages you send are stored on this device. Tap the mic to record '
-              'a voice note, or attach a photo, file or location.',
+          ? context.l10n.messagesInThisChatDisappear
+          : context.l10n.messagesYouSendAreStored,
       compact: true,
     );
   }

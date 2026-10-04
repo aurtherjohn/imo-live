@@ -8569,6 +8569,1032 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{n} seconds'**
   String secondsCount(int n);
+
+  /// No description provided for @finishSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish setup'**
+  String get finishSetup;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
+
+  /// No description provided for @setFromYourNumberAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Set from your number at signup. Contact support to change your phone number.'**
+  String get setFromYourNumberAt;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @noMissedCalls.
+  ///
+  /// In en, this message translates to:
+  /// **'No missed calls'**
+  String get noMissedCalls;
+
+  /// No description provided for @noCallsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No calls yet'**
+  String get noCallsYet;
+
+  /// No description provided for @missedAndDeclinedCallsWill.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed and declined calls will show up here.'**
+  String get missedAndDeclinedCallsWill;
+
+  /// No description provided for @startAVoiceOrVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a voice or video call from a chat, a contact or the list below.'**
+  String get startAVoiceOrVideo;
+
+  /// No description provided for @missed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get missed;
+
+  /// No description provided for @incomingVideoCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming video call'**
+  String get incomingVideoCall;
+
+  /// No description provided for @incomingVoiceCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming voice call'**
+  String get incomingVoiceCall;
+
+  /// No description provided for @ringing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ringing…'**
+  String get ringing;
+
+  /// No description provided for @enterANumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number'**
+  String get enterANumber;
+
+  /// No description provided for @looksLikeAPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks like a phone number'**
+  String get looksLikeAPhoneNumber;
+
+  /// No description provided for @keepTyping.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep typing…'**
+  String get keepTyping;
+
+  /// No description provided for @wantsToJoinThisChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Wants to join this channel'**
+  String get wantsToJoinThisChannel;
+
+  /// No description provided for @followChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow channel'**
+  String get followChannel;
+
+  /// No description provided for @publishYourFirstPostAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish your first post above — followers will see it instantly.'**
+  String get publishYourFirstPostAbove;
+
+  /// No description provided for @theOwnerHasNotPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'The owner has not posted anything yet.'**
+  String get theOwnerHasNotPosted;
+
+  /// No description provided for @estimatesOnlyActualRevenueIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimates only. Actual revenue is settled by the ad network, not by this app, and depends on where each view came from.'**
+  String get estimatesOnlyActualRevenueIs;
+
+  /// No description provided for @meetBothRequirementsThenApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet both requirements, then apply. Applications are reviewed by a person — nothing is approved automatically.'**
+  String get meetBothRequirementsThenApply;
+
+  /// No description provided for @nobodyIsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody is waiting'**
+  String get nobodyIsWaiting;
+
+  /// No description provided for @anyoneCanFindAndFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone can find and follow this channel'**
+  String get anyoneCanFindAndFollow;
+
+  /// No description provided for @onlyPeopleWithTheSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Only people with the secret key can request to join'**
+  String get onlyPeopleWithTheSecret;
+
+  /// No description provided for @onlyMembersWithPremiumCan.
+  ///
+  /// In en, this message translates to:
+  /// **'Only members with premium can read the posts'**
+  String get onlyMembersWithPremiumCan;
+
+  /// No description provided for @anyoneWhoFollowsCanRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone who follows can read the posts'**
+  String get anyoneWhoFollowsCanRead;
+
+  /// No description provided for @addAWideBannerBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a wide banner behind the header'**
+  String get addAWideBannerBehind;
+
+  /// No description provided for @coverUpdatedTapToReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover updated — tap to replace'**
+  String get coverUpdatedTapToReplace;
+
+  /// No description provided for @rotateSecretKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate secret key'**
+  String get rotateSecretKey;
+
+  /// No description provided for @generateSecretKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate secret key'**
+  String get generateSecretKey;
+
+  /// No description provided for @theOldKeyStopsWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'The old key stops working immediately'**
+  String get theOldKeyStopsWorking;
+
+  /// No description provided for @a12CharacterKeyShown.
+  ///
+  /// In en, this message translates to:
+  /// **'A 12-character key, shown to you once'**
+  String get a12CharacterKeyShown;
+
+  /// No description provided for @saving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get saving;
+
+  /// No description provided for @applicationUnderReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Application under review'**
+  String get applicationUnderReview;
+
+  /// No description provided for @applicationWasRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Application was rejected'**
+  String get applicationWasRejected;
+
+  /// No description provided for @youAreEligibleToApply.
+  ///
+  /// In en, this message translates to:
+  /// **'You are eligible to apply'**
+  String get youAreEligibleToApply;
+
+  /// No description provided for @notEligibleYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not eligible yet'**
+  String get notEligibleYet;
+
+  /// No description provided for @yourChannelCanNowEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your channel can now earn from its audience'**
+  String get yourChannelCanNowEarn;
+
+  /// No description provided for @weWillNotifyYouOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'We will notify you once a reviewer has decided'**
+  String get weWillNotifyYouOnce;
+
+  /// No description provided for @youCanReApplyOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'You can re-apply once the channel grows further'**
+  String get youCanReApplyOnce;
+
+  /// No description provided for @approveMonetization.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve monetization?'**
+  String get approveMonetization;
+
+  /// No description provided for @rejectThisApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject this application?'**
+  String get rejectThisApplication;
+
+  /// No description provided for @privatePeopleNeedASecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Private — people need a secret key to request to join'**
+  String get privatePeopleNeedASecret;
+
+  /// No description provided for @creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating…'**
+  String get creating;
+
+  /// No description provided for @createChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Create channel'**
+  String get createChannel;
+
+  /// No description provided for @noMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages'**
+  String get noMessages;
+
+  /// No description provided for @nothingCouldBeSentCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing could be sent — check your connection'**
+  String get nothingCouldBeSentCheck;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @localStorageIsWorkingAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Local storage is working again'**
+  String get localStorageIsWorkingAgain;
+
+  /// No description provided for @storageIsStillUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage is still unavailable'**
+  String get storageIsStillUnavailable;
+
+  /// No description provided for @retrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Retrying…'**
+  String get retrying;
+
+  /// No description provided for @retry2.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry2;
+
+  /// No description provided for @noContactsToShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts to show'**
+  String get noContactsToShow;
+
+  /// No description provided for @noMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get noMatches;
+
+  /// No description provided for @allowContactsAccessToSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow contacts access to see the people already saved on your phone, or create a new contact.'**
+  String get allowContactsAccessToSee;
+
+  /// No description provided for @thisChatHasNoOne.
+  ///
+  /// In en, this message translates to:
+  /// **'This chat has no one to call yet'**
+  String get thisChatHasNoOne;
+
+  /// No description provided for @groupCallsAreNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Group calls are not available yet'**
+  String get groupCallsAreNotAvailable;
+
+  /// No description provided for @thisChatHasNoOne2.
+  ///
+  /// In en, this message translates to:
+  /// **'This chat has no one to send a gift to'**
+  String get thisChatHasNoOne2;
+
+  /// No description provided for @giftsAreForOneTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Gifts are for one-to-one chats'**
+  String get giftsAreForOneTo;
+
+  /// No description provided for @youAreGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'You are going'**
+  String get youAreGoing;
+
+  /// No description provided for @markedAsMaybe.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as maybe'**
+  String get markedAsMaybe;
+
+  /// No description provided for @markedAsNotGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as not going'**
+  String get markedAsNotGoing;
+
+  /// No description provided for @responseCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Response cleared'**
+  String get responseCleared;
+
+  /// No description provided for @unpinnedFromThisChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpinned from this chat'**
+  String get unpinnedFromThisChat;
+
+  /// No description provided for @pinnedToThisChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Pinned to this chat'**
+  String get pinnedToThisChat;
+
+  /// No description provided for @sayHello.
+  ///
+  /// In en, this message translates to:
+  /// **'Say hello'**
+  String get sayHello;
+
+  /// No description provided for @startTheConversation.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the conversation'**
+  String get startTheConversation;
+
+  /// No description provided for @messagesInThisChatDisappear.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages in this chat disappear automatically.'**
+  String get messagesInThisChatDisappear;
+
+  /// No description provided for @messagesYouSendAreStored.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages you send are stored on this device. Tap the mic to record a voice note, or attach a photo, file or location.'**
+  String get messagesYouSendAreStored;
+
+  /// No description provided for @pickAFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a filter'**
+  String get pickAFilter;
+
+  /// No description provided for @chooseAMessageTypeOr.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a message type or sender to filter this chat.'**
+  String get chooseAMessageTypeOr;
+
+  /// No description provided for @longPressAnyMessageAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Long-press any message and choose Star to keep it here for quick access.'**
+  String get longPressAnyMessageAnd;
+
+  /// No description provided for @createQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Create quiz'**
+  String get createQuiz;
+
+  /// No description provided for @createPoll.
+  ///
+  /// In en, this message translates to:
+  /// **'Create poll'**
+  String get createPoll;
+
+  /// No description provided for @quizQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Quiz question'**
+  String get quizQuestion;
+
+  /// No description provided for @askAQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a question'**
+  String get askAQuestion;
+
+  /// No description provided for @correctAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct answer'**
+  String get correctAnswer;
+
+  /// No description provided for @markAsCorrectAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as correct answer'**
+  String get markAsCorrectAnswer;
+
+  /// No description provided for @noMessagesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No messages yet'**
+  String get noMessagesYet;
+
+  /// No description provided for @results.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
+  /// No description provided for @audioFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio file'**
+  String get audioFile;
+
+  /// No description provided for @file.
+  ///
+  /// In en, this message translates to:
+  /// **'FILE'**
+  String get file;
+
+  /// No description provided for @sharedLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared location'**
+  String get sharedLocation;
+
+  /// No description provided for @coordinatesUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Coordinates unavailable'**
+  String get coordinatesUnavailable;
+
+  /// No description provided for @quiz.
+  ///
+  /// In en, this message translates to:
+  /// **'QUIZ'**
+  String get quiz;
+
+  /// No description provided for @poll2.
+  ///
+  /// In en, this message translates to:
+  /// **'POLL'**
+  String get poll2;
+
+  /// No description provided for @correct.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get correct;
+
+  /// No description provided for @tapAnAnswerToSee.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap an answer to see the result'**
+  String get tapAnAnswerToSee;
+
+  /// No description provided for @editMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit message'**
+  String get editMessage;
+
+  /// No description provided for @notCreatedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not created yet'**
+  String get notCreatedYet;
+
+  /// No description provided for @broadcastToAllMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Broadcast to all members'**
+  String get broadcastToAllMembers;
+
+  /// No description provided for @createCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Create community'**
+  String get createCommunity;
+
+  /// No description provided for @peopleSavedOnThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'People saved on this device will appear here. Add a contact or allow contacts access to get started.'**
+  String get peopleSavedOnThisDevice;
+
+  /// No description provided for @removedFromFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from favourites'**
+  String get removedFromFavourites;
+
+  /// No description provided for @addedToFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to favourites'**
+  String get addedToFavourites;
+
+  /// No description provided for @blocked3.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get blocked3;
+
+  /// No description provided for @blockContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Block contact'**
+  String get blockContact;
+
+  /// No description provided for @thisContactCannotMessageOr.
+  ///
+  /// In en, this message translates to:
+  /// **'This contact cannot message or call you from this device'**
+  String get thisContactCannotMessageOr;
+
+  /// No description provided for @stopThisContactFromReaching.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop this contact from reaching you on this device'**
+  String get stopThisContactFromReaching;
+
+  /// No description provided for @contactUnblocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact unblocked'**
+  String get contactUnblocked;
+
+  /// No description provided for @unmuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmuted'**
+  String get unmuted;
+
+  /// No description provided for @removeFromFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get removeFromFavourites;
+
+  /// No description provided for @addToFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favourites'**
+  String get addToFavourites;
+
+  /// No description provided for @contactBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact blocked'**
+  String get contactBlocked;
+
+  /// No description provided for @savedToYourAddressBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to your address book'**
+  String get savedToYourAddressBook;
+
+  /// No description provided for @couldNotWriteToThe.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not write to the address book'**
+  String get couldNotWriteToThe;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get addPhoto;
+
+  /// No description provided for @createContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Create contact'**
+  String get createContact;
+
+  /// No description provided for @unblockContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock contact'**
+  String get unblockContact;
+
+  /// No description provided for @selectContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Select contacts'**
+  String get selectContacts;
+
+  /// No description provided for @addAContactOrSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a contact or sync your address book to get started.'**
+  String get addAContactOrSync;
+
+  /// No description provided for @disappearingMessagesTurnedOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Disappearing messages turned off'**
+  String get disappearingMessagesTurnedOff;
+
+  /// No description provided for @messagesWillDisappearAfterThe.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages will disappear after the selected time'**
+  String get messagesWillDisappearAfterThe;
+
+  /// No description provided for @watchAdsToEarnMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch ads to earn more'**
+  String get watchAdsToEarnMore;
+
+  /// No description provided for @loadingAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading ad…'**
+  String get loadingAd;
+
+  /// No description provided for @sendAGift.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a gift'**
+  String get sendAGift;
+
+  /// No description provided for @sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get sending;
+
+  /// No description provided for @adminsCanAddOrRemove3.
+  ///
+  /// In en, this message translates to:
+  /// **'Admins can add or remove members and change group settings.'**
+  String get adminsCanAddOrRemove3;
+
+  /// No description provided for @onlyAdminsCanChangeGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Only admins can change group settings.'**
+  String get onlyAdminsCanChangeGroup;
+
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
+
+  /// No description provided for @dismissAsAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss as admin'**
+  String get dismissAsAdmin;
+
+  /// No description provided for @makeGroupAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Make group admin'**
+  String get makeGroupAdmin;
+
+  /// No description provided for @addGroupPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add group photo'**
+  String get addGroupPhoto;
+
+  /// No description provided for @addAtLeastOneMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one member'**
+  String get addAtLeastOneMember;
+
+  /// No description provided for @change.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get change;
+
+  /// No description provided for @addMembersToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Add members to continue'**
+  String get addMembersToContinue;
+
+  /// No description provided for @removeAsAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove as admin'**
+  String get removeAsAdmin;
+
+  /// No description provided for @makeAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Make admin'**
+  String get makeAdmin;
+
+  /// No description provided for @addAContactFirstThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a contact first, then pick members here.'**
+  String get addAContactFirstThen;
+
+  /// No description provided for @scanThisCodeToAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this code to add or join'**
+  String get scanThisCodeToAdd;
+
+  /// No description provided for @goPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Premium'**
+  String get goPremium;
+
+  /// No description provided for @premiumIsActiveOnThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium is active on this account.'**
+  String get premiumIsActiveOnThis;
+
+  /// No description provided for @whatYouGet.
+  ///
+  /// In en, this message translates to:
+  /// **'What you get'**
+  String get whatYouGet;
+
+  /// No description provided for @yourRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Your requests'**
+  String get yourRequests;
+
+  /// No description provided for @signInFirst2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in first.'**
+  String get signInFirst2;
+
+  /// No description provided for @buyPremiumWithPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy premium with points?'**
+  String get buyPremiumWithPoints;
+
+  /// No description provided for @imoLIVEPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Imo LIVE Premium'**
+  String get imoLIVEPremium;
+
+  /// No description provided for @activeOnThisAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Active on this account'**
+  String get activeOnThisAccount;
+
+  /// No description provided for @upgradeOnceEveryFeatureUnlocks.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade once, every feature unlocks'**
+  String get upgradeOnceEveryFeatureUnlocks;
+
+  /// No description provided for @s1MonthOfPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'1 month of premium'**
+  String get s1MonthOfPremium;
+
+  /// No description provided for @money.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get money;
+
+  /// No description provided for @points3.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get points3;
+
+  /// No description provided for @payForPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay for premium'**
+  String get payForPremium;
+
+  /// No description provided for @s0x.
+  ///
+  /// In en, this message translates to:
+  /// **'0x…'**
+  String get s0x;
+
+  /// No description provided for @submitting.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting…'**
+  String get submitting;
+
+  /// No description provided for @submitPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Payment'**
+  String get submitPayment;
+
+  /// No description provided for @chooseADifferentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a different method'**
+  String get chooseADifferentMethod;
+
+  /// No description provided for @phoneNumberCannotBeChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number cannot be changed.'**
+  String get phoneNumberCannotBeChanged;
+
+  /// No description provided for @contactSupportToChangeYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support to change your phone number.'**
+  String get contactSupportToChangeYour;
+
+  /// No description provided for @nothingToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to save'**
+  String get nothingToSave;
+
+  /// No description provided for @thePhotoWasSavedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo was saved on this device but could not be uploaded, so others will not see it yet. Check your connection and try again.'**
+  String get thePhotoWasSavedOn;
+
+  /// No description provided for @signedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in'**
+  String get signedIn;
+
+  /// No description provided for @notSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Not signed in'**
+  String get notSignedIn;
+
+  /// No description provided for @yourChatsSyncAcrossYour.
+  ///
+  /// In en, this message translates to:
+  /// **'Your chats sync across your devices'**
+  String get yourChatsSyncAcrossYour;
+
+  /// No description provided for @signInToSyncChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to sync chats, contacts and updates'**
+  String get signInToSyncChats;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @messagesFromAnyoneNotIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages from anyone not in your contacts are dropped'**
+  String get messagesFromAnyoneNotIn;
+
+  /// No description provided for @anyoneWhoFindsYouCan.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone who finds you can send a first message'**
+  String get anyoneWhoFindsYouCan;
+
+  /// No description provided for @messagesFromUnknownSendersWill.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages from unknown senders will be dropped'**
+  String get messagesFromUnknownSendersWill;
+
+  /// No description provided for @anyoneCanMessageYouAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Anyone can message you again'**
+  String get anyoneCanMessageYouAgain;
+
+  /// No description provided for @keepALocalSnapshotOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a local snapshot of your chats on this device'**
+  String get keepALocalSnapshotOf;
+
+  /// No description provided for @noChats.
+  ///
+  /// In en, this message translates to:
+  /// **'No chats'**
+  String get noChats;
+
+  /// No description provided for @untitledChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled chat'**
+  String get untitledChat;
+
+  /// No description provided for @onDarkTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'On · dark theme'**
+  String get onDarkTheme;
+
+  /// No description provided for @offLightTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Off · light theme'**
+  String get offLightTheme;
+
+  /// No description provided for @noExpiredMessagesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No expired messages found'**
+  String get noExpiredMessagesFound;
+
+  /// No description provided for @sharing2.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing…'**
+  String get sharing2;
+
+  /// No description provided for @shareUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Share update'**
+  String get shareUpdate;
+
+  /// No description provided for @noViewsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No views yet'**
+  String get noViewsYet;
+
+  /// No description provided for @tapToAddAStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add a status update'**
+  String get tapToAddAStatus;
 }
 
 class _AppLocalizationsDelegate

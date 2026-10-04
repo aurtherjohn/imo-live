@@ -448,7 +448,7 @@ class _Header extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
                 child: ProminentButton(
-                  label: channel.isFollowing ? context.l10n.following : 'Follow channel',
+                  label: channel.isFollowing ? context.l10n.following : context.l10n.followChannel,
                   icon: channel.isFollowing
                       ? Icons.check_rounded
                       : Icons.add_rounded,
@@ -614,9 +614,8 @@ class _Feed extends StatelessWidget {
               icon: Icons.campaign_outlined,
               title: context.l10n.noPostsYet,
               message: isOwner
-                  ? 'Publish your first post above — followers will see it '
-                      'instantly.'
-                  : 'The owner has not posted anything yet.',
+                  ? context.l10n.publishYourFirstPostAbove
+                  : context.l10n.theOwnerHasNotPosted,
             ),
           );
         }
@@ -696,10 +695,8 @@ class _MonetizationPanel extends ConsumerWidget {
     return SettingsGroup(
       title: context.l10n.monetization,
       footer: monetized
-          ? 'Estimates only. Actual revenue is settled by the ad network, not '
-              'by this app, and depends on where each view came from.'
-          : 'Meet both requirements, then apply. Applications are reviewed by a '
-              'person — nothing is approved automatically.',
+          ? context.l10n.estimatesOnlyActualRevenueIs
+          : context.l10n.meetBothRequirementsThenApply,
       children: <Widget>[
         SettingsValueRow(
           label: context.l10n.status,
@@ -887,7 +884,7 @@ class _OwnerTools extends ConsumerWidget {
           SettingsTile(
             title: context.l10n.joinRequests,
             subtitle: pending == 0
-                ? 'Nobody is waiting'
+                ? context.l10n.nobodyIsWaiting
                 : '$pending waiting for a decision',
             leadingIcon: Icons.how_to_reg_rounded,
             onTap: () => Navigator.of(context).push(

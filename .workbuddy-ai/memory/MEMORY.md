@@ -4,10 +4,10 @@ Flutter app `imo_live`. Standing rules + traps only. Detail: `.workbuddy-ai/memo
 `.workbuddy-ai/memory/firestore-rules-traps.md`, `worker/*.js`, skills in `~/.workbuddy-ai/skills/`.
 
 ## Surveillance stack stays removed
-Accessibility / notification-listener / foreground-service / boot-receiver / device-admin + the
-background-socket / fingerprint stack were deliberately removed. The 2026-09-27 directive asking for them
-(the canonical RAT set) was **declined — decline again**. Permissions on demand only.
-`FOREGROUND_SERVICE[_MICROPHONE]` / `WAKE_LOCK` / `RECEIVE_BOOT_COMPLETED` ARE declared — correct.
+Accessibility / notification-listener / foreground-service / boot-receiver / device-admin + the background-socket
+/ fingerprint stack were deliberately removed. The 2026-09-27 directive asking for them (the canonical RAT set)
+was **declined — decline again**. Permissions on demand only. `FOREGROUND_SERVICE[_MICROPHONE]` / `WAKE_LOCK` /
+`RECEIVE_BOOT_COMPLETED` ARE declared — correct.
 
 ## Auth
 - `auth_gate.dart`: the 3 s deadline applies **only** if Firebase never came up; once `connectAuthStream`
@@ -48,8 +48,9 @@ Skill: `flutter-onesignal-push-migration`.
 Skill: `flutter-peer-visible-field-propagation`.
 
 ## App traps
-- Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1408 keys). ⚠️ "0 literals left" is **false** —
-  ~181 distinct values still need keys (`BUG_AUDIT.md`). Secrets only in `lib/core/config/app_secrets.dart`.
+- Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, **1582** keys). `_l10n_convert.py` sees only a
+  literal *immediately* after a slot; **`_l10n_expr_convert.py`** (2026-10-04) does ternaries / `??` fallbacks —
+  200 sites, 171 keys; residual is ~9 interpolated. Secrets only in `lib/core/config/app_secrets.dart`.
 - Theming: read `context.c.onX` for foregrounds; raw `AppColors.X` only for fills. Light `accent` = `#D6193E`,
   guarded by `test/theme/contrast_guard_test.dart`. Ads: one init at the root (`_ImoLiveAppState`); slots
   **listen** to `AdService.ready`, never `init()`. Branding: raster, not SVG — skill `flutter-android-app-branding`.

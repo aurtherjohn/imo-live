@@ -473,14 +473,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Phone number cannot be changed.',
+                  context.l10n.phoneNumberCannotBeChanged,
                   style: context.t.bodySmall?.copyWith(
                     color: context.c.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Contact support to change your phone number.',
+                  context.l10n.contactSupportToChangeYour,
                   style: context.t.bodySmall?.copyWith(
                     color: context.c.textSecondary.withValues(alpha: 0.8),
                   ),
@@ -494,7 +494,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           Padding(
             padding: AppSpacing.pageH,
             child: ProminentButton(
-              label: _dirty ? 'Save changes' : 'Nothing to save',
+              label: _dirty ? context.l10n.saveChanges : context.l10n.nothingToSave,
               icon: Icons.check_rounded,
               expanded: true,
               onPressed: _dirty && _valid ? _save : () => context.pop(),
@@ -579,8 +579,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     if (url == null || url.isEmpty) {
       iToast(
         context,
-        'The photo was saved on this device but could not be uploaded, so '
-        'others will not see it yet. Check your connection and try again.',
+        context.l10n.thePhotoWasSavedOn,
         isError: true,
       );
       return;

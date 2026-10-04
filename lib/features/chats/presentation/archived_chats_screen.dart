@@ -78,7 +78,7 @@ class ArchivedChatsScreen extends ConsumerWidget {
                 final Chat chat = archived[i];
                 return SettingsTile(
                   title: chat.title,
-                  subtitle: chat.lastMessage.isEmpty ? 'No messages' : chat.lastMessage,
+                  subtitle: chat.lastMessage.isEmpty ? context.l10n.noMessages : chat.lastMessage,
                   leading: IAvatar(
                     name: chat.title,
                     imagePath: chat.avatarPath,

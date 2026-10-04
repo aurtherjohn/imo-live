@@ -187,8 +187,8 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
           SettingsGroup(
             title: context.l10n.members3(group.memberCount),
             footer: canManage
-                ? 'Admins can add or remove members and change group settings.'
-                : 'Only admins can change group settings.',
+                ? context.l10n.adminsCanAddOrRemove3
+                : context.l10n.onlyAdminsCanChangeGroup,
             children: <Widget>[
               // Index-based rather than `member != group.members.last`, which
               // relied on object identity and mis-drew the divider whenever two
@@ -206,7 +206,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
                       title: name,
                       subtitle: member.isAdmin
                           ? context.l10n.admin
-                          : contact?.aboutText ?? 'Member',
+                          : contact?.aboutText ?? context.l10n.member,
                       leading: IAvatar(
                         name: name,
                         imagePath: contact?.avatarPath,
@@ -269,7 +269,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
                             .read(chatsProvider.notifier)
                             .toggleMute(chat.id);
                         if (context.mounted) {
-                          iToast(context, v ? context.l10n.muted : 'Unmuted');
+                          iToast(context, v ? context.l10n.muted : context.l10n.unmuted);
                         }
                       },
               ),
@@ -585,7 +585,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
           icon: member.isAdmin
               ? Icons.remove_moderator_outlined
               : Icons.admin_panel_settings_outlined,
-          label: member.isAdmin ? 'Dismiss as admin' : 'Make group admin',
+          label: member.isAdmin ? context.l10n.dismissAsAdmin : context.l10n.makeGroupAdmin,
           onTap: () async {
             Navigator.pop(context);
             await ref.read(groupsProvider.notifier).setRole(

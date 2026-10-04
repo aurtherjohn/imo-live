@@ -56,7 +56,7 @@ class ListsScreen extends ConsumerWidget {
                   (MapEntry<ChatFilter, List<Chat>> entry) => SettingsTile(
                     title: entry.key.label,
                     subtitle: entry.value.isEmpty
-                        ? 'No chats'
+                        ? context.l10n.noChats
                         : '${entry.value.length} chat${entry.value.length == 1 ? '' : 's'}',
                     leading: _FilterDot(
                       color: _colorFor(context, entry.key),
@@ -222,7 +222,7 @@ class ListsScreen extends ConsumerWidget {
                       return CheckboxListTile(
                         value: chat.isWork,
                         title: Text(
-                          chat.title.isEmpty ? 'Untitled chat' : chat.title,
+                          chat.title.isEmpty ? context.l10n.untitledChat : chat.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),

@@ -380,7 +380,7 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
               onStartRecording: _startRecording,
               enterKeySends: widget.enterKeySends,
               hint: widget.editing != null
-                  ? 'Edit message'
+                  ? context.l10n.editMessage
                   : context.l10n.message,
             ),
 

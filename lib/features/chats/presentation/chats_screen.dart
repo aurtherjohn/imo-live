@@ -526,8 +526,8 @@ class _StorageWarningBannerState extends ConsumerState<_StorageWarningBanner> {
         iToast(
           context,
           recovered
-              ? 'Local storage is working again'
-              : 'Storage is still unavailable',
+              ? context.l10n.localStorageIsWorkingAgain
+              : context.l10n.storageIsStillUnavailable,
           isError: !recovered,
         );
       }
@@ -552,7 +552,7 @@ class _StorageWarningBannerState extends ConsumerState<_StorageWarningBanner> {
           top: AppSpacing.md + AppSpacing.xs,
           child: TextButton(
             onPressed: _retrying ? null : _retry,
-            child: Text(_retrying ? 'Retrying…' : 'Retry'),
+            child: Text(_retrying ? context.l10n.retrying : context.l10n.retry2),
           ),
         ),
       ],
@@ -962,11 +962,10 @@ class _NewChatSheetState extends ConsumerState<_NewChatSheet> {
                             ? Icons.contacts_outlined
                             : Icons.person_search_rounded,
                         title: _denied
-                            ? 'No contacts to show'
-                            : 'No matches',
+                            ? context.l10n.noContactsToShow
+                            : context.l10n.noMatches,
                         message: _denied
-                            ? 'Allow contacts access to see the people already '
-                                'saved on your phone, or create a new contact.'
+                            ? context.l10n.allowContactsAccessToSee
                             : 'Nothing matched "$_query".',
                         compact: true,
                       )

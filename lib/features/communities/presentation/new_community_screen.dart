@@ -207,7 +207,7 @@ class _NewCommunityScreenState extends ConsumerState<NewCommunityScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: ProminentButton(
-              label: _busy ? 'Creating…' : 'Create community',
+              label: _busy ? context.l10n.creating : context.l10n.createCommunity,
               icon: Icons.check_rounded,
               expanded: true,
               onPressed: canCreate ? _create : () {},

@@ -770,7 +770,7 @@ class AudioBody extends StatelessWidget {
               children: <Widget>[
                 Text(
                   attachment?.fileName?.replaceAll(RegExp(r'\.[^.]+$'), '') ??
-                      'Audio file',
+                      context.l10n.audioFile,
                   style: context.t.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -833,7 +833,7 @@ class DocumentBody extends StatelessWidget {
               child: Center(
                 child: Text(
                   attachment?.fileExtension.isEmpty ?? true
-                      ? 'FILE'
+                      ? context.l10n.file
                       : attachment!.fileExtension,
                   style: const TextStyle(
                     color: Colors.white,
@@ -952,7 +952,7 @@ class LocationBody extends StatelessWidget {
                   child: Text(
                     attachment?.fileName?.isNotEmpty ?? false
                         ? attachment!.fileName!
-                        : 'Shared location',
+                        : context.l10n.sharedLocation,
                     style: context.t.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -965,7 +965,7 @@ class LocationBody extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               lat == null || lon == null
-                  ? 'Coordinates unavailable'
+                  ? context.l10n.coordinatesUnavailable
                   : '${lat.toStringAsFixed(5)}, ${lon.toStringAsFixed(5)}',
               style: context.t.labelSmall,
             ),
@@ -1181,7 +1181,7 @@ class PollBody extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                isQuiz ? 'QUIZ' : 'POLL',
+                isQuiz ? context.l10n.quiz : context.l10n.poll2,
                 style: context.t.labelSmall?.copyWith(
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.8,
@@ -1198,7 +1198,7 @@ class PollBody extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  answeredWrong ? context.l10n.retry : 'Correct',
+                  answeredWrong ? context.l10n.retry : context.l10n.correct,
                   style: context.t.labelSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: answeredWrong ? answeredWrong ? context.c.onDanger : context.c.onSuccess : answeredWrong ? context.c.onDanger : context.c.onSuccess,
@@ -1236,7 +1236,7 @@ class PollBody extends StatelessWidget {
           Text(
             isQuiz
                 ? (poll.totalVotes == 0
-                    ? 'Tap an answer to see the result'
+                    ? context.l10n.tapAnAnswerToSee
                     : '${poll.totalVotes} ${poll.totalVotes == 1 ? 'answer' : 'answers'} · '
                         'correct answer marked in green')
                 : '${poll.totalVotes} ${poll.totalVotes == 1 ? 'vote' : 'votes'}'

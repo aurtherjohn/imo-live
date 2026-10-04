@@ -444,7 +444,7 @@ class _StatusViewScreenState extends ConsumerState<StatusViewScreen>
           Flexible(
             child: Text(
               status.viewerIds.isEmpty
-                  ? 'No views yet'
+                  ? context.l10n.noViewsYet
                   : '${status.viewerIds.length} view'
                       '${status.viewerIds.length == 1 ? '' : 's'}',
               maxLines: 1,

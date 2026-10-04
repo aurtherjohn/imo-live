@@ -413,7 +413,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
             const SizedBox(height: AppSpacing.xxl),
             AuthPrimaryButton(
-              label: widget.isOnboarding ? 'Finish setup' : 'Save changes',
+              label: widget.isOnboarding ? context.l10n.finishSetup : context.l10n.saveChanges,
               loading: _saving,
               onPressed: _saving ? null : _save,
             ),
@@ -514,8 +514,7 @@ class _LockedIdentity extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Set from your number at signup. Contact support to change '
-                  'your phone number.',
+                  context.l10n.setFromYourNumberAt,
                   style: TextStyle(
                     fontSize: 12,
                     height: 1.3,

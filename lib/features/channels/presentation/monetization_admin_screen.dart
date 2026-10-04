@@ -118,7 +118,7 @@ class _ReviewList extends ConsumerWidget {
     final bool approve = status == MonetizationStatus.approved;
     final bool ok = await showConfirmDialog(
       context,
-      title: approve ? 'Approve monetization?' : 'Reject this application?',
+      title: approve ? context.l10n.approveMonetization : context.l10n.rejectThisApplication,
       message: approve
           ? '${channel.name} gets the monetized badge and can earn from its '
               'audience.'

@@ -172,8 +172,8 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
         iToast(
           context,
           ok
-              ? 'Saved to your address book'
-              : 'Could not write to the address book',
+              ? context.l10n.savedToYourAddressBook
+              : context.l10n.couldNotWriteToThe,
           isError: !ok,
         );
       }
@@ -359,7 +359,7 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     _existing?.avatarPath == null
-                        ? 'Add photo'
+                        ? context.l10n.addPhoto
                         : context.l10n.changePhoto,
                     style: context.t.bodySmall?.copyWith(
                       color: context.c.accent,
@@ -592,7 +592,7 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
                 if (context.mounted) {
                   iToast(
                     context,
-                    _existing!.isBlocked ? 'Contact unblocked' : 'Contact blocked',
+                    _existing!.isBlocked ? context.l10n.contactUnblocked : context.l10n.contactBlocked,
                   );
                 }
               },
@@ -605,8 +605,8 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
                   iToast(
                     context,
                     _existing!.isFavorite
-                        ? 'Removed from favourites'
-                        : 'Added to favourites',
+                        ? context.l10n.removedFromFavourites
+                        : context.l10n.addedToFavourites,
                   );
                 }
               },
@@ -618,7 +618,7 @@ class _NewContactScreenState extends ConsumerState<NewContactScreen> {
           Padding(
             padding: AppSpacing.pageH,
             child: ProminentButton(
-              label: widget.isEditing ? 'Save changes' : 'Create contact',
+              label: widget.isEditing ? context.l10n.saveChanges : context.l10n.createContact,
               icon: Icons.check_rounded,
               expanded: true,
               onPressed: _save,
@@ -789,7 +789,7 @@ class SettingsLikeActions extends StatelessWidget {
         child: Column(
           children: <Widget>[
             SettingsTile(
-              title: isFavorite ? 'Remove from favourites' : 'Add to favourites',
+              title: isFavorite ? context.l10n.removeFromFavourites : context.l10n.addToFavourites,
               leadingIcon: isFavorite
                   ? Icons.favorite_rounded
                   : Icons.favorite_border_rounded,
@@ -798,7 +798,7 @@ class SettingsLikeActions extends StatelessWidget {
             ),
             IListDivider(indent: AppSpacing.lg),
             SettingsTile(
-              title: isBlocked ? 'Unblock contact' : 'Block contact',
+              title: isBlocked ? context.l10n.unblockContact : context.l10n.blockContact,
               leadingIcon: Icons.block_rounded,
               onTap: onBlock,
             ),

@@ -250,7 +250,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
     iToast(
       context,
       sent == 0
-          ? 'Nothing could be sent — check your connection'
+          ? context.l10n.nothingCouldBeSentCheck
           : 'Broadcast sent to $sent ${sent == 1 ? 'person' : 'people'}',
       isError: sent == 0,
     );
@@ -311,7 +311,7 @@ class _BroadcastScreenState extends ConsumerState<BroadcastScreen> {
                         SizedBox(
                           width: 60,
                           child: Text(
-                            c?.firstName ?? 'Unknown',
+                            c?.firstName ?? context.l10n.unknown,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,

@@ -359,7 +359,7 @@ class _BalanceCard extends StatelessWidget {
           Text(
             account.premiumActive
                 ? 'Premium active — ${account.premiumDaysLeft} days left'
-                : 'Watch ads to earn more',
+                : context.l10n.watchAdsToEarnMore,
             style: context.t.bodySmall?.copyWith(
               color: Colors.white.withValues(alpha: 0.85),
             ),
@@ -515,7 +515,7 @@ class _WatchCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           ProminentButton(
-            label: busy ? 'Loading ad…' : buttonLabel,
+            label: busy ? context.l10n.loadingAd : buttonLabel,
             icon: busy || blocked ? null : Icons.ondemand_video_rounded,
             expanded: true,
             onPressed: blocked ? null : onWatch,

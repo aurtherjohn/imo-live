@@ -98,7 +98,7 @@ class QrScreen extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    subtitle ?? 'Scan this code to add or join',
+                    subtitle ?? context.l10n.scanThisCodeToAdd,
                     textAlign: TextAlign.center,
                     style: context.t.bodyMedium?.copyWith(
                       color: context.c.textSecondary,

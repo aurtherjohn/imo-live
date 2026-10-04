@@ -207,7 +207,7 @@ class _NewChannelScreenState extends ConsumerState<NewChannelScreen> {
                 title: context.l10n.publicChannel,
                 subtitle: _isPublic
                     ? 'Anyone can find this channel by its @username'
-                    : 'Private — people need a secret key to request to join',
+                    : context.l10n.privatePeopleNeedASecret,
                 value: _isPublic,
                 onChanged: (bool v) => setState(() => _isPublic = v),
               ),
@@ -232,7 +232,7 @@ class _NewChannelScreenState extends ConsumerState<NewChannelScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: ProminentButton(
-              label: _busy ? 'Creating…' : 'Create channel',
+              label: _busy ? context.l10n.creating : context.l10n.createChannel,
               icon: Icons.check_rounded,
               expanded: true,
               onPressed: canCreate ? () => _create() : null,

@@ -112,8 +112,8 @@ class BlockedContactsScreen extends ConsumerWidget {
               SettingsSwitchRow(
                 title: context.l10n.blockUnknownSenders,
                 subtitle: privacy.blockUnknownSenders
-                    ? 'Messages from anyone not in your contacts are dropped'
-                    : 'Anyone who finds you can send a first message',
+                    ? context.l10n.messagesFromAnyoneNotIn
+                    : context.l10n.anyoneWhoFindsYouCan,
                 leadingIcon: Icons.report_gmailerrorred_outlined,
                 value: privacy.blockUnknownSenders,
                 onChanged: (bool v) async {
@@ -125,8 +125,8 @@ class BlockedContactsScreen extends ConsumerWidget {
                   iToast(
                     context,
                     v
-                        ? 'Messages from unknown senders will be dropped'
-                        : 'Anyone can message you again',
+                        ? context.l10n.messagesFromUnknownSendersWill
+                        : context.l10n.anyoneCanMessageYouAgain,
                   );
                 },
               ),

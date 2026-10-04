@@ -210,7 +210,7 @@ class _SubtitleRow extends StatelessWidget {
         ],
         Expanded(
           child: Text(
-            chat.lastMessage.isEmpty ? 'No messages yet' : chat.lastMessage,
+            chat.lastMessage.isEmpty ? context.l10n.noMessagesYet : chat.lastMessage,
             style: context.t.bodyMedium?.copyWith(
               color: chat.hasUnread && !chat.isMuted
                   ? c.textPrimary

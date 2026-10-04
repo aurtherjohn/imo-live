@@ -156,7 +156,7 @@ class _GiftSheetState extends ConsumerState<_GiftSheet> {
                 Expanded(
                   child: Text(
                     widget.toName.trim().isEmpty
-                        ? 'Send a gift'
+                        ? context.l10n.sendAGift
                         : 'Send a gift to ${widget.toName}',
                     style: context.t.titleMedium,
                     maxLines: 1,
@@ -235,7 +235,7 @@ class _GiftSheetState extends ConsumerState<_GiftSheet> {
             ),
             const SizedBox(height: AppSpacing.md),
             ProminentButton(
-              label: _sending ? 'Sending…' : context.l10n.sendGift,
+              label: _sending ? context.l10n.sending : context.l10n.sendGift,
               icon: _sending ? null : Icons.send_rounded,
               expanded: true,
               onPressed: (_sending || isSelf || !affordable) ? null : _send,

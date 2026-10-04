@@ -74,8 +74,8 @@ Future<void> showDisappearingMessagesSheet(
                   iToast(
                     context,
                     value == 0
-                        ? 'Disappearing messages turned off'
-                        : 'Messages will disappear after the selected time',
+                        ? context.l10n.disappearingMessagesTurnedOff
+                        : context.l10n.messagesWillDisappearAfterThe,
                   );
                 }
               },

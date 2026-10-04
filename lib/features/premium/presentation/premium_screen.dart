@@ -99,7 +99,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
             const <PremiumRequest>[];
 
     return Scaffold(
-      appBar: AppTopBar(title: 'Go Premium', showBack: true),
+      appBar: AppTopBar(title: context.l10n.goPremium, showBack: true),
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
         children: <Widget>[
@@ -117,7 +117,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
                 icon: Icons.verified_rounded,
                 color: c.onSuccess,
                 message: account?.premiumUntil == null
-                    ? 'Premium is active on this account.'
+                    ? context.l10n.premiumIsActiveOnThis
                     : 'Premium is active — '
                         '${account!.premiumDaysLeft} days left. '
                         'Buying more extends it.',
@@ -125,7 +125,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
             ),
 
           SettingsGroup(
-            title: 'What you get',
+            title: context.l10n.whatYouGet,
             children: <Widget>[
               for (final _Benefit b in _benefits)
                 _BenefitRow(benefit: b),
@@ -179,7 +179,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
 
           if (requests.isNotEmpty)
             SettingsGroup(
-              title: 'Your requests',
+              title: context.l10n.yourRequests,
               children: <Widget>[
                 for (final PremiumRequest r in requests) _RequestRow(r),
               ],
@@ -207,7 +207,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
   Future<void> _buyWithPoints(int cost) async {
     final String uid = ref.read(currentUidProvider);
     if (uid.isEmpty) {
-      iToast(context, 'Sign in first.', isError: true);
+      iToast(context, context.l10n.signInFirst2, isError: true);
       return;
     }
     final int balance = ref.read(pointsBalanceProvider);
@@ -226,7 +226,7 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
     final bool? yes = await showDialog<bool>(
       context: context,
       builder: (BuildContext ctx) => AlertDialog(
-        title: const Text('Buy premium with points?'),
+        title: Text(context.l10n.buyPremiumWithPoints),
         content: Text(
           '${_thousands(cost)} points will be taken from your balance of '
           '${_thousands(balance)}. You will get 30 days of premium.',
@@ -234,11 +234,11 @@ class _PremiumScreenState extends ConsumerState<PremiumScreen> {
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(context.l10n.cancel),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Confirm'),
+            child: Text(context.l10n.confirm),
           ),
         ],
       ),
@@ -317,7 +317,7 @@ class _HeroCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        'Imo LIVE Premium',
+                        context.l10n.imoLIVEPremium,
                         style: context.t.titleLarge?.copyWith(
                           color: c.textOnAccent,
                           fontWeight: FontWeight.w700,
@@ -325,8 +325,7 @@ class _HeroCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        isPremium ? 'Active on this account' : 'Upgrade once, '
-                            'every feature unlocks',
+                        isPremium ? context.l10n.activeOnThisAccount : context.l10n.upgradeOnceEveryFeatureUnlocks,
                         style: context.t.bodySmall?.copyWith(
                           color: c.textOnAccent.withValues(alpha: 0.88),
                         ),
@@ -442,19 +441,19 @@ class _PriceCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              '1 month of premium',
+              context.l10n.s1MonthOfPremium,
               style: context.t.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
             _PriceLine(
-              label: 'Money',
+              label: context.l10n.money,
               value: '\$${_money(priceUsd)}  ·  ৳$priceBdt',
             ),
             const SizedBox(height: AppSpacing.sm),
             _PriceLine(
-              label: 'Points',
+              label: context.l10n.points3,
               value: '${_thousands(pointsPrice)} pts',
             ),
             const SizedBox(height: AppSpacing.md),
@@ -649,7 +648,7 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
                   ),
                   child: Text(
                     method == null
-                        ? 'Pay for premium'
+                        ? context.l10n.payForPremium
                         : 'Pay with ${method.label}',
                     style: context.t.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
@@ -786,7 +785,7 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
               decoration: InputDecoration(
                 labelText: method.proofLabel,
                 hintText: method == PremiumPaymentMethod.crypto
-                    ? '0x…'
+                    ? context.l10n.s0x
                     : 'e.g. 9F7A2K1LQD',
                 border: const OutlineInputBorder(),
                 errorText: _error.isEmpty ? null : _error,
@@ -797,7 +796,7 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
             ),
             const SizedBox(height: AppSpacing.lg),
             ProminentButton(
-              label: _submitting ? 'Submitting…' : 'Submit Payment',
+              label: _submitting ? context.l10n.submitting : context.l10n.submitPayment,
               icon: Icons.send_rounded,
               expanded: true,
               onPressed: _submitting ? null : () => _submit(method),
@@ -810,7 +809,7 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
                         _method = null;
                         _error = '';
                       }),
-              child: const Text('Choose a different method'),
+              child: Text(context.l10n.chooseADifferentMethod),
             ),
           ],
         ),

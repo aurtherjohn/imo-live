@@ -186,16 +186,16 @@ class _ChannelSettingsScreenState
               SettingsSwitchRow(
                 title: context.l10n.publicChannel,
                 subtitle: _isPublic
-                    ? 'Anyone can find and follow this channel'
-                    : 'Only people with the secret key can request to join',
+                    ? context.l10n.anyoneCanFindAndFollow
+                    : context.l10n.onlyPeopleWithTheSecret,
                 value: _isPublic,
                 onChanged: (bool v) => setState(() => _isPublic = v),
               ),
               SettingsSwitchRow(
                 title: context.l10n.premiumOnly,
                 subtitle: _isPremiumOnly
-                    ? 'Only members with premium can read the posts'
-                    : 'Anyone who follows can read the posts',
+                    ? context.l10n.onlyMembersWithPremiumCan
+                    : context.l10n.anyoneWhoFollowsCanRead,
                 value: _isPremiumOnly,
                 // A private channel is already gated by its key, so stacking a
                 // second gate on top would leave a key holder still locked out.
@@ -207,8 +207,8 @@ class _ChannelSettingsScreenState
               SettingsTile(
                 title: context.l10n.coverImage,
                 subtitle: _coverUrl == null
-                    ? 'Add a wide banner behind the header'
-                    : 'Cover updated — tap to replace',
+                    ? context.l10n.addAWideBannerBehind
+                    : context.l10n.coverUpdatedTapToReplace,
                 leadingIcon: Icons.wallpaper_rounded,
                 onTap: _busy ? null : _pickCover,
               ),
@@ -221,11 +221,11 @@ class _ChannelSettingsScreenState
               children: <Widget>[
                 SettingsTile(
                   title: channel.hasSecretKey
-                      ? 'Rotate secret key'
-                      : 'Generate secret key',
+                      ? context.l10n.rotateSecretKey
+                      : context.l10n.generateSecretKey,
                   subtitle: channel.hasSecretKey
-                      ? 'The old key stops working immediately'
-                      : 'A 12-character key, shown to you once',
+                      ? context.l10n.theOldKeyStopsWorking
+                      : context.l10n.a12CharacterKeyShown,
                   leadingIcon: Icons.key_rounded,
                   onTap: _busy ? null : _rotateKey,
                 ),
@@ -262,7 +262,7 @@ class _ChannelSettingsScreenState
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: ProminentButton(
-              label: _busy ? 'Saving…' : 'Save changes',
+              label: _busy ? context.l10n.saving : context.l10n.saveChanges,
               icon: Icons.check_rounded,
               expanded: true,
               onPressed: _busy ? null : () => _save(),
@@ -466,19 +466,19 @@ class _MonetizationGroup extends ConsumerWidget {
         SettingsTile(
           title: switch (status) {
             MonetizationStatus.approved => context.l10n.monetized,
-            MonetizationStatus.pending => 'Application under review',
-            MonetizationStatus.rejected => 'Application was rejected',
+            MonetizationStatus.pending => context.l10n.applicationUnderReview,
+            MonetizationStatus.rejected => context.l10n.applicationWasRejected,
             MonetizationStatus.none => channel.isEligibleForMonetization
-                ? 'You are eligible to apply'
-                : 'Not eligible yet',
+                ? context.l10n.youAreEligibleToApply
+                : context.l10n.notEligibleYet,
           },
           subtitle: switch (status) {
             MonetizationStatus.approved =>
-              'Your channel can now earn from its audience',
+              context.l10n.yourChannelCanNowEarn,
             MonetizationStatus.pending =>
-              'We will notify you once a reviewer has decided',
+              context.l10n.weWillNotifyYouOnce,
             MonetizationStatus.rejected =>
-              'You can re-apply once the channel grows further',
+              context.l10n.youCanReApplyOnce,
             MonetizationStatus.none =>
               'Needs ${TextUtils.grouped(Channel.monetizationFollowerThreshold)} '
                   'followers and '

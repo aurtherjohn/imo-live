@@ -148,9 +148,9 @@ class _ContactPickerSheetState extends ConsumerState<_ContactPickerSheet> {
               child: results.isEmpty
                   ? EmptyState(
                       icon: Icons.person_search_rounded,
-                      title: all.isEmpty ? context.l10n.noContactsYet : 'No matches',
+                      title: all.isEmpty ? context.l10n.noContactsYet : context.l10n.noMatches,
                       message: all.isEmpty
-                          ? 'Add a contact first, then pick members here.'
+                          ? context.l10n.addAContactFirstThen
                           : 'Nothing matched "$_query".',
                       compact: true,
                     )

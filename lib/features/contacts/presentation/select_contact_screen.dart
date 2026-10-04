@@ -58,7 +58,7 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
           icon: const Icon(Icons.close_rounded),
         ),
         title: Text(
-          _selected.isEmpty ? 'Select contacts' : '${_selected.length} selected',
+          _selected.isEmpty ? context.l10n.selectContacts : '${_selected.length} selected',
         ),
         actions: <Widget>[
           IconButton(
@@ -229,10 +229,9 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
             child: results.isEmpty
                 ? EmptyState(
                     icon: Icons.person_search_rounded,
-                    title: all.isEmpty ? context.l10n.noContactsYet : 'No matches',
+                    title: all.isEmpty ? context.l10n.noContactsYet : context.l10n.noMatches,
                     message: all.isEmpty
-                        ? 'Add a contact or sync your address book to get '
-                            'started.'
+                        ? context.l10n.addAContactOrSync
                         : 'Nothing matched "$_query". Try a different search.',
                   )
                 : ListView.builder(

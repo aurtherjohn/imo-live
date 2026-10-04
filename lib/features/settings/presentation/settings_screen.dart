@@ -59,7 +59,7 @@ class SettingsScreen extends ConsumerWidget {
           SettingsGroup(
             children: <Widget>[
               SettingsValueRow(
-                label: 'Go Premium',
+                label: context.l10n.goPremium,
                 value: ref.watch(isPremiumProvider)
                     ? 'Active · '
                         '${ref.watch(pointsAccountProvider).valueOrNull?.premiumDaysLeft ?? 0} days left'
@@ -185,8 +185,8 @@ class SettingsScreen extends ConsumerWidget {
               SettingsSwitchRow(
                 title: context.l10n.darkMode,
                 subtitle: switch (ref.watch(themeModeProvider)) {
-                  ThemeMode.dark => 'On · dark theme',
-                  ThemeMode.light => 'Off · light theme',
+                  ThemeMode.dark => context.l10n.onDarkTheme,
+                  ThemeMode.light => context.l10n.offLightTheme,
                   ThemeMode.system =>
                     'Following system · ${MediaQuery.platformBrightnessOf(context) == Brightness.dark ? 'dark' : 'light'}',
                 },

@@ -109,11 +109,9 @@ class _ContactsScreenState extends ConsumerState<ContactsScreen> {
             child: visible.isEmpty
                 ? EmptyState(
                     icon: Icons.contacts_outlined,
-                    title: all.isEmpty ? context.l10n.noContactsYet : 'No matches',
+                    title: all.isEmpty ? context.l10n.noContactsYet : context.l10n.noMatches,
                     message: all.isEmpty
-                        ? 'People saved on this device will appear here. '
-                            'Add a contact or allow contacts access to get '
-                            'started.'
+                        ? context.l10n.peopleSavedOnThisDevice
                         : 'Nothing matched "$_query".',
                     actionLabel: all.isEmpty ? context.l10n.newContact : null,
                     onAction: all.isEmpty

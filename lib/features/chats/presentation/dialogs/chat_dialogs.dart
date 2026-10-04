@@ -274,7 +274,7 @@ class _PollComposerState extends State<_PollComposer> {
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    _isQuiz ? 'Create quiz' : 'Create poll',
+                    _isQuiz ? context.l10n.createQuiz : context.l10n.createPoll,
                     style: context.t.titleMedium,
                   ),
                 ],
@@ -286,7 +286,7 @@ class _PollComposerState extends State<_PollComposer> {
                 children: <Widget>[
                   ITextField(
                     controller: _question,
-                    hint: _isQuiz ? 'Quiz question' : 'Ask a question',
+                    hint: _isQuiz ? context.l10n.quizQuestion : context.l10n.askAQuestion,
                     maxLines: 2,
                     minLines: 1,
                     onChanged: (_) => setState(() {}),
@@ -301,8 +301,8 @@ class _PollComposerState extends State<_PollComposer> {
                           if (_isQuiz)
                             IconButton(
                               tooltip: marked
-                                  ? 'Correct answer'
-                                  : 'Mark as correct answer',
+                                  ? context.l10n.correctAnswer
+                                  : context.l10n.markAsCorrectAnswer,
                               onPressed: () => setState(
                                 () => _correctIndex = marked ? null : index,
                               ),
@@ -410,7 +410,7 @@ class _PollComposerState extends State<_PollComposer> {
                               );
                             }
                           : null,
-                      child: Text(_isQuiz ? 'Create quiz' : 'Create poll'),
+                      child: Text(_isQuiz ? context.l10n.createQuiz : context.l10n.createPoll),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),

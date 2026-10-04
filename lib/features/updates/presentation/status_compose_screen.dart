@@ -139,7 +139,7 @@ class _StatusComposeScreenState extends ConsumerState<StatusComposeScreen> {
                 AppSpacing.md,
               ),
               child: ProminentButton(
-                label: _busy ? 'Sharing…' : 'Share update',
+                label: _busy ? context.l10n.sharing2 : context.l10n.shareUpdate,
                 icon: Icons.send_rounded,
                 expanded: true,
                 onPressed: hasContent && !_busy ? () => _share(me) : () {},

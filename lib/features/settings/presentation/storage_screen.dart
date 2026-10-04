@@ -225,7 +225,7 @@ class StorageScreen extends ConsumerWidget {
                         iToast(
                           context,
                           removed == 0
-                              ? 'No expired messages found'
+                              ? context.l10n.noExpiredMessagesFound
                               : 'Removed $removed expired message${removed == 1 ? '' : 's'}',
                         );
                       }

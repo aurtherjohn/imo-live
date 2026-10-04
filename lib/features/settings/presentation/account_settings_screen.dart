@@ -75,8 +75,8 @@ class AccountSettingsScreen extends ConsumerWidget {
                       children: <Widget>[
                         Text(
                           signedIn
-                              ? (account.email ?? 'Signed in')
-                              : 'Not signed in',
+                              ? (account.email ?? context.l10n.signedIn)
+                              : context.l10n.notSignedIn,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.t.bodyLarge?.copyWith(
@@ -86,8 +86,8 @@ class AccountSettingsScreen extends ConsumerWidget {
                         const SizedBox(height: 2),
                         Text(
                           signedIn
-                              ? 'Your chats sync across your devices'
-                              : 'Sign in to sync chats, contacts and updates',
+                              ? context.l10n.yourChatsSyncAcrossYour
+                              : context.l10n.signInToSyncChats,
                           style: context.t.bodySmall?.copyWith(
                             color: context.c.textSecondary,
                           ),
@@ -112,7 +112,7 @@ class AccountSettingsScreen extends ConsumerWidget {
                       if (!ok) return;
                       await ref.read(authControllerProvider.notifier).signOut();
                     },
-                    child: Text(signedIn ? context.l10n.signOut : 'Sign in'),
+                    child: Text(signedIn ? context.l10n.signOut : context.l10n.signIn),
                   ),
                 ],
               ),

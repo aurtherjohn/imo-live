@@ -4853,4 +4853,552 @@ class AppLocalizationsEn extends AppLocalizations {
   String secondsCount(int n) {
     return '$n seconds';
   }
+
+  @override
+  String get finishSetup => 'Finish setup';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get setFromYourNumberAt =>
+      'Set from your number at signup. Contact support to change your phone number.';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
+  String get noMissedCalls => 'No missed calls';
+
+  @override
+  String get noCallsYet => 'No calls yet';
+
+  @override
+  String get missedAndDeclinedCallsWill =>
+      'Missed and declined calls will show up here.';
+
+  @override
+  String get startAVoiceOrVideo =>
+      'Start a voice or video call from a chat, a contact or the list below.';
+
+  @override
+  String get missed => 'Missed';
+
+  @override
+  String get incomingVideoCall => 'Incoming video call';
+
+  @override
+  String get incomingVoiceCall => 'Incoming voice call';
+
+  @override
+  String get ringing => 'Ringing…';
+
+  @override
+  String get enterANumber => 'Enter a number';
+
+  @override
+  String get looksLikeAPhoneNumber => 'Looks like a phone number';
+
+  @override
+  String get keepTyping => 'Keep typing…';
+
+  @override
+  String get wantsToJoinThisChannel => 'Wants to join this channel';
+
+  @override
+  String get followChannel => 'Follow channel';
+
+  @override
+  String get publishYourFirstPostAbove =>
+      'Publish your first post above — followers will see it instantly.';
+
+  @override
+  String get theOwnerHasNotPosted => 'The owner has not posted anything yet.';
+
+  @override
+  String get estimatesOnlyActualRevenueIs =>
+      'Estimates only. Actual revenue is settled by the ad network, not by this app, and depends on where each view came from.';
+
+  @override
+  String get meetBothRequirementsThenApply =>
+      'Meet both requirements, then apply. Applications are reviewed by a person — nothing is approved automatically.';
+
+  @override
+  String get nobodyIsWaiting => 'Nobody is waiting';
+
+  @override
+  String get anyoneCanFindAndFollow =>
+      'Anyone can find and follow this channel';
+
+  @override
+  String get onlyPeopleWithTheSecret =>
+      'Only people with the secret key can request to join';
+
+  @override
+  String get onlyMembersWithPremiumCan =>
+      'Only members with premium can read the posts';
+
+  @override
+  String get anyoneWhoFollowsCanRead => 'Anyone who follows can read the posts';
+
+  @override
+  String get addAWideBannerBehind => 'Add a wide banner behind the header';
+
+  @override
+  String get coverUpdatedTapToReplace => 'Cover updated — tap to replace';
+
+  @override
+  String get rotateSecretKey => 'Rotate secret key';
+
+  @override
+  String get generateSecretKey => 'Generate secret key';
+
+  @override
+  String get theOldKeyStopsWorking => 'The old key stops working immediately';
+
+  @override
+  String get a12CharacterKeyShown => 'A 12-character key, shown to you once';
+
+  @override
+  String get saving => 'Saving…';
+
+  @override
+  String get applicationUnderReview => 'Application under review';
+
+  @override
+  String get applicationWasRejected => 'Application was rejected';
+
+  @override
+  String get youAreEligibleToApply => 'You are eligible to apply';
+
+  @override
+  String get notEligibleYet => 'Not eligible yet';
+
+  @override
+  String get yourChannelCanNowEarn =>
+      'Your channel can now earn from its audience';
+
+  @override
+  String get weWillNotifyYouOnce =>
+      'We will notify you once a reviewer has decided';
+
+  @override
+  String get youCanReApplyOnce =>
+      'You can re-apply once the channel grows further';
+
+  @override
+  String get approveMonetization => 'Approve monetization?';
+
+  @override
+  String get rejectThisApplication => 'Reject this application?';
+
+  @override
+  String get privatePeopleNeedASecret =>
+      'Private — people need a secret key to request to join';
+
+  @override
+  String get creating => 'Creating…';
+
+  @override
+  String get createChannel => 'Create channel';
+
+  @override
+  String get noMessages => 'No messages';
+
+  @override
+  String get nothingCouldBeSentCheck =>
+      'Nothing could be sent — check your connection';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get localStorageIsWorkingAgain => 'Local storage is working again';
+
+  @override
+  String get storageIsStillUnavailable => 'Storage is still unavailable';
+
+  @override
+  String get retrying => 'Retrying…';
+
+  @override
+  String get retry2 => 'Retry';
+
+  @override
+  String get noContactsToShow => 'No contacts to show';
+
+  @override
+  String get noMatches => 'No matches';
+
+  @override
+  String get allowContactsAccessToSee =>
+      'Allow contacts access to see the people already saved on your phone, or create a new contact.';
+
+  @override
+  String get thisChatHasNoOne => 'This chat has no one to call yet';
+
+  @override
+  String get groupCallsAreNotAvailable => 'Group calls are not available yet';
+
+  @override
+  String get thisChatHasNoOne2 => 'This chat has no one to send a gift to';
+
+  @override
+  String get giftsAreForOneTo => 'Gifts are for one-to-one chats';
+
+  @override
+  String get youAreGoing => 'You are going';
+
+  @override
+  String get markedAsMaybe => 'Marked as maybe';
+
+  @override
+  String get markedAsNotGoing => 'Marked as not going';
+
+  @override
+  String get responseCleared => 'Response cleared';
+
+  @override
+  String get unpinnedFromThisChat => 'Unpinned from this chat';
+
+  @override
+  String get pinnedToThisChat => 'Pinned to this chat';
+
+  @override
+  String get sayHello => 'Say hello';
+
+  @override
+  String get startTheConversation => 'Start the conversation';
+
+  @override
+  String get messagesInThisChatDisappear =>
+      'Messages in this chat disappear automatically.';
+
+  @override
+  String get messagesYouSendAreStored =>
+      'Messages you send are stored on this device. Tap the mic to record a voice note, or attach a photo, file or location.';
+
+  @override
+  String get pickAFilter => 'Pick a filter';
+
+  @override
+  String get chooseAMessageTypeOr =>
+      'Choose a message type or sender to filter this chat.';
+
+  @override
+  String get longPressAnyMessageAnd =>
+      'Long-press any message and choose Star to keep it here for quick access.';
+
+  @override
+  String get createQuiz => 'Create quiz';
+
+  @override
+  String get createPoll => 'Create poll';
+
+  @override
+  String get quizQuestion => 'Quiz question';
+
+  @override
+  String get askAQuestion => 'Ask a question';
+
+  @override
+  String get correctAnswer => 'Correct answer';
+
+  @override
+  String get markAsCorrectAnswer => 'Mark as correct answer';
+
+  @override
+  String get noMessagesYet => 'No messages yet';
+
+  @override
+  String get results => 'Results';
+
+  @override
+  String get audioFile => 'Audio file';
+
+  @override
+  String get file => 'FILE';
+
+  @override
+  String get sharedLocation => 'Shared location';
+
+  @override
+  String get coordinatesUnavailable => 'Coordinates unavailable';
+
+  @override
+  String get quiz => 'QUIZ';
+
+  @override
+  String get poll2 => 'POLL';
+
+  @override
+  String get correct => 'Correct';
+
+  @override
+  String get tapAnAnswerToSee => 'Tap an answer to see the result';
+
+  @override
+  String get editMessage => 'Edit message';
+
+  @override
+  String get notCreatedYet => 'Not created yet';
+
+  @override
+  String get broadcastToAllMembers => 'Broadcast to all members';
+
+  @override
+  String get createCommunity => 'Create community';
+
+  @override
+  String get peopleSavedOnThisDevice =>
+      'People saved on this device will appear here. Add a contact or allow contacts access to get started.';
+
+  @override
+  String get removedFromFavourites => 'Removed from favourites';
+
+  @override
+  String get addedToFavourites => 'Added to favourites';
+
+  @override
+  String get blocked3 => 'Blocked';
+
+  @override
+  String get blockContact => 'Block contact';
+
+  @override
+  String get thisContactCannotMessageOr =>
+      'This contact cannot message or call you from this device';
+
+  @override
+  String get stopThisContactFromReaching =>
+      'Stop this contact from reaching you on this device';
+
+  @override
+  String get contactUnblocked => 'Contact unblocked';
+
+  @override
+  String get unmuted => 'Unmuted';
+
+  @override
+  String get removeFromFavourites => 'Remove from favourites';
+
+  @override
+  String get addToFavourites => 'Add to favourites';
+
+  @override
+  String get contactBlocked => 'Contact blocked';
+
+  @override
+  String get savedToYourAddressBook => 'Saved to your address book';
+
+  @override
+  String get couldNotWriteToThe => 'Could not write to the address book';
+
+  @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get createContact => 'Create contact';
+
+  @override
+  String get unblockContact => 'Unblock contact';
+
+  @override
+  String get selectContacts => 'Select contacts';
+
+  @override
+  String get addAContactOrSync =>
+      'Add a contact or sync your address book to get started.';
+
+  @override
+  String get disappearingMessagesTurnedOff =>
+      'Disappearing messages turned off';
+
+  @override
+  String get messagesWillDisappearAfterThe =>
+      'Messages will disappear after the selected time';
+
+  @override
+  String get watchAdsToEarnMore => 'Watch ads to earn more';
+
+  @override
+  String get loadingAd => 'Loading ad…';
+
+  @override
+  String get sendAGift => 'Send a gift';
+
+  @override
+  String get sending => 'Sending…';
+
+  @override
+  String get adminsCanAddOrRemove3 =>
+      'Admins can add or remove members and change group settings.';
+
+  @override
+  String get onlyAdminsCanChangeGroup =>
+      'Only admins can change group settings.';
+
+  @override
+  String get member => 'Member';
+
+  @override
+  String get dismissAsAdmin => 'Dismiss as admin';
+
+  @override
+  String get makeGroupAdmin => 'Make group admin';
+
+  @override
+  String get addGroupPhoto => 'Add group photo';
+
+  @override
+  String get addAtLeastOneMember => 'Add at least one member';
+
+  @override
+  String get change => 'Change';
+
+  @override
+  String get addMembersToContinue => 'Add members to continue';
+
+  @override
+  String get removeAsAdmin => 'Remove as admin';
+
+  @override
+  String get makeAdmin => 'Make admin';
+
+  @override
+  String get addAContactFirstThen =>
+      'Add a contact first, then pick members here.';
+
+  @override
+  String get scanThisCodeToAdd => 'Scan this code to add or join';
+
+  @override
+  String get goPremium => 'Go Premium';
+
+  @override
+  String get premiumIsActiveOnThis => 'Premium is active on this account.';
+
+  @override
+  String get whatYouGet => 'What you get';
+
+  @override
+  String get yourRequests => 'Your requests';
+
+  @override
+  String get signInFirst2 => 'Sign in first.';
+
+  @override
+  String get buyPremiumWithPoints => 'Buy premium with points?';
+
+  @override
+  String get imoLIVEPremium => 'Imo LIVE Premium';
+
+  @override
+  String get activeOnThisAccount => 'Active on this account';
+
+  @override
+  String get upgradeOnceEveryFeatureUnlocks =>
+      'Upgrade once, every feature unlocks';
+
+  @override
+  String get s1MonthOfPremium => '1 month of premium';
+
+  @override
+  String get money => 'Money';
+
+  @override
+  String get points3 => 'Points';
+
+  @override
+  String get payForPremium => 'Pay for premium';
+
+  @override
+  String get s0x => '0x…';
+
+  @override
+  String get submitting => 'Submitting…';
+
+  @override
+  String get submitPayment => 'Submit Payment';
+
+  @override
+  String get chooseADifferentMethod => 'Choose a different method';
+
+  @override
+  String get phoneNumberCannotBeChanged => 'Phone number cannot be changed.';
+
+  @override
+  String get contactSupportToChangeYour =>
+      'Contact support to change your phone number.';
+
+  @override
+  String get nothingToSave => 'Nothing to save';
+
+  @override
+  String get thePhotoWasSavedOn =>
+      'The photo was saved on this device but could not be uploaded, so others will not see it yet. Check your connection and try again.';
+
+  @override
+  String get signedIn => 'Signed in';
+
+  @override
+  String get notSignedIn => 'Not signed in';
+
+  @override
+  String get yourChatsSyncAcrossYour => 'Your chats sync across your devices';
+
+  @override
+  String get signInToSyncChats => 'Sign in to sync chats, contacts and updates';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get messagesFromAnyoneNotIn =>
+      'Messages from anyone not in your contacts are dropped';
+
+  @override
+  String get anyoneWhoFindsYouCan =>
+      'Anyone who finds you can send a first message';
+
+  @override
+  String get messagesFromUnknownSendersWill =>
+      'Messages from unknown senders will be dropped';
+
+  @override
+  String get anyoneCanMessageYouAgain => 'Anyone can message you again';
+
+  @override
+  String get keepALocalSnapshotOf =>
+      'Keep a local snapshot of your chats on this device';
+
+  @override
+  String get noChats => 'No chats';
+
+  @override
+  String get untitledChat => 'Untitled chat';
+
+  @override
+  String get onDarkTheme => 'On · dark theme';
+
+  @override
+  String get offLightTheme => 'Off · light theme';
+
+  @override
+  String get noExpiredMessagesFound => 'No expired messages found';
+
+  @override
+  String get sharing2 => 'Sharing…';
+
+  @override
+  String get shareUpdate => 'Share update';
+
+  @override
+  String get noViewsYet => 'No views yet';
+
+  @override
+  String get tapToAddAStatus => 'Tap to add a status update';
 }

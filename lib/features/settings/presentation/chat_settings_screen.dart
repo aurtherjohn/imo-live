@@ -93,7 +93,7 @@ class ChatSettingsScreen extends ConsumerWidget {
                 title: context.l10n.chatBackup,
                 subtitle: s.backupEnabled
                     ? 'A local snapshot is written on every ${s.backupFrequency} run'
-                    : 'Keep a local snapshot of your chats on this device',
+                    : context.l10n.keepALocalSnapshotOf,
                 value: s.backupEnabled,
                 onChanged: (bool v) => ref
                     .read(chatSettingsProvider.notifier)

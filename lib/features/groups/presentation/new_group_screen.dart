@@ -116,7 +116,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    _photoPath == null ? 'Add group photo' : context.l10n.changePhoto,
+                    _photoPath == null ? context.l10n.addGroupPhoto : context.l10n.changePhoto,
                     style: context.t.bodySmall?.copyWith(
                       color: context.c.accent,
                     ),
@@ -195,7 +195,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
                 Expanded(
                   child: Text(
                     _members.isEmpty
-                        ? 'Add at least one member'
+                        ? context.l10n.addAtLeastOneMember
                         : '${_members.length} selected'
                             '${_adminIds.isEmpty ? '' : ' · ${_adminIds.length} admin'}',
                     style: context.t.bodySmall?.copyWith(
@@ -221,7 +221,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
                     });
                   }),
                   icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-                  label: Text(_members.isEmpty ? context.l10n.addMembers : 'Change'),
+                  label: Text(_members.isEmpty ? context.l10n.addMembers : context.l10n.change),
                 ),
               ],
             ),
@@ -317,7 +317,7 @@ class _NewGroupScreenState extends ConsumerState<NewGroupScreen> {
             padding: AppSpacing.pageH,
             child: ProminentButton(
               label: _members.isEmpty
-                  ? 'Add members to continue'
+                  ? context.l10n.addMembersToContinue
                   : context.l10n.createGroup,
               icon: Icons.check_rounded,
               expanded: true,
@@ -497,7 +497,7 @@ class _MemberRow extends StatelessWidget {
               size: AppIconSizes.sm,
               color: isAdmin ? context.c.accent : context.c.textSecondary,
             ),
-            tooltip: isAdmin ? 'Remove as admin' : 'Make admin',
+            tooltip: isAdmin ? context.l10n.removeAsAdmin : context.l10n.makeAdmin,
           ),
           IconButton(
             onPressed: onRemove,

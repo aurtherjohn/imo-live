@@ -300,8 +300,8 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                     iToast(
                       context,
                       contact.isFavorite
-                          ? 'Removed from favourites'
-                          : 'Added to favourites',
+                          ? context.l10n.removedFromFavourites
+                          : context.l10n.addedToFavourites,
                     );
                   }
                 },
@@ -346,10 +346,10 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
             title: context.l10n.privacy,
             children: <Widget>[
               SettingsSwitchRow(
-                title: contact.isBlocked ? 'Blocked' : 'Block contact',
+                title: contact.isBlocked ? context.l10n.blocked3 : context.l10n.blockContact,
                 subtitle: contact.isBlocked
-                    ? 'This contact cannot message or call you from this device'
-                    : 'Stop this contact from reaching you on this device',
+                    ? context.l10n.thisContactCannotMessageOr
+                    : context.l10n.stopThisContactFromReaching,
                 value: contact.isBlocked,
                 onChanged: (bool v) async {
                   await ref
@@ -358,7 +358,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                   if (mounted) {
                     iToast(
                       context,
-                      v ? '${contact.fullName} blocked' : 'Contact unblocked',
+                      v ? '${contact.fullName} blocked' : context.l10n.contactUnblocked,
                     );
                   }
                 },
@@ -375,7 +375,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                             .read(chatsProvider.notifier)
                             .toggleMute(chat.id);
                         if (mounted) {
-                          iToast(context, v ? context.l10n.muted : 'Unmuted');
+                          iToast(context, v ? context.l10n.muted : context.l10n.unmuted);
                         }
                       },
               ),
@@ -512,8 +512,8 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
         (
           icon: Icons.favorite_border_rounded,
           label: contact.isFavorite
-              ? 'Remove from favourites'
-              : 'Add to favourites',
+              ? context.l10n.removeFromFavourites
+              : context.l10n.addToFavourites,
           onTap: () async {
             Navigator.pop(context);
             await ref
@@ -523,8 +523,8 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
               iToast(
                 context,
                 contact.isFavorite
-                    ? 'Removed from favourites'
-                    : 'Added to favourites',
+                    ? context.l10n.removedFromFavourites
+                    : context.l10n.addedToFavourites,
               );
             }
           },
@@ -563,7 +563,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
             if (mounted) {
               iToast(
                 context,
-                contact.isBlocked ? 'Contact unblocked' : 'Contact blocked',
+                contact.isBlocked ? context.l10n.contactUnblocked : context.l10n.contactBlocked,
               );
             }
           },

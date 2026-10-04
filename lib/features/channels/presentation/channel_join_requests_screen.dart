@@ -52,7 +52,7 @@ class ChannelJoinRequestsScreen extends ConsumerWidget {
                 title: Text(request.displayName),
                 subtitle: Text(
                   request.message.isEmpty
-                      ? 'Wants to join this channel'
+                      ? context.l10n.wantsToJoinThisChannel
                       : request.message,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

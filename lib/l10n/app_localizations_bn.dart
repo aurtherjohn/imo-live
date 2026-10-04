@@ -4839,4 +4839,559 @@ class AppLocalizationsBn extends AppLocalizations {
   String secondsCount(int n) {
     return '$n সেকেন্ড';
   }
+
+  @override
+  String get finishSetup => 'সেটআপ শেষ করুন';
+
+  @override
+  String get saveChanges => 'পরিবর্তন সংরক্ষণ করুন';
+
+  @override
+  String get setFromYourNumberAt =>
+      'সাইনআপের সময় আপনার নম্বর থেকে সেট করা হয়েছে। ফোন নম্বর পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন।';
+
+  @override
+  String get showPassword => 'পাসওয়ার্ড দেখুন';
+
+  @override
+  String get hidePassword => 'পাসওয়ার্ড লুকান';
+
+  @override
+  String get noMissedCalls => 'মিসড কল নেই';
+
+  @override
+  String get noCallsYet => 'এখনো কোনো কল নেই';
+
+  @override
+  String get missedAndDeclinedCallsWill =>
+      'মিসড ও প্রত্যাখ্যাত কল এখানে দেখা যাবে।';
+
+  @override
+  String get startAVoiceOrVideo =>
+      'চ্যাট, পরিচিতি বা নিচের তালিকা থেকে ভয়েস বা ভিডিও কল শুরু করুন।';
+
+  @override
+  String get missed => 'মিসড';
+
+  @override
+  String get incomingVideoCall => 'ইনকামিং ভিডিও কল';
+
+  @override
+  String get incomingVoiceCall => 'ইনকামিং ভয়েস কল';
+
+  @override
+  String get ringing => 'রিং হচ্ছে…';
+
+  @override
+  String get enterANumber => 'একটি নম্বর লিখুন';
+
+  @override
+  String get looksLikeAPhoneNumber => 'এটি ফোন নম্বরের মতো দেখাচ্ছে';
+
+  @override
+  String get keepTyping => 'টাইপ করতে থাকুন…';
+
+  @override
+  String get wantsToJoinThisChannel => 'এই চ্যানেলে যোগ দিতে চায়';
+
+  @override
+  String get followChannel => 'চ্যানেল ফলো করুন';
+
+  @override
+  String get publishYourFirstPostAbove =>
+      'উপরে আপনার প্রথম পোস্ট প্রকাশ করুন — ফলোয়াররা সাথে সাথে দেখতে পাবে।';
+
+  @override
+  String get theOwnerHasNotPosted => 'মালিক এখনো কিছু পোস্ট করেননি।';
+
+  @override
+  String get estimatesOnlyActualRevenueIs =>
+      'শুধু আনুমানিক হিসাব। প্রকৃত আয় নির্ধারণ করে বিজ্ঞাপন নেটওয়ার্ক, এই অ্যাপ নয়, এবং তা নির্ভর করে প্রতিটি ভিউ কোথা থেকে এসেছে তার উপর।';
+
+  @override
+  String get meetBothRequirementsThenApply =>
+      'দুটি শর্তই পূরণ করুন, তারপর আবেদন করুন। আবেদন একজন ব্যক্তি পর্যালোচনা করেন — কিছুই স্বয়ংক্রিয়ভাবে অনুমোদিত হয় না।';
+
+  @override
+  String get nobodyIsWaiting => 'কেউ অপেক্ষা করছে না';
+
+  @override
+  String get anyoneCanFindAndFollow => 'যে কেউ এই চ্যানেল খুঁজে ফলো করতে পারবে';
+
+  @override
+  String get onlyPeopleWithTheSecret =>
+      'শুধু যাদের কাছে সিক্রেট কী আছে তারাই যোগ দেওয়ার অনুরোধ করতে পারবে';
+
+  @override
+  String get onlyMembersWithPremiumCan =>
+      'শুধু প্রিমিয়াম সদস্যরা পোস্ট পড়তে পারবেন';
+
+  @override
+  String get anyoneWhoFollowsCanRead => 'যে কেউ ফলো করে সে পোস্ট পড়তে পারবে';
+
+  @override
+  String get addAWideBannerBehind =>
+      'হেডারের পেছনে একটি চওড়া ব্যানার যোগ করুন';
+
+  @override
+  String get coverUpdatedTapToReplace =>
+      'কভার আপডেট হয়েছে — বদলাতে ট্যাপ করুন';
+
+  @override
+  String get rotateSecretKey => 'সিক্রেট কী পরিবর্তন করুন';
+
+  @override
+  String get generateSecretKey => 'সিক্রেট কী তৈরি করুন';
+
+  @override
+  String get theOldKeyStopsWorking => 'পুরনো কী সাথে সাথে কাজ করা বন্ধ করবে';
+
+  @override
+  String get a12CharacterKeyShown =>
+      '১২ অক্ষরের একটি কী, যা আপনাকে একবারই দেখানো হবে';
+
+  @override
+  String get saving => 'সংরক্ষণ করা হচ্ছে…';
+
+  @override
+  String get applicationUnderReview => 'আবেদন পর্যালোচনাধীন';
+
+  @override
+  String get applicationWasRejected => 'আবেদন প্রত্যাখ্যাত হয়েছে';
+
+  @override
+  String get youAreEligibleToApply => 'আপনি আবেদন করার যোগ্য';
+
+  @override
+  String get notEligibleYet => 'এখনো যোগ্য নন';
+
+  @override
+  String get yourChannelCanNowEarn =>
+      'আপনার চ্যানেল এখন দর্শক থেকে আয় করতে পারবে';
+
+  @override
+  String get weWillNotifyYouOnce =>
+      'পর্যালোচক সিদ্ধান্ত নিলে আমরা আপনাকে জানাবো';
+
+  @override
+  String get youCanReApplyOnce =>
+      'চ্যানেল আরও বাড়লে আপনি আবার আবেদন করতে পারবেন';
+
+  @override
+  String get approveMonetization => 'মনিটাইজেশন অনুমোদন করবেন?';
+
+  @override
+  String get rejectThisApplication => 'এই আবেদন প্রত্যাখ্যান করবেন?';
+
+  @override
+  String get privatePeopleNeedASecret =>
+      'প্রাইভেট — যোগ দেওয়ার অনুরোধ করতে সিক্রেট কী দরকার';
+
+  @override
+  String get creating => 'তৈরি করা হচ্ছে…';
+
+  @override
+  String get createChannel => 'চ্যানেল তৈরি করুন';
+
+  @override
+  String get noMessages => 'কোনো বার্তা নেই';
+
+  @override
+  String get nothingCouldBeSentCheck =>
+      'কিছু পাঠানো গেল না — আপনার সংযোগ পরীক্ষা করুন';
+
+  @override
+  String get unknown => 'অজানা';
+
+  @override
+  String get localStorageIsWorkingAgain => 'লোকাল স্টোরেজ আবার কাজ করছে';
+
+  @override
+  String get storageIsStillUnavailable => 'স্টোরেজ এখনো পাওয়া যাচ্ছে না';
+
+  @override
+  String get retrying => 'আবার চেষ্টা করা হচ্ছে…';
+
+  @override
+  String get retry2 => 'আবার চেষ্টা করুন';
+
+  @override
+  String get noContactsToShow => 'দেখানোর মতো কোনো পরিচিতি নেই';
+
+  @override
+  String get noMatches => 'কোনো মিল নেই';
+
+  @override
+  String get allowContactsAccessToSee =>
+      'আপনার ফোনে আগে থেকে সংরক্ষিত পরিচিতি দেখতে কনট্যাক্ট অ্যাক্সেস দিন, অথবা নতুন পরিচিতি তৈরি করুন।';
+
+  @override
+  String get thisChatHasNoOne => 'এই চ্যাটে কল করার মতো কেউ নেই';
+
+  @override
+  String get groupCallsAreNotAvailable => 'গ্রুপ কল এখনো পাওয়া যাচ্ছে না';
+
+  @override
+  String get thisChatHasNoOne2 => 'এই চ্যাটে উপহার পাঠানোর মতো কেউ নেই';
+
+  @override
+  String get giftsAreForOneTo => 'উপহার শুধু এক-এক চ্যাটের জন্য';
+
+  @override
+  String get youAreGoing => 'আপনি যাচ্ছেন';
+
+  @override
+  String get markedAsMaybe => 'হয়তো হিসেবে চিহ্নিত';
+
+  @override
+  String get markedAsNotGoing => 'যাচ্ছেন না হিসেবে চিহ্নিত';
+
+  @override
+  String get responseCleared => 'উত্তর মুছে ফেলা হয়েছে';
+
+  @override
+  String get unpinnedFromThisChat => 'এই চ্যাট থেকে আনপিন করা হয়েছে';
+
+  @override
+  String get pinnedToThisChat => 'এই চ্যাটে পিন করা হয়েছে';
+
+  @override
+  String get sayHello => 'সালাম জানান';
+
+  @override
+  String get startTheConversation => 'কথোপকথন শুরু করুন';
+
+  @override
+  String get messagesInThisChatDisappear =>
+      'এই চ্যাটের বার্তাগুলো স্বয়ংক্রিয়ভাবে মুছে যায়।';
+
+  @override
+  String get messagesYouSendAreStored =>
+      'আপনার পাঠানো বার্তা এই ডিভাইসে সংরক্ষিত থাকে। ভয়েস নোট রেকর্ড করতে মাইকে ট্যাপ করুন, অথবা ছবি, ফাইল বা অবস্থান সংযুক্ত করুন।';
+
+  @override
+  String get pickAFilter => 'একটি ফিল্টার বাছুন';
+
+  @override
+  String get chooseAMessageTypeOr =>
+      'এই চ্যাট ফিল্টার করতে বার্তার ধরন বা প্রেরক বাছুন।';
+
+  @override
+  String get longPressAnyMessageAnd =>
+      'যেকোনো বার্তায় চেপে ধরে রাখুন এবং দ্রুত খুঁজে পেতে Star বাছুন।';
+
+  @override
+  String get createQuiz => 'কুইজ তৈরি করুন';
+
+  @override
+  String get createPoll => 'পোল তৈরি করুন';
+
+  @override
+  String get quizQuestion => 'কুইজের প্রশ্ন';
+
+  @override
+  String get askAQuestion => 'একটি প্রশ্ন করুন';
+
+  @override
+  String get correctAnswer => 'সঠিক উত্তর';
+
+  @override
+  String get markAsCorrectAnswer => 'সঠিক উত্তর হিসেবে চিহ্নিত করুন';
+
+  @override
+  String get noMessagesYet => 'এখনো কোনো বার্তা নেই';
+
+  @override
+  String get results => 'ফলাফল';
+
+  @override
+  String get audioFile => 'অডিও ফাইল';
+
+  @override
+  String get file => 'ফাইল';
+
+  @override
+  String get sharedLocation => 'শেয়ার করা অবস্থান';
+
+  @override
+  String get coordinatesUnavailable => 'কোঅর্ডিনেট পাওয়া যাচ্ছে না';
+
+  @override
+  String get quiz => 'কুইজ';
+
+  @override
+  String get poll2 => 'পোল';
+
+  @override
+  String get correct => 'সঠিক';
+
+  @override
+  String get tapAnAnswerToSee => 'ফলাফল দেখতে একটি উত্তর ট্যাপ করুন';
+
+  @override
+  String get editMessage => 'বার্তা সম্পাদনা করুন';
+
+  @override
+  String get notCreatedYet => 'এখনো তৈরি হয়নি';
+
+  @override
+  String get broadcastToAllMembers => 'সব সদস্যকে ব্রডকাস্ট করুন';
+
+  @override
+  String get createCommunity => 'কমিউনিটি তৈরি করুন';
+
+  @override
+  String get peopleSavedOnThisDevice =>
+      'এই ডিভাইসে সংরক্ষিত লোকেরা এখানে দেখা যাবে। শুরু করতে একটি পরিচিতি যোগ করুন বা কনট্যাক্ট অ্যাক্সেস দিন।';
+
+  @override
+  String get removedFromFavourites => 'প্রিয় তালিকা থেকে সরানো হয়েছে';
+
+  @override
+  String get addedToFavourites => 'প্রিয় তালিকায় যোগ করা হয়েছে';
+
+  @override
+  String get blocked3 => 'ব্লক করা হয়েছে';
+
+  @override
+  String get blockContact => 'পরিচিতি ব্লক করুন';
+
+  @override
+  String get thisContactCannotMessageOr =>
+      'এই পরিচিতি এই ডিভাইস থেকে আপনাকে বার্তা বা কল করতে পারবে না';
+
+  @override
+  String get stopThisContactFromReaching =>
+      'এই ডিভাইসে এই পরিচিতিকে আপনার কাছে পৌঁছাতে বাধা দিন';
+
+  @override
+  String get contactUnblocked => 'পরিচিতি আনব্লক করা হয়েছে';
+
+  @override
+  String get unmuted => 'আনমিউট করা হয়েছে';
+
+  @override
+  String get removeFromFavourites => 'প্রিয় তালিকা থেকে সরান';
+
+  @override
+  String get addToFavourites => 'প্রিয় তালিকায় যোগ করুন';
+
+  @override
+  String get contactBlocked => 'পরিচিতি ব্লক করা হয়েছে';
+
+  @override
+  String get savedToYourAddressBook =>
+      'আপনার অ্যাড্রেস বুক-এ সংরক্ষণ করা হয়েছে';
+
+  @override
+  String get couldNotWriteToThe => 'অ্যাড্রেস বুক-এ লেখা যায়নি';
+
+  @override
+  String get addPhoto => 'ছবি যোগ করুন';
+
+  @override
+  String get createContact => 'পরিচিতি তৈরি করুন';
+
+  @override
+  String get unblockContact => 'পরিচিতি আনব্লক করুন';
+
+  @override
+  String get selectContacts => 'পরিচিতি বাছুন';
+
+  @override
+  String get addAContactOrSync =>
+      'শুরু করতে একটি পরিচিতি যোগ করুন বা আপনার অ্যাড্রেস বুক সিঙ্ক করুন।';
+
+  @override
+  String get disappearingMessagesTurnedOff =>
+      'অটো-ডিলিট বার্তা বন্ধ করা হয়েছে';
+
+  @override
+  String get messagesWillDisappearAfterThe =>
+      'নির্বাচিত সময়ের পর বার্তাগুলো মুছে যাবে';
+
+  @override
+  String get watchAdsToEarnMore => 'আরও আয় করতে বিজ্ঞাপন দেখুন';
+
+  @override
+  String get loadingAd => 'বিজ্ঞাপন লোড হচ্ছে…';
+
+  @override
+  String get sendAGift => 'উপহার পাঠান';
+
+  @override
+  String get sending => 'পাঠানো হচ্ছে…';
+
+  @override
+  String get adminsCanAddOrRemove3 =>
+      'অ্যাডমিনরা সদস্য যোগ বা সরাতে এবং গ্রুপ সেটিংস পরিবর্তন করতে পারেন।';
+
+  @override
+  String get onlyAdminsCanChangeGroup =>
+      'শুধু অ্যাডমিনরা গ্রুপ সেটিংস পরিবর্তন করতে পারেন।';
+
+  @override
+  String get member => 'সদস্য';
+
+  @override
+  String get dismissAsAdmin => 'অ্যাডমিন থেকে সরান';
+
+  @override
+  String get makeGroupAdmin => 'গ্রুপ অ্যাডমিন করুন';
+
+  @override
+  String get addGroupPhoto => 'গ্রুপ ছবি যোগ করুন';
+
+  @override
+  String get addAtLeastOneMember => 'অন্তত একজন সদস্য যোগ করুন';
+
+  @override
+  String get change => 'পরিবর্তন করুন';
+
+  @override
+  String get addMembersToContinue => 'চালিয়ে যেতে সদস্য যোগ করুন';
+
+  @override
+  String get removeAsAdmin => 'অ্যাডমিন থেকে সরান';
+
+  @override
+  String get makeAdmin => 'অ্যাডমিন করুন';
+
+  @override
+  String get addAContactFirstThen =>
+      'আগে একটি পরিচিতি যোগ করুন, তারপর এখানে সদস্য বাছুন।';
+
+  @override
+  String get scanThisCodeToAdd => 'যোগ করতে বা যোগ দিতে এই কোড স্ক্যান করুন';
+
+  @override
+  String get goPremium => 'প্রিমিয়াম নিন';
+
+  @override
+  String get premiumIsActiveOnThis => 'এই অ্যাকাউন্টে প্রিমিয়াম চালু আছে।';
+
+  @override
+  String get whatYouGet => 'আপনি যা পাবেন';
+
+  @override
+  String get yourRequests => 'আপনার অনুরোধ';
+
+  @override
+  String get signInFirst2 => 'আগে সাইন ইন করুন।';
+
+  @override
+  String get buyPremiumWithPoints => 'পয়েন্ট দিয়ে প্রিমিয়াম কিনবেন?';
+
+  @override
+  String get imoLIVEPremium => 'Imo LIVE প্রিমিয়াম';
+
+  @override
+  String get activeOnThisAccount => 'এই অ্যাকাউন্টে সক্রিয়';
+
+  @override
+  String get upgradeOnceEveryFeatureUnlocks =>
+      'একবার আপগ্রেড করলেই সব ফিচার খুলে যায়';
+
+  @override
+  String get s1MonthOfPremium => '১ মাসের প্রিমিয়াম';
+
+  @override
+  String get money => 'টাকা';
+
+  @override
+  String get points3 => 'পয়েন্ট';
+
+  @override
+  String get payForPremium => 'প্রিমিয়ামের জন্য পেমেন্ট করুন';
+
+  @override
+  String get s0x => '0x…';
+
+  @override
+  String get submitting => 'জমা দেওয়া হচ্ছে…';
+
+  @override
+  String get submitPayment => 'পেমেন্ট জমা দিন';
+
+  @override
+  String get chooseADifferentMethod => 'অন্য একটি পদ্ধতি বাছুন';
+
+  @override
+  String get phoneNumberCannotBeChanged => 'ফোন নম্বর পরিবর্তন করা যায় না।';
+
+  @override
+  String get contactSupportToChangeYour =>
+      'ফোন নম্বর পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন।';
+
+  @override
+  String get nothingToSave => 'সংরক্ষণ করার কিছু নেই';
+
+  @override
+  String get thePhotoWasSavedOn =>
+      'ছবিটি এই ডিভাইসে সংরক্ষিত হয়েছে কিন্তু আপলোড করা যায়নি, তাই অন্যরা এখনো এটি দেখতে পাবে না। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+
+  @override
+  String get signedIn => 'সাইন ইন করা আছে';
+
+  @override
+  String get notSignedIn => 'সাইন ইন করা নেই';
+
+  @override
+  String get yourChatsSyncAcrossYour =>
+      'আপনার চ্যাটগুলো আপনার সব ডিভাইসে সিঙ্ক হয়';
+
+  @override
+  String get signInToSyncChats =>
+      'চ্যাট, পরিচিতি ও আপডেট সিঙ্ক করতে সাইন ইন করুন';
+
+  @override
+  String get signIn => 'সাইন ইন করুন';
+
+  @override
+  String get messagesFromAnyoneNotIn =>
+      'আপনার পরিচিতিতে নেই এমন কারো বার্তা বাতিল করা হয়';
+
+  @override
+  String get anyoneWhoFindsYouCan =>
+      'যে কেউ আপনাকে খুঁজে প্রথম বার্তা পাঠাতে পারবে';
+
+  @override
+  String get messagesFromUnknownSendersWill =>
+      'অজানা প্রেরকের বার্তা বাতিল করা হবে';
+
+  @override
+  String get anyoneCanMessageYouAgain =>
+      'যে কেউ আবার আপনাকে বার্তা পাঠাতে পারবে';
+
+  @override
+  String get keepALocalSnapshotOf =>
+      'এই ডিভাইসে আপনার চ্যাটের একটি লোকাল কপি রাখুন';
+
+  @override
+  String get noChats => 'কোনো চ্যাট নেই';
+
+  @override
+  String get untitledChat => 'শিরোনামহীন চ্যাট';
+
+  @override
+  String get onDarkTheme => 'চালু · ডার্ক থিম';
+
+  @override
+  String get offLightTheme => 'বন্ধ · লাইট থিম';
+
+  @override
+  String get noExpiredMessagesFound =>
+      'মেয়াদোত্তীর্ণ কোনো বার্তা পাওয়া যায়নি';
+
+  @override
+  String get sharing2 => 'শেয়ার করা হচ্ছে…';
+
+  @override
+  String get shareUpdate => 'আপডেট শেয়ার করুন';
+
+  @override
+  String get noViewsYet => 'এখনো কোনো ভিউ নেই';
+
+  @override
+  String get tapToAddAStatus => 'স্ট্যাটাস আপডেট যোগ করতে ট্যাপ করুন';
 }
