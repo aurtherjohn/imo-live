@@ -12,6 +12,7 @@ import '../../../core/widgets/camera_sheet.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../auth/presentation/auth_providers.dart';
+import '../../chats/domain/remote_chats_sync.dart' show liveChatsStreamProvider;
 import '../../settings/presentation/widgets/settings_widgets.dart';
 import '../../chats/presentation/providers.dart';
 import '../../contacts/presentation/dialogs/confirm_dialog.dart';
@@ -149,6 +150,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             phone: _original.phone,
             bio: _bio.text.trim(),
             avatarPath: _avatarPath,
+            // Keep the remote URL on the local row too: it is what the drawer,
+            // the profile screen and the chat list fall back to when the local
+            // file is gone (a reinstall, or media cleared), and it is what
+            // `mirrorRemoteChat` reads when it upgrades a peer's chat row.
+            avatarUrl: _avatarUrl ?? _original.avatarUrl,
             isSelf: true,
           ),
         );
@@ -170,6 +176,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       debugPrint('Publishing profile to Firestore failed: $error');
       remoteError = 'Your profile was saved on this device but could not be '
           'published. Check your connection and save again.';
+    }
+
+    // The published name/avatar is what every other row derives from, so the
+    // mirrors are rebuilt rather than left holding the pre-edit copy.
+    if (remoteError == null) {
+      ref.invalidate(liveChatsStreamProvider);
+      ref.invalidate(contactsProvider);
     }
 
     if (!mounted) return;
@@ -554,6 +567,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final String? url = uid.isEmpty
         ? null
         : await ref.read(storageServiceProvider).uploadAvatar(stored, uid);
+
+    debugPrint('EDIT_PROFILE: uploading, uid=$uid, url=$url');
 
     if (!mounted) return;
     setState(() {

@@ -103,6 +103,7 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
                                             IAvatar(
                                               name: c.fullName,
                                               imagePath: c.avatarPath,
+                                              imageUrl: c.avatarUrl,
                                               colorSeed: c.avatarColor,
                                               size: AppSizes.avatarMd,
                                             ),
@@ -255,6 +256,7 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
                               IAvatar(
                                 name: contact.fullName,
                                 imagePath: contact.avatarPath,
+                                imageUrl: contact.avatarUrl,
                                 colorSeed: contact.avatarColor,
                                 isOnline: contact.isOnline,
                                 showPresence: true,

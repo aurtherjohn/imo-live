@@ -62,6 +62,7 @@ class ChatTile extends StatelessWidget {
                 child: IAvatar(
                   name: chat.title,
                   imagePath: chat.avatarPath,
+                  imageUrl: chat.avatarUrl,
                   colorSeed: chat.avatarColor,
                   size: AppSizes.avatarMd + 4,
                   isOnline: chat.isOnline,
@@ -308,6 +309,7 @@ class ContactSelectTile extends StatelessWidget {
     required this.selected,
     required this.onChanged,
     this.imagePath,
+    this.imageUrl,
     this.colorSeed,
     this.isOnline = false,
     this.trailing,
@@ -318,6 +320,7 @@ class ContactSelectTile extends StatelessWidget {
   final bool selected;
   final ValueChanged<bool> onChanged;
   final String? imagePath;
+  final String? imageUrl;
   final int? colorSeed;
   final bool isOnline;
   final Widget? trailing;
@@ -336,6 +339,7 @@ class ContactSelectTile extends StatelessWidget {
             IAvatar(
               name: name,
               imagePath: imagePath,
+              imageUrl: imageUrl,
               colorSeed: colorSeed,
               size: AppSizes.avatarSm + 6,
               isOnline: isOnline,

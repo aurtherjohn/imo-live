@@ -21,10 +21,12 @@ dependencies:
   firebase_core: ^3.10.1
   firebase_auth: ^5.4.1
   cloud_firestore: ^5.6.1
-  # Push delivery. Registration tokens are written to `users/{uid}.fcmTokens`
-  # by PushNotificationService; sending is server-side (or a Cloud Function),
-  # because the client must never hold a FCM server key.
-  firebase_messaging: ^15.1.3
+  # Push delivery. OneSignal owns transport, permission and token lifecycle;
+  # the app only stores the resulting player id on `users/{uid}` and posts to
+  # its own Cloudflare Worker to send (see `OneSignalService`). The FCM SDK is
+  # no longer a dependency — it was only ever used for notification delivery,
+  # and shipping both stacks meant two token registrations and two permissions.
+  onesignal_flutter: ^5.2.9
   # NOTE: Firebase Storage is deliberately NOT a dependency. Storage is not
   # enabled on the project; all binary media (voice notes, images, files) goes to
   # Cloudflare R2 through the S3-compatible API below. See

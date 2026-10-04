@@ -42,6 +42,7 @@ class SettingsScreen extends ConsumerWidget {
             name: profile.fullName.isEmpty ? 'You' : profile.fullName,
             about: profile.aboutText,
             imagePath: profile.avatarPath,
+            imageUrl: profile.avatarUrl,
             colorSeed: profile.avatarColor,
             onTap: () => context.push(AppRoutes.profile),
             onQrTap: () => context.push(

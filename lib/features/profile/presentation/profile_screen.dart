@@ -54,6 +54,7 @@ class ProfileScreen extends ConsumerWidget {
                       IAvatar(
                         name: me.fullName,
                         imagePath: me.avatarPath,
+                        imageUrl: me.avatarUrl,
                         colorSeed: me.avatarColor,
                         size: AppSizes.avatarXxl,
                       ),

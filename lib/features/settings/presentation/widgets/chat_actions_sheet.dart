@@ -73,6 +73,7 @@ class _ChatActionsSheet extends StatelessWidget {
                   IAvatar(
                     name: chat.title,
                     imagePath: chat.avatarPath,
+                    imageUrl: chat.avatarUrl,
                     colorSeed: chat.avatarColor,
                     size: AppSizes.avatarMd,
                     isGroup: chat.isGroup,

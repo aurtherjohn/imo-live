@@ -13,6 +13,7 @@ class Contact {
     this.countryIso = '',
     this.bio = '',
     this.avatarPath,
+    this.avatarUrl = '',
     this.avatarColor,
     this.isFavorite = false,
     this.isBlocked = false,
@@ -32,6 +33,19 @@ class Contact {
   final String countryIso;
   final String bio;
   final String? avatarPath;
+
+  /// The peer's **remote** avatar — `users/{uid}.avatarUrl` in Firestore, i.e.
+  /// the R2 public URL written when they picked a photo.
+  ///
+  /// [avatarPath] is a path on *this* device and can therefore only ever be
+  /// non-null for the signed-in user's own picture. Before this field existed a
+  /// peer's [Contact] carried no image at all, so every list that rendered
+  /// `imagePath: contact.avatarPath` fell through to initials for everyone but
+  /// yourself — which is exactly the reported "other users never see the
+  /// picture". Read this for anyone who is not you; prefer [avatarPath] first
+  /// when both are present (see [IAvatar]).
+  final String avatarUrl;
+
   final int? avatarColor;
   final bool isFavorite;
   final bool isBlocked;
@@ -85,6 +99,7 @@ class Contact {
     String? countryIso,
     String? bio,
     String? avatarPath,
+    String? avatarUrl,
     int? avatarColor,
     bool? isFavorite,
     bool? isBlocked,
@@ -104,6 +119,7 @@ class Contact {
       countryIso: countryIso ?? this.countryIso,
       bio: bio ?? this.bio,
       avatarPath: avatarPath ?? this.avatarPath,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
       avatarColor: avatarColor ?? this.avatarColor,
       isFavorite: isFavorite ?? this.isFavorite,
       isBlocked: isBlocked ?? this.isBlocked,
@@ -125,6 +141,7 @@ class Contact {
         'countryIso': countryIso,
         'bio': bio,
         'avatarPath': avatarPath,
+        'avatarUrl': avatarUrl,
         'avatarColor': avatarColor,
         'isFavorite': isFavorite,
         'isBlocked': isBlocked,
@@ -145,6 +162,7 @@ class Contact {
         countryIso: json['countryIso'] as String? ?? '',
         bio: json['bio'] as String? ?? '',
         avatarPath: json['avatarPath'] as String?,
+        avatarUrl: json['avatarUrl'] as String? ?? '',
         avatarColor: (json['avatarColor'] as num?)?.toInt(),
         isFavorite: json['isFavorite'] as bool? ?? false,
         isBlocked: json['isBlocked'] as bool? ?? false,

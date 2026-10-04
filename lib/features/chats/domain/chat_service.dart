@@ -71,6 +71,7 @@ class ChatService {
       bio: profile.bio,
       // A provider avatar is remote; a local one the user picked wins.
       avatarPath: existing?.avatarPath,
+      avatarUrl: profile.avatarUrl,
       isFavorite: existing?.isFavorite ?? false,
       isBlocked: existing?.isBlocked ?? false,
       isOnline: profile.isOnline,
@@ -153,6 +154,7 @@ class ChatService {
           phone: contact.phone,
           uid: remoteUid,
           username: username,
+          avatarUrl: avatarUrl,
           bio: bio,
         ),
       );
@@ -213,6 +215,7 @@ class ChatService {
               lastMessage: '',
               lastTimestamp: DateTime.now(),
               avatarPath: avatarPath.isEmpty ? null : avatarPath,
+              avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
               memberIds: <String>[
                 if (_uid.isNotEmpty) _uid,
                 if (peerId.isNotEmpty) peerId,
@@ -220,6 +223,12 @@ class ChatService {
               memberCount: _uid.isEmpty ? 1 : 2,
             ),
           );
+    } else if (avatarUrl.isNotEmpty && existing.avatarUrl != avatarUrl) {
+      // An existing row that predates the picture: upgrade it rather than
+      // leaving the chat list on initials forever.
+      await ref
+          .read(chatRepositoryProvider)
+          .save(existing.copyWith(avatarUrl: avatarUrl));
     }
 
     // Awaited rather than fire-and-forget: the caller reports "contact saved"
@@ -348,6 +357,10 @@ class ChatService {
         durationMs: attachment?.durationMs,
         replyTo: replyTo?.messageId,
         peerUid: peerUid,
+        // Carried across so the recipient's notification shows the sender's
+        // name. Resolving it inside the Firestore service would cost a read of
+        // `users/{senderId}` on every message, and this layer already holds it.
+        senderName: message.senderName,
       );
 
       if (!written) {

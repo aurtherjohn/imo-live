@@ -718,6 +718,7 @@ Future<Contact?> showContactPicker(
                         leading: IAvatar(
                           name: contact.fullName,
                           imagePath: contact.avatarPath,
+                          imageUrl: contact.avatarUrl,
                           colorSeed: contact.avatarColor,
                           size: AppSizes.avatarSm + 6,
                         ),

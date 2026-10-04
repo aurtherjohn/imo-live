@@ -112,6 +112,7 @@ Future<void> mirrorRemoteChat(
 
   String title = remote.groupName;
   String? avatarPath;
+  String? avatarUrl;
   int? avatarColor;
   bool isOnline = false;
   DateTime? lastSeen;
@@ -125,6 +126,7 @@ Future<void> mirrorRemoteChat(
     if (peer != null) {
       title = peer.fullName;
       avatarPath = peer.avatarPath;
+      avatarUrl = peer.avatarUrl.isEmpty ? null : peer.avatarUrl;
       avatarColor = peer.avatarColor;
       isOnline = peer.isOnline;
       lastSeen = peer.lastSeen;
@@ -146,6 +148,7 @@ Future<void> mirrorRemoteChat(
       // before the profile lookup must not wipe the row's name.
       title: title.isNotEmpty ? title : base.title,
       avatarPath: avatarPath ?? base.avatarPath,
+      avatarUrl: avatarUrl ?? base.avatarUrl,
       avatarColor: avatarColor ?? base.avatarColor,
       isOnline: isOnline,
       lastSeen: lastSeen ?? base.lastSeen,
@@ -163,18 +166,36 @@ Future<void> mirrorRemoteChat(
 }
 
 /// Finds the local contact behind [uid], caching the directory profile when the
-/// person has never been saved on this device.
+/// person has never been saved on this device — or when the row we have carries
+/// no remote avatar yet.
+///
+/// The avatar is the one directory field that cannot be resolved from anything
+/// already on the device: [Contact.avatarPath] is a path *here*, so for anyone
+/// but yourself it is always null, and a chat list that renders it shows
+/// initials for the whole world. So a peer whose local row predates the
+/// `avatarUrl` field (or who set a picture afterwards) is re-read from the
+/// directory and the row is upgraded in place.
 Future<Contact?> _resolvePeer(
   String uid, {
   required ContactRepository contacts,
   required RemoteContactService directory,
 }) async {
   final Contact? local = await contacts.findById(uid);
-  if (local != null) return local;
+  if (local != null &&
+      (local.avatarUrl.isNotEmpty || _avatarlessPeers.contains(uid))) {
+    return local;
+  }
 
   final LookupResult result = await directory.findByUid(uid);
   final RemoteProfile? profile = result.profile;
-  if (profile == null) return null;
+  if (profile == null) return local;
+
+  // Nothing to add, and a local row already exists: remember the miss so the
+  // next snapshot does not re-read this person, and keep the row untouched.
+  if (profile.avatarUrl.isEmpty && local != null) {
+    _avatarlessPeers.add(uid);
+    return local;
+  }
 
   final List<String> parts = profile.name
       .trim()
@@ -191,8 +212,14 @@ Future<Contact?> _resolvePeer(
     username: profile.username,
     phone: profile.phone,
     bio: profile.bio,
+    // Local-only presentation state must survive the upgrade.
+    avatarPath: local?.avatarPath,
+    avatarUrl: profile.avatarUrl,
+    isFavorite: local?.isFavorite ?? false,
+    isBlocked: local?.isBlocked ?? false,
     isOnline: profile.isOnline,
     lastSeen: profile.lastSeen,
+    isSyncedToDevice: local?.isSyncedToDevice ?? false,
   );
 
   try {
@@ -202,3 +229,12 @@ Future<Contact?> _resolvePeer(
     return cached;
   }
 }
+
+/// Peers already consulted in this process whose directory profile carries no
+/// avatar.
+///
+/// Without this, [mirrorRemoteChat] would issue one Firestore read per peer per
+/// snapshot for every contact who simply has not set a picture. A restart
+/// clears it, so a picture set later is picked up on the next launch — and the
+/// contact-info screen watches `users/{uid}` live in the meantime.
+final Set<String> _avatarlessPeers = <String>{};

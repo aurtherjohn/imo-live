@@ -637,6 +637,7 @@ class _ContactCallRow extends StatelessWidget {
             IAvatar(
               name: contact.fullName,
               imagePath: contact.avatarPath,
+              imageUrl: contact.avatarUrl,
               colorSeed: contact.avatarColor,
               isOnline: contact.isOnline,
               showPresence: contact.isOnline,
@@ -712,6 +713,7 @@ class CallParticipantStrip extends StatelessWidget {
         itemBuilder: (BuildContext context, int i) => IAvatar(
           name: contacts[i].fullName,
           imagePath: contacts[i].avatarPath,
+          imageUrl: contacts[i].avatarUrl,
           colorSeed: contacts[i].avatarColor,
           size: 44,
         ),

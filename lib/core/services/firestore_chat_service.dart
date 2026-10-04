@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import 'e2ee_service.dart';
+import 'onesignal_service.dart';
 import '../utils/stream_retry.dart';
 
 /// Transport-level state of an outgoing message, mirrored in Firestore.
@@ -433,6 +434,7 @@ class FirestoreChatService {
     int? durationMs,
     String? replyTo,
     String? peerUid,
+    String senderName = '',
   }) async {
     final FirebaseFirestore? db = _db;
     if (db == null) return false;
@@ -490,11 +492,48 @@ class FirestoreChatService {
         },
         SetOptions(merge: true),
       );
+      // Fire and forget, and only once the message is genuinely on the server:
+      // a push for a message that never landed would be a lie. A group has no
+      // single peer to notify, so `peerUid` being null is the signal to skip.
+      if (peerUid != null && peerUid.isNotEmpty && peerUid != senderId) {
+        unawaited(
+          OneSignalService.sendNotificationToUser(
+            receiverUid: peerUid,
+            title: senderName.isEmpty ? 'New message' : senderName,
+            body: _pushPreview(type, text),
+            data: <String, dynamic>{
+              'type': 'chat',
+              'chatId': chatId,
+              'messageId': messageId,
+            },
+          ),
+        );
+      }
       return true;
     } on Object catch (error) {
       debugPrint('sendMessage($chatId/$messageId) failed: $error');
       return false;
     }
+  }
+
+  /// The one-line body shown on the recipient's lock screen.
+  ///
+  /// A media message is described rather than sent: the URL is useless in a
+  /// notification, and the sealed envelope of an encrypted message must never
+  /// be rendered. Text is passed through as-is.
+  static String _pushPreview(String type, String text) {
+    return switch (type) {
+      'image' => '[Photo]',
+      'video' => '[Video]',
+      'voice' || 'audio' => '[Voice message]',
+      'document' => '[File]',
+      'location' => '[Location]',
+      'contact' => '[Contact]',
+      'poll' => '[Poll]',
+      'sticker' => '[Sticker]',
+      'gift' => '[Gift]',
+      _ => text.trim().isEmpty ? '[Message]' : text.trim(),
+    };
   }
 
   /// Retracts a message for everyone: the author's own message, replaced on

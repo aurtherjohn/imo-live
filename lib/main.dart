@@ -6,11 +6,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'app/app.dart';
 import 'app/auth_gate.dart';
 import 'app/router.dart';
 import 'app/theme/app_tokens.dart';
+import 'core/config/app_secrets.dart';
 import 'core/constants/app_constants.dart';
 import 'core/services/push_notification_service.dart';
 import 'core/utils/row_keys.dart';
@@ -49,6 +51,9 @@ void main() {
     // --- Firebase, bounded so it can never block the first frame --------
     unawaited(_initFirebase());
 
+    // --- OneSignal SDK, before the first frame --------------------------
+    _initOneSignal();
+
     // --- Nothing above may block; the first frame is unconditional ------
     runApp(
       UncontrolledProviderScope(
@@ -57,6 +62,39 @@ void main() {
       ),
     );
   });
+}
+
+/// Brings up the OneSignal SDK, registers the notification listeners, and asks
+/// for the permission.
+///
+/// Synchronous by design: `initialize` is a plain SDK call and must not be
+/// awaited before `runApp`, because nothing about push is worth delaying the
+/// first frame for. The permission prompt is fired and forgotten — a denial is
+/// a normal outcome, and the app works without it.
+///
+/// The service is created **here** rather than in [_initPush] so its listeners
+/// exist before the first frame: a tap on a notification that *launched* the
+/// app is delivered as soon as the SDK is up, and registering the click listener
+/// any later drops that tap. The navigation callbacks are attached afterwards by
+/// [_initPush]; a tap arriving in between is parked by the service and replayed.
+///
+/// Identity is *not* bound here: `OneSignal.login(uid)` runs from
+/// [PushNotificationService.attachUser], which the auth stream drives, so a
+/// device that is signed out never advertises an account it does not have.
+void _initOneSignal() {
+  try {
+    OneSignal.initialize(AppSecrets.oneSignalAppId);
+    unawaited(OneSignal.Notifications.requestPermission(true));
+
+    final PushNotificationService push = PushNotificationService(
+      notifications: appContainer.read(notificationServiceProvider),
+    );
+    pushService = push;
+    unawaited(push.initialize());
+  } on Object catch (error) {
+    // No plugin on this host (a widget test, or desktop). Push is optional.
+    debugPrint('OneSignal.initialize failed: $error');
+  }
 }
 
 /// Brings Firebase up and connects it to the router's auth gate.
@@ -134,15 +172,18 @@ Future<void> _initFirebase() async {
   await _initPush();
 }
 
-/// Brings up FCM and keeps its token bound to the signed-in account.
+/// Brings up push and keeps its identity bound to the signed-in account.
 ///
 /// Every failure is swallowed on purpose — push is an enhancement, and a
-/// missing token must never keep anyone out of the app.
+/// missing registration must never keep anyone out of the app.
 Future<void> _initPush() async {
   try {
-    final PushNotificationService push = PushNotificationService(
-      notifications: appContainer.read(notificationServiceProvider),
-    );
+    // The instance was created by [_initOneSignal] so its listeners exist before
+    // the first frame. Fall back to creating one only if that failed.
+    final PushNotificationService push = pushService ??
+        PushNotificationService(
+          notifications: appContainer.read(notificationServiceProvider),
+        );
     // The payload's `chatId` is a *row key*, not always a conversation id: a
     // channel post push carries `channel:<id>` (see `functions/channel_push.js`)
     // so the tap can open the channel. Routing every key straight to the chat

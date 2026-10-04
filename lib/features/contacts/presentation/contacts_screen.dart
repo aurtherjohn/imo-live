@@ -228,6 +228,7 @@ class _ContactRow extends StatelessWidget {
             IAvatar(
               name: contact.fullName,
               imagePath: contact.avatarPath,
+              imageUrl: contact.avatarUrl,
               colorSeed: contact.avatarColor,
               isOnline: contact.isOnline,
               showPresence: contact.isOnline,

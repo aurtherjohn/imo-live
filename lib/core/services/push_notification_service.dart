@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../constants/app_constants.dart';
 import 'notification_service.dart';
+import 'onesignal_service.dart';
 
-/// Message categories the sender puts in the `type` field of the FCM data
-/// payload. Anything unrecognised is treated as [PushKind.unknown] and shown as
-/// a plain message, so a new server-side category degrades instead of vanishing.
+/// Message categories the sender puts in the `type` field of the push payload.
+/// Anything unrecognised is treated as [PushKind.unknown] and shown as a plain
+/// message, so a new server-side category degrades instead of vanishing.
 abstract final class PushKind {
   static const String message = 'message';
   static const String call = 'call';
@@ -18,10 +17,10 @@ abstract final class PushKind {
   static const String unknown = 'unknown';
 }
 
-/// The parts of an FCM payload the app acts on.
+/// The parts of a push payload the app acts on.
 ///
-/// Kept separate from [RemoteMessage] and built from a plain `Map` so the
-/// parsing rules are unit-testable without a Firebase host.
+/// Kept as a plain `Map` parser, with no dependency on the OneSignal SDK types,
+/// so the routing rules stay unit-testable without a platform channel.
 class PushPayload {
   const PushPayload({
     this.chatId = '',
@@ -44,8 +43,14 @@ class PushPayload {
   ///
   /// A call has no `chatId` — it has a caller — so without this a tapped call
   /// notification has nothing to navigate to and could only be dropped.
+  ///
+  /// `callId` is accepted as a fallback spelling because the Cloudflare Worker's
+  /// documented contract sends it; `callerId` is what the call route actually
+  /// needs, so it is preferred when both are present.
   static const String keyCallerId = 'callerId';
   static const String keyCallerIdAlt = 'caller_id';
+  static const String keyCallId = 'callId';
+  static const String keyCallIdAlt = 'call_id';
   static const String keyIsVideo = 'isVideo';
   static const String keyIsVideoAlt = 'is_video';
 
@@ -68,7 +73,7 @@ class PushPayload {
   /// default a call document with no `type` field gets.
   final bool isVideo;
 
-  /// Parses a raw FCM `data` map.
+  /// Parses a raw `additionalData` map.
   ///
   /// Every value arrives as a string over the wire, but a payload assembled in
   /// Dart (a test, or a local re-send) may carry real types, so each field is
@@ -81,9 +86,17 @@ class PushPayload {
       body: _read(data, <String>[keyBody]),
       kind: switch (kind) {
         PushKind.message || PushKind.call || PushKind.status => kind,
+        // `chat` is the spelling the Cloudflare Worker's send contract uses for
+        // an ordinary message. It is a message, not a new category.
+        'chat' => PushKind.message,
         _ => PushKind.unknown,
       },
-      callerId: _read(data, <String>[keyCallerId, keyCallerIdAlt]),
+      callerId: _read(data, <String>[
+        keyCallerId,
+        keyCallerIdAlt,
+        keyCallId,
+        keyCallIdAlt,
+      ]),
       isVideo: _readBool(data, <String>[keyIsVideo, keyIsVideoAlt]),
     );
   }
@@ -118,116 +131,72 @@ class PushPayload {
   }
 }
 
-/// Handler for messages delivered while the app is **not** running.
-///
-/// Runs in its own isolate with no Flutter engine attached, so it must be
-/// top-level (or static) and annotated with `@pragma('vm:entry-point')` —
-/// otherwise the AOT compiler prunes it as unreachable and background delivery
-/// silently stops.
-///
-/// Firebase is re-initialised here because the isolate does not inherit the
-/// main one's `FirebaseApp`. It deliberately does *not* try to display
-/// anything: a notification-type message is rendered by the system, and a
-/// data-only message that needs local work should be handled after the user
-/// taps through.
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  try {
-    await Firebase.initializeApp();
-  } on Object catch (error) {
-    debugPrint('FCM background isolate: Firebase init failed: $error');
-  }
-  debugPrint(
-    'FCM background message ${message.messageId ?? '-'} '
-    'kind=${PushPayload.fromData(message.data).kind}',
-  );
-}
-
-/// Firebase Cloud Messaging: permission, registration token, and message
-/// routing.
+/// OneSignal: identity binding, permission, and notification routing.
 ///
 /// ### What this does and does not cover
 ///
 /// This class owns the **client half** of push delivery:
 ///
-/// * ask for the notification permission,
-/// * fetch the FCM registration token and keep it fresh on
-///   `users/{uid}.fcmTokens`,
-/// * show a message that arrives while the app is in the foreground (FCM does
-///   not display those itself),
-/// * route a tap on a notification to the conversation it belongs to.
+/// * bind the signed-in uid to this device's OneSignal subscription (delegated
+///   to [OneSignalService], which also mirrors the player id onto `users/{uid}`),
+/// * show a message that arrives while the app is in the foreground — OneSignal
+///   does not display those itself,
+/// * route a tap on a notification to the conversation or call it belongs to.
 ///
-/// **Sending** is out of scope. A client must never hold an FCM server key —
-/// anyone who decompiles the APK would then be able to push to every user — so
-/// messages are sent by a trusted caller (a Cloud Function or the app's own
-/// backend) using the Admin SDK.
+/// **Sending** is out of scope and lives in [OneSignalService.sendNotificationToUser],
+/// which posts to the project's Cloudflare Worker. The OneSignal REST key is
+/// never in this app.
 ///
 /// ### Payload contract
 ///
-/// The sender must send a **data** message (or a notification message with a
-/// `data` block) containing:
+/// The sender must attach `additionalData` containing:
 ///
 /// ```json
-/// {
-///   "token": "<registration token>",
-///   "data": { "chatId": "<chat id>", "title": "…", "body": "…",
-///             "type": "message" },
-///   "android": { "notification": { "channel_id": "imo_messages" } }
-/// }
+/// { "type": "chat" | "call" | "status",
+///   "chatId": "<chat id>",        // chat
+///   "callerId": "<caller uid>",   // call — `callId` also accepted
+///   "isVideo": "true" | "false" }
 /// ```
-///
-/// `channel_id` must be `imo_messages`; without it Android falls back to the
-/// plugin's own default channel, which the user cannot tune per category from
-/// the app's notification settings.
 ///
 /// ### Failure policy
 ///
-/// Everything is best-effort. Push is an enhancement, never a dependency: if
-/// Firebase is unreachable, the permission is denied, or the token write fails,
-/// the app keeps working with local notifications only.
+/// Everything is best-effort. Push is an enhancement, never a dependency: if the
+/// permission is denied or the player id never arrives, the app keeps working
+/// with local notifications only.
 class PushNotificationService {
   /// Constructing the service must not touch a platform channel: `main()` builds
-  /// it during startup, and a test host has no Firebase plugin registered. The
-  /// singletons are therefore resolved on first use unless one was injected.
-  PushNotificationService({
-    FirebaseMessaging? messaging,
-    FirebaseFirestore? firestore,
-    NotificationService? notifications,
-  })  : _messagingInstance = messaging,
-        _dbInstance = firestore,
-        _local = notifications;
+  /// it during startup, and a test host has no OneSignal plugin registered. The
+  /// SDK is therefore only reached from [initialize] and the user methods.
+  PushNotificationService({NotificationService? notifications})
+      : _local = notifications;
 
-  FirebaseMessaging? _messagingInstance;
-  FirebaseFirestore? _dbInstance;
   final NotificationService? _local;
-
-  FirebaseMessaging get _messaging =>
-      _messagingInstance ??= FirebaseMessaging.instance;
-
-  FirebaseFirestore get _db => _dbInstance ??= FirebaseFirestore.instance;
-
-  /// Where registration tokens are stored.
-  static const String usersCollection = 'users';
-
-  /// Field on `users/{uid}` holding every device token for that account.
-  ///
-  /// An array, not a scalar: the same account on two phones would otherwise
-  /// keep overwriting a single slot, and the older device would silently stop
-  /// receiving pushes.
-  static const String tokenField = 'fcmTokens';
-
-  StreamSubscription<String>? _tokenSub;
-  StreamSubscription<RemoteMessage>? _foregroundSub;
-  StreamSubscription<RemoteMessage>? _openedSub;
 
   String _uid = '';
   String? _token;
+
+  /// A tap that arrived before the router was wired.
+  ///
+  /// `initialize()` runs from `main()` so the listener is registered before the
+  /// first frame — a tap that *launched* the app is delivered immediately, and
+  /// registering any later drops it on the floor. But the navigation callbacks
+  /// are only known once the router exists, a moment afterwards. So an early tap
+  /// is parked here and replayed by the setters below rather than lost.
+  PushPayload? _pendingTap;
+
+  void Function(String chatId)? _onOpenChat;
 
   /// Called when a notification is tapped, with the conversation to open.
   ///
   /// Wired by `main()` to the router. Null until then, which also makes the
   /// service usable in a test host with no navigation.
-  void Function(String chatId)? onOpenChat;
+  void Function(String chatId)? get onOpenChat => _onOpenChat;
+  set onOpenChat(void Function(String chatId)? callback) {
+    _onOpenChat = callback;
+    _replayPendingTap();
+  }
+
+  void Function(String callerId, String callerName, bool isVideo)? _onOpenCall;
 
   /// Called when a **call** notification is tapped.
   ///
@@ -236,210 +205,118 @@ class PushNotificationService {
   /// screen or, when the payload carries no `chatId` at all, do nothing. The
   /// arguments are the caller's uid, the display name to show, and whether it
   /// is a video call.
-  void Function(String callerId, String callerName, bool isVideo)? onOpenCall;
+  void Function(String callerId, String callerName, bool isVideo)? get onOpenCall =>
+      _onOpenCall;
+  set onOpenCall(void Function(String callerId, String callerName, bool isVideo)? callback) {
+    _onOpenCall = callback;
+    _replayPendingTap();
+  }
 
-  /// The last token this device registered, or null if push never came up.
+  /// The player id last read from OneSignal, or null if push never came up.
   String? get token => _token;
 
-  /// The uid whose document currently holds this device's token.
+  /// The uid currently bound to this device.
   String get attachedUid => _uid;
-
-  /// Authorisation state from the last [initialize] call. Null before it runs.
-  AuthorizationStatus? permissionStatus;
 
   // -------------------------------------------------------------- lifecycle
 
-  /// Registers handlers and asks for permission.
+  /// Registers the foreground and tap listeners.
   ///
-  /// Safe to call before anyone is signed in — the token is stored as soon as
-  /// [attachUser] supplies a uid, so a fresh install that pushes only after
-  /// login still works.
+  /// Safe to call before anyone is signed in — the uid is bound as soon as
+  /// [attachUser] supplies one, so a fresh install that signs in afterwards
+  /// still registers. Idempotent: `main()` calls it early so a launching tap is
+  /// not lost, and the auth path calls it again once the router is up.
   Future<void> initialize() async {
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
-    await _requestPermission();
-
+    if (_listenersRegistered) return;
+    _listenersRegistered = true;
     try {
-      // iOS only: lets a foreground message show an alert. A no-op on Android.
-      await _messaging.setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
+      OneSignal.Notifications.addForegroundWillDisplayListener(_onForeground);
+      OneSignal.Notifications.addClickListener(_onClick);
     } on Object catch (error) {
-      debugPrint('FCM presentation options not applied: $error');
+      _listenersRegistered = false;
+      // No plugin on this host (a widget test, or desktop). Push is optional.
+      debugPrint('OneSignal listeners not registered: $error');
     }
-
-    _tokenSub = _messaging.onTokenRefresh.listen(
-      _persistToken,
-      onError: (Object error) => debugPrint('FCM token refresh failed: $error'),
-    );
-    _foregroundSub = FirebaseMessaging.onMessage.listen(
-      _onForegroundMessage,
-      onError: (Object error) => debugPrint('FCM foreground stream: $error'),
-    );
-    _openedSub = FirebaseMessaging.onMessageOpenedApp.listen(
-      _onOpenedApp,
-      onError: (Object error) => debugPrint('FCM open-app stream: $error'),
-    );
-
-    await _fetchToken();
-
-    // A tap on the notification that launched the app from a cold start is not
-    // delivered through `onMessageOpenedApp` — it has to be pulled once.
-    await _consumeInitialMessage();
   }
 
-  /// Releases the stream subscriptions.
+  bool _listenersRegistered = false;
+
+  /// Releases the listeners.
   Future<void> dispose() async {
-    await _tokenSub?.cancel();
-    await _foregroundSub?.cancel();
-    await _openedSub?.cancel();
-    _tokenSub = null;
-    _foregroundSub = null;
-    _openedSub = null;
+    try {
+      OneSignal.Notifications.removeForegroundWillDisplayListener(_onForeground);
+      OneSignal.Notifications.removeClickListener(_onClick);
+    } on Object catch (error) {
+      debugPrint('OneSignal listeners not removed: $error');
+    }
   }
 
   // ------------------------------------------------------------------ users
 
-  /// Binds the device to [uid] and stores its token.
+  /// Binds the device to [uid] and stores its player id.
   ///
   /// Called on sign-in and on every auth change. Re-attaching the same uid is
   /// cheap and idempotent.
   Future<void> attachUser(String uid) async {
     if (uid.isEmpty || uid == _uid) return;
     _uid = uid;
-    if (_token != null) {
-      await _persistToken(_token!);
-    } else {
-      await _fetchToken();
-    }
+    await OneSignalService.linkUser(uid);
+    _token = OneSignalService.playerId;
   }
 
-  /// Removes this device's token, so a signed-out account stops receiving
-  /// pushes for someone else's conversations.
+  /// Detaches this device, so a signed-out account stops receiving pushes for
+  /// someone else's conversations.
   Future<void> detachUser() async {
-    final String uid = _uid;
-    final String? token = _token;
+    if (_uid.isEmpty) return;
     _uid = '';
-    if (uid.isEmpty || token == null) return;
-    await _removeToken(uid, token);
-  }
-
-  // ------------------------------------------------------------- permission
-
-  Future<void> _requestPermission() async {
-    try {
-      final NotificationSettings settings = await _messaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-      permissionStatus = settings.authorizationStatus;
-      debugPrint('FCM permission: ${settings.authorizationStatus.name}');
-    } on Object catch (error) {
-      // A denied or unavailable permission is a normal outcome, not a bug.
-      debugPrint('FCM permission request failed: $error');
-    }
-  }
-
-  // ------------------------------------------------------------------ token
-
-  Future<void> _fetchToken() async {
-    try {
-      final String? token = await _messaging.getToken();
-      if (token == null || token.isEmpty) {
-        debugPrint('FCM returned no registration token');
-        return;
-      }
-      await _persistToken(token);
-    } on Object catch (error) {
-      debugPrint('FCM getToken failed: $error');
-    }
-  }
-
-  /// Writes [token] to Firestore when a user is attached, and caches it either
-  /// way so a later [attachUser] can publish it without another round trip.
-  Future<void> _persistToken(String token) async {
-    _token = token;
-    final String uid = _uid;
-    if (uid.isEmpty) return;
-
-    try {
-      await _db.collection(usersCollection).doc(uid).set(
-        <String, dynamic>{
-          tokenField: FieldValue.arrayUnion(<String>[token]),
-          'fcmTokenUpdatedAt': FieldValue.serverTimestamp(),
-        },
-        SetOptions(merge: true),
-      );
-    } on Object catch (error) {
-      debugPrint('FCM token not written to users/$uid: $error');
-    }
-  }
-
-  Future<void> _removeToken(String uid, String token) async {
-    try {
-      await _db.collection(usersCollection).doc(uid).set(
-        <String, dynamic>{
-          tokenField: FieldValue.arrayRemove(<String>[token]),
-        },
-        SetOptions(merge: true),
-      );
-    } on Object catch (error) {
-      debugPrint('FCM token not removed from users/$uid: $error');
-    }
+    _token = null;
+    await OneSignalService.unlinkUser();
   }
 
   // ---------------------------------------------------------------- routing
 
-  Future<void> _consumeInitialMessage() async {
-    try {
-      final RemoteMessage? message = await _messaging.getInitialMessage();
-      if (message == null) return;
-      _onOpenedApp(message);
-    } on Object catch (error) {
-      debugPrint('FCM initial message not read: $error');
-    }
-  }
-
   /// A message arrived while the app was visible.
   ///
-  /// FCM does not render these itself, so the local notification plugin shows
-  /// it using the app's own channels — otherwise a message to the conversation
-  /// currently on screen would appear to do nothing.
-  Future<void> _onForegroundMessage(RemoteMessage message) async {
-    final PushPayload payload = PushPayload.fromData(message.data);
-    final String title = _firstNonEmpty(
-      <String?>[payload.title, message.notification?.title, AppConstants.appName],
-    );
-    final String body = _firstNonEmpty(
-      <String?>[payload.body, message.notification?.body],
-    );
+  /// OneSignal does not render these itself, so the local notification plugin
+  /// shows it using the app's own channels — otherwise a message to the
+  /// conversation currently on screen would appear to do nothing.
+  void _onForeground(OSNotificationWillDisplayEvent event) {
+    // The app draws it, so suppress OneSignal's own rendering first. Doing this
+    // before any await matters: once the listener returns, the notification is
+    // already on screen.
+    event.preventDefault();
 
-    debugPrint(
-      'FCM foreground ${message.messageId ?? '-'} kind=${payload.kind} '
-      'chat=${payload.chatId}',
-    );
+    final PushPayload payload = PushPayload.fromData(_dataOf(event.notification));
+    final String title = _firstNonEmpty(<String?>[
+      payload.title,
+      event.notification.title,
+      AppConstants.appName,
+    ]);
+    final String body = _firstNonEmpty(<String?>[
+      payload.body,
+      event.notification.body,
+    ]);
+
+    debugPrint('OneSignal foreground kind=${payload.kind} chat=${payload.chatId}');
 
     final NotificationService? local = _local;
     if (local == null) return;
 
-    try {
-      switch (payload.kind) {
-        case PushKind.call:
-          await local.showCall(title: title, body: body);
-        case PushKind.status:
-          await local.showStatus(title: title, body: body);
-        case _:
-          await local.showMessage(
+    // The local call is deliberately not awaited: this runs on the listener the
+    // SDK invoked, and holding it open would stall the next notification.
+    switch (payload.kind) {
+      case PushKind.call:
+        unawaited(local.showCall(title: title, body: body));
+      case PushKind.status:
+        unawaited(local.showStatus(title: title, body: body));
+      case _:
+        unawaited(
+          local.showMessage(
             chatId: payload.chatId,
             title: title,
             body: body,
-          );
-      }
-    } on Object catch (error) {
-      debugPrint('FCM foreground display failed: $error');
+          ),
+        );
     }
   }
 
@@ -449,24 +326,49 @@ class PushNotificationService {
   /// carries a caller instead of a chat, so sending it down the chat path is
   /// exactly how a call tap opens the wrong screen — or, when the payload has
   /// no `chatId` at all, does nothing.
-  void _onOpenedApp(RemoteMessage message) {
-    final PushPayload payload = PushPayload.fromData(message.data);
+  void _onClick(OSNotificationClickEvent event) {
+    _dispatch(PushPayload.fromData(_dataOf(event.notification)));
+  }
 
+  /// Routes a parsed tap, parking it when the router is not wired yet.
+  void _dispatch(PushPayload payload) {
     if (payload.kind == PushKind.call) {
       if (payload.callerId.isEmpty) {
-        debugPrint('FCM call tap carried no callerId — no navigation');
+        debugPrint('OneSignal call tap carried no callerId — no navigation');
+        return;
+      }
+      if (_onOpenCall == null) {
+        _pendingTap = payload;
         return;
       }
       // For a call, the notification title is the caller's display name.
-      onOpenCall?.call(payload.callerId, payload.title, payload.isVideo);
+      _onOpenCall!.call(payload.callerId, payload.title, payload.isVideo);
       return;
     }
 
     if (payload.chatId.isEmpty) {
-      debugPrint('FCM tap carried no chatId — no navigation');
+      debugPrint('OneSignal tap carried no chatId — no navigation');
       return;
     }
-    onOpenChat?.call(payload.chatId);
+    if (_onOpenChat == null) {
+      _pendingTap = payload;
+      return;
+    }
+    _onOpenChat!.call(payload.chatId);
+  }
+
+  /// Replays a tap that arrived before its navigation callback existed.
+  void _replayPendingTap() {
+    final PushPayload? pending = _pendingTap;
+    if (pending == null) return;
+    _pendingTap = null;
+    _dispatch(pending);
+  }
+
+  /// The `additionalData` map, or an empty one when the push carried none.
+  static Map<String, dynamic> _dataOf(OSNotification notification) {
+    final Map<String, dynamic>? data = notification.additionalData;
+    return data ?? <String, dynamic>{};
   }
 
   static String _firstNonEmpty(List<String?> values) {

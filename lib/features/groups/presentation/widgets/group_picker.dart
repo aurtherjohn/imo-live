@@ -175,6 +175,7 @@ class _ContactPickerSheetState extends ConsumerState<_ContactPickerSheet> {
                                 IAvatar(
                                   name: contact.fullName,
                                   imagePath: contact.avatarPath,
+                                  imageUrl: contact.avatarUrl,
                                   colorSeed: contact.avatarColor,
                                   size: AppSizes.avatarSm,
                                 ),

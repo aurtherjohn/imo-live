@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../utils/stream_retry.dart';
+import 'onesignal_service.dart';
 
 /// Where a call document has got to.
 ///
@@ -271,10 +272,11 @@ class CallSignalingService {
   }) async {
     final DocumentReference<Map<String, dynamic>> doc =
         _firestore.collection(callsCollection).doc();
+    final String callerName = await _displayNameOf(callerId);
     try {
       await doc.set(<String, dynamic>{
         CallDocument.fieldCallerId: callerId,
-        CallDocument.fieldCallerName: await _displayNameOf(callerId),
+        CallDocument.fieldCallerName: callerName,
         // Both spellings of the callee, and both spellings of the media mode:
         // the document is read by the call screen, the history list and any
         // older client, and none of them should have to know which one is
@@ -293,6 +295,27 @@ class CallSignalingService {
     } on Object catch (error) {
       debugPrint('createCall failed: $error');
     }
+
+    // Wake the callee's device. The Firestore document only rings a peer whose
+    // app is already running and watching `calls`; a killed app is never told,
+    // which is the whole reason this push exists. Fire and forget, and after
+    // the write: pushing before the document exists would send the callee to a
+    // call they cannot join. `callerId` is included alongside `callId` because
+    // the call route navigates by *caller uid*, not by call document id.
+    unawaited(
+      OneSignalService.sendNotificationToUser(
+        receiverUid: calleeId,
+        title: callerName.isEmpty ? 'Incoming call' : callerName,
+        body: isVideo ? 'Incoming video call' : 'Incoming voice call',
+        data: <String, dynamic>{
+          'type': 'call',
+          'callId': doc.id,
+          'callerId': callerId,
+          'isVideo': isVideo.toString(),
+        },
+      ),
+    );
+
     return doc.id;
   }
 

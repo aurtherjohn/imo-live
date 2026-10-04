@@ -87,6 +87,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 trailing: IAvatar(
                   name: ref.watch(selfProfileProvider).valueOrNull?.fullName ?? 'You',
                   imagePath: ref.watch(selfProfileProvider).valueOrNull?.avatarPath,
+                  imageUrl: ref.watch(selfProfileProvider).valueOrNull?.avatarUrl,
                   size: 38,
                   isOnline: true,
                   showPresence: true,

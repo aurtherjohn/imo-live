@@ -333,6 +333,7 @@ class ProfileSummaryCard extends StatelessWidget {
     required this.name,
     required this.about,
     this.imagePath,
+    this.imageUrl,
     this.colorSeed,
     required this.onTap,
     this.onQrTap,
@@ -341,6 +342,7 @@ class ProfileSummaryCard extends StatelessWidget {
   final String name;
   final String about;
   final String? imagePath;
+  final String? imageUrl;
   final int? colorSeed;
   final VoidCallback onTap;
   final VoidCallback? onQrTap;
@@ -363,6 +365,7 @@ class ProfileSummaryCard extends StatelessWidget {
             IAvatar(
               name: name,
               imagePath: imagePath,
+              imageUrl: imageUrl,
               colorSeed: colorSeed,
               size: AppSizes.avatarLg,
             ),

@@ -644,6 +644,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     name: chat.title,
                     subtitle: chat.lastMessage,
                     imagePath: chat.avatarPath,
+                    imageUrl: chat.avatarUrl,
                     colorSeed: chat.avatarColor,
                     selected: false,
                     isOnline: chat.isOnline,
@@ -1375,6 +1376,7 @@ class _ChatHeader extends StatelessWidget {
           IAvatar(
             name: chat.title,
             imagePath: chat.avatarPath,
+            imageUrl: chat.avatarUrl,
             colorSeed: chat.avatarColor,
             size: 38,
             isOnline: chat.isOnline,

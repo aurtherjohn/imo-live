@@ -210,6 +210,7 @@ class _GroupInfoScreenState extends ConsumerState<GroupInfoScreen> {
                       leading: IAvatar(
                         name: name,
                         imagePath: contact?.avatarPath,
+                        imageUrl: contact?.avatarUrl,
                         colorSeed: contact?.avatarColor,
                         size: AppSizes.avatarSm,
                         isOnline: contact?.isOnline ?? false,

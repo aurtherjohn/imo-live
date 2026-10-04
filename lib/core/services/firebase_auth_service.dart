@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import '../constants/app_constants.dart';
 import '../constants/country_data.dart';
+import 'onesignal_service.dart';
 import 'remote_contact_service.dart';
 
 /// A failure the UI can present verbatim.
@@ -114,6 +115,10 @@ class FirebaseAuthService {
       );
       final User? user = credential.user;
       if (user == null) throw const AuthException('Sign-in failed.');
+      // Bind the account to this device's OneSignal subscription. Fire and
+      // forget: push registration must never delay or fail a sign-in, and the
+      // auth stream re-runs it for a restored session.
+      unawaited(OneSignalService.linkUser(user.uid));
       await touchPresence(user.uid, isOnline: true);
       return user.uid;
     } on FirebaseAuthException catch (error) {
@@ -160,6 +165,11 @@ class FirebaseAuthService {
   Future<void> signOut() async {
     final String uid = currentUid;
     if (uid.isNotEmpty) await touchPresence(uid, isOnline: false);
+    // Detach push *before* the auth state clears. The auth stream would also
+    // reach `detachUser`, but it does so a beat later, and until it runs the
+    // device is still subscribed to this account — long enough for a message
+    // arriving in that window to be pushed to a phone its owner just left.
+    await OneSignalService.unlinkUser();
     try {
       await _auth.signOut();
     } on Object catch (error) {
@@ -409,10 +419,12 @@ class FirebaseAuthService {
       }
     }
 
+    debugPrint('PROFILE_WRITE: uid=$uid, avatarUrl=${updates['avatarUrl']}');
     await _db
         .collection(usersCollection)
         .doc(uid)
         .set(updates, SetOptions(merge: true));
+    debugPrint('PROFILE_WRITE: success (fields=${updates.keys.join(',')})');
 
     if (name != null && name.trim().isNotEmpty) {
       try {
@@ -636,6 +648,10 @@ class FirebaseAuthService {
       );
       final User? user = credential.user;
       if (user == null) throw const AuthException('Sign-in failed.');
+      // Bind the account to this device's OneSignal subscription. Fire and
+      // forget: push registration must never delay or fail a sign-in, and the
+      // auth stream re-runs it for a restored session.
+      unawaited(OneSignalService.linkUser(user.uid));
       await touchPresence(user.uid, isOnline: true);
       return user.uid;
     } on FirebaseAuthException catch (error) {

@@ -63,6 +63,7 @@ class AppDrawer extends ConsumerWidget {
                     IAvatar(
                       name: me?.fullName ?? 'You',
                       imagePath: me?.avatarPath,
+                      imageUrl: me?.avatarUrl,
                       size: AppSizes.avatarLg,
                       isOnline: true,
                       showPresence: true,

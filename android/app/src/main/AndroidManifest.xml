@@ -106,24 +106,17 @@
         </activity>
 
         <!--
-          FCM defaults.
+          Push delivery moved to OneSignal on 2026-10-04 and the FCM SDK was
+          removed from pubspec, so the two `com.google.firebase.messaging.*`
+          meta-data entries that used to sit here are gone: nothing reads them
+          any more, and leaving them would suggest a channel/icon binding that
+          no longer exists.
 
-          `default_notification_channel_id` pins system-rendered push
-          notifications to the app's own "Messages" channel (created by
-          LocalNotificationService) instead of the plugin's implicit
-          `fcm_default_channel`. Without it a push lands in a channel the user
-          cannot tune from Settings → Notifications, and on Android 8+ it cannot
-          be reclassified after installation.
-
-          `default_notification_icon` avoids the placeholder grey square: FCM
-          otherwise renders a notification with no small icon set.
+          OneSignal merges its own service and receivers from the SDK manifest
+          and creates its own Android channel, so no entry is needed here. The
+          `POST_NOTIFICATIONS` and `VIBRATE` permissions above are the ones that
+          matter, and they are declared.
         -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="imo_messages"/>
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher"/>
 
         <!--
           AdMob application id — required by google_mobile_ads. Without this

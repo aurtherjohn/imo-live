@@ -162,6 +162,7 @@ class _NewCommunityScreenState extends ConsumerState<NewCommunityScreen> {
                   leading: IAvatar(
                     name: c.fullName,
                     imagePath: c.avatarPath,
+                    imageUrl: c.avatarUrl,
                     colorSeed: c.avatarColor,
                     size: AppSizes.avatarSm,
                   ),

@@ -15,6 +15,7 @@ class Chat {
     required this.lastMessage,
     required this.lastTimestamp,
     this.avatarPath,
+    this.avatarUrl,
     this.avatarColor,
     this.isGroup = false,
     this.isChannel = false,
@@ -45,6 +46,12 @@ class Chat {
   final String lastMessage;
   final DateTime lastTimestamp;
   final String? avatarPath;
+
+  /// The peer's remote avatar — `users/{uid}.avatarUrl`, resolved by
+  /// [mirrorRemoteChat]. Null for a group/channel, and for a peer who has never
+  /// set a picture. [avatarPath] stays the local, self-only identifier.
+  final String? avatarUrl;
+
   final int? avatarColor;
   final bool isGroup;
   final bool isChannel;
@@ -106,6 +113,7 @@ class Chat {
     String? lastMessage,
     DateTime? lastTimestamp,
     String? avatarPath,
+    String? avatarUrl,
     int? avatarColor,
     bool? isGroup,
     bool? isChannel,
@@ -136,6 +144,7 @@ class Chat {
       lastMessage: lastMessage ?? this.lastMessage,
       lastTimestamp: lastTimestamp ?? this.lastTimestamp,
       avatarPath: avatarPath ?? this.avatarPath,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
       avatarColor: avatarColor ?? this.avatarColor,
       isGroup: isGroup ?? this.isGroup,
       isChannel: isChannel ?? this.isChannel,
@@ -168,6 +177,7 @@ class Chat {
         'lastMessage': lastMessage,
         'lastTimestamp': lastTimestamp.toIso8601String(),
         'avatarPath': avatarPath,
+        'avatarUrl': avatarUrl,
         'avatarColor': avatarColor,
         'isGroup': isGroup,
         'isChannel': isChannel,
@@ -201,6 +211,7 @@ class Chat {
             DateTime.tryParse(json['lastTimestamp'] as String? ?? '') ??
                 DateTime.now(),
         avatarPath: json['avatarPath'] as String?,
+        avatarUrl: json['avatarUrl'] as String?,
         avatarColor: (json['avatarColor'] as num?)?.toInt(),
         isGroup: json['isGroup'] as bool? ?? false,
         isChannel: json['isChannel'] as bool? ?? false,

@@ -114,6 +114,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
       username: profile.username,
       phone: profile.phone,
       bio: profile.bio,
+      avatarUrl: profile.avatarUrl,
       isOnline: profile.isOnline,
       lastSeen: profile.lastSeen,
     );
@@ -168,6 +169,7 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
                   child: IAvatar(
                     name: contact.fullName,
                     imagePath: contact.avatarPath,
+                    imageUrl: contact.avatarUrl,
                     colorSeed: contact.avatarColor,
                     size: AppSizes.avatarXxl,
                     isOnline: contact.isOnline,

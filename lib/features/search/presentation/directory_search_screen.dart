@@ -396,7 +396,9 @@ class _Results extends ConsumerWidget {
             username: contact.username,
             phone: contact.phone,
             bio: contact.bio,
-            avatarUrl: contact.avatarPath ?? '',
+            // Was `contact.avatarPath`, which is a path on *this* device — so a
+            // peer's picture could never appear in search results.
+            avatarUrl: contact.avatarUrl,
             isOnline: contact.isOnline,
           ),
           source: SearchResultSource.contact,
@@ -424,7 +426,7 @@ class _Results extends ConsumerWidget {
             username: c.username,
             phone: c.phone,
             bio: c.bio,
-            avatarUrl: c.avatarPath ?? '',
+            avatarUrl: c.avatarUrl,
             isOnline: c.isOnline,
           ),
         )

@@ -163,4 +163,30 @@ class AppSecrets {
   /// See [AgoraCallConfig.tokenEndpoint] for how it is consumed.
   static const String agoraTokenServerUrl =
       'https://agora-token.akazadfb89.workers.dev';
+
+  // ==========================================================================
+  // OneSignal (push delivery)
+  // ==========================================================================
+  //
+  // Both values are public by construction and both are expected in the APK:
+  //
+  //   * the App ID identifies the OneSignal app to the SDK. It ships in every
+  //     OneSignal client by design, exactly like an Agora App ID;
+  //   * the Worker URL is a public HTTPS endpoint.
+  //
+  // The **REST API key** is the secret, and it is deliberately *not* here. It
+  // lives in the Worker's environment (`wrangler secret put ONESIGNAL_REST_KEY`)
+  // so that sending is only possible through the Worker. If it were a constant
+  // in this file, anyone who unpacked the APK could push to every user.
+
+  /// OneSignal App ID for the `imo-live` app.
+  static const String oneSignalAppId = '30f1b1ec-ec2a-4787-8e88-d483e05c6e82';
+
+  /// Cloudflare Worker that fans a send request out to OneSignal.
+  ///
+  /// The client `POST`s `{receiverUid, title, body, data}`; the Worker resolves
+  /// the uid to a player id, attaches the REST key and calls OneSignal. See
+  /// [OneSignalService.sendNotificationToUser].
+  static const String oneSignalWorkerUrl =
+      'https://send-notification.akazadfb89.workers.dev';
 }

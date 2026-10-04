@@ -663,6 +663,10 @@ Contact mergeDirectoryIntoSelf(Contact local, RemoteProfile remote) {
     username: remote.username.isNotEmpty ? remote.username : local.username,
     phone: remote.phone.isNotEmpty ? remote.phone : local.phone,
     bio: remote.bio.isNotEmpty ? remote.bio : local.bio,
+    // The directory avatar is what lets a *new device* (or one whose local
+    // media was cleared) still show the user's own picture. Local wins when the
+    // user picked one here, because that file is already on disk.
+    avatarUrl: remote.avatarUrl.isNotEmpty ? remote.avatarUrl : local.avatarUrl,
     isOnline: remote.isOnline,
     lastSeen: remote.lastSeen ?? local.lastSeen,
     isSelf: true,
