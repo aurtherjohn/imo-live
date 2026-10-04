@@ -4395,7 +4395,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get theMessageIsRemovedFrom2 =>
-      'The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient\'s copy the next time their device syncs.\n\nYou can only do this within one hour of sending.';
+      'The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient\'s copy the next time their device syncs.\n\nYou can only do this within two days of sending.';
+
+  @override
+  String get deleteForMe2 => 'Delete for me?';
+
+  @override
+  String theseMessagesAreRemovedFromThisDeviceOnly(Object length) {
+    return 'These $length messages are removed from this device only. The other person keeps their own copies and is not told about it.\n\nThis cannot be undone here.';
+  }
+
+  @override
+  String get thisMessageIsRemovedFromThisDeviceOnly =>
+      'This message is removed from this device only. The other person keeps their own copy and is not told about it.\n\nThis cannot be undone here.';
 
   @override
   String get alsoWriteThisPersonInto =>

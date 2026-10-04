@@ -72,13 +72,18 @@ class Message {
   /// The window is the whole point of the feature: without it "delete for
   /// everyone" is a tool for rewriting a conversation's history at any time,
   /// including after the other person has read, quoted or screenshotted it.
-  /// One hour matches what WhatsApp and Telegram allow.
-  static const Duration deleteForEveryoneWindow = Duration(hours: 1);
+  ///
+  /// Two days is this product's chosen allowance — long enough that a message
+  /// sent over a weekend can still be taken back on Monday, short enough that
+  /// it is not a general-purpose edit of someone else's record of the
+  /// conversation. Past it the only option is "Delete for me", which is local
+  /// and cannot touch the other person's copy at all.
+  static const Duration deleteForEveryoneWindow = Duration(days: 2);
 
   /// Whether [now] is still inside [deleteForEveryoneWindow] for this message.
   ///
   /// Takes `now` rather than reading the clock so the rule is testable without
-  /// waiting an hour or faking time globally.
+  /// waiting two days or faking time globally.
   ///
   /// A [timestamp] slightly in the *future* (the two devices' clocks disagree)
   /// yields a negative difference, which is inside the window — deliberately

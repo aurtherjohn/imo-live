@@ -103,6 +103,7 @@ class RemoteMessage {
     this.status = FirestoreMessageStatus.sent,
     this.replyTo,
     this.isEncrypted = false,
+    this.deleted = false,
   });
 
   final String id;
@@ -133,6 +134,20 @@ class RemoteMessage {
   /// stored, not what is currently in [text].
   final bool isEncrypted;
 
+  /// True when the author retracted this message for everyone.
+  ///
+  /// Set by [FirestoreChatService.retractMessage], which is the only writer.
+  /// It is a **flag rather than a deletion of the document**, on purpose: the
+  /// recipient has to learn that the message was withdrawn, and a missing
+  /// document is indistinguishable from a message that was never sent or has
+  /// not synced yet. The tombstone is what lets the recipient's device replace
+  /// the bubble with "This message was deleted" instead of silently keeping a
+  /// copy the author believes is gone.
+  ///
+  /// Defaults to `false`, so every document written before this field existed
+  /// reads as a normal message.
+  final bool deleted;
+
   RemoteMessage copyWith({String? text}) => RemoteMessage(
         id: id,
         chatId: chatId,
@@ -145,6 +160,7 @@ class RemoteMessage {
         status: status,
         replyTo: replyTo,
         isEncrypted: isEncrypted,
+        deleted: deleted,
       );
 
   static RemoteMessage? fromDoc(
@@ -168,6 +184,10 @@ class RemoteMessage {
       status: data['status'] as String? ?? FirestoreMessageStatus.sent,
       replyTo: data['replyTo'] as String?,
       isEncrypted: data['e2ee'] == true,
+      // Absent on every document written before retraction existed, and on
+      // every message that has not been retracted — `== true` rather than a
+      // cast, so a missing field is "not deleted" and never a throw.
+      deleted: data['deleted'] == true,
     );
   }
 }
@@ -462,12 +482,88 @@ class FirestoreChatService {
           'lastMessage': sealed ? E2eeService.sealedPreview : text,
           'lastMessageTime': FieldValue.serverTimestamp(),
           'lastMessageSenderId': senderId,
+          // Recorded so a retraction can tell whether this message is still the
+          // one the chat list is advertising — see [retractMessage]. Absent on
+          // documents written before this field existed, which simply means the
+          // header is left alone.
+          'lastMessageId': messageId,
         },
         SetOptions(merge: true),
       );
       return true;
     } on Object catch (error) {
       debugPrint('sendMessage($chatId/$messageId) failed: $error');
+      return false;
+    }
+  }
+
+  /// Retracts a message for everyone: the author's own message, replaced on
+  /// both devices by a tombstone.
+  ///
+  /// ### Why this is a flag and not a document delete
+  ///
+  /// The document stays, with `deleted: true` and an emptied body. Deleting it
+  /// would leave the recipient unable to distinguish "withdrawn" from "never
+  /// arrived" — and because both sides key their local cache off the document
+  /// id, a vanished document would simply leave the recipient's existing bubble
+  /// sitting there untouched, which is the opposite of the intent.
+  ///
+  /// The body is emptied as well as flagged. A message the author has declared
+  /// withdrawn should not keep its plaintext (or the sealed envelope holding
+  /// it) in a document the recipient can still read.
+  ///
+  /// The caller must have already retracted the local copy; this is only the
+  /// remote leg. Returns `true` when the tombstone was written, `false` when it
+  /// was not — in which case the other participant still has the message, which
+  /// is worth telling the user rather than retrying in a loop.
+  Future<bool> retractMessage({
+    required String chatId,
+    required String messageId,
+    required String senderId,
+  }) async {
+    final FirebaseFirestore? db = _db;
+    if (db == null) return false;
+    final DocumentReference<Map<String, dynamic>> chat =
+        db.collection(chatsCollection).doc(chatId);
+    try {
+      await chat.collection(messagesSubcollection).doc(messageId).set(
+        <String, dynamic>{
+          // Rewritten rather than assumed: it is the only evidence on the
+          // document that the author is the person retracting.
+          'senderId': senderId,
+          'deleted': true,
+          'text': '',
+          'e2ee': false,
+          'mediaUrl': '',
+          'durationMs': null,
+          'replyTo': null,
+          // Server-resolved, like every other authoritative time here.
+          'deletedAt': FieldValue.serverTimestamp(),
+        },
+        SetOptions(merge: true),
+      );
+
+      // The chat list must not keep advertising a message the author has
+      // withdrawn. Only touched when the retracted message is still the newest
+      // one: an older message being withdrawn changes nothing about the header,
+      // and rewriting it would reorder the list for both participants.
+      //
+      // An empty `lastMessage` is an existing, supported state — a chat that
+      // has been created but never messaged looks exactly like this — so this
+      // needs no new rendering path and no translated string.
+      final DocumentSnapshot<Map<String, dynamic>> header = await chat.get();
+      if (header.data()?['lastMessageId'] == messageId) {
+        await chat.set(
+          <String, dynamic>{
+            'lastMessage': '',
+            'lastMessageId': '',
+          },
+          SetOptions(merge: true),
+        );
+      }
+      return true;
+    } on Object catch (error) {
+      debugPrint('retractMessage($chatId/$messageId) failed: $error');
       return false;
     }
   }
@@ -688,29 +784,36 @@ class FirestoreChatService {
   /// timestamps in one query would need a composite index the project does not
   /// have yet; the document set is small (24 h of updates from the user's
   /// contacts), so filtering here is cheap.
+  ///
+  /// ⚠️ [retryStream], not `handleError`: the Updates tab watches this for as
+  /// long as it is on screen, so a swallowed error would leave a stale ring of
+  /// statuses that never gains a new one — and a status is *only* interesting
+  /// while it is fresh.
   Stream<List<RemoteStatus>> watchStatuses(List<String> uids) {
     final FirebaseFirestore? db = _db;
     if (db == null || uids.isEmpty) {
       return Stream<List<RemoteStatus>>.value(<RemoteStatus>[]);
     }
-    return db
-        .collection(statusCollection)
-        // Firestore caps `whereIn` at 30 values; a contact list is often
-        // longer, so the newest 30 contacts are the ones tracked.
-        .where('userId', whereIn: uids.take(30).toList())
-        .orderBy('timestamp', descending: true)
-        .limit(60)
-        .snapshots()
-        .map(
-          (QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
-              .map(RemoteStatus.fromDoc)
-              .whereType<RemoteStatus>()
-              .where((RemoteStatus s) => !s.hasExpired)
-              .toList(),
-        )
-        .handleError((Object error) {
-      debugPrint('watchStatuses failed: $error');
-    });
+    return retryStream<List<RemoteStatus>>(
+      () => db
+          .collection(statusCollection)
+          // Firestore caps `whereIn` at 30 values; a contact list is often
+          // longer, so the newest 30 contacts are the ones tracked.
+          .where('userId', whereIn: uids.take(30).toList())
+          .orderBy('timestamp', descending: true)
+          .limit(60)
+          .snapshots()
+          .map(
+            (QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+                .map(RemoteStatus.fromDoc)
+                .whereType<RemoteStatus>()
+                .where((RemoteStatus s) => !s.hasExpired)
+                .toList(),
+          ),
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('watchStatuses failed (attempt $attempt): $error'),
+    );
   }
 
   // ------------------------------------------------------------- contacts

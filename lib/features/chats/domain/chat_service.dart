@@ -364,6 +364,57 @@ class ChatService {
     }
   }
 
+  /// Retracts one of the user's own messages for **both** participants.
+  ///
+  /// ### Order, and what is deliberately not awaited
+  ///
+  /// 1. The local tombstone is written first and its result is the return
+  ///    value. The message disappears for this user the instant they confirm,
+  ///    online or not.
+  /// 2. The remote leg runs **detached**. There is nothing to wait for: the
+  ///    other participant is not asked to acknowledge anything, and must not be
+  ///    able to hold this call open. A peer who is offline, who has blocked
+  ///    this user, or who never opens the app again would otherwise leave the
+  ///    row in a "deleting…" state that never resolves. Firestore's own offline
+  ///    queue is what eventually delivers the tombstone.
+  ///
+  /// Contrast `MessageRepository.deleteForMe`, which has no remote leg at all.
+  ///
+  /// Returns whether the **local** retraction happened. `false` means the rule
+  /// refused it — not the user's own message, already deleted, or older than
+  /// [Message.deleteForEveryoneWindow] — and the caller should report that
+  /// rather than pretend it worked.
+  Future<bool> retractForEveryone(Message message) async {
+    final bool local =
+        await ref.read(messageRepositoryProvider).deleteForEveryone(message.id);
+    if (!local) return false;
+
+    if (_uid.isEmpty) return true;
+    unawaited(_retractRemotely(message));
+    return true;
+  }
+
+  /// The remote half of [retractForEveryone].
+  ///
+  /// Never awaited by the UI — see the note on [retractForEveryone]. Errors are
+  /// logged rather than rethrown for the same reason `_publishRemote` catches
+  /// its own: a detached future that throws lands in
+  /// `PlatformDispatcher.onError` with nothing pointing at the cause.
+  Future<void> _retractRemotely(Message message) async {
+    try {
+      final bool written = await _firestore.retractMessage(
+        chatId: message.chatId,
+        messageId: message.id,
+        senderId: message.senderId,
+      );
+      if (!written) {
+        debugPrint('retractForEveryone: no remote tombstone for ${message.id}');
+      }
+    } on Object catch (error) {
+      debugPrint('_retractRemotely(${message.id}) failed: $error');
+    }
+  }
+
   /// Publishes the typing flag for the current user.
   Future<void> setTyping(String chatId, bool isTyping) async {
     if (_uid.isEmpty) return;
@@ -474,6 +525,29 @@ final ProviderFamily<Stream<void>, String> chatMirrorProvider =
 Message _toLocal(RemoteMessage remote, String uid) {
   final bool outgoing = remote.senderId == uid && uid.isNotEmpty;
   final MessageType type = _typeFromName(remote.type);
+
+  // A retracted message is rebuilt as the *same tombstone* `deleteForEveryone`
+  // writes locally: empty body, text type, no attachment. Deriving it here
+  // rather than trusting the remote `type` matters — the author cleared the
+  // media URL but not the type, so a withdrawn photo would otherwise arrive as
+  // an image bubble with nothing to render.
+  if (remote.deleted) {
+    return Message(
+      id: remote.id,
+      chatId: remote.chatId,
+      senderId: remote.senderId,
+      senderName: '',
+      content: '',
+      timestamp: remote.timestamp ?? DateTime.now(),
+      direction:
+          outgoing ? MessageDirection.outgoing : MessageDirection.incoming,
+      type: MessageType.text,
+      status: _statusFromName(remote.status),
+      isDeleted: true,
+      localOnly: false,
+    );
+  }
+
   return Message(
     id: remote.id,
     chatId: remote.chatId,

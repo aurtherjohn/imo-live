@@ -2107,7 +2107,17 @@
   "uniqueUsernameRequired": "Unique @username (required)",
   "searchNameHandlePhoneOr": "Search name, @handle, phone or email",
   "draft": "Draft: ",
-  "theMessageIsRemovedFrom2": "The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient's copy the next time their device syncs.\n\nYou can only do this within one hour of sending.",
+  "theMessageIsRemovedFrom2": "The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient's copy the next time their device syncs.\n\nYou can only do this within two days of sending.",
+  "deleteForMe2": "Delete for me?",
+  "theseMessagesAreRemovedFromThisDeviceOnly": "These {length} messages are removed from this device only. The other person keeps their own copies and is not told about it.\n\nThis cannot be undone here.",
+  "@theseMessagesAreRemovedFromThisDeviceOnly": {
+    "placeholders": {
+      "length": {
+        "type": "Object"
+      }
+    }
+  },
+  "thisMessageIsRemovedFromThisDeviceOnly": "This message is removed from this device only. The other person keeps their own copy and is not told about it.\n\nThis cannot be undone here.",
   "alsoWriteThisPersonInto": "Also write this person into your phone's address book",
   "eGWeekendRiders": "e.g. Weekend Riders",
   "coreModelsServicesWidgetsConstants": "core/  — models, services, widgets, constants and formatters\n\napp/  — theme tokens, router and the root widget\n\nfeatures/<feature>/domain  — repository contracts\nfeatures/<feature>/data  — local implementations\nfeatures/<feature>/presentation  — screens, widgets, providers\n\nlocal/  — Hive database and file storage",

@@ -131,7 +131,7 @@ void main() {
       expect(deleted.previewText, 'This message was deleted');
     });
 
-    // --- delete for everyone: author + one-hour window -------------------
+    // --- delete for everyone: author + two-day window --------------------
     //
     // This rule is the whole feature. It was also broken in a way no UI test
     // would have caught: the chat screen decided the option from
@@ -157,6 +157,14 @@ void main() {
         expect(sentAt(sent).canDeleteForEveryoneAt(sent), isTrue);
       });
 
+      test('the window is two days', () {
+        // Pinned explicitly. The length is a product decision, not a detail:
+        // it is the difference between "you can take that back" and "you can
+        // rewrite last week". Changing it should mean changing this test on
+        // purpose.
+        expect(Message.deleteForEveryoneWindow, const Duration(days: 2));
+      });
+
       test('is true right up to the deadline and false one second past it', () {
         const Duration window = Message.deleteForEveryoneWindow;
         expect(
@@ -167,7 +175,7 @@ void main() {
         expect(
           sentAt(sent).canDeleteForEveryoneAt(sent.add(window)),
           isFalse,
-          reason: 'the window is exclusive: exactly one hour later is too late',
+          reason: 'the window is exclusive: exactly two days later is too late',
         );
         expect(
           sentAt(sent).canDeleteForEveryoneAt(sent.add(window + const Duration(seconds: 1))),

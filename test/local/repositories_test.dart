@@ -336,7 +336,7 @@ void main() {
             content: body,
             status: MessageStatus.sent,
             // `DateTime.now()` rather than a literal: this message has to be
-            // inside the one-hour window whenever the suite happens to run.
+            // inside the two-day window whenever the suite happens to run.
             timestamp: DateTime.now(),
           );
 
@@ -352,7 +352,7 @@ void main() {
       });
 
       test('refuses an old message and leaves its body intact', () async {
-        // `buildMessage` stamps 2026-05-01, far outside the one-hour window.
+        // `buildMessage` stamps 2026-05-01, far outside the two-day window.
         await messages.save(buildMessage('w2', 'chat_a', 'still here'));
 
         expect(
@@ -387,6 +387,115 @@ void main() {
 
       test('reports failure for an unknown id instead of throwing', () async {
         expect(await messages.deleteForEveryone('does-not-exist'), isFalse);
+      });
+    });
+
+    // --- delete for me: local by construction ----------------------------
+    //
+    // The defect these guard against is not "the option is missing" but "the
+    // message comes back". `chatMirrorProvider` calls `save()` for *every*
+    // message Firestore reports, on *every* snapshot — so a row that was only
+    // removed from the list is written straight back by the next incoming
+    // message, seconds later, with no error anywhere. The guarantee therefore
+    // has to hold at the *write*, which is what these tests exercise.
+    group('deleteForMe', () {
+      test('removes the row and keeps the rest of the conversation', () async {
+        await messages.saveAll(<Message>[
+          buildMessage('d1', 'chat_a', 'keep me'),
+          buildMessage('d2', 'chat_a', 'remove me'),
+        ]);
+
+        await messages.deleteForMe('d2');
+
+        final List<Message> left = await messages.getForChat('chat_a');
+        expect(left.map((Message m) => m.id), <String>['d1']);
+        expect(await messages.findById('d2'), isNull);
+      });
+
+      test('a later save cannot resurrect it', () async {
+        // The real defect, reproduced: the mirror re-delivers the whole page
+        // whenever anything in the conversation changes.
+        await messages.save(buildMessage('d3', 'chat_a', 'remove me'));
+        await messages.deleteForMe('d3');
+
+        await messages.save(buildMessage('d3', 'chat_a', 'remove me'));
+
+        expect(
+          await messages.findById('d3'),
+          isNull,
+          reason: 'the Firestore mirror must not restore a message the user '
+              'removed for themselves',
+        );
+        expect(await messages.getForChat('chat_a'), isEmpty);
+      });
+
+      test('a later bulk save cannot resurrect it either', () async {
+        await messages.save(buildMessage('d4', 'chat_a', 'remove me'));
+        await messages.deleteForMe('d4');
+
+        await messages.saveAll(<Message>[
+          buildMessage('d5', 'chat_a', 'a new message'),
+          buildMessage('d4', 'chat_a', 'remove me'),
+        ]);
+
+        final List<Message> left = await messages.getForChat('chat_a');
+        expect(left.map((Message m) => m.id), <String>['d5']);
+      });
+
+      test('the removal survives a reload from disk', () async {
+        // A fresh repository instance re-reads the box — the same thing that
+        // happens on the next app launch. The removal has to be durable rather
+        // than an in-memory list that dies with the process.
+        await messages.save(buildMessage('d6', 'chat_a', 'remove me'));
+        await messages.deleteForMe('d6');
+
+        final LocalMessageRepository reopened = LocalMessageRepository();
+        expect(await reopened.getForChat('chat_a'), isEmpty);
+
+        await reopened.save(buildMessage('d6', 'chat_a', 'remove me'));
+        expect(await reopened.findById('d6'), isNull);
+      });
+
+      test('clearing a conversation drops its removals with it', () async {
+        // Otherwise the stale index outlives the chat it describes and
+        // silently filters the fresh copy that arrives afterwards.
+        await messages.save(buildMessage('d7', 'chat_a', 'remove me'));
+        await messages.deleteForMe('d7');
+        await messages.deleteForChat('chat_a');
+
+        await messages.save(buildMessage('d7', 'chat_a', 'back again'));
+
+        expect(await messages.findById('d7'), isNotNull);
+      });
+
+      test('a removal applies to one chat only', () async {
+        await messages.saveAll(<Message>[
+          buildMessage('d8', 'chat_a', 'a'),
+          buildMessage('d9', 'chat_b', 'b'),
+        ]);
+
+        await messages.deleteForMe('d8');
+
+        expect(await messages.getForChat('chat_a'), isEmpty);
+        expect((await messages.getForChat('chat_b')).length, 1);
+      });
+
+      test('a removal never touches another chat with the same id', () async {
+        // The index is keyed per chat, so the same id in a second conversation
+        // must survive a removal made in the first.
+        await messages.saveAll(<Message>[
+          buildMessage('d10', 'chat_a', 'a'),
+          buildMessage('d10', 'chat_b', 'b'),
+        ]);
+
+        await messages.deleteForMe('d10');
+
+        // Whichever chat held it first loses it; the other must still have it,
+        // otherwise the index leaked across conversations.
+        final int remaining =
+            (await messages.getForChat('chat_a')).length +
+                (await messages.getForChat('chat_b')).length;
+        expect(remaining, 1);
       });
     });
   });

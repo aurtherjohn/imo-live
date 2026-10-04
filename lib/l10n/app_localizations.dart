@@ -7787,8 +7787,26 @@ abstract class AppLocalizations {
   /// No description provided for @theMessageIsRemovedFrom2.
   ///
   /// In en, this message translates to:
-  /// **'The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient\'s copy the next time their device syncs.\n\nYou can only do this within one hour of sending.'**
+  /// **'The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient\'s copy the next time their device syncs.\n\nYou can only do this within two days of sending.'**
   String get theMessageIsRemovedFrom2;
+
+  /// No description provided for @deleteForMe2.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete for me?'**
+  String get deleteForMe2;
+
+  /// No description provided for @theseMessagesAreRemovedFromThisDeviceOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'These {length} messages are removed from this device only. The other person keeps their own copies and is not told about it.\n\nThis cannot be undone here.'**
+  String theseMessagesAreRemovedFromThisDeviceOnly(Object length);
+
+  /// No description provided for @thisMessageIsRemovedFromThisDeviceOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'This message is removed from this device only. The other person keeps their own copy and is not told about it.\n\nThis cannot be undone here.'**
+  String get thisMessageIsRemovedFromThisDeviceOnly;
 
   /// No description provided for @alsoWriteThisPersonInto.
   ///

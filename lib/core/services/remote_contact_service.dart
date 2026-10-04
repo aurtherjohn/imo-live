@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import '../utils/stream_retry.dart';
+
 /// A profile that lives in the shared Imo LIVE directory (Firestore).
 ///
 /// Deliberately separate from [Contact]: a [RemoteProfile] is *someone else's*
@@ -334,19 +336,26 @@ class RemoteContactService {
 
   /// Streams a live profile document, so verified badges, avatars and presence
   /// stay current while a screen is open.
+  ///
+  /// ⚠️ [retryStream] with an unbounded budget, not `handleError`. This backs
+  /// the chat header and the profile page, so a swallowed error would freeze the
+  /// other person's name, avatar and online dot on a stale reading for the rest
+  /// of the session — with nothing on screen to say so.
   Stream<RemoteProfile?> watchProfile(String uid) {
     final FirebaseFirestore? db = _db;
     if (db == null || uid.trim().isEmpty) {
       return Stream<RemoteProfile?>.value(null);
     }
-    return db
-        .collection(usersCollection)
-        .doc(uid.trim())
-        .snapshots()
-        .map(RemoteProfile.fromDoc)
-        .handleError((Object error) {
-      debugPrint('Watching profile $uid failed: $error');
-    });
+    return retryStream<RemoteProfile?>(
+      () => db
+          .collection(usersCollection)
+          .doc(uid.trim())
+          .snapshots()
+          .map(RemoteProfile.fromDoc),
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('Watching profile $uid failed (attempt $attempt): $error'),
+    );
   }
 
   /// Streams every directory profile whose [field] matches [prefix].
@@ -354,6 +363,11 @@ class RemoteContactService {
   /// Firestore has no `contains`, so smart search uses an anchored range query
   /// (`>= prefix` and `< prefix + \uf8ff`) — the standard prefix-search trick.
   /// It is served by the field index and returns matches in real time.
+  ///
+  /// Bounded retry: a caller replaces this stream on the next keystroke and
+  /// already supplies an `onError`, so a transient blip is absorbed inside the
+  /// debounce window while a permanent cause (a missing index) still reaches
+  /// that handler instead of masquerading as "no results".
   Stream<List<RemoteProfile>> search({
     required String query,
     String field = 'username',
@@ -364,19 +378,20 @@ class RemoteContactService {
     if (db == null || prefix.isEmpty) {
       return Stream<List<RemoteProfile>>.value(const <RemoteProfile>[]);
     }
-    return db
-        .collection(usersCollection)
-        .where(field, isGreaterThanOrEqualTo: prefix)
-        .where(field, isLessThan: '$prefix\uf8ff')
-        .limit(limit)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
-            .map(RemoteProfile.fromDoc)
-            .whereType<RemoteProfile>()
-            .toList(growable: false))
-        .handleError((Object error) {
-      debugPrint('Directory search on $field failed: $error');
-    });
+    return retryStream<List<RemoteProfile>>(
+      () => db
+          .collection(usersCollection)
+          .where(field, isGreaterThanOrEqualTo: prefix)
+          .where(field, isLessThan: '$prefix\uf8ff')
+          .limit(limit)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+              .map(RemoteProfile.fromDoc)
+              .whereType<RemoteProfile>()
+              .toList(growable: false)),
+      onError: (Object error, int attempt) =>
+          debugPrint('Directory search on $field failed (attempt $attempt): $error'),
+    );
   }
 
   /// Streams every directory profile carrying [token] in `searchKeywords`.
@@ -402,18 +417,19 @@ class RemoteContactService {
     if (db == null || value.isEmpty) {
       return Stream<List<RemoteProfile>>.value(const <RemoteProfile>[]);
     }
-    return db
-        .collection(usersCollection)
-        .where('searchKeywords', arrayContains: value)
-        .limit(limit)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
-            .map(RemoteProfile.fromDoc)
-            .whereType<RemoteProfile>()
-            .toList(growable: false))
-        .handleError((Object error) {
-      debugPrint('Directory keyword search for "$value" failed: $error');
-    });
+    return retryStream<List<RemoteProfile>>(
+      () => db
+          .collection(usersCollection)
+          .where('searchKeywords', arrayContains: value)
+          .limit(limit)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+              .map(RemoteProfile.fromDoc)
+              .whereType<RemoteProfile>()
+              .toList(growable: false)),
+      onError: (Object error, int attempt) => debugPrint(
+          'Directory keyword search for "$value" failed (attempt $attempt): $error'),
+    );
   }
 
   /// Shared tail of the index-based lookups.

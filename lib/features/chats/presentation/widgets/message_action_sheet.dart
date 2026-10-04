@@ -220,12 +220,61 @@ class _ActionRow extends StatelessWidget {
   }
 }
 
+/// Confirmation used before "delete for me".
+///
+/// This is the destructive-action gate for the local-only removal, and it has
+/// one job: the user must not come away believing the other person will stop
+/// seeing the message.
+///
+/// The two options sit one directly above the other in the sheet, so picking
+/// the wrong one is easy — and the consequence is permanent in the direction
+/// that matters. "Delete for me" sends nothing, tells nobody, and leaves the
+/// other person's copy untouched; there is no later step that would correct a
+/// misunderstanding. So the dialog states the scope ("this device only"), the
+/// fact that the other person is not told, and that it cannot be undone here.
+///
+/// [count] is the number of messages about to go: the multi-select toolbar
+/// reaches the same repository method as the long-press menu, so it needs the
+/// same gate, worded for the plural case.
+Future<bool> confirmDeleteForMe(BuildContext context, {int count = 1}) async {
+  final String body = count > 1
+      ? context.l10n.theseMessagesAreRemovedFromThisDeviceOnly(count)
+      : context.l10n.thisMessageIsRemovedFromThisDeviceOnly;
+  final bool? result = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: Text(context.l10n.deleteForMe2),
+      content: Text(body),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(
+            context.l10n.cancel,
+            style: TextStyle(color: context.c.textSecondary),
+          ),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(
+            context.l10n.delete,
+            style: TextStyle(
+              color: context.c.onDanger,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+  return result ?? false;
+}
+
 /// Confirmation used before "delete for everyone".
 ///
 /// The wording matters twice over. It used to claim the delete needed "a server
 /// connection" long after `MessageRepository.deleteForEveryone` was implemented,
 /// so the dialog was discouraging a feature that already worked. It now states
-/// the real, local-first behaviour, the real limitation, **and** the one-hour
+/// the real, local-first behaviour, the real limitation, **and** the two-day
 /// window — a user who is about to lose the option needs to know why it is
 /// there now and will be gone later.
 Future<bool> confirmDeleteForEveryone(BuildContext context) async {

@@ -450,7 +450,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   /// Opens the long-press menu for [message].
   ///
   /// [canRetractForEveryone] is [Message.canDeleteForEveryone] for that message
-  /// — the author's own, not already deleted, inside the one-hour window. It is
+  /// — the author's own, not already deleted, inside the two-day window. It is
   /// passed in rather than re-derived because the sheet is a pure widget.
   Future<void> _handleMessageLongPress(
     Message message,
@@ -502,17 +502,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       case MessageAction.info:
         await showMessageInfoSheet(context, message);
       case MessageAction.deleteForMe:
-        await ref.read(messageRepositoryProvider).deleteForMe(message.id);
-        await _resyncLastMessage(message);
+        await _deleteForMe(message);
       case MessageAction.deleteForEveryone:
         final bool confirmed = await confirmDeleteForEveryone(context);
-        if (!confirmed) return;
-        // The repository re-checks the author and the one-hour window and
+        if (!confirmed || !mounted) return;
+        // The repository re-checks the author and the two-day window and
         // reports a refusal instead of pretending to succeed — a menu left open
-        // past the deadline is a real way to get here.
-        final bool retracted = await ref
-            .read(messageRepositoryProvider)
-            .deleteForEveryone(message.id);
+        // past the deadline is a real way to get here. `retractForEveryone`
+        // writes the local tombstone first and pushes the remote one detached,
+        // so nothing here waits on the other participant.
+        final bool retracted =
+            await ref.read(chatServiceProvider).retractForEveryone(message);
         if (!mounted) return;
         if (retracted) {
           await _resyncLastMessage(message);
@@ -528,6 +528,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       case MessageAction.share:
         await _shareMessage(message);
     }
+  }
+
+  /// Removes one message from **this device**, after confirming.
+  ///
+  /// "Delete for me" is local-only and unilateral: nothing is sent, nobody is
+  /// told, and the other person keeps their copy. It is confirmed because it
+  /// sits directly above "Delete for everyone" in the sheet, which does the
+  /// opposite — and because the removal cannot be undone here.
+  Future<void> _deleteForMe(Message message) async {
+    final bool confirmed = await confirmDeleteForMe(context);
+    if (!confirmed || !mounted) return;
+    await ref.read(messageRepositoryProvider).deleteForMe(message.id);
+    if (!mounted) return;
+    await _resyncLastMessage(message);
   }
 
   /// Arms the composer with a quote of [message].
@@ -1039,7 +1053,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     _scrollToBottom();
   }
 
+  /// Removes every selected message from **this device**, after confirming.
+  ///
+  /// The multi-select toolbar reaches the same repository method as the
+  /// long-press menu's "Delete for me", so it is the same local-only mode and
+  /// gets the same gate — worded for the plural case.
   Future<void> _deleteSelected(Set<String> ids) async {
+    if (ids.isEmpty) return;
+    final bool confirmed = await confirmDeleteForMe(context, count: ids.length);
+    if (!confirmed || !mounted) return;
     for (final String id in ids) {
       await ref.read(messageRepositoryProvider).deleteForMe(id);
     }

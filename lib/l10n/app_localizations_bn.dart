@@ -4381,7 +4381,19 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get theMessageIsRemovedFrom2 =>
-      'বার্তাটি এই ডিভাইস থেকে সরিয়ে একটি \"মুছে ফেলা হয়েছে\" নোটিশ দিয়ে বদলে দেওয়া হবে। প্রাপকের ডিভাইস পরেরবার সিংক হলে তার কপি থেকেও এটি সরে যাবে।\n\nপাঠানোর এক ঘণ্টার মধ্যে কেবল এটি করা যাবে।';
+      'বার্তাটি এই ডিভাইস থেকে সরিয়ে একটি \"মুছে ফেলা হয়েছে\" নোটিশ দিয়ে বদলে দেওয়া হবে। প্রাপকের ডিভাইস পরেরবার সিংক হলে তার কপি থেকেও এটি সরে যাবে।\n\nপাঠানোর দুই দিনের মধ্যে কেবল এটি করা যাবে।';
+
+  @override
+  String get deleteForMe2 => 'আমার জন্য মুছবেন?';
+
+  @override
+  String theseMessagesAreRemovedFromThisDeviceOnly(Object length) {
+    return 'এই $lengthটি বার্তা কেবল এই ডিভাইস থেকে সরানো হবে। অন্যজনের কাছে তাদের নিজের কপি থেকে যাবে এবং তাকে এ বিষয়ে জানানো হবে না। এখানে এটি ফিরিয়ে আনা যাবে না।';
+  }
+
+  @override
+  String get thisMessageIsRemovedFromThisDeviceOnly =>
+      'বার্তাটি কেবল এই ডিভাইস থেকে সরানো হবে। অন্যজনের কাছে তার নিজের কপি থেকে যাবে এবং তাকে এ বিষয়ে জানানো হবে না। এখানে এটি ফিরিয়ে আনা যাবে না।';
 
   @override
   String get alsoWriteThisPersonInto =>

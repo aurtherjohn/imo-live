@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/channel_models.dart';
 import '../models/group.dart';
 import '../utils/firebase_time.dart';
+import '../utils/stream_retry.dart';
 
 /// The Firestore side of the channel system.
 ///
@@ -263,22 +264,31 @@ class ChannelFirestoreService {
   }
 
   /// Live view of a single channel document.
+  ///
+  /// ⚠️ [retryStream], not `handleError`. A swallowed error here closes the
+  /// listener, and every consumer reads the result as `.valueOrNull`, so the
+  /// channel screen would keep rendering the last snapshot it managed to load
+  /// while silently never updating again. This applies to every watcher in this
+  /// file — the whole channel feature is snapshot-driven.
   Stream<Channel?> watchChannel(String channelId) {
     final FirebaseFirestore? db = _db;
     if (db == null || channelId.isEmpty) {
       return Stream<Channel?>.value(null);
     }
-    return db
-        .collection(channelsCollection)
-        .doc(channelId)
-        .snapshots()
-        .map((DocumentSnapshot<Map<String, dynamic>> doc) {
-      final Map<String, dynamic>? data = doc.data();
-      if (!doc.exists || data == null) return null;
-      return channelFromDoc(doc.id, data);
-    }).handleError((Object error) {
-      debugPrint('watchChannel($channelId) failed: $error');
-    });
+    return retryStream<Channel?>(
+      () => db
+          .collection(channelsCollection)
+          .doc(channelId)
+          .snapshots()
+          .map((DocumentSnapshot<Map<String, dynamic>> doc) {
+        final Map<String, dynamic>? data = doc.data();
+        if (!doc.exists || data == null) return null;
+        return channelFromDoc(doc.id, data);
+      }),
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('watchChannel($channelId) failed (attempt $attempt): $error'),
+    );
   }
 
   /// One-shot read, used to seed the local mirror.
@@ -523,17 +533,19 @@ class ChannelFirestoreService {
     if (db == null || channelId.isEmpty) {
       return Stream<List<String>>.value(<String>[]);
     }
-    return db
-        .collection(channelsCollection)
-        .doc(channelId)
-        .collection(followersSubcollection)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> s) => s.docs
-            .map((QueryDocumentSnapshot<Map<String, dynamic>> d) => d.id)
-            .toList())
-        .handleError((Object error) {
-      debugPrint('watchFollowerIds($channelId) failed: $error');
-    });
+    return retryStream<List<String>>(
+      () => db
+          .collection(channelsCollection)
+          .doc(channelId)
+          .collection(followersSubcollection)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> s) => s.docs
+              .map((QueryDocumentSnapshot<Map<String, dynamic>> d) => d.id)
+              .toList()),
+      attempts: 0,
+      onError: (Object error, int attempt) => debugPrint(
+          'watchFollowerIds($channelId) failed (attempt $attempt): $error'),
+    );
   }
 
   // ----------------------------------------------------------------- posts
@@ -544,25 +556,27 @@ class ChannelFirestoreService {
     if (db == null || channelId.isEmpty) {
       return Stream<List<ChannelPost>>.value(<ChannelPost>[]);
     }
-    return db
-        .collection(channelsCollection)
-        .doc(channelId)
-        .collection(postsSubcollection)
-        .orderBy('createdAt', descending: true)
-        .limit(limit)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> s) => s.docs
-            .map((QueryDocumentSnapshot<Map<String, dynamic>> d) =>
-                ChannelPost.fromDoc(
-                  d.id,
-                  d.data(),
-                  createdAt: FirebaseTime.toLocal(d.data()['createdAt']),
-                ))
-            .whereType<ChannelPost>()
-            .toList())
-        .handleError((Object error) {
-      debugPrint('watchPosts($channelId) failed: $error');
-    });
+    return retryStream<List<ChannelPost>>(
+      () => db
+          .collection(channelsCollection)
+          .doc(channelId)
+          .collection(postsSubcollection)
+          .orderBy('createdAt', descending: true)
+          .limit(limit)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> s) => s.docs
+              .map((QueryDocumentSnapshot<Map<String, dynamic>> d) =>
+                  ChannelPost.fromDoc(
+                    d.id,
+                    d.data(),
+                    createdAt: FirebaseTime.toLocal(d.data()['createdAt']),
+                  ))
+              .whereType<ChannelPost>()
+              .toList()),
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('watchPosts($channelId) failed (attempt $attempt): $error'),
+    );
   }
 
   /// Publishes a post. Owner only — enforced by security rules.
@@ -754,6 +768,13 @@ class ChannelFirestoreService {
   ///
   /// A collection-group query rather than one read per post, so rendering a
   /// 50-post feed still costs a single listener.
+  ///
+  /// ⚠️ [retryStream] rather than `handleError`. This is the one collection-group
+  /// listener in the app, and it is the query most likely to fail transiently —
+  /// it is the first thing to break when the root-anchored rule in
+  /// `firestore.rules` is wrong. Closing it silently means the reaction state in
+  /// the feed stops updating while every other part of the screen keeps working,
+  /// which reads as "my like didn't register".
   Stream<Map<String, ChannelReactionKind>> watchMyReactions(String uid) {
     final FirebaseFirestore? db = _db;
     if (db == null || uid.isEmpty) {
@@ -761,26 +782,29 @@ class ChannelFirestoreService {
         <String, ChannelReactionKind>{},
       );
     }
-    return db
-        .collectionGroup(reactionsSubcollection)
-        .where('uid', isEqualTo: uid)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> s) {
-      final Map<String, ChannelReactionKind> out =
-          <String, ChannelReactionKind>{};
-      for (final QueryDocumentSnapshot<Map<String, dynamic>> doc in s.docs) {
-        final String postId = doc.reference.parent.parent?.id ?? '';
-        final String? kind = doc.data()['kind'] as String?;
-        if (postId.isEmpty || kind == null) continue;
-        out[postId] = ChannelReactionKind.values.firstWhere(
-          (ChannelReactionKind k) => k.name == kind,
-          orElse: () => ChannelReactionKind.like,
-        );
-      }
-      return out;
-    }).handleError((Object error) {
-      debugPrint('watchMyReactions($uid) failed: $error');
-    });
+    return retryStream<Map<String, ChannelReactionKind>>(
+      () => db
+          .collectionGroup(reactionsSubcollection)
+          .where('uid', isEqualTo: uid)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> s) {
+        final Map<String, ChannelReactionKind> out =
+            <String, ChannelReactionKind>{};
+        for (final QueryDocumentSnapshot<Map<String, dynamic>> doc in s.docs) {
+          final String postId = doc.reference.parent.parent?.id ?? '';
+          final String? kind = doc.data()['kind'] as String?;
+          if (postId.isEmpty || kind == null) continue;
+          out[postId] = ChannelReactionKind.values.firstWhere(
+            (ChannelReactionKind k) => k.name == kind,
+            orElse: () => ChannelReactionKind.like,
+          );
+        }
+        return out;
+      }),
+      attempts: 0,
+      onError: (Object error, int attempt) => debugPrint(
+          'watchMyReactions($uid) failed (attempt $attempt): $error'),
+    );
   }
 
   /// Counts one impression of a post, for the reach series.
@@ -844,28 +868,30 @@ class ChannelFirestoreService {
     if (db == null || channelId.isEmpty) {
       return Stream<List<ChannelJoinRequest>>.value(<ChannelJoinRequest>[]);
     }
-    return db
-        .collection(channelsCollection)
-        .doc(channelId)
-        .collection(joinRequestsSubcollection)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> s) => s.docs
-            .map((QueryDocumentSnapshot<Map<String, dynamic>> d) {
-              final Map<String, dynamic> data = d.data();
-              return ChannelJoinRequest(
-                uid: d.id,
-                name: data['name'] as String? ?? '',
-                username: data['username'] as String? ?? '',
-                avatarUrl: data['avatarUrl'] as String? ?? '',
-                message: data['message'] as String? ?? '',
-                createdAt: FirebaseTime.toLocal(data['createdAt']),
-              );
-            })
-            .toList())
-        .handleError((Object error) {
-      debugPrint('watchJoinRequests($channelId) failed: $error');
-    });
+    return retryStream<List<ChannelJoinRequest>>(
+      () => db
+          .collection(channelsCollection)
+          .doc(channelId)
+          .collection(joinRequestsSubcollection)
+          .orderBy('createdAt', descending: true)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> s) => s.docs
+              .map((QueryDocumentSnapshot<Map<String, dynamic>> d) {
+                final Map<String, dynamic> data = d.data();
+                return ChannelJoinRequest(
+                  uid: d.id,
+                  name: data['name'] as String? ?? '',
+                  username: data['username'] as String? ?? '',
+                  avatarUrl: data['avatarUrl'] as String? ?? '',
+                  message: data['message'] as String? ?? '',
+                  createdAt: FirebaseTime.toLocal(data['createdAt']),
+                );
+              })
+              .toList()),
+      attempts: 0,
+      onError: (Object error, int attempt) => debugPrint(
+          'watchJoinRequests($channelId) failed (attempt $attempt): $error'),
+    );
   }
 
   /// Approves a request: adds the follower edge, drops the request, and counts
@@ -917,21 +943,32 @@ class ChannelFirestoreService {
   }
 
   /// Whether [uid] may read a private channel: owner, follower, or public.
+  ///
+  /// ⚠️ [retryStream], not `handleError`. A handler that returns normally marks
+  /// the error handled and a stream that has delivered an error is *done* — the
+  /// listener closes for good. This one gates access, so the failure mode is
+  /// silent and permanent: a follower who still follows a channel would be
+  /// locked out of it until they reopened the screen, with nothing on screen to
+  /// say why.
   Stream<bool> watchMembership(String channelId, String uid) {
     final FirebaseFirestore? db = _db;
     if (db == null || uid.isEmpty || channelId.isEmpty) {
       return Stream<bool>.value(false);
     }
-    return db
-        .collection(channelsCollection)
-        .doc(channelId)
-        .collection(followersSubcollection)
-        .doc(uid)
-        .snapshots()
-        .map((DocumentSnapshot<Map<String, dynamic>> d) => d.exists)
-        .handleError((Object error) {
-      debugPrint('watchMembership($channelId, $uid) failed: $error');
-    });
+    return retryStream<bool>(
+      () => db
+          .collection(channelsCollection)
+          .doc(channelId)
+          .collection(followersSubcollection)
+          .doc(uid)
+          .snapshots()
+          .map((DocumentSnapshot<Map<String, dynamic>> d) => d.exists),
+      // Unbounded: the screen cancels this on dispose, and until then access
+      // must not be able to flip off because of one dropped request.
+      attempts: 0,
+      onError: (Object error, int attempt) => debugPrint(
+          'watchMembership($channelId, $uid) failed (attempt $attempt): $error'),
+    );
   }
 
   // ------------------------------------------------------------- analytics
@@ -993,6 +1030,12 @@ class ChannelFirestoreService {
 
   /// The last [days] buckets, oldest first, with missing days filled with
   /// zeroes so the chart has a continuous x-axis.
+  ///
+  /// ⚠️ [retryStream], not `handleError` — and the date window is computed
+  /// **inside** the opener rather than once outside it. A re-opened listener
+  /// that reused a captured `now` would re-run the range it was originally
+  /// built with, so after a retry minutes or hours later "the last 30 days"
+  /// would quietly mean the 30 days ending when the screen first opened.
   Stream<List<ChannelDayStats>> watchAnalytics(
     String channelId, {
     int days = analyticsWindowDays,
@@ -1001,30 +1044,35 @@ class ChannelFirestoreService {
     if (db == null || channelId.isEmpty) {
       return Stream<List<ChannelDayStats>>.value(_emptySeries(days));
     }
-    final DateTime now = DateTime.now();
-    final DateTime first = now.subtract(Duration(days: days - 1));
-    return db
-        .collection(channelsCollection)
-        .doc(channelId)
-        .collection(analyticsSubcollection)
-        .orderBy(FieldPath.documentId)
-        .startAt(<Object>[dayKey(first)])
-        .endAt(<Object>[dayKey(now)])
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> s) {
-      final Map<String, ChannelDayStats> byDay = <String, ChannelDayStats>{
-        for (final QueryDocumentSnapshot<Map<String, dynamic>> d in s.docs)
-          d.id: ChannelDayStats.fromDoc(d.id, d.data()),
-      };
-      final List<ChannelDayStats> series = <ChannelDayStats>[];
-      for (int i = days - 1; i >= 0; i--) {
-        final String key = dayKey(now.subtract(Duration(days: i)));
-        series.add(byDay[key] ?? ChannelDayStats(day: key));
-      }
-      return series;
-    }).handleError((Object error) {
-      debugPrint('watchAnalytics($channelId) failed: $error');
-    });
+    return retryStream<List<ChannelDayStats>>(
+      () {
+        final DateTime now = DateTime.now();
+        final DateTime first = now.subtract(Duration(days: days - 1));
+        return db
+            .collection(channelsCollection)
+            .doc(channelId)
+            .collection(analyticsSubcollection)
+            .orderBy(FieldPath.documentId)
+            .startAt(<Object>[dayKey(first)])
+            .endAt(<Object>[dayKey(now)])
+            .snapshots()
+            .map((QuerySnapshot<Map<String, dynamic>> s) {
+          final Map<String, ChannelDayStats> byDay = <String, ChannelDayStats>{
+            for (final QueryDocumentSnapshot<Map<String, dynamic>> d in s.docs)
+              d.id: ChannelDayStats.fromDoc(d.id, d.data()),
+          };
+          final List<ChannelDayStats> series = <ChannelDayStats>[];
+          for (int i = days - 1; i >= 0; i--) {
+            final String key = dayKey(now.subtract(Duration(days: i)));
+            series.add(byDay[key] ?? ChannelDayStats(day: key));
+          }
+          return series;
+        });
+      },
+      attempts: 0,
+      onError: (Object error, int attempt) => debugPrint(
+          'watchAnalytics($channelId) failed (attempt $attempt): $error'),
+    );
   }
 
   static List<ChannelDayStats> _emptySeries(int days) {

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../models/gift.dart';
 import '../utils/firestore_values.dart';
+import '../utils/stream_retry.dart';
 import 'points_service.dart';
 
 /// How a user chose to pay for premium.
@@ -253,20 +254,29 @@ class PremiumService {
 
   /// Live entitlement, for a screen that must react the moment an admin
   /// approves a request.
+  ///
+  /// ⚠️ [retryStream], not `handleError`. This is the stream that switches the
+  /// screen from "pending" to "active"; a bare `handleError` closes it
+  /// permanently on the first blip, so an approval that happened while the
+  /// connection flickered would never show up and the user would conclude the
+  /// payment was ignored. See [retryStream].
   Stream<bool> watchPremium(String uid) {
     if (uid.isEmpty) return Stream<bool>.value(false);
-    return _firestore
-        .collection(usersCollection)
-        .doc(uid)
-        .snapshots()
-        .map((DocumentSnapshot<Map<String, dynamic>> snap) {
-      final Map<String, dynamic>? data = snap.data();
-      if (data == null || data['isPremium'] != true) return false;
-      final DateTime? until = asDate(data['premiumUntil']);
-      return until == null || until.isAfter(DateTime.now());
-    }).handleError((Object error) {
-      debugPrint('watchPremium($uid) failed: $error');
-    });
+    return retryStream<bool>(
+      () => _firestore
+          .collection(usersCollection)
+          .doc(uid)
+          .snapshots()
+          .map((DocumentSnapshot<Map<String, dynamic>> snap) {
+        final Map<String, dynamic>? data = snap.data();
+        if (data == null || data['isPremium'] != true) return false;
+        final DateTime? until = asDate(data['premiumUntil']);
+        return until == null || until.isAfter(DateTime.now());
+      }),
+      attempts: 0,
+      onError: (Object error, int attempt) =>
+          debugPrint('watchPremium($uid) failed (attempt $attempt): $error'),
+    );
   }
 
   /// The user's own purchase requests, newest first.
@@ -274,24 +284,27 @@ class PremiumService {
     if (uid.isEmpty) {
       return Stream<List<PremiumRequest>>.value(const <PremiumRequest>[]);
     }
-    return _firestore
-        .collection(requestsCollection)
-        .where('uid', isEqualTo: uid)
-        .snapshots()
-        .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
-      final List<PremiumRequest> list = snapshot.docs
-          .map(PremiumRequest.fromDoc)
-          .toList(growable: false);
-      list.sort((PremiumRequest a, PremiumRequest b) {
-        final DateTime? x = a.createdAt;
-        final DateTime? y = b.createdAt;
-        if (x == null || y == null) return 0;
-        return y.compareTo(x);
-      });
-      return list;
-    }).handleError((Object error) {
-      debugPrint('watchMyRequests($uid) failed: $error');
-    });
+    return retryStream<List<PremiumRequest>>(
+      () => _firestore
+          .collection(requestsCollection)
+          .where('uid', isEqualTo: uid)
+          .snapshots()
+          .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
+        final List<PremiumRequest> list = snapshot.docs
+            .map(PremiumRequest.fromDoc)
+            .toList(growable: false);
+        list.sort((PremiumRequest a, PremiumRequest b) {
+          final DateTime? x = a.createdAt;
+          final DateTime? y = b.createdAt;
+          if (x == null || y == null) return 0;
+          return y.compareTo(x);
+        });
+        return list;
+      }),
+      attempts: 0,
+      onError: (Object error, int attempt) => debugPrint(
+          'watchMyRequests($uid) failed (attempt $attempt): $error'),
+    );
   }
 
   // ------------------------------------------------------------ purchases

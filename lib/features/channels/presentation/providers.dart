@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/channel_models.dart';
 import '../../../core/models/group.dart';
 import '../../../core/services/channel_service.dart';
+import '../../../core/utils/stream_retry.dart';
 
 /// The signed-in uid, or an empty string when signed out / Firebase is absent.
 ///
@@ -87,22 +88,28 @@ final StreamProvider<bool> isAppAdminProvider = StreamProvider<bool>((Ref ref) {
   if (uid.isEmpty) return Stream<bool>.value(false);
   // ⚠️ A `try`/`catch` around this is useless: `snapshots()` returns
   // synchronously, so a *listener* error — a denied read, a dropped
-  // connection — never reaches it. That mattered here because a Firestore
-  // snapshot stream **closes when it errors**, and every consumer reads this
-  // as `.valueOrNull ?? false`: the admin entry points would just quietly
-  // disappear with nothing in the log. Handling the error explicitly keeps the
-  // degradation to `false` *and* makes it visible.
-  return FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .snapshots()
-      .map(
-        (DocumentSnapshot<Map<String, dynamic>> doc) =>
-            doc.data()?['isAdmin'] as bool? ?? false,
-      )
-      .handleError((Object error) {
-        debugPrint('isAppAdminProvider($uid) failed: $error');
-      });
+  // connection — never reaches it. A Firestore snapshot stream **closes when it
+  // errors**, and every consumer reads this as `.valueOrNull ?? false`.
+  //
+  // A bare `handleError` does NOT fix that, which is the trap this comment used
+  // to walk into: the handler returns normally, the error is marked handled, and
+  // the listener closes anyway — so the admin entry points would still vanish,
+  // only now with a log line. [retryStream] is what actually keeps them: the
+  // listener re-opens, the last known value is never replaced by a wrong one,
+  // and a permanent failure stays visible in the log.
+  return retryStream<bool>(
+    () => FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .map(
+          (DocumentSnapshot<Map<String, dynamic>> doc) =>
+              doc.data()?['isAdmin'] as bool? ?? false,
+        ),
+    attempts: 0,
+    onError: (Object error, int attempt) =>
+        debugPrint('isAppAdminProvider($uid) failed (attempt $attempt): $error'),
+  );
 });
 
 /// Channels waiting on a monetization decision, for the admin screen.

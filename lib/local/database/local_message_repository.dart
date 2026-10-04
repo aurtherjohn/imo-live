@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/models/chat.dart';
@@ -11,6 +14,35 @@ import 'local_database.dart';
 ///
 /// Messages are stored per chat (`messages_<chatId>`) so a large conversation
 /// never forces rewriting the entire message store.
+///
+/// ### "Delete for me" is local by construction, not by intention
+///
+/// [deleteForMe] must never reach another device. That is not enforced by a
+/// rule anyone has to remember; it is a property of this class:
+///
+/// * It holds **no** Firestore, no client and no transport — only a
+///   [LocalDatabase] — so there is nothing here that *could* write remotely.
+/// * The method is handed nothing but a message id. It is not given a peer, a
+///   uid or a channel, so even a future caller who wanted a remote write has
+///   no recipient to address.
+/// * The removal is recorded in a deletion index (below) as well as performed,
+///   so the Firestore mirror cannot put the row back — see [save].
+///
+/// The one thing a comment *cannot* stop is a later `RemoteMessageRepository`
+/// implementing this method as a network call. The interface documents the
+/// requirement for that reason: `MessageRepository.deleteForMe`.
+///
+/// ### The deletion index
+///
+/// Each chat keeps the ids this user removed for themselves under
+/// `deleted_ids_<chatId>` — in the **same** box as the messages
+/// ([AppConstants.boxMessages]), so the two are always cleared together and can
+/// never disagree about whose device the removal belongs to.
+///
+/// It exists because removing the row alone is not durable. `chatMirrorProvider`
+/// re-saves *every* message Firestore reports, on *every* snapshot: the next
+/// incoming message re-delivers the whole page, and the removed row would be
+/// written straight back. The index is what makes "gone" mean gone.
 class LocalMessageRepository implements MessageRepository {
   LocalMessageRepository({LocalDatabase? db})
       : _db = db ?? LocalDatabase.instance;
@@ -19,16 +51,65 @@ class LocalMessageRepository implements MessageRepository {
   final Map<String, StreamController<List<Message>>> _controllers =
       <String, StreamController<List<Message>>>{};
   final Map<String, List<Message>> _cache = <String, List<Message>>{};
+  final Map<String, Set<String>> _deleted = <String, Set<String>>{};
 
   String _key(String chatId) => 'messages_$chatId';
 
+  /// Key holding the ids removed for this user in [chatId].
+  ///
+  /// Deliberately does not start with `messages_`, so [_knownChatIds] never
+  /// mistakes it for a conversation.
+  String _deletedKey(String chatId) => 'deleted_ids_$chatId';
+
+  /// The ids removed for this user in [chatId], loaded from the index once.
+  Set<String> _deletedIds(String chatId) {
+    final Set<String>? cached = _deleted[chatId];
+    if (cached != null) return cached;
+
+    final Set<String> ids = <String>{};
+    final String? raw =
+        _db.readString(AppConstants.boxMessages, _deletedKey(chatId));
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final Object? decoded = jsonDecode(raw);
+        if (decoded is List) {
+          for (final Object? entry in decoded) {
+            if (entry is String && entry.isNotEmpty) ids.add(entry);
+          }
+        }
+      } on Object catch (error) {
+        // An unreadable index must not hide the whole conversation. Losing it
+        // means a previously removed message may reappear, which is a far
+        // smaller failure than showing an empty chat.
+        debugPrint('Unreadable local-deletion index for "$chatId": $error');
+      }
+    }
+    return _deleted[chatId] = ids;
+  }
+
+  Future<void> _persistDeletedIds(String chatId) async {
+    await _db.writeString(
+      AppConstants.boxMessages,
+      _deletedKey(chatId),
+      jsonEncode(_deletedIds(chatId).toList()),
+    );
+  }
+
   List<Message> _read(String chatId) {
     if (_cache.containsKey(chatId)) return _cache[chatId]!;
-    final List<Message> list = _db.readList<Message>(
-      AppConstants.boxMessages,
-      _key(chatId),
-      Message.fromJson,
-    );
+    final Set<String> hidden = _deletedIds(chatId);
+    final List<Message> list = _db
+        .readList<Message>(
+          AppConstants.boxMessages,
+          _key(chatId),
+          Message.fromJson,
+        )
+        // Filtered here, at the single point every reader goes through, rather
+        // than at each call site: `findById`, `search`, the pinned banner and
+        // the chat screen all read through this method, so a message removed
+        // for this user cannot leak back into any of them.
+        .where((Message m) => !hidden.contains(m.id))
+        .toList();
     list.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     _cache[chatId] = list;
     return list;
@@ -84,6 +165,13 @@ class LocalMessageRepository implements MessageRepository {
 
   @override
   Future<void> save(Message message) async {
+    // ⚠️ The other half of "delete for me". This is the method the Firestore
+    // mirror calls for every message it receives, so without this check a row
+    // the user removed comes back the moment anything in the conversation
+    // changes — typically the next incoming message, seconds later. The check
+    // cannot live in the mirror, because the mirror is not the only writer.
+    if (_deletedIds(message.chatId).contains(message.id)) return;
+
     final List<Message> list = _read(message.chatId);
     final int index = list.indexWhere((m) => m.id == message.id);
     if (index == -1) {
@@ -99,6 +187,10 @@ class LocalMessageRepository implements MessageRepository {
   Future<void> saveAll(List<Message> messages) async {
     final Set<String> touched = <String>{};
     for (final Message message in messages) {
+      // Same guard as [save]: a bulk write from the mirror must not resurrect
+      // a locally removed message either.
+      if (_deletedIds(message.chatId).contains(message.id)) continue;
+
       final List<Message> list = _read(message.chatId);
       final int index = list.indexWhere((m) => m.id == message.id);
       if (index == -1) {
@@ -169,16 +261,31 @@ class LocalMessageRepository implements MessageRepository {
 
   @override
   Future<void> deleteForMe(String id) async {
-    // "Delete for me" removes the row entirely.
+    // Local-only — see the class docs for why that is a property of this
+    // class rather than a promise in this comment.
+    //
+    // Two writes, both to [AppConstants.boxMessages]: the row goes, and the id
+    // is recorded in the deletion index. Recording it is not belt-and-braces;
+    // it is what stops the next Firestore snapshot from restoring the row.
     for (final String chatId in _knownChatIds()) {
+      // Already recorded here — the row is invisible either way, so this chat
+      // is done.
+      if (_deletedIds(chatId).contains(id)) return;
+
       final List<Message> list = _read(chatId);
       final int before = list.length;
       list.removeWhere((m) => m.id == id);
       if (list.length != before) {
+        _deletedIds(chatId).add(id);
+        await _persistDeletedIds(chatId);
         await _persist(chatId);
         return;
       }
     }
+    // No stored copy anywhere. The message may still arrive later — the user
+    // removed it from this device, and this device is the only place the
+    // removal was ever going to apply — but there is no chat to record it
+    // against, so nothing more can be done here.
   }
 
   @override
@@ -331,6 +438,12 @@ class LocalMessageRepository implements MessageRepository {
   @override
   Future<void> deleteForChat(String chatId) async {
     _cache[chatId] = <Message>[];
+    // The deletion index goes with the conversation. A stale index would
+    // outlive the chat it describes, and a chat that is cleared and then
+    // re-synced must come back whole rather than pre-filtered by removals made
+    // against the copy that was just thrown away.
+    _deleted[chatId] = <String>{};
+    await _db.delete(AppConstants.boxMessages, _deletedKey(chatId));
     await _persist(chatId);
   }
 
@@ -338,8 +451,22 @@ class LocalMessageRepository implements MessageRepository {
   Future<void> clear() async {
     for (final String chatId in _knownChatIds()) {
       _cache[chatId] = <Message>[];
+      _deleted[chatId] = <String>{};
       await _persist(chatId);
     }
+    // Sweep indexes belonging to a chat whose message list is already gone:
+    // [_knownChatIds] only sees chats that still have a `messages_` key, so
+    // those indexes would otherwise survive the wipe.
+    final box = _db.maybeBox(AppConstants.boxMessages);
+    if (box != null) {
+      for (final Object key in box.keys.toList()) {
+        final String k = key.toString();
+        if (k.startsWith('deleted_ids_')) {
+          await _db.delete(AppConstants.boxMessages, k);
+        }
+      }
+    }
+    _deleted.clear();
   }
 
   @override

@@ -56,6 +56,23 @@ abstract interface class MessageRepository {
 
   Future<void> updateStatus(String id, dynamic status);
   Future<void> edit(String id, String newContent);
+
+  /// Removes a message **from this device only**.
+  ///
+  /// ⚠️ Implementations must not touch the network. "Delete for me" is a
+  /// unilateral, local act: the other participant's copy is not theirs to
+  /// change, they are not told it happened, and there is nothing to
+  /// acknowledge. A `RemoteMessageRepository` that implemented this as a
+  /// server write — or worse, as a write *and* a wait for the peer to
+  /// confirm — would be a different and much worse feature: the peer may be
+  /// offline, may have blocked the user, or may never come back, and the row
+  /// would sit in a "deleting…" state that never resolves.
+  ///
+  /// The implementation is therefore expected to be synchronous with respect
+  /// to the network — the removal is durable the moment this future completes.
+  ///
+  /// Contrast [deleteForEveryone], which *is* meant to reach the other device
+  /// and is deliberately bounded by [Message.deleteForEveryoneWindow].
   Future<void> deleteForMe(String id);
 
   /// Retracts a message for everyone, replacing it with a "deleted" notice.
