@@ -12,9 +12,16 @@ deliberately removed. Permissions on demand only. `FOREGROUND_SERVICE[_MICROPHON
 ## Auth
 - Phone+PIN = Firebase Auth password: `p<digits>@phone.imolive.app`. **Never store password material in
   Firestore** (a 6-digit PIN is a 10^6 keyspace).
-- ⚠️ Phone accounts are `password` accounts → `needsVerification` traps them on the OTP screen forever. The
+- ⚠️ Phone accounts are `password` accounts → `needsVerification` traps them on the verify screen forever. The
   `isPhoneAuthEmail` guard must stay in step in **two** places: `auth_gate.dart` and
   `needsEmailVerificationProvider`.
+- Email verification is a **link**, never a code: `AppRoutes.otp` hosts the link screen (60 s resend, 5 s
+  `user.reload()` poll). `ActionCodeSettings('imo://verify-email', handleCodeInApp: false)`; an unauthorised
+  continue URL **throws** → `_sendVerification` falls back to a plain send. `signUpWithPhone` self-heals
+  `email-already-in-use` by re-signing-in with the submitted PIN, and must then **not** `_rollback` (that
+  deletes the caller's own account).
+- ⚠️ `FadeSlideIn` lives in `app/app.dart`, `AppColors` in `app_tokens.dart`, `AppRoutes` in
+  `core/constants/app_constants.dart` — three separate imports, all easily dropped by mistake.
 - ⚠️ `_fullDigits` was the one **silent** failure: `startsWith(dial)` is not proof the code is present (India
   `91` vs a mobile starting `9`) → the account was created under a different address, unreachable, no error.
   Fixed 2026-10-04; keep all 10 `phone_login_test.dart` tests.
