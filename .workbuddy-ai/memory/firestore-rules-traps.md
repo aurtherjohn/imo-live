@@ -47,6 +47,18 @@ service, and it looks like an auth failure. `_fstest/verify_deployed_rules.py` d
 `JAVA_HOME="C:/Program Files/Android/Android Studio/jbr"`; `firebase.json` wires auth 9099 / firestore 8080.
 Method + traps in the skill `firestore-rules-from-callsites`.
 
+⚠️ **`JAVA_HOME` alone is not enough** — the CLI shells out to `java -version`, so the JDK bin dir must also
+be on `PATH` (`/c/Program Files/Android/Android Studio/jbr/bin`), or startup dies with
+`Could not spawn 'java -version'`.
+
+⚠️ **The harness's reachability check only probes Firestore 8080.** Auth 9099 can still be starting, and
+`resetEmulators` then dies with a bare `TypeError: fetch failed` that looks like the emulator is missing.
+Wait for 9099 before running it.
+
+⚠️ `_fstest/` is gitignored, so changes to `rules_probe.mjs` are **local-only** — the coverage added
+2026-10-04 for `users/{uid}.avatarUrl` and `users/{uid}.oneSignalPlayerId` (plus deny-both-directions and
+two control denials; 148/148 passing) will not reach another machine.
+
 - ⚠️ **A 400 is not a denial.** Harnesses must map 200→allow, 403→deny and fail otherwise — a
   "not 200 = denied" harness reports green over a rule that never ran (this hid the `markChatRead` bug).
 - ⚠️ `:runQuery` `parent` is a **URL path segment** (`.../documents/chats/{id}:runQuery`). In `from` → 400;
