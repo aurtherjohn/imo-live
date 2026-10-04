@@ -475,6 +475,68 @@ void main() {
       expect(submission.signedIn, isFalse);
       expect(find.text('Use at least 6 digits'), findsOneWidget);
     });
+
+    // A national number can begin with the same digits as the dial code. India is
+    // the clear case: the code is `91` and Indian mobiles start with `9`, so
+    // `9123456789` is a national number, not `+91 23456789`. A bare
+    // `startsWith(dial)` check reads it as already-international, drops the code,
+    // and creates the account under `p9123456789@phone.imolive.app` while the user
+    // believes they registered `+919123456789` — an account they can never reach
+    // again, with no error anywhere. Hence its own pair of tests.
+    testWidgets('a national number that begins with the dial code keeps the code',
+        (WidgetTester tester) async {
+      await pump(tester);
+
+      await tester.tap(find.text('+880'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Search country or code'),
+        'india',
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('India'));
+      await tester.pumpAndSettle();
+      expect(find.text('+91'), findsOneWidget);
+
+      await type(tester, <int, String>{
+        0: '9123456789',
+        1: 'Tanvir',
+        2: 'Ahmed',
+        4: '482913',
+      });
+      await tapButton(tester, 'Create Account');
+
+      expect(submission.digits, '919123456789');
+    });
+
+    testWidgets('a pasted international number is still not prefixed twice',
+        (WidgetTester tester) async {
+      await pump(tester);
+
+      await tester.tap(find.text('+880'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Search country or code'),
+        'india',
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(find.text('India'));
+      await tester.pumpAndSettle();
+
+      // The other half of the same decision: 12 digits cannot be an Indian
+      // national number, so this one *is* already international.
+      await type(tester, <int, String>{
+        0: '919876543210',
+        1: 'Tanvir',
+        2: 'Ahmed',
+        4: '482913',
+      });
+      await tapButton(tester, 'Create Account');
+
+      expect(submission.digits, '919876543210');
+    });
   });
 }
 

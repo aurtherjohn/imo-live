@@ -17,13 +17,14 @@ background-socket / fingerprint stack were deliberately removed. The 2026-09-27 
 - ⚠️ Phone accounts are `password` accounts → `needsVerification` traps them on the OTP screen forever. The
   `isPhoneAuthEmail` guard lives in **two** places that must stay in step: `auth_gate.dart` and
   `needsEmailVerificationProvider` (`auth_providers.dart`).
-- ⚠️ `_fullDigits` is the one **silent** bug — a wrong address still creates the account, so the user can never
-  sign back in and nothing errors. Keep the 8 widget tests.
+- ⚠️ `_fullDigits` (`phone_login_screen.dart`) is the one **silent** failure mode — a wrong digit string still
+  creates the account, under a different address, so the user can never sign back in and nothing errors.
+  Fixed 2026-10-04; keep all 10 tests in `test/features/phone_login_test.dart`.
 
 ## Calls: WebRTC is the only provider
 Agora abandoned 2026-09-29. ⚠️ **Never report "WebRTC works now"** — the relay decides whether mobile-data
-calls connect; Metered Open Relay **UNPROVEN**; `stun:` alone = same-Wi-Fi. Ring query needs index `calls`:
-`receiverId, status, __name__`.
+calls connect; Metered Open Relay **UNPROVEN**; `stun:` alone = same-Wi-Fi. Ring index `calls`
+(`receiverId, status`) verified **READY** 2026-10-04 via `_fstest/check_call_index.py` — don't re-open it.
 
 ## Push: OneSignal replaced FCM (2026-10-04)
 `firebase_messaging` is **gone**; `onesignal_flutter ^5.2.9` is the only push stack. `onesignal_service.dart`
@@ -48,12 +49,10 @@ Skill: `flutter-peer-visible-field-propagation`.
 
 ## App traps
 - Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1408 keys). ⚠️ "0 literals left" is **false** —
-  ~181 distinct values still need keys (`BUG_AUDIT.md`). Secrets only in `lib/core/config/app_secrets.dart`;
-  empty `r2PublicBaseUrl` → media needs `--dart-define=R2_PUBLIC_BASE_URL=…`.
+  ~181 distinct values still need keys (`BUG_AUDIT.md`). Secrets only in `lib/core/config/app_secrets.dart`.
 - Theming: read `context.c.onX` for foregrounds; raw `AppColors.X` only for fills. Light `accent` = `#D6193E`,
   guarded by `test/theme/contrast_guard_test.dart`. Ads: one init at the root (`_ImoLiveAppState`); slots
-  **listen** to `AdService.ready`, never `init()`.
-- Branding: raster, not SVG — skill `flutter-android-app-branding`. Old assets in `_retired_branding/`.
+  **listen** to `AdService.ready`, never `init()`. Branding: raster, not SVG — skill `flutter-android-app-branding`.
 
 ## Build & push (see skills)
 `run_flutter.sh` (not `flutter.bat`). **GitHub Actions builds the APK — do NOT build locally.** ⚠️ `flutter clean`
@@ -62,7 +61,8 @@ costs space here (deletions route to the Recycle Bin on `C:`) and never finishes
 `github-push-via-api`. ⚠️ That path once destroyed 22 binary assets (everything uploaded via
 `readFileSync(...,'utf8')`, so PNG/JPG became `U+FFFD` and text CRLF); it now reads
 `git cat-file blob HEAD:<path>` and uploads **base64**. **After any API push assert
-`remote tree sha == git rev-parse HEAD^{tree}`.**
+`remote tree sha == git rev-parse HEAD^{tree}`** — the script's server-side commit has a *different* sha than
+the local one, so compare trees, never commits.
 
 ## Tooling
 ⚠️ **Multiple `Edit` calls to the SAME file in ONE message clobber each other** — each edit reads the original,

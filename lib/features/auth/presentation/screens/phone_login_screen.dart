@@ -101,18 +101,34 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   String get _fullDigits {
     String digits = _phone.text.replaceAll(RegExp(r'[^0-9]'), '');
     final String dial = _country.dialCode;
-    // A pasted international number already carries the code. Treated as such
-    // only when what follows is a plausible national number, so a short local
-    // number that happens to begin with the same digits is not mistaken for one.
-    final bool alreadyInternational = digits.startsWith(dial) &&
-        digits.length - dial.length >= 6 &&
-        digits.length <= 15;
-    if (alreadyInternational) return digits;
+    // A pasted international number already carries the code, but a *national*
+    // number can begin with the same digits — India's code is `91` and Indian
+    // mobiles start with `9`, so `9123456789` begins with `91` without carrying
+    // it. `startsWith` on its own therefore proves nothing.
+    //
+    // What does prove it: the input is too long to be a national number at all,
+    // so it cannot be one and must already carry the code. That reads
+    // `+919876543210` (12 digits) as international while keeping `9123456789`
+    // (10) national — the reading the locked `+91` prefix implies.
+    final bool carriesDial = digits.startsWith(dial) &&
+        _couldBeNational(digits.length - dial.length) &&
+        !_couldBeNational(digits.length);
+    if (carriesDial) return digits;
     // E.164 conversion drops the national trunk prefix — `01712345678` in
     // Bangladesh is `+8801712345678`, not `+88001712345678`.
     if (digits.startsWith('0')) digits = digits.substring(1);
     return '$dial$digits';
   }
+
+  /// Whether [length] digits could be a national significant number.
+  ///
+  /// This bound is what separates a pasted international number from a national
+  /// one that merely begins with the dial code. 6 is the shortest length in the
+  /// ITU tables; 10 covers the overwhelming majority of countries — the NANP,
+  /// India, Bangladesh, the UK, most of Europe — and is the value that keeps a
+  /// pasted `+1 415 555 2671` international instead of reading it as an 11-digit
+  /// national number. E.164 caps the whole number at 15.
+  static bool _couldBeNational(int length) => length >= 6 && length <= 10;
 
   Future<void> _pickCountry() async {
     final Country? picked =
