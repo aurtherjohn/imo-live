@@ -27,11 +27,30 @@ decides whether mobile-data calls connect; Metered Open Relay **UNPROVEN**; `stu
 are **NOT deployed** — don't deploy unasked. Ring query needs index `calls`: `receiverId, status, __name__`.
 
 ## Firestore
-- ✅ Rules **DEPLOYED 2026-10-03** (`9b1a7828…`). ⚠️ `deploy --only firestore:rules --dry-run` compiles
-  then exits 1 with a cosmetic "unexpected error" — check for "compiled successfully", not the exit code.
-- ⚠️ `chats`/`calls`/`status`/`contacts`/`channels`/`channel_keys`/`points_transactions`/`notifications`
-  are still pinned at `signedIn()` (any signed-in user reads+writes) — **the remaining risk**. Unlisted
-  collections deny (fail closed). Rules are **OR'd**, so a permissive `/{document=**}` undoes everything.
+- ⚠️ **Two rulesets exist.** The live one is the **2026-10-03** deploy (`9b1a7828…`). The file in the
+  repo is the **2026-10-04 rewrite**, verified but **NOT deployed** — until `firebase deploy --only
+  firestore:rules` runs, every protection described below is on paper only.
+- ✅ 2026-10-04 rewrite, verified on the emulator: **124 assertions, both directions**, zero compile
+  warnings. `chats`/`messages`→participants, `calls`→caller+callee, `contacts/{uid}/list`→owner,
+  `channels` write→owner, `status` write→author, `users/{uid}/{points_transactions,notifications}`→owner,
+  `channel_keys`→`get` yes / `list` no. Dead **top-level** `points_transactions`/`notifications` blocks
+  deleted (nothing ever wrote there).
+- ⚠️ **Gifting needs a cross-ownership exception.** `sendGift` credits `users/{recipient}` from the
+  *sender*, so `isSelf`-only **denies every gift**. Branch: `changedOnly(['points','updatedAt'])` + an
+  increase only. Points are client-mintable anyway — the ledger is not trustworthy without a server.
+- ⚠️ **`markChatRead` may use only ONE `!=` filter.** Firestore rejects `senderId != me` **and**
+  `status != read` with `INVALID_ARGUMENT`; the old `catch` cleared the counter instead, so the only
+  symptom was read receipts that never advanced. Now: `status != read`, sender filtered in Dart.
+- ⚠️ **A 400 is not a denial.** Rules harnesses must map 200→allow, 403→deny and fail otherwise — a
+  "not 200 = denied" harness reports green over a rule that never ran (this hid the bug above).
+- ⚠️ **`hasOnly` accepts a no-op write** — an empty `affectedKeys()` satisfies it, so `changedOnly([...])`
+  alone let anyone re-stamp `channels.lastUpdateAt`. Require a counter to actually move.
+- ⚠️ **`exists()` in a rule sees the state BEFORE the batch** — so a counter incremented in the same batch
+  as the edge that authorises it cannot be guarded by `exists()`; the first follow would be denied.
+  Split by direction. Residual, documented: anyone may step a counter **up** by one.
+- ⚠️ **A disjunction DOES satisfy a list query** (verified 200). Don't write the opposite into a comment.
+- ⚠️ `deploy --only firestore:rules --dry-run` compiles then exits 1 with a cosmetic "unexpected error" —
+  check for "compiled successfully", not the exit code.
 - ⚠️ `{document=**}` matches ZERO or more segments → it also matches the **PARENT**.
   `match /users/{uid}/{document=**}` re-opened `/users/{uid}`, making `isSelf()` + `noPasswordMaterial()`
   dead code. Require a real segment: `match /{sub}/{doc=**}`. Only the emulator caught it.
@@ -40,6 +59,15 @@ are **NOT deployed** — don't deploy unasked. Ring query needs index `calls`: `
 - ⚠️ `handleError` returning normally *marks the error handled* and the stream **closes**; `retrying<T>`
   (`call_signaling_service.dart`) re-opens ≤3×. Cast, never coerce, Firestore fields — a new date field on
   a Firestore-backed model must go in the conversion map or you get a **throw**, not a null.
+
+## Rules verification (emulator)
+- Harness `_fstest/rules_probe.mjs` (**gitignored**), structural lint `_fstest/lint_rules.py`. Start the
+  emulators with `JAVA_HOME="C:/Program Files/Android/Android Studio/jbr"`; `firebase.json` already wires
+  auth 9099 / firestore 8080. Method + traps in skill `firestore-rules-from-callsites`.
+- ⚠️ `:runQuery` `parent` is a **URL path segment** (`.../documents/chats/{id}:runQuery`). In `from` → 400;
+  in the body → accepted and **never answered**, so the probe hangs silently.
+- ⚠️ Write probe progress with `appendFileSync`, not stdout — buffered output is lost when the process is
+  killed here, and the run then reports *nothing*.
 
 ## App traps
 - Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1408 keys). ⚠️ "0 literals left" is

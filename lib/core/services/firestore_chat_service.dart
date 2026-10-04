@@ -623,6 +623,24 @@ class FirestoreChatService {
 
   /// Marks every incoming message in the chat as read, and clears the caller's
   /// unread counter.
+  ///
+  /// ### The query is deliberately one inequality, not two
+  ///
+  /// This used to ask for `senderId != me` **and** `status != read` in a single
+  /// query, and Firestore rejects that outright:
+  ///
+  ///     Only a single 'NOT_EQUAL', 'NOT_IN', 'IS_NOT_NAN', or 'IS_NOT_NULL'
+  ///     filter allowed per query.
+  ///
+  /// So the query never ran. It failed with `INVALID_ARGUMENT` every time, the
+  /// `catch` below swallowed it and cleared the counter instead — which is why
+  /// the bug was invisible: the chat-list badge went to zero exactly as
+  /// expected, and only the per-message tick silently never advanced. Found by
+  /// running the query against the emulator rather than reading it; nothing
+  /// about the code looks wrong.
+  ///
+  /// The sender half now runs in Dart, where it costs nothing: the result set
+  /// is the unread messages of one conversation.
   Future<void> markChatRead({
     required String chatId,
     required String readerUid,
@@ -634,11 +652,14 @@ class FirestoreChatService {
     try {
       final QuerySnapshot<Map<String, dynamic>> unread = await chat
           .collection(messagesSubcollection)
-          .where('senderId', isNotEqualTo: readerUid)
           .where('status', isNotEqualTo: FirestoreMessageStatus.read)
           .get();
       final WriteBatch batch = db.batch();
       for (final QueryDocumentSnapshot<Map<String, dynamic>> doc in unread.docs) {
+        // Your own messages are not yours to mark read — the tick the sender
+        // sees is the *recipient's* receipt, and a device that marked its own
+        // messages read would be reporting a delivery that never happened.
+        if (doc.data()['senderId'] == readerUid) continue;
         batch.set(
           doc.reference,
           <String, dynamic>{
@@ -657,9 +678,6 @@ class FirestoreChatService {
       );
       await batch.commit();
     } on Object catch (error) {
-      // The composite query above needs an index on a fresh project. Falling
-      // back to just clearing the counter keeps the badge honest even when the
-      // per-message update could not run.
       debugPrint('markChatRead($chatId) failed: $error');
       try {
         await chat.set(

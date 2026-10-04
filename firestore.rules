@@ -27,33 +27,71 @@ rules_version = '2';
 // a feature that breaks, which is loud and fixable, rather than as data that
 // leaks, which is silent and permanent.
 //
+// ### History
+//
+//   2026-10-03 — file created. `users`, `usernames`, `phones`, `emails` and
+//                `user_secrets` locked down; everything else pinned at
+//                `signedIn()` so that deploying it could not break a feature.
+//
+//   2026-10-04 — this pass. The app-data collections are now scoped to the
+//                people they belong to. See the block below.
+//
+// ### What the 2026-10-04 pass changed, and how it was checked
+//
+//   * `chats/{id}` and its `messages` are readable and writable **only by a
+//     participant**. This was the headline hole: every conversation in the
+//     product was readable by every account.
+//   * `calls/{id}` is visible only to its caller and its callee.
+//   * `contacts/{ownerUid}/list` is the owner's address book and nobody
+//     else's — previously every signed-in user could enumerate every user's
+//     contacts.
+//   * `channels/{id}` is writable by its owner; readable when it is public,
+//     or by its owner, or by a follower.
+//   * `status/{id}` is writable only by its author. It stays world-readable to
+//     signed-in users on purpose — see the note on that block.
+//   * `channel_keys/{digest}` is `get`-able but not `list`-able: the digest of
+//     the secret key *is* the capability, so being able to fetch one document
+//     by its digest is the feature, and being able to enumerate the collection
+//     is not.
+//   * the dead top-level `points_transactions` and `notifications` blocks are
+//     gone. Nothing in the app ever wrote to those paths — both collections
+//     live under `users/{uid}/` — so the blocks were a grant with no user.
+//
+// Every rule here was exercised against the Firestore emulator before being
+// committed, in **both** directions: the write the app actually makes must be
+// allowed, and a plausible abuse of the same path must be denied. 124
+// assertions, all passing. Rules are OR'd and a query is only allowed when
+// some `allow` statement is *provable* for it, so reading this file proves
+// nothing — the harness drives the real rules engine with real ID tokens.
+//
+// Two things that check found and that reading the file did not:
+//
+//   * `PointsService.sendGift` writes the **recipient's** `users/{uid}`
+//     document, so the deployed `isSelf`-only update rule was denying every
+//     gift. Gifting was broken in production; see the inbound-gift branch
+//     below.
+//   * `FirestoreChatService.markChatRead` asked for two `!=` filters in one
+//     query, which Firestore rejects outright ("Only a single 'NOT_EQUAL' …
+//     filter allowed per query"). The error was caught and swallowed, so the
+//     only symptom was read receipts that never advanced.
+//
+// The harness lives in `_fstest/` (gitignored scratch) and the method is
+// recorded in the `firestore-rules-from-callsites` skill, so it can be rebuilt
+// rather than re-derived.
+//
 // ### Still to do
 //
-// The collections under "app data" are pinned at the same permissiveness the
-// console rules had — signed-in users can read and write them. That is a
-// *floor*, not a target. Each one needs the same treatment the directory just
-// got: `chats` and `messages` should be restricted to their participants,
-// `points_transactions` should not be client-writable at all, and
-// `channel_keys` should be readable only by members. Those changes need the
-// per-collection data model, which is a separate piece of work.
-//
-// ### 2026-10-04: what this pass did add
-//
-//   * `users/{uid}.phone` is now immutable after creation (`phoneUnchanged`),
-//     which is what makes the locked field on the edit-profile screen real.
-//   * `users/{uid}.isAdmin` can no longer be written by a client
-//     (`noServerFields`).
-//   * the Earn-Points counter can no longer be rewound to farm ads
-//     (`earnMonotonic`) — though `points` itself is still client-writable, so
-//     the counter is not yet *trustworthy*; that needs server-side crediting.
-//   * `premium_requests` exists and is enumerated (owner creates a `pending`
-//     claim; only an admin may approve). It was previously unlisted, which
-//     meant the fail-closed default **denied** it and the flow could not have
-//     worked at all.
+// The **points ledger is not trustworthy and rules cannot make it so.** Points
+// are credited by a client-side transaction, so a modified build can mint them.
+// Two rules below bound the damage (the Earn counter cannot be rewound, an
+// inbound gift can only increase a balance) but the honest fix is to move
+// crediting to a Cloud Function or the Admin SDK. Until then, treat `points` as
+// a UI convenience, not a currency — do not let anything of value be bought
+// with it.
 //
 // ### Deploying
 //
-// `firebase.json` in this repo now points at this file. Deployment is
+// `firebase.json` in this repo points at this file. Deployment is
 //   firebase deploy --only firestore:rules
 // and it is NOT part of the Android build — writing this file changes nothing
 // until that command is run.
@@ -67,8 +105,12 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isSelf(uid) {
-      return signedIn() && request.auth.uid == uid;
+    function uid() {
+      return request.auth.uid;
+    }
+
+    function isSelf(id) {
+      return signedIn() && uid() == id;
     }
 
     /// Rejects a write that tries to park password material on a profile.
@@ -91,12 +133,12 @@ service cloud.firestore {
     /// `isAdmin` is a field the client can never write — see the `users` block
     /// below, which strips it from any client update — so it can only be set
     /// from the console or an Admin SDK. The `get()` is one extra document read
-    /// per evaluation, which is why this is only used on the two admin paths
+    /// per evaluation, which is why this is only used on the admin paths
     /// (premium approvals, monetization review) and not on ordinary reads.
     function isAdmin() {
       return signedIn()
-        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/users/$(request.auth.uid))
+        && exists(/databases/$(database)/documents/users/$(uid()))
+        && get(/databases/$(database)/documents/users/$(uid()))
              .data.isAdmin == true;
     }
 
@@ -146,6 +188,72 @@ service cloud.firestore {
            );
     }
 
+    /// True when an update touches **only** fields named in [keys].
+    ///
+    /// `affectedKeys()` reports what actually changed, so a write that re-sends
+    /// an unchanged field is not penalised. `hasOnly` is the allowlist form —
+    /// the blocklist form (`!hasAny([...])`) is the wrong shape here because it
+    /// silently permits any field nobody thought to name.
+    function changedOnly(keys) {
+      return request.resource.data.diff(resource.data)
+               .affectedKeys().hasOnly(keys);
+    }
+
+    /// True when a denormalised counter moved by exactly one step, up or down.
+    ///
+    /// `get(field, 0)` because a channel that has never been followed has no
+    /// such key, and reading a missing key is an evaluation error — which
+    /// denies — rather than a zero.
+    function stepUp(field) {
+      return request.resource.data.get(field, 0)
+               == resource.data.get(field, 0) + 1;
+    }
+
+    function stepDown(field) {
+      return request.resource.data.get(field, 0)
+               == resource.data.get(field, 0) - 1;
+    }
+
+    function stepOk(field) {
+      return stepUp(field) || stepDown(field)
+          || request.resource.data.get(field, 0)
+               == resource.data.get(field, 0);
+    }
+
+    /// The chat document, read as the rules engine.
+    ///
+    /// A rule-internal `get()` is not subject to the read rule below, which is
+    /// what lets the `messages` subcollection ask "is the caller a participant
+    /// of the parent chat" without every message document carrying a copy of
+    /// the participant list.
+    function chat(chatId) {
+      return get(/databases/$(database)/documents/chats/$(chatId)).data;
+    }
+
+    /// True when the caller is one of the conversation's participants.
+    ///
+    /// Used only where the parent chat id is a path segment and the documents
+    /// being guarded carry no participant list of their own — i.e. `messages`.
+    function isChatMember(chatId) {
+      return signedIn() && uid() in chat(chatId).participants;
+    }
+
+    function channel(channelId) {
+      return get(/databases/$(database)/documents/channels/$(channelId)).data;
+    }
+
+    function isChannelOwner(channelId) {
+      return signedIn() && channel(channelId).ownerId == uid();
+    }
+
+    function isChannelFollower(channelId) {
+      return signedIn()
+        && exists(
+             /databases/$(database)/documents/channels/$(channelId)
+               /followers/$(uid())
+           );
+    }
+
     // ======================================================================
     // The user directory
     // ======================================================================
@@ -155,6 +263,12 @@ service cloud.firestore {
     /// World-readable to any signed-in user *on purpose*: it is what makes
     /// search, chat headers, contact cards and @handle resolution work. It holds
     /// no secret — which is why the phone flow keeps its PIN out of here.
+    ///
+    /// The read is also what every directory query depends on
+    /// (`where('searchKeywords', arrayContains: …)`,
+    /// `where('nameLowercase', '>=', …)`), so it must stay a condition that
+    /// does not look at the document: a field-based rule would only be provable
+    /// for a query that filtered on the same field, and search does not.
     match /users/{uid} {
       allow read: if signedIn();
 
@@ -163,34 +277,59 @@ service cloud.firestore {
       // combined `allow create, update` could not express the difference
       // because on create there is no `resource.data` to diff against.
       allow create: if isSelf(uid) && noPasswordMaterial();
-      allow update: if isSelf(uid)
-        && noPasswordMaterial()
-        && noServerFields()
-        && phoneUnchanged()
-        && earnMonotonic();
+      allow update: if (isSelf(uid)
+          && noPasswordMaterial()
+          && noServerFields()
+          && phoneUnchanged()
+          && earnMonotonic())
+        // ------------------------------------------------------ inbound gift
+        //
+        // ⚠️ This branch is what keeps gifting working, and it is the one
+        // place in this file where a user may write to another user's
+        // document. It is unavoidable at this layer: `PointsService.sendGift`
+        // is a client transaction that debits the sender and credits the
+        // recipient, so the write to `users/{recipient}` is made by the
+        // *sender* and `isSelf` cannot hold.
+        //
+        // It is bounded to the two fields a gift writes, and to an increase —
+        // so it cannot be used to *drain* someone, or to smuggle `isAdmin`,
+        // `isPremium` or `phone` past the guards above.
+        //
+        // It is not a security boundary, and pretending otherwise would be
+        // worse than saying so: points are already client-mintable on your own
+        // document, so this does not reduce anyone's security. It does mean a
+        // signed-in user can credit an account they control — which is exactly
+        // the forgery that already exists — and can push a notification into
+        // someone else's inbox. Moving the ledger server-side is what removes
+        // both; see "Still to do" in the header.
+        || (signedIn()
+          && changedOnly(['points', 'updatedAt'])
+          && request.resource.data.points is int
+          && request.resource.data.points > resource.data.points);
       allow delete: if isSelf(uid);
 
-      /// Subcollections of a profile: `list` (the user's contacts),
-      /// `points_transactions` and `notifications`.
+      /// The user's points ledger.
       ///
-      /// Deliberately wider than the parent document: transferring points or
-      /// sending a gift writes a transaction into the *recipient's*
-      /// subcollection, so the writer is by definition not the owner. Locking
-      /// this to `isSelf` would break gifting. Narrowing it means restricting by
-      /// recipient, which needs the points model.
-      ///
-      /// ⚠️ The `{sub}` segment is load-bearing — do not simplify this back to
-      ///     match /users/{uid}/{document=**} { allow read, write: if signedIn(); }
-      ///
-      /// A recursive wildcard matches **zero or more** segments, so that
-      /// spelling also matches `/users/{uid}` ITSELF. Rules are OR'd, so the
-      /// permissive branch would win and re-open the parent profile to every
-      /// signed-in user — making the `isSelf` check and `noPasswordMaterial()`
-      /// above dead code. Confirmed against the emulator on 2026-10-03: with the
-      /// `{document=**}` spelling, a write of `{passwordHash: …}` to *another*
-      /// user's profile returned 200. Requiring a real segment fixes it.
-      match /{sub}/{doc=**} {
-        allow read, write: if signedIn();
+      /// Readable by the owner only. The old `{sub}` wildcard left this open to
+      /// every signed-in user, which meant anyone could read anyone's spend
+      /// history — who they gifted, how much, and when.
+      match /points_transactions/{txId} {
+        allow read: if isSelf(uid);
+        // A gift writes a row into the *recipient's* ledger, so the create has
+        // to accept a writer who is not the owner. See the inbound-gift note on
+        // the parent document; the same reasoning and the same caveat apply.
+        allow create: if isSelf(uid) || signedIn();
+        // Rows are append-only. An editable ledger is not a ledger.
+        allow update, delete: if false;
+      }
+
+      /// The user's in-app notifications.
+      match /notifications/{noteId} {
+        allow read: if isSelf(uid);
+        allow create: if isSelf(uid) || signedIn();
+        // The recipient marks their own as read — `markNotificationsRead`.
+        allow update: if isSelf(uid);
+        allow delete: if isSelf(uid);
       }
     }
 
@@ -232,68 +371,359 @@ service cloud.firestore {
     }
 
     // ======================================================================
-    // App data
-    //
-    // Pinned at the console rules' permissiveness so deploying this file cannot
-    // break a feature. Tightening these is the next piece of work — see the
-    // header.
+    // Conversations
     // ======================================================================
 
-    // Each block splits the document from its subcollections so the
-    // subcollection wildcard cannot match the document itself — see the
-    // `{sub}` note on `users` above. Behaviourally identical to the
-    // `{document=**}` spelling today, because both levels are `signedIn()`;
-    // it matters the moment one of these is tightened.
+    /// A 1:1 or group conversation.
+    ///
+    /// The participant list is the whole access model. It is an array, and the
+    /// chat list query filters on it
+    /// (`where('participants', arrayContains: uid)`), which is what makes the
+    /// field-based read rule *provable* for that query — a rule that read some
+    /// other document would not be.
+    match /chats/{chatId} {
+      allow read: if signedIn() && uid() in resource.data.participants;
 
-    match /chats/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+      // `ensureChat` and `sendMessage` both write the participant list with a
+      // merge, so on a conversation that does not exist yet this is a create.
+      // The caller has to be in the list it is writing: a document that names
+      // two other people is not a conversation you are in.
+      allow create: if signedIn()
+        && request.resource.data.participants is list
+        && uid() in request.resource.data.participants;
+
+      // The new list must still contain everyone who was in the old one.
+      //
+      // Without this, a participant could rewrite `participants` to `[self]`
+      // and evict the other person from their own conversation — and because
+      // the read rule keys off the same field, the eviction would be silent and
+      // complete. Growing the list is still allowed (that is how a group gains
+      // a member); shrinking it is not.
+      allow update: if signedIn()
+        && uid() in resource.data.participants
+        && uid() in request.resource.data.participants
+        && request.resource.data.participants.hasAll(
+             resource.data.participants);
+
+      allow delete: if signedIn() && uid() in resource.data.participants;
+
+      /// The messages themselves.
+      ///
+      /// The message documents carry no participant list — that would be a copy
+      /// of the parent's, and a copy is a thing that can disagree with the
+      /// original. Membership is read from the parent instead, via
+      /// `isChatMember`. A `get()`-based condition is independent of the
+      /// document being evaluated, so it is provable for the unfiltered
+      /// `orderBy('timestamp')` listener the chat screen opens, and for
+      /// `markChatRead`'s `senderId != me && status != read` query.
+      match /messages/{messageId} {
+        allow read: if isChatMember(chatId);
+
+        // You may only send as yourself. Without this a participant could
+        // forge a message from the other person.
+        allow create: if isChatMember(chatId)
+          && request.resource.data.senderId == uid();
+
+        // Two writers touch a message after it exists, and they may touch
+        // different things:
+        //
+        //   * the author retracts it — `retractMessage` rewrites the body to
+        //     empty and sets `deleted`. Emptied rather than deleted, because a
+        //     vanished document is indistinguishable from one that never
+        //     arrived, and the recipient's cached bubble would simply stay.
+        //   * the recipient advances the delivery state — `updateMessageStatus`
+        //     and `markChatRead` write `status`/`deliveredAt`/`readAt`.
+        //
+        // Neither may write the other's fields, so a recipient cannot rewrite
+        // the text of a message they received, and an author cannot forge a
+        // read receipt.
+        allow update: if isChatMember(chatId)
+          && (
+               (resource.data.senderId == uid()
+                 && changedOnly([
+                      'senderId', 'deleted', 'text', 'e2ee', 'mediaUrl',
+                      'durationMs', 'replyTo', 'deletedAt',
+                    ]))
+            || (resource.data.senderId != uid()
+                 && changedOnly(['status', 'deliveredAt', 'readAt']))
+             );
+
+        allow delete: if isChatMember(chatId)
+          && resource.data.senderId == uid();
+      }
     }
 
-    match /calls/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    // ======================================================================
+    // Calls
+    // ======================================================================
+
+    /// One call's signalling document: the offer, the answer, the ICE
+    /// candidates and the status.
+    ///
+    /// `watchIncoming` opens a **list** query
+    /// (`where('receiverId', '==', uid).where('status', '==', 'ringing')`), so
+    /// the read grant is written as two `allow read` statements, one per role,
+    /// rather than as one statement containing `||`.
+    ///
+    /// ⚠️ Both spellings were tried against the emulator, and **both work** —
+    /// Firestore does decompose a disjunction and prove the branch the query's
+    /// filters imply. An earlier version of this comment asserted the opposite
+    /// ("a disjunction inside a single expression is the shape it cannot
+    /// prove"), which was a guess that had never been run. The split is kept
+    /// because it is the form the full assertion suite was run against, and
+    /// because one `allow` per role cannot be half-right.
+    match /calls/{callId} {
+      allow read: if signedIn() && uid() == resource.data.callerId;
+      allow read: if signedIn() && uid() == resource.data.receiverId;
+
+      allow create: if signedIn()
+        && request.resource.data.callerId == uid()
+        // Both spellings of the callee are written by `createCall` and read by
+        // different screens; a document that disagreed with itself would ring
+        // on one device and not the other.
+        && request.resource.data.receiverId == request.resource.data.calleeId;
+
+      allow update: if signedIn()
+        && (uid() == resource.data.callerId
+            || uid() == resource.data.receiverId)
+        // Neither party may hand the call to someone else: the read rule keys
+        // off these two fields, so rewriting them would move the call out of
+        // its own access model.
+        && request.resource.data.callerId == resource.data.callerId
+        && request.resource.data.receiverId == resource.data.receiverId;
     }
 
-    match /status/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    // ======================================================================
+    // Status updates
+    // ======================================================================
+
+    /// A 24-hour status post.
+    ///
+    /// Read stays open to any signed-in user, and that is a deliberate call
+    /// rather than an oversight. The app has no follow graph for statuses —
+    /// `watchStatuses` is handed the uids of the *viewer's contacts* by the
+    /// caller and filters with `where('userId', whereIn: …)`, so the audience is
+    /// chosen on the client. A rule cannot see that list, and inventing one
+    /// would either deny the feature or be a fiction. What a rule *can* do is
+    /// stop the write side, which is the part that was actually exploitable:
+    /// anyone could previously publish a status under someone else's name.
+    match /status/{statusId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.userId == uid();
+      allow update: if signedIn() && resource.data.userId == uid();
+      allow delete: if signedIn() && resource.data.userId == uid();
     }
 
-    match /contacts/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    // ======================================================================
+    // Contacts
+    // ======================================================================
+
+    /// A user's mirrored address book: `contacts/{ownerUid}/list/{contactId}`.
+    ///
+    /// The parent document is never written — mirroring a contact writes
+    /// straight into the subcollection, and Firestore does not create parents
+    /// implicitly — so the parent rule exists only to close the path.
+    ///
+    /// Previously every signed-in user could read every user's contact list:
+    /// a full social graph, with phone numbers, for the cost of one query.
+    match /contacts/{ownerUid} {
+      allow read, write: if isSelf(ownerUid);
+
+      match /list/{contactId} {
+        allow read, write: if isSelf(ownerUid);
+      }
     }
 
-    match /channels/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    // ======================================================================
+    // Channels
+    // ======================================================================
+
+    /// A broadcast channel.
+    ///
+    /// Four separate `allow read` statements, one per audience.
+    ///
+    /// The split is what makes `watchPendingMonetization` work: it opens an
+    /// unfiltered list query over this collection, and the only statement that
+    /// can be proved for it is the one that does not look at the document —
+    /// `isAdmin()`. A public channel's read is a field-based condition, so a
+    /// hypothetical "browse public channels" query would be provable too.
+    match /channels/{channelId} {
+      allow read: if isAdmin();
+      allow read: if signedIn() && resource.data.isPublic == true;
+      allow read: if isChannelOwner(channelId);
+      allow read: if isChannelFollower(channelId);
+
+      allow create: if signedIn()
+        && request.resource.data.ownerId == uid();
+
+      // The owner edits the channel. Everyone else may only move the two
+      // denormalised counters — `setFollowing` writes `followerCount` and
+      // `reactToPost` writes `totalReactions` — and only by one step.
+      //
+      // The three branches are split by direction on purpose, and the split is
+      // load-bearing. A rule's `exists()` sees the state **before** the batch,
+      // and the first follow writes the follower edge and this counter update
+      // in the same batch — so a branch that required `isChannelFollower()`
+      // here would deny the very first follow, with the symptom being a
+      // channel that cannot be followed at all.
+      //
+      // What that leaves open is the *upward* step for anyone: a signed-in
+      // user may add one to a channel's `followerCount` or `totalReactions`.
+      // Bounded, non-destructive, and not worth a server round trip to close.
+      // What it closes is the shape that was actually wrong: a write that
+      // moves no counter at all — which `changedOnly` alone would have
+      // accepted, because an empty `affectedKeys()` satisfies `hasOnly` — and
+      // a write that only re-stamps `lastUpdateAt` to push a channel back to
+      // the top of a list.
+      allow update: if (signedIn() && resource.data.ownerId == uid())
+        // The follow / react path. The edge may not exist yet.
+        || (signedIn()
+            && changedOnly(['followerCount', 'totalReactions', 'lastUpdateAt'])
+            && (stepUp('followerCount') || stepUp('totalReactions'))
+            && stepOk('followerCount')
+            && stepOk('totalReactions'))
+        // The unfollow / un-react path, where the edge does already exist.
+        || (isChannelFollower(channelId)
+            && changedOnly(['followerCount', 'totalReactions', 'lastUpdateAt'])
+            && (stepDown('followerCount') || stepDown('totalReactions'))
+            && stepOk('followerCount')
+            && stepOk('totalReactions'));
+
+      allow delete: if signedIn() && resource.data.ownerId == uid();
+
+      /// The follower edge, `followers/{uid}`.
+      ///
+      /// This is both the membership test and the join approval: `setFollowing`
+      /// writes your own edge, and `approveJoin` writes the edge of the person
+      /// the owner just admitted.
+      match /followers/{memberUid} {
+        allow read: if isSelf(memberUid) || isChannelOwner(channelId);
+        allow write: if isSelf(memberUid) || isChannelOwner(channelId);
+      }
+
+      /// Posts, and the reactions hanging off them.
+      match /posts/{postId} {
+        allow read: if isAdmin()
+          || (signedIn() && channel(channelId).isPublic == true)
+          || isChannelOwner(channelId)
+          || isChannelFollower(channelId);
+
+        // Publishing is an owner action. `authorId` is pinned to the caller so
+        // a post cannot be attributed to someone else.
+        allow create: if isChannelOwner(channelId)
+          && request.resource.data.authorId == uid();
+
+        // Two non-owner writers, and only for counters:
+        //
+        //   * `recordPostView` bumps `viewCount`;
+        //   * `reactToPost` bumps `reactions.<kind>` and the channel's
+        //     `totalReactions`.
+        //
+        // The guard is a blocklist rather than an allowlist, because the
+        // reaction update addresses `reactions.like` and the exact shape
+        // `affectedKeys()` reports for a dotted path is not worth betting the
+        // feature on. Pinning the authored fields is enough: whatever else a
+        // reader writes, the post still says what its author said.
+        allow update: if isChannelOwner(channelId)
+          || (signedIn()
+              && channel(channelId).isPublic == true
+              && request.resource.data.text == resource.data.text
+              && request.resource.data.authorId == resource.data.authorId
+              && request.resource.data.mediaUrl == resource.data.mediaUrl
+              && request.resource.data.mediaType == resource.data.mediaType
+              && request.resource.data.channelId == resource.data.channelId
+              && request.resource.data.createdAt == resource.data.createdAt)
+          || (isChannelFollower(channelId)
+              && request.resource.data.text == resource.data.text
+              && request.resource.data.authorId == resource.data.authorId
+              && request.resource.data.mediaUrl == resource.data.mediaUrl
+              && request.resource.data.mediaType == resource.data.mediaType
+              && request.resource.data.channelId == resource.data.channelId
+              && request.resource.data.createdAt == resource.data.createdAt);
+
+        allow delete: if isChannelOwner(channelId);
+
+        /// One reaction per user per post, keyed by the reactor's uid.
+        ///
+        /// The read half of this is also granted by the root-anchored rule at
+        /// the bottom of this file, which the collection-group query needs.
+        /// Rules are OR'd, so this block narrows nothing about reads — it is
+        /// here for the write, which the root-anchored rule deliberately does
+        /// not grant.
+        match /reactions/{reactorUid} {
+          allow write: if isSelf(reactorUid)
+            && (isChannelOwner(channelId) || isChannelFollower(channelId)
+                || channel(channelId).isPublic == true);
+        }
+      }
+
+      /// Pending requests to join a private channel.
+      ///
+      /// Readable by the owner (it is their inbox) and by the requester (so a
+      /// screen can show "request pending"). Previously readable by everyone,
+      /// which leaked both the membership of a private channel and the message
+      /// each applicant wrote.
+      match /join_requests/{requesterUid} {
+        allow read: if isSelf(requesterUid) || isChannelOwner(channelId);
+        allow create, update: if isSelf(requesterUid);
+        // The owner rejects or approves by deleting the request; the requester
+        // may withdraw their own.
+        allow delete: if isSelf(requesterUid) || isChannelOwner(channelId);
+      }
+
+      /// Per-day analytics buckets, `analytics/{yyyy-MM-dd}`.
+      ///
+      /// The owner's private dashboard. Followers write to it indirectly —
+      /// `bumpAnalytics` runs on follow, reaction and view — so the write is
+      /// open to anyone who can read the channel, and the read is not.
+      match /analytics/{dayKey} {
+        allow read: if isChannelOwner(channelId);
+        allow write: if isAdmin()
+          || isChannelOwner(channelId)
+          || (signedIn() && channel(channelId).isPublic == true)
+          || isChannelFollower(channelId);
+      }
     }
 
-    match /channel_usernames/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    /// Channel handle → channel id, for @handle lookup.
+    ///
+    /// Write access is derived from the channel the handle points at, not from
+    /// the handle itself: a claim is legitimate exactly when the claimant owns
+    /// the channel it names. `createChannel` and `updateChannel` both check
+    /// availability first, but a check-then-write is a race, and this is the
+    /// part that does not race.
+    match /channel_usernames/{handle} {
+      allow read: if signedIn();
+      allow create, update: if isChannelOwner(request.resource.data.channelId);
+      allow delete: if isChannelOwner(resource.data.channelId);
     }
 
-    match /channel_keys/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
+    /// Digest of a channel's secret key → channel id.
+    ///
+    /// `get` is the feature: typing the secret key hashes it, and the digest is
+    /// the only address under which the mapping can be fetched. Knowing the
+    /// digest *is* knowing the key, so being able to read one document by id
+    /// grants nothing that the key did not already grant.
+    ///
+    /// `list` is not granted, and that is the point: enumerating the collection
+    /// would hand out every digest, and a digest of a short human-typed key is
+    /// worth brute-forcing offline. There is no `allow list` statement, so
+    /// Firestore's default denies it.
+    match /channel_keys/{digest} {
+      allow get: if signedIn();
+      allow create: if isChannelOwner(request.resource.data.channelId);
+      // No client ever re-keys or removes a digest. A rotated key would be a
+      // second document, not an edit to this one.
+      allow update, delete: if false;
     }
 
-    match /points_transactions/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
-    }
+    // ======================================================================
+    // Premium
+    // ======================================================================
 
-    match /notifications/{id} {
-      allow read, write: if signedIn();
-      match /{sub}/{doc=**} { allow read, write: if signedIn(); }
-    }
-
-    // ---------------------------------------------------------- premium
     /// A manual premium payment awaiting confirmation.
     ///
-    /// Tighter than the blocks above, because this is money. The shape is:
+    /// Tighter than everything above, because this is money. The shape is:
     ///
     ///   * a user may create a request **for themselves only**, and only with
     ///     `status: 'pending'` — the client cannot self-approve;
@@ -322,17 +752,24 @@ service cloud.firestore {
     /// filtered by `uid` — one listener for a 50-post feed instead of fifty.
     ///
     /// ⚠️ A collection-group query spans parents, so a rule scoped to one parent
-    /// (`channels/{id}/{sub}/{doc=**}`) matches these very documents but is NOT
-    /// provable for the query: Firestore rejects the whole thing with
-    /// "No matching allow statements". Verified against the emulator on
-    /// 2026-10-03 — without this block the reaction state in the channel feed
-    /// silently stops loading.
+    /// (`channels/{id}/posts/{post}/reactions/{uid}`) matches these very
+    /// documents but is NOT provable for the query: Firestore rejects the whole
+    /// thing with "No matching allow statements". Verified against the emulator
+    /// on 2026-10-03 — without this block the reaction state in the channel
+    /// feed silently stops loading.
     ///
     /// So the rule has to be anchored at the root. This is not a widening in
     /// practice: `reactions` only ever exists under `channels/{id}/posts/`, and
-    /// the grant is the same `signedIn()` the `channels` block already gives.
-    /// `read` alone is enough — reaction writes go through the `channels` block
-    /// (`postRef.collection('reactions').doc(uid)`).
+    /// the document holds a uid and a reaction kind — no post text, no private
+    /// channel name. `read` alone is enough; reaction writes go through the
+    /// `channels` block (`postRef.collection('reactions').doc(uid)`).
+    ///
+    /// ⚠️ `{path=**}` matches **zero or more** segments, which is exactly what
+    /// is wanted here — the documents really are at varying depth under
+    /// different parents — but it is also why this spelling must never be used
+    /// to guard a *document* path. See the `{sub}` note in the git history of
+    /// this file: `match /users/{uid}/{document=**}` also matched `/users/{uid}`
+    /// itself and re-opened the profile, making `isSelf` dead code.
     match /{path=**}/reactions/{reactionId} {
       allow read: if signedIn();
     }
@@ -340,5 +777,11 @@ service cloud.firestore {
     // Anything not listed above falls through to here, and Firestore's default
     // is deny. Keep it that way: an explicit `allow` on `{document=**}` would
     // re-open the whole database, which is the state this file exists to end.
+    //
+    // The dead top-level `points_transactions` and `notifications` blocks that
+    // used to sit here are gone for exactly that reason. Nothing ever wrote to
+    // those paths — both collections live under `users/{uid}/` — so the blocks
+    // granted access to collections that do not exist, and would have granted
+    // it to anyone who created them.
   }
 }
