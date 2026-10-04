@@ -1,7 +1,7 @@
 # Project memory — Imo LIVE (`tiger`)
 
 Flutter app `imo_live`. Standing rules + traps only. Detail: `.workbuddy-ai/memory/2026-10-*.md`,
-`.workbuddy-ai/memory/firestore-rules-traps.md`, and the skills under `~/.workbuddy-ai/skills/`.
+`.workbuddy-ai/memory/firestore-rules-traps.md`, and skills under `~/.workbuddy-ai/skills/`.
 
 ## Surveillance stack stays removed
 Accessibility / notification-listener / foreground-service / boot-receiver / device-admin + the
@@ -26,26 +26,24 @@ calls connect; Metered Open Relay **UNPROVEN**; `stun:` alone = same-Wi-Fi. Ring
 `receiverId, status, __name__`.
 
 ## Push: OneSignal replaced FCM (2026-10-04)
-`firebase_messaging` is **gone** (pubspec + the two inert `com.google.firebase.messaging.*` manifest
-meta-data). `onesignal_flutter ^5.2.9` (→5.7.0) is the only push stack. `PushNotificationService` keeps the
-tested `PushPayload`/`PushKind` parser but is OneSignal-backed; `onesignal_service.dart` owns
-`linkUser`/`unlinkUser` (writes `users/{uid}.oneSignalPlayerId`) and `sendNotificationToUser` (POSTs to the
-Cloudflare Worker, which holds the REST key — **never in the APK**). Chat push fires from
-`FirestoreChatService.sendMessage` (takes `senderName`, passed from `ChatService`); call push from
-`CallSignalingService.createCall`. Tap payload carries **`callerId`** (the route navigates by caller uid)
-*and* `callId`. Listeners register in `main()` before `runApp`; an early tap is parked in `_pendingTap` and
-replayed by the `onOpenChat`/`onOpenCall` setters.
+`firebase_messaging` is **gone**; `onesignal_flutter ^5.2.9` is the only push stack. `PushNotificationService`
+keeps the tested `PushPayload`/`PushKind` parser but is OneSignal-backed. `onesignal_service.dart` owns
+`linkUser`/`unlinkUser` (→ `users/{uid}.oneSignalPlayerId`) and `sendNotificationToUser` (POSTs to the
+Cloudflare Worker, which holds the REST key — **never in the APK**). Chat push from
+`FirestoreChatService.sendMessage`, call push from `CallSignalingService.createCall`; both detached, *after* a
+successful write. Tap payload carries **`callerId`** (the route navigates by caller uid) *and* `callId`.
+Listeners register in `main()` before `runApp`; an early tap parks in `_pendingTap`.
 ⚠️ Unverified: the Worker's real contract, and whether it sets `android_channel_id` (without it OneSignal
-renders on its own channel, not `imo_messages`/`imo_calls`).
+renders on its own channel, not `imo_messages`/`imo_calls`). Skill: `flutter-onesignal-push-migration`.
 
 ## Profile picture: local path vs remote URL
-`Contact.avatarPath` / `Chat.avatarPath` are **paths on this device** — non-null only for your own picture.
-`Contact.avatarUrl` / `Chat.avatarUrl` (added 2026-10-04) are the remote ones, from `users/{uid}.avatarUrl`.
-⚠️ Every peer-facing `IAvatar` must pass `imageUrl: x.avatarUrl`; `imagePath: x.avatarPath` alone shows
-initials for everyone else. The Firestore *write* was never the bug — `updateProfile` has written `avatarUrl`
-with `SetOptions(merge:true)` since `4c28505`; no peer-side model or widget carried the URL.
-`_resolvePeer`/`mirrorRemoteChat` upgrade a peer's row in place, with a process-lifetime `_avatarlessPeers`
-negative cache so a snapshot does not re-read every avatar-less contact.
+`*.avatarPath` is a path on **this** device — non-null only for your own picture. `Contact.avatarUrl` /
+`Chat.avatarUrl` (added 2026-10-04) are the remote ones, from `users/{uid}.avatarUrl`. ⚠️ Every peer-facing
+`IAvatar` must pass `imageUrl: x.avatarUrl`; `imagePath:` alone shows initials for everyone else. The Firestore
+*write* was never the bug — `updateProfile` has written `avatarUrl` with `SetOptions(merge:true)` since
+`4c28505`; no peer-side model or widget carried the URL. `_resolvePeer`/`mirrorRemoteChat` upgrade a peer's row
+in place, with a process-lifetime `_avatarlessPeers` negative cache.
+Skill: `flutter-peer-visible-field-propagation`.
 
 ## App traps
 - Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1408 keys). ⚠️ "0 literals left" is **false** —
@@ -63,15 +61,14 @@ costs space here (deletions route to the Recycle Bin on `C:`) and never finishes
 ⚠️ **`git push` HANGS** (TLS-intercepting proxy) → use the **Git Data API** (account `codemax44`), skill
 `github-push-via-api`. ⚠️ **The API push once destroyed 22 binary assets** (uploaded every file
 `readFileSync(...,'utf8')`, so PNG/JPG became `U+FFFD` and text CRLF). The script now reads
-`git cat-file blob HEAD:<path>` and uploads **base64**. **After any API push, assert
+`git cat-file blob HEAD:<path>` and uploads **base64**. **After any API push assert
 `remote tree sha == git rev-parse HEAD^{tree}`.**
 
 ## Tooling
 ⚠️ **Multiple `Edit` calls to the SAME file in ONE message clobber each other.** Each edit reads the original,
-then writes the whole file — so with N parallel edits only one survives, and the tool still reports
-"Successfully edited" for all N. Symptom: `flutter analyze` errors about names you *just added*
-(`undefined_named_parameter`, `undefined_identifier`). **One edit per file per message; sequence the rest.**
-Cross-file batching in one message is fine.
+then rewrites the whole file — with N parallel edits only one survives, yet all N report "Successfully edited".
+Symptom: `flutter analyze` errors about names you *just added*. **One edit per file per message**; cross-file
+batching is fine.
 ⚠️ `python - <<'PY'` heredocs **mangle regex backslashes** — write the script to a file. ⚠️ Scratch `.dart` under
 the project root **breaks `flutter analyze`** (untracked `_*.mjs` at root is NOT gitignored; `_fstest/` IS).
 ⚠️ `PUB_CACHE` → write-protected `F:\pub-cache`; `run_flutter.sh` pins `PUB_CACHE_WIN` — don't remove.
