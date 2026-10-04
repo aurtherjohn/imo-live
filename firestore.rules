@@ -59,10 +59,13 @@ rules_version = '2';
 //
 // Every rule here was exercised against the Firestore emulator before being
 // committed, in **both** directions: the write the app actually makes must be
-// allowed, and a plausible abuse of the same path must be denied. 124
-// assertions, all passing. Rules are OR'd and a query is only allowed when
-// some `allow` statement is *provable* for it, so reading this file proves
-// nothing — the harness drives the real rules engine with real ID tokens.
+// allowed, and a plausible abuse of the same path must be denied. 142
+// assertions, all passing, covering every block in this file — including
+// `premium_requests`, `usernames`, `phones` and `emails`, which shipped on
+// 2026-10-03 and had no assertions at all until this pass. Rules are OR'd and a
+// query is only allowed when some `allow` statement is *provable* for it, so
+// reading this file proves nothing — the harness drives the real rules engine
+// with real ID tokens.
 //
 // Two things that check found and that reading the file did not:
 //
@@ -93,8 +96,38 @@ rules_version = '2';
 //
 // `firebase.json` in this repo points at this file. Deployment is
 //   firebase deploy --only firestore:rules
-// and it is NOT part of the Android build — writing this file changes nothing
+// and it is NOT part of the Android build — editing this file changes nothing
 // until that command is run.
+//
+// ### Deployment record
+//
+//   first released 2026-10-04
+//
+// ⚠️ Nothing mutable is recorded here on purpose — no ruleset id, no redeploy
+// list. A ruleset id changes on every deploy, including a comment-only one, and
+// a list of timestamps is stale the moment it is written. Both would look
+// authoritative and be wrong, which is the failure this pass exists to remove.
+// The authoritative answer is the read-back below; anything written here is a
+// summary of git history at best.
+//
+// ⚠️ This file is the source of truth, but "the deploy printed Deploy complete"
+// is not the same claim as "this is what is serving". Read it back:
+//
+//   GET firebaserules.googleapis.com/v1/projects/{p}/releases/cloud.firestore
+//     -> rulesetName
+//   GET firebaserules.googleapis.com/v1/{rulesetName}
+//     -> source.files[0].content
+//
+// ⚠️ The rules are NOT in the Firestore Admin API.
+// `firestore.googleapis.com/v1/projects/{p}/databases/{d}/securityRules`
+// returns a Google 404 HTML page — which reads like a permissions problem and
+// is actually the wrong service. `_fstest/verify_deployed_rules.py` does the
+// read-back and diffs it against this file.
+//
+// Rollback is the previous file, not a console edit:
+//   git show bca08ea:firestore.rules > firestore.rules
+//   firebase deploy --only firestore:rules
+// (`bca08ea` is the last commit carrying the 2026-10-03 ruleset.)
 
 service cloud.firestore {
   match /databases/{database}/documents {
