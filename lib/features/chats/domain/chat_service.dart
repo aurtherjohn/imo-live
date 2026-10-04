@@ -526,29 +526,7 @@ Message _toLocal(RemoteMessage remote, String uid) {
   final bool outgoing = remote.senderId == uid && uid.isNotEmpty;
   final MessageType type = _typeFromName(remote.type);
 
-  // A retracted message is rebuilt as the *same tombstone* `deleteForEveryone`
-  // writes locally: empty body, text type, no attachment. Deriving it here
-  // rather than trusting the remote `type` matters — the author cleared the
-  // media URL but not the type, so a withdrawn photo would otherwise arrive as
-  // an image bubble with nothing to render.
-  if (remote.deleted) {
-    return Message(
-      id: remote.id,
-      chatId: remote.chatId,
-      senderId: remote.senderId,
-      senderName: '',
-      content: '',
-      timestamp: remote.timestamp ?? DateTime.now(),
-      direction:
-          outgoing ? MessageDirection.outgoing : MessageDirection.incoming,
-      type: MessageType.text,
-      status: _statusFromName(remote.status),
-      isDeleted: true,
-      localOnly: false,
-    );
-  }
-
-  return Message(
+  final Message message = Message(
     id: remote.id,
     chatId: remote.chatId,
     senderId: remote.senderId,
@@ -561,6 +539,14 @@ Message _toLocal(RemoteMessage remote, String uid) {
     attachment: _attachmentFromRemote(remote, type),
     localOnly: false,
   );
+
+  // A retracted message is the *same tombstone* `deleteForEveryone` writes
+  // locally — `Message.retracted` is the single definition of that shape, so
+  // the two cannot drift apart. Going through it rather than trusting the
+  // remote `type` matters: the author clears the media URL but not the type, so
+  // a withdrawn photo would otherwise arrive as an image bubble with nothing to
+  // render.
+  return remote.deleted ? message.retracted() : message;
 }
 
 /// Rebuilds the media descriptor for an incoming message.

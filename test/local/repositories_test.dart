@@ -388,6 +388,134 @@ void main() {
       test('reports failure for an unknown id instead of throwing', () async {
         expect(await messages.deleteForEveryone('does-not-exist'), isFalse);
       });
+
+      test('a retracted poll does not keep its payload', () async {
+        // `copyWith` cannot clear a field — every parameter is `x ?? this.x`,
+        // so `copyWith(poll: null)` silently *keeps* the poll. The obvious
+        // implementation therefore leaves the question, the options and the
+        // voters in storage on a bubble that reads "This message was deleted".
+        await messages.save(
+          Message(
+            id: 'w4',
+            chatId: 'chat_a',
+            senderId: 'self',
+            senderName: 'You',
+            direction: MessageDirection.outgoing,
+            type: MessageType.poll,
+            content: 'Tea or coffee?',
+            status: MessageStatus.sent,
+            timestamp: DateTime.now(),
+            poll: const Poll(
+              question: 'Tea or coffee?',
+              options: <PollOption>[
+                PollOption(id: 'o1', text: 'Tea', voterIds: <String>['self']),
+                PollOption(id: 'o2', text: 'Coffee'),
+              ],
+            ),
+          ),
+        );
+
+        expect(await messages.deleteForEveryone('w4'), isTrue);
+
+        final Message after = (await messages.findById('w4'))!;
+        expect(after.isDeleted, isTrue);
+        expect(after.poll, isNull, reason: 'the poll payload must be gone');
+        expect(after.type, MessageType.text);
+        expect(after.attachment, isNull);
+      });
+    });
+
+    // --- an upsert must not clear local-only state -----------------------
+    //
+    // `chatMirrorProvider` re-saves *every* message Firestore reports, on
+    // *every* snapshot, and the remote model carries no star, pin or reaction.
+    // A plain upsert therefore wipes them — silently, on the next incoming
+    // message. `Message` documents these fields as local-first; the guard has
+    // to live at the write, because that is the only place that can see both
+    // the incoming row and the one it is replacing.
+    group('local-only state survives an upsert', () {
+      test('a star, a pin and a reaction are not cleared', () async {
+        await messages.save(buildMessage('s1', 'chat_a', 'star me'));
+        await messages.toggleStar('s1');
+        await messages.togglePin('s1');
+        await messages.addReaction(
+          's1',
+          const MessageReaction(
+            emoji: '👍',
+            senderId: 'self',
+            senderName: 'You',
+          ),
+        );
+
+        // Exactly what the mirror writes: same id, no local-only fields.
+        await messages.save(buildMessage('s1', 'chat_a', 'star me'));
+
+        final Message after = (await messages.findById('s1'))!;
+        expect(after.isStarred, isTrue, reason: 'the star is local-only');
+        expect(after.isPinned, isTrue, reason: 'the pin is local-only');
+        expect(after.reactions, hasLength(1));
+        expect(after.reactions.single.emoji, '👍');
+      });
+
+      test('a local retraction is not undone by a later snapshot', () async {
+        // The sender retracts; the remote tombstone is pushed detached, so a
+        // snapshot of the *pre*-retraction document can land first. A
+        // retraction is final, so the local flag has to win.
+        await messages.save(
+          Message(
+            id: 's2',
+            chatId: 'chat_a',
+            senderId: 'self',
+            senderName: 'You',
+            direction: MessageDirection.outgoing,
+            type: MessageType.text,
+            content: 'regret this',
+            status: MessageStatus.sent,
+            timestamp: DateTime.now(),
+          ),
+        );
+        expect(await messages.deleteForEveryone('s2'), isTrue);
+
+        // The stale remote copy arrives, still carrying its body.
+        await messages.save(buildMessage('s2', 'chat_a', 'regret this'));
+
+        final Message after = (await messages.findById('s2'))!;
+        expect(after.isDeleted, isTrue);
+        expect(after.content, isEmpty);
+      });
+
+      test('the remote body still wins for everything else', () async {
+        // The guard must not freeze the row: a copy that changed on another
+        // device still replaces the content.
+        await messages.save(buildMessage('s3', 'chat_a', 'original'));
+        await messages.save(buildMessage('s3', 'chat_a', 'edited elsewhere'));
+
+        expect(
+          (await messages.findById('s3'))!.content,
+          'edited elsewhere',
+        );
+      });
+
+      test('a reply preview is not cleared', () async {
+        // The receive path cannot rebuild a preview — the wire carries only the
+        // id a message replies to — so an upsert that overwrote it would leave
+        // every quoted message in the conversation with an empty quote.
+        await messages.save(
+          buildMessage('s4', 'chat_a', 'the reply').copyWith(
+            replyTo: const ReplyPreview(
+              messageId: 'earlier',
+              senderName: 'Ada',
+              preview: 'the original',
+            ),
+          ),
+        );
+
+        await messages.save(buildMessage('s4', 'chat_a', 'the reply'));
+
+        final Message after = (await messages.findById('s4'))!;
+        expect(after.replyTo?.messageId, 'earlier');
+        expect(after.replyTo?.senderName, 'Ada');
+      });
     });
 
     // --- delete for me: local by construction ----------------------------

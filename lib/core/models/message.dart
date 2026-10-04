@@ -100,6 +100,39 @@ class Message {
   /// [canDeleteForEveryoneAt] against the current clock.
   bool get canDeleteForEveryone => canDeleteForEveryoneAt(DateTime.now());
 
+  /// The retracted form of this message: identity and ordering survive, the
+  /// content does not.
+  ///
+  /// This is the **single** definition of what a tombstone looks like. It is
+  /// used by the local retraction, by the receive path when a tombstone arrives
+  /// from Firestore, and by the upsert that protects a retraction from a stale
+  /// snapshot — so those three cannot drift apart.
+  ///
+  /// ⚠️ Built by construction rather than with [copyWith], deliberately.
+  /// `copyWith` cannot clear a field — every parameter is `x ?? this.x` — so
+  /// `copyWith(poll: null)` silently *keeps* the poll. A retracted poll would
+  /// then still hold its question, its options and its voters, on a message
+  /// whose bubble reads "This message was deleted".
+  Message retracted() => Message(
+        id: id,
+        chatId: chatId,
+        senderId: senderId,
+        senderName: senderName,
+        content: '',
+        timestamp: timestamp,
+        direction: direction,
+        type: MessageType.text,
+        status: status,
+        isDeleted: true,
+        // Kept so a merge that preserves them cannot resurrect the body, and
+        // harmless visually: `getStarred`/`getPinned` both skip deleted rows.
+        isStarred: isStarred,
+        isPinned: isPinned,
+        localOnly: localOnly,
+        deliveredAt: deliveredAt,
+        readAt: readAt,
+      );
+
   /// Text shown in chat-list previews and reply previews.
   String get previewText {
     if (isDeleted) return 'This message was deleted';

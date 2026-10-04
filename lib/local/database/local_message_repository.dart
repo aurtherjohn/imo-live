@@ -163,6 +163,44 @@ class LocalMessageRepository implements MessageRepository {
     return ids.toList();
   }
 
+  /// Carries the fields that exist only on this device across an upsert.
+  ///
+  /// [save] is an upsert, and its main caller is the Firestore mirror, which
+  /// re-saves *every* message the backend reports on *every* snapshot. The
+  /// remote model carries no star, no pin and no reaction, and it cannot: those
+  /// are this device's state, not the conversation's. So a plain assignment
+  /// would let an absent value — a default `false`, an empty list — overwrite
+  /// the local truth, and a starred message would lose its star the next time
+  /// anything at all changed in the conversation.
+  ///
+  /// [Message.isDeleted] merges the other way: once either side says deleted, it
+  /// stays deleted. A retraction is final, and the remote tombstone is written
+  /// detached, so a snapshot of the pre-retraction document can legitimately
+  /// arrive first.
+  ///
+  /// Everything else comes from [incoming] — a body that changed on another
+  /// device must still win.
+  static Message _mergeLocalState(Message incoming, Message existing) {
+    final Message merged = incoming.copyWith(
+      isStarred: existing.isStarred,
+      isPinned: existing.isPinned,
+      reactions: existing.reactions,
+      // The receive path cannot rebuild a reply preview — the wire carries only
+      // the id it points at — so the stored preview is the only one that exists.
+      replyTo: existing.replyTo,
+      isDeleted: incoming.isDeleted || existing.isDeleted,
+      deliveredAt: existing.deliveredAt,
+      readAt: existing.readAt,
+    );
+    // A retracted message keeps the tombstone's *shape*, not merely its flag.
+    // Otherwise the incoming body is written into a row that is still flagged
+    // deleted: a tombstone with the original text still inside it, which is
+    // worse than either state on its own. A stale snapshot of the
+    // pre-retraction document is a normal way to get here — the remote
+    // tombstone is pushed detached, so it can legitimately land second.
+    return merged.isDeleted ? merged.retracted() : merged;
+  }
+
   @override
   Future<void> save(Message message) async {
     // ⚠️ The other half of "delete for me". This is the method the Firestore
@@ -178,7 +216,7 @@ class LocalMessageRepository implements MessageRepository {
       list.add(message);
       list.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     } else {
-      list[index] = message;
+      list[index] = _mergeLocalState(message, list[index]);
     }
     await _persist(message.chatId);
   }
@@ -196,7 +234,7 @@ class LocalMessageRepository implements MessageRepository {
       if (index == -1) {
         list.add(message);
       } else {
-        list[index] = message;
+        list[index] = _mergeLocalState(message, list[index]);
       }
       touched.add(message.chatId);
     }
@@ -299,18 +337,7 @@ class LocalMessageRepository implements MessageRepository {
     // would all bypass a UI-only rule. See `Message.canDeleteForEveryoneAt`.
     if (!existing.canDeleteForEveryone) return false;
 
-    final Message? updated = await _mutate(
-      id,
-      (m) => m.copyWith(
-        isDeleted: true,
-        content: '',
-        type: MessageType.text,
-        clearReply: false,
-        reactions: const <MessageReaction>[],
-        poll: null,
-        event: null,
-      ),
-    );
+    final Message? updated = await _mutate(id, (Message m) => m.retracted());
     return updated != null;
   }
 
