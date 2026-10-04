@@ -298,6 +298,7 @@ class PushNotificationService {
     ]);
 
     debugPrint('OneSignal foreground kind=${payload.kind} chat=${payload.chatId}');
+    _logChannel(event.notification);
 
     final NotificationService? local = _local;
     if (local == null) return;
@@ -327,7 +328,33 @@ class PushNotificationService {
   /// exactly how a call tap opens the wrong screen — or, when the payload has
   /// no `chatId` at all, does nothing.
   void _onClick(OSNotificationClickEvent event) {
+    _logChannel(event.notification);
     _dispatch(PushPayload.fromData(_dataOf(event.notification)));
+  }
+
+  /// Prints the Android notification channel this push was rendered on.
+  ///
+  /// OneSignal renders a *background* push itself, on the channel named by the
+  /// payload's `android_channel_id`. With no such field it falls back to its own
+  /// default channel, and the user can then no longer mute messages while keeping
+  /// calls audible — the app's own `imo_messages`/`imo_calls` channels would only
+  /// ever be used for the foreground case.
+  ///
+  /// That field is a top-level OneSignal parameter, so it never reaches
+  /// `additionalData`. `rawPayload` is the only place it is visible, and only on
+  /// a device. This is the one check that separates "the relay sets the channel"
+  /// from "it silently does not".
+  ///
+  /// Debug-only, and deliberately prints the channel and the key list rather than
+  /// the payload: the values include message text.
+  static void _logChannel(OSNotification notification) {
+    if (!kDebugMode) return;
+    final Map<String, dynamic>? raw = notification.rawPayload;
+    final Object? channel = raw?['android_channel_id'] ?? raw?['androidChannelId'];
+    debugPrint(
+      'OneSignal channel=${channel ?? 'ABSENT (OneSignal default channel)'} '
+      'rawKeys=${raw?.keys.join(',') ?? '(no rawPayload)'}',
+    );
   }
 
   /// Routes a parsed tap, parking it when the router is not wired yet.

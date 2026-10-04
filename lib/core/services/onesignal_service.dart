@@ -90,8 +90,27 @@ abstract final class OneSignalService {
 
   /// Asks OneSignal to deliver a push to [receiverUid]'s devices.
   ///
-  /// The request goes to the project's Cloudflare Worker, which owns the REST
-  /// key, resolves `users/{receiverUid}.oneSignalPlayerId` and calls OneSignal.
+  /// The request goes to the project's Cloudflare Worker, which owns the REST key
+  /// and calls OneSignal; the app never sees the key.
+  ///
+  /// The contract was confirmed by probing the live Worker — no Cloudflare
+  /// credentials exist on this host, so the deployed script cannot be read:
+  /// `receiverUid` **and** `title` are required (`{}` and a uid-only body both
+  /// return `400 {"error":"receiverUid and title are required"}`), `body` is
+  /// optional, the body must be JSON, and OneSignal's own response is passed back
+  /// verbatim. Both fields are always non-empty here: the chat path substitutes
+  /// 'New message' and the call path 'Incoming call'.
+  ///
+  /// ⚠️ Whether the Worker addresses the recipient by the `oneSignalPlayerId`
+  /// [linkUser] stores or by OneSignal `external_id` (which `OneSignal.login`
+  /// sets to the uid) is **not observable from the client**. If it is the
+  /// former, a fresh install has a window where that field is still absent —
+  /// `pushSubscription.id` is null until the SDK creates the subscription — and
+  /// the push then fails silently, because this call is fire-and-forget and
+  /// OneSignal reports it as "not subscribed" rather than as an error.
+  /// `external_id` has no such window; `worker/send-notification-worker.js`
+  /// shows that shape.
+  ///
   /// Returns true only on a 2xx — callers treat a false as "no push went out"
   /// and carry on, because the message itself is already written.
   ///
