@@ -3,6 +3,17 @@ name: Build Flutter APK
 on:
   push:
     branches: [ main ]
+    # An APK build here is ~19 minutes and publishes a Release. A commit that
+    # only touches documentation or project memory cannot change the APK, so it
+    # does not need one — the previous release already carries the current code.
+    #
+    # ⚠️ `paths-ignore` skips the run only when **every** changed file matches,
+    # so a commit that touches `lib/` alongside a `.md` still builds. That is
+    # what makes this safe rather than a way to accidentally stop shipping.
+    paths-ignore:
+      - '**.md'
+      - '.workbuddy-ai/**'
+  # Manual runs ignore `paths-ignore` entirely, so a build can always be forced.
   workflow_dispatch:
 
 permissions:

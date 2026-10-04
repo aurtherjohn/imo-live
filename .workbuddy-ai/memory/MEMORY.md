@@ -47,7 +47,10 @@ silent failure), and `android_channel_id` (visible only in `rawPayload` on a dev
 `imagePath:` alone shows initials for everyone else. The write was never the bug — the read path was.
 
 ## App traps
-- Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1582 keys). `_l10n_convert.py` sees only a
+- ⚠️ A `Row(mainAxisSize: min)` inside a `Center` hands non-flexible children **unbounded width** → a long
+  label overflows instead of shrinking (`AuthPrimaryButton` did exactly this). Wrap it in
+  `Flexible` + `FittedBox(BoxFit.scaleDown)`. Bengali labels are longer than English, so this bites in `bn` first.
+- Strings via `context.l10n` / `L10nRef.current` (en/bn symmetric, 1590 keys). `_l10n_convert.py` sees only a
   literal *immediately* after a slot; `_l10n_expr_convert.py` covers ternaries / `??` fallbacks. Secrets only
   in `lib/core/config/app_secrets.dart`.
 - Read `context.c.onX` for foregrounds; raw `AppColors.X` only for fills. Ads init once at the root; slots

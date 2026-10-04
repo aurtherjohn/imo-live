@@ -196,6 +196,16 @@ class FirebaseAuthService {
     }
   }
 
+  /// Codes from a sign-in that mean "these credentials are not that account".
+  ///
+  /// Everything else a sign-in can fail with — a network drop, a throttle, a
+  /// disabled provider — says nothing about who owns the number.
+  static const Set<String> _credentialMismatchCodes = <String>{
+    'invalid-credential',
+    'wrong-password',
+    'user-not-found',
+  };
+
   /// Adopts a phone account that already holds the derived address.
   ///
   /// Used by [signUpWithPhone] when `createUserWithEmailAndPassword` reports
@@ -207,6 +217,12 @@ class FirebaseAuthService {
   /// yours" case. Nothing is deleted on that path: the account belongs to
   /// whoever created it, and `delete()` here would be an attempt to destroy
   /// someone else's account.
+  ///
+  /// ⚠️ Only a *credential mismatch* returns null. A network or throttle failure
+  /// is rethrown so the caller's mapping produces "No internet connection" or
+  /// "Too many attempts" — reporting those as "this number is already
+  /// registered" would send the user to the login screen over a problem that a
+  /// retry fixes.
   Future<User?> _recoverExistingPhoneAccount({
     required String email,
     required String pin,
@@ -219,7 +235,8 @@ class FirebaseAuthService {
       return credential.user;
     } on FirebaseAuthException catch (error) {
       debugPrint('phone account recovery for $email failed: ${error.code}');
-      return null;
+      if (_credentialMismatchCodes.contains(error.code)) return null;
+      rethrow;
     }
   }
 

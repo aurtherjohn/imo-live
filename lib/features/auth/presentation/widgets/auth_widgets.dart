@@ -218,13 +218,35 @@ class AuthPrimaryButton extends StatelessWidget {
                               Icon(icon, size: 19, color: Colors.white),
                               const SizedBox(width: AppSpacing.sm),
                             ],
-                            Text(
-                              label,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.1,
+                            // ⚠️ The label must be allowed to shrink.
+                            //
+                            // This `Row` is `mainAxisSize.min` inside a
+                            // `Center`, which hands a *non-flexible* child
+                            // unbounded width — so a label wider than the button
+                            // does not wrap or ellipsize, it overflows with the
+                            // yellow-and-black stripes. That is not hypothetical:
+                            // `I've confirmed my email` overflows by 25 px on a
+                            // 420 dp screen, and Bengali CTAs are longer than
+                            // their English counterparts across the board.
+                            //
+                            // `Flexible` bounds the width and `FittedBox`
+                            // scales the label down to fit, so the whole call to
+                            // action stays readable. Scaling rather than
+                            // ellipsizing on purpose: a truncated "I've
+                            // confirmed my ema…" loses the instruction, and the
+                            // overshoot here is a few percent.
+                            Flexible(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.1,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
