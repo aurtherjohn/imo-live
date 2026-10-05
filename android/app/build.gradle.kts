@@ -52,33 +52,51 @@ val resolvedStoreFile: String? =
     else keystoreProperties.getProperty("storeFile")
 
 /**
- * Resolves [resolvedStoreFile] the way each source actually means it.
+ * Resolves [resolvedStoreFile] the way each source actually means it, returning
+ * the **absolute path as a String** — deliberately not a `File`.
  *
- * ⚠️ **This is a trap worth stating plainly.** Inside an `android { }` block,
- * `file(x)` resolves against the *module* directory — `android/app/` — not the
- * repo root. The CI value is repo-root-relative (`android/app/imo-live-release.jks`,
- * as the workflow writes it there), so passing it through `file()` produced
+ * ⚠️ Two traps are baked into this shape. Do not "simplify" either away.
+ *
+ * **1. `file()` inside `android { }` is module-relative, not repo-root.** The CI
+ * value `android/app/imo-live-release.jks` is repo-root relative, so passing it
+ * through the implicit module `file()` produced
  *
  *     android/app/ + android/app/imo-live-release.jks
  *
- * which Gradle reported as `android/app/android/app/***-release.jks not found`
- * and which failed the whole build with ~21 minutes already spent.
+ * which Gradle reported as `android/app/android/app/***-release.jks not found`,
+ * failing the build ~20 minutes in at `:app:validateSigningRelease`.
+ * `rootProject.file()` is the repo-root-relative resolver; `key.properties`
+ * keeps the module-relative `file()` it has always implied.
  *
- * `key.properties` documents its `storeFile` as ABSOLUTE (see the header), and a
- * relative value there has always meant module-relative — so that source keeps
- * `file()`. Only the env-var source is interpreted against the repo root, and an
- * absolute path is honoured either way.
+ * **2. A top-level `val` with an explicitly declared `File` type breaks AGP's
+ * evaluation of this script.** Introduced here as
+ * `val resolvedStoreFileObject: File? = …`, it made the build die with:
+ *
+ *     Could not create an instance of type
+ *     com.android.build.api.variant.impl.ApplicationVariantBuilderImpl
+ *       > Namespace not specified. Specify a namespace in the module's build file
+ *
+ * …even though `namespace = "com.imo.live"` is present in the block below, and
+ * even though the very same revision *without* that declaration built and
+ * signed correctly. Returning a `String?` and converting to `File` only at the
+ * two points of use avoids the type reaching the script's top-level scope at
+ * all. Verified by differential: the only difference between the working and
+ * the broken revision was that one declaration.
  */
-val resolvedStoreFileObject: File? =
-    resolvedStoreFile?.takeIf { it.isNotBlank() }?.let { path ->
-        val raw = File(path)
-        when {
-            raw.isAbsolute -> raw
-            !envKeystoreFile.isNullOrBlank() && path == envKeystoreFile ->
-                rootProject.file(path)
-            else -> file(path)
-        }
+val resolvedStoreFilePath: String? = run {
+    val path = resolvedStoreFile
+    if (path.isNullOrBlank()) {
+        null
+    } else if (File(path).isAbsolute) {
+        path
+    } else if (!envKeystoreFile.isNullOrBlank()) {
+        // CI: KEYSTORE_FILE is repo-root relative.
+        rootProject.file(path).absolutePath
+    } else {
+        // key.properties: historically module-relative.
+        file(path).absolutePath
     }
+}
 
 val resolvedStorePassword: String? =
     System.getenv("KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
@@ -90,16 +108,23 @@ val resolvedKeyPassword: String? =
     System.getenv("KEY_PASSWORD")?.takeIf { it.isNotBlank() }
         ?: keystoreProperties.getProperty("keyPassword")
 
-val hasReleaseSigning = resolvedStoreFileObject != null &&
+val hasReleaseSigning = resolvedStoreFilePath != null &&
     !resolvedStorePassword.isNullOrBlank() &&
     !resolvedKeyAlias.isNullOrBlank() &&
     !resolvedKeyPassword.isNullOrBlank()
 
 /**
- * Gradle configuration cache is off for this project, but the task is captured
- * defensively: a task that captures the whole `android` extension cannot be
- * cached, and reading the env vars here (not inside the task) keeps the value
- * stable across configuration and execution.
+ * Refuses to produce a release artifact without real signing credentials, and
+ * prints the resolved keystore path so a path mistake is visible immediately
+ * rather than ~20 minutes into the build at `:app:validateSigningRelease`.
+ *
+ * ⚠️ Registered with the eager `task("…") { }` form, before `android { }`,
+ * because that is the shape that is verified to work: the identical
+ * registration in the revision that successfully reached signing (and failed
+ * only on the path) sat in exactly this position. The failure that followed a
+ * rewrite to `tasks.register(…)` after the `android` block was **not** about
+ * ordering — see the `resolvedStoreFilePath` comment; the real cause was a
+ * top-level `File`-typed `val`. Do not move or rewrite this on theory alone.
  */
 task("assertReleaseSigning") {
     doFirst {
@@ -115,14 +140,12 @@ task("assertReleaseSigning") {
                 "`flutter build apk --debug` instead."
             )
         }
-        // Printed before the build starts: a path mistake is otherwise only
-        // discovered ~20 minutes in, by `validateSigningRelease`.
-        val storeFile = resolvedStoreFileObject!!
-        println("Release signing: storeFile=${storeFile.absolutePath} ")
-        println("  exists=${storeFile.exists()}  alias=${resolvedKeyAlias}")
-        if (!storeFile.exists()) {
+        val storeFilePath = resolvedStoreFilePath!!
+        println("Release signing: storeFile=$storeFilePath")
+        println("  exists=${File(storeFilePath).exists()}  alias=$resolvedKeyAlias")
+        if (!File(storeFilePath).exists()) {
             throw GradleException(
-                "Release keystore not found at ${storeFile.absolutePath}. " +
+                "Release keystore not found at $storeFilePath. " +
                 "KEYSTORE_FILE is resolved against the REPO ROOT; " +
                 "key.properties storeFile is resolved against android/app/."
             )
@@ -180,7 +203,7 @@ android {
         // themselves nullable, so a direct assignment is correct and a `!!`
         // would only add a crash path.
         create("release") {
-            storeFile = resolvedStoreFileObject
+            storeFile = resolvedStoreFilePath?.let { File(it) }
             storePassword = resolvedStorePassword
             keyAlias = resolvedKeyAlias
             keyPassword = resolvedKeyPassword
@@ -213,9 +236,9 @@ flutter {
 }
 
 // Any `assembleRelease*` / `bundleRelease*` APK-or-AAB build depends on the
-// assertion, so a release artifact can never be produced without real signing
-// credentials. Matched by name prefix because the ABI splits produce
-// `assembleRelease`, `assembleArm64V8aRelease`, and so on.
+// assertion task registered above, so a release artifact can never be produced
+// without real signing credentials. Matched by name prefix because the ABI
+// splits produce `assembleRelease`, `assembleArm64V8aRelease`, and so on.
 tasks.matching { task ->
     (task.name.startsWith("assemble") || task.name.startsWith("bundle")) &&
         task.name.contains("Release")
