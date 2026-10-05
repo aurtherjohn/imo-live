@@ -3,25 +3,28 @@ name: Build Flutter APK
 on:
   push:
     branches: [ main ]
-    # An APK build here is ~19 minutes and publishes a Release. A commit that
-    # only touches documentation or project memory cannot change the APK, so it
-    # does not need one — the previous release already carries the current code.
-    #
-    # ⚠️ `paths-ignore` skips the run only when **every** changed file matches,
-    # so a commit that touches `lib/` alongside a `.md` still builds. That is
-    # what makes this safe rather than a way to accidentally stop shipping.
-    paths-ignore:
-      - '**.md'
-      - '.workbuddy-ai/**'
-  # Manual runs ignore `paths-ignore` entirely, so a build can always be forced.
+  # Manual runs ignore nothing, so a build can always be forced without a commit.
   workflow_dispatch:
 
 permissions:
   contents: write
 
+# ⚠️ `paths-ignore` was removed deliberately. It skipped the run when every
+# changed file matched `**.md` / `.workbuddy-ai/**`, which meant a pushed change
+# could land with no build and no Release — the newest release silently stopped
+# representing the newest code. Correctness beats ~19 minutes of CI here: every
+# push to main now builds.
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      # Path CI writes the decoded keystore to. Matches KEYSTORE_FILE in
+      # android/app/build.gradle.kts. Gitignored (`*.jks`), never committed.
+      KEYSTORE_PATH: android/app/imo-live-release.jks
+      EXPECTED_SHA1: "AA:09:94:7E:42:5C:05:53:B0:AA:D7:09:08:25:1B:94:E0:B8:C4:56"
+      EXPECTED_SHA256: "57:FB:D9:60:B0:84:1C:E3:AD:8F:FB:B4:59:A8:2B:AE:AF:07:6F:4E:24:66:85:5C:53:3E:EC:33:04:1B:33:87"
 
     steps:
       - name: Checkout repository
@@ -49,24 +52,92 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      # Fail-fast gates. These were `continue-on-error: true`, which made a green
+      # run meaningless as evidence that the code was clean. A red analyze or
+      # test now stops the build before it burns ~17 minutes on an APK.
       - name: Analyze project
         run: flutter analyze --no-fatal-infos
-        continue-on-error: true
 
       - name: Run tests
         run: flutter test
-        continue-on-error: true
 
-      # GOOGLE_OAUTH_CLIENT_ID is a build-time dart-define, not a runtime value:
-      # it is read by `String.fromEnvironment` in `in_app_oauth_service.dart` and
-      # baked into the APK. Without it the WebView fallback throws
-      # "Google sign-in needs a client id", which is exactly the error this
-      # step exists to prevent. The value lives in the repo secret of the same
-      # name, so no client id is committed here.
-      - name: Build APK (split per ABI)
+      # The keystore arrives as base64 in a secret. `printf` rather than `echo`:
+      # `echo` can reinterpret backslashes and is not byte-exact.
+      - name: Decode release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
+          set -euo pipefail
+          if [ -z "${KEYSTORE_BASE64:-}" ]; then
+            echo "::error::KEYSTORE_BASE64 secret is empty or missing."
+            exit 1
+          fi
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$KEYSTORE_PATH"
+          echo "Decoded keystore: $(wc -c < "$KEYSTORE_PATH") bytes"
+          if [ ! -s "$KEYSTORE_PATH" ]; then
+            echo "::error::Decoded keystore is empty — the base64 secret is wrong."
+            exit 1
+          fi
+
+      # ⚠️ This does NOT just print the fingerprint and hope. It asserts the
+      # keystore's SHA-1 against the value registered in Firebase and FAILS the
+      # build on a mismatch. A wrong keystore means Google Sign-In returns
+      # DEVELOPER_ERROR on every device, so shipping that APK is worse than
+      # shipping nothing — a red build here is the correct outcome.
+      - name: Verify keystore fingerprint
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          keytool -list -v -keystore "$KEYSTORE_PATH" \
+            -alias "$KEY_ALIAS" -storepass "$KEYSTORE_PASSWORD" > keystore-info.txt
+
+          ACTUAL_SHA1=$(grep -i 'SHA1:' keystore-info.txt | head -1 \
+            | sed 's/.*SHA1: *//' | tr -d '\r' | xargs)
+          ACTUAL_SHA256=$(grep -i 'SHA256:' keystore-info.txt | head -1 \
+            | sed 's/.*SHA256: *//' | tr -d '\r' | xargs)
+
+          echo "Keystore SHA-1   : $ACTUAL_SHA1"
+          echo "EXPECTED SHA-1   : $EXPECTED_SHA1"
+          echo "Keystore SHA-256 : $ACTUAL_SHA256"
+          echo "EXPECTED SHA-256 : $EXPECTED_SHA256"
+
+          # Case-insensitive hex comparison: keytool's casing is not contract.
+          norm() { echo "$1" | tr 'a-f' 'A-F'; }
+          if [ "$(norm "$ACTUAL_SHA1")" != "$(norm "$EXPECTED_SHA1")" ]; then
+            echo "::error::Keystore SHA-1 does not match the fingerprint registered in Firebase. The KEYSTORE_BASE64 secret is the wrong keystore."
+            exit 1
+          fi
+          echo "::notice::Keystore SHA-1 matches the Firebase-registered fingerprint."
+
+      # The env vars are exactly what android/app/build.gradle.kts reads. Without
+      # them the `assertReleaseSigning` task fails the build rather than falling
+      # back to a debug keystore.
+      - name: Build APK (split per ABI)
+        env:
+          KEYSTORE_FILE: android/app/imo-live-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+        run: |
+          set -euo pipefail
           flutter build apk --release --split-per-abi \
-            --dart-define=GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
+            --dart-define=GOOGLE_OAUTH_CLIENT_ID="$GOOGLE_OAUTH_CLIENT_ID"
+
+      # Proves what actually ended up inside the shipped APK, not just what the
+      # keystore file held. If these two differ, signing did not take effect.
+      - name: Show signed APK SHA-1
+        run: |
+          set -euo pipefail
+          APK=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+          if [ -f "$APK" ]; then
+            keytool -printcert -jarfile "$APK" | grep -E "SHA1|SHA256"
+          else
+            echo "::error::$APK not found — nothing was built."
+            exit 1
+          fi
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
@@ -86,3 +157,10 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # `if: always()` so the keystore is removed even when an earlier step
+      # failed and left it on disk. The runner is ephemeral, but the decoded
+      # private key should not outlive the step that needs it.
+      - name: Clean up keystore
+        if: always()
+        run: rm -f "$KEYSTORE_PATH" keystore-info.txt

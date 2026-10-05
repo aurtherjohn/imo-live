@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+// `PlatformException` — the google_sign_in plugin raises it for
+// DEVELOPER_ERROR / ApiException, and catching it by type (rather than by
+// `Object`) is what lets the SHA-1 mismatch be named in the message.
+import 'package:flutter/services.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -158,16 +162,59 @@ class InAppOAuthService {
       );
     } on OAuthException {
       rethrow;
+    } on PlatformException catch (error) {
+      // ⚠️ The WebView fallback used to live here, and it was actively harmful:
+      // it swallowed the real native error and started an OAuth flow that Google
+      // refuses to serve inside an embedded WebView (it has blocked embedded
+      // user-agents since 2021). The user then saw a generic failure, or an
+      // "Error 400" from Google's own page, and the actual cause — a signing
+      // certificate whose SHA-1 is not registered in Firebase, i.e.
+      // `ApiException: 10` / DEVELOPER_ERROR — was never surfaced.
+      //
+      // So the fallback is gone: the native error is rethrown with its code and
+      // message intact. `_googleViaWebView` is kept below but is no longer
+      // reachable; restore the call only once Google Sign-In is confirmed
+      // working on a device with the release keystore.
+      //
+      // A SHA-1 mismatch is the single most likely cause of a failure here, and
+      // it is worth naming explicitly because the raw code ("10") means nothing
+      // to whoever reads the log.
+      final String code = error.code;
+      final String detail = error.message ?? error.toString();
+      if (code == 'sign_in_failed' && detail.contains('10')) {
+        lastDiagnostic =
+            'Google Sign-In rejected this build (DEVELOPER_ERROR / ApiException '
+            '10). The signing certificate\'s SHA-1 is not registered for '
+            'com.imo.live in the Firebase project, or GOOGLE_OAUTH_CLIENT_ID is '
+            'not the Web-application client id.';
+      } else {
+        lastDiagnostic = 'Google Sign-In failed ($code): $detail';
+      }
+      debugPrint('GOOGLE_SIGNIN_FAILED: code=$code detail=$detail');
+      throw OAuthException(lastDiagnostic!);
     } on Object catch (error) {
-      // Fall back to the in-app WebView flow when the plugin path is
-      // unavailable (no Play Services, no account on the device, or a
-      // platform exception).
-      debugPrint('Native Google sign-in failed, falling back to WebView: $error');
-      return _googleViaWebView();
+      // Same reasoning as above: no silent fallback, and no message that hides
+      // what went wrong.
+      lastDiagnostic = 'Google Sign-In failed: $error';
+      debugPrint('GOOGLE_SIGNIN_FAILED: $error');
+      throw OAuthException(lastDiagnostic!);
     }
   }
 
   /// The explicit in-app WebView fallback for Google.
+  ///
+  /// ⚠️ **Currently unreachable, and kept on purpose.** `signInWithGoogle` no
+  /// longer falls back here (see the comment there): the fallback hid the real
+  /// native error behind an OAuth flow Google will not serve in an embedded
+  /// WebView. The implementation is retained rather than deleted so it can be
+  /// restored cheaply by calling it from `signInWithGoogle` once Google Sign-In
+  /// is confirmed working on a device signed with the release keystore — and in
+  /// case a non-Android platform needs it.
+  ///
+  /// `// ignore: unused_element` is deliberate: this is a known, temporary
+  /// state, not an oversight, and removing the mention would let the next
+  /// analyzer run flag it as a new problem.
+  // ignore: unused_element
   Future<OAuthResult> _googleViaWebView() async {
     if (_googleClientId.isEmpty) {
       lastDiagnostic =

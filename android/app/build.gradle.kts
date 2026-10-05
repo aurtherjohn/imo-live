@@ -13,24 +13,78 @@ plugins {
 // ---------------------------------------------------------------------------
 // Release signing
 //
-// Credentials live in `android/key.properties`, which is gitignored — never
-// commit a keystore or its passwords. Copy `key.properties.example` and fill
-// it in. Use an ABSOLUTE path for storeFile, because it is resolved relative to
-// `android/app/` otherwise.
+// Two sources, in this order:
 //
-// Create the keystore with:
-//   keytool -genkey -v -keystore upload-keystore.jks -storetype JKS \
-//     -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+//   1. Environment variables (CI). GitHub Actions decodes the keystore from the
+//      `KEYSTORE_BASE64` secret to a file, then exports KEYSTORE_FILE,
+//      KEYSTORE_PASSWORD, KEY_ALIAS and KEY_PASSWORD for the build step.
+//   2. `android/key.properties` (local). Gitignored — never commit a keystore or
+//      its passwords. Copy `key.properties.example` and fill it in. Use an
+//      ABSOLUTE path for storeFile, because it is resolved relative to
+//      `android/app/` otherwise.
 //
-// When the file is absent the release build falls back to the debug keystore so
-// `flutter build apk --release` still works on a fresh clone. A debug-signed
-// APK is fine for sideloading but Google Play rejects it.
+// Create a keystore with:
+//   keytool -genkey -v -keystore imo-live-release.jks -storetype JKS \
+//     -keyalg RSA -keysize 2048 -validity 10000 -alias imo-live
+//
+// ⚠️ There is deliberately NO debug fallback for CI. The previous version fell
+// back to `signingConfigs.getByName("debug")` whenever no keystore was present,
+// which is exactly what shipped debug-signed APKs whose SHA-1 was not registered
+// in Firebase — producing the Google Sign-In DEVELOPER_ERROR / "Error 400" this
+// file is being changed to fix. A silently debug-signed artifact is worse than a
+// failed build, so when neither source is configured a build that would produce
+// a release APK now FAILS with an explanation instead. `flutter build apk
+// --debug` and plain `flutter run` are unaffected: they use the debug signing
+// config directly and never evaluate this block.
 // ---------------------------------------------------------------------------
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
-val hasReleaseSigning = keystorePropertiesFile.exists()
-if (hasReleaseSigning) {
+val hasKeyPropertiesFile = keystorePropertiesFile.exists()
+if (hasKeyPropertiesFile) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+/** The keystore path CI writes, or the `storeFile` from key.properties. */
+val envKeystoreFile: String? = System.getenv("KEYSTORE_FILE")
+val resolvedStoreFile: String? =
+    if (!envKeystoreFile.isNullOrBlank()) envKeystoreFile
+    else keystoreProperties.getProperty("storeFile")
+val resolvedStorePassword: String? =
+    System.getenv("KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty("storePassword")
+val resolvedKeyAlias: String? =
+    System.getenv("KEY_ALIAS")?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty("keyAlias")
+val resolvedKeyPassword: String? =
+    System.getenv("KEY_PASSWORD")?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty("keyPassword")
+
+val hasReleaseSigning = !resolvedStoreFile.isNullOrBlank() &&
+    !resolvedStorePassword.isNullOrBlank() &&
+    !resolvedKeyAlias.isNullOrBlank() &&
+    !resolvedKeyPassword.isNullOrBlank()
+
+/**
+ * Gradle configuration cache is off for this project, but the task is captured
+ * defensively: a task that captures the whole `android` extension cannot be
+ * cached, and reading the env vars here (not inside the task) keeps the value
+ * stable across configuration and execution.
+ */
+task("assertReleaseSigning") {
+    doFirst {
+        if (!hasReleaseSigning) {
+            throw GradleException(
+                "Release signing is not configured, refusing to produce an " +
+                "unsigned or debug-signed release APK.\n" +
+                "  CI:      set KEYSTORE_FILE, KEYSTORE_PASSWORD, KEY_ALIAS, " +
+                "KEY_PASSWORD (the workflow derives them from the " +
+                "KEYSTORE_BASE64 secret).\n" +
+                "  Locally: create android/key.properties from " +
+                "key.properties.example, or use `flutter run` / " +
+                "`flutter build apk --debug` instead."
+            )
+        }
+    }
 }
 
 android {
@@ -68,26 +122,32 @@ android {
     }
 
     signingConfigs {
-        if (hasReleaseSigning) {
-            create("release") {
-                keyAlias = keystoreProperties.getProperty("keyAlias")
-                keyPassword = keystoreProperties.getProperty("keyPassword")
-                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
-                storePassword = keystoreProperties.getProperty("storePassword")
-            }
+        // Created unconditionally so `signingConfigs.getByName("release")` can
+        // never throw at configuration time on a fresh clone (which would break
+        // `flutter build apk --debug`). Its VALUES may be empty; the
+        // `assertReleaseSigning` task is what refuses to build a release APK
+        // without real credentials.
+        //
+        // ⚠️ Assigning a null `storeFile` is not the same as assigning nothing:
+        // `SigningConfig.setStoreFile(null)` clears it harmlessly, but passing a
+        // nullable String where a String is expected would not compile. The
+        // values are therefore read through locals that are only dereferenced
+        // when `hasReleaseSigning` has already proved them non-null — except
+        // here, where the nullable String properties on the Gradle extension are
+        // themselves nullable, so a direct assignment is correct and a `!!`
+        // would only add a crash path.
+        create("release") {
+            storeFile = resolvedStoreFile?.let { file(it) }
+            storePassword = resolvedStorePassword
+            keyAlias = resolvedKeyAlias
+            keyPassword = resolvedKeyPassword
         }
     }
 
     buildTypes {
         release {
-            signingConfig = if (hasReleaseSigning) {
-                signingConfigs.getByName("release")
-            } else {
-                // No keystore configured yet — see the note at the top of this
-                // file. Remove this fallback once a real keystore is in place so
-                // a debug-signed artifact can never be shipped by accident.
-                signingConfigs.getByName("debug")
-            }
+            // See `assertReleaseSigning`: no debug fallback, on purpose.
+            signingConfig = signingConfigs.getByName("release")
 
             // Left off deliberately. Turning R8 on needs keep-rules for the
             // Firebase, Facebook and WebView plugins, and reflection-based
@@ -107,6 +167,17 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+// Any `assembleRelease*` / `bundleRelease*` APK-or-AAB build depends on the
+// assertion, so a release artifact can never be produced without real signing
+// credentials. Matched by name prefix because the ABI splits produce
+// `assembleRelease`, `assembleArm64V8aRelease`, and so on.
+tasks.matching { task ->
+    (task.name.startsWith("assemble") || task.name.startsWith("bundle")) &&
+        task.name.contains("Release")
+}.configureEach {
+    dependsOn("assertReleaseSigning")
 }
 
 dependencies {
