@@ -6,6 +6,7 @@ import 'auth_gate.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/otp_screen.dart';
 import '../features/auth/presentation/profile_setup_screen.dart';
+import '../features/auth/presentation/screens/phone_login_screen.dart';
 import '../features/auth/presentation/signup_screen.dart';
 import '../features/calls/presentation/call_screen.dart';
 import '../features/calls/presentation/calls_screen.dart';
@@ -35,6 +36,7 @@ import '../features/earn/presentation/notifications_screen.dart';
 import '../features/groups/presentation/group_info_screen.dart';
 import '../features/groups/presentation/new_group_screen.dart';
 import '../features/misc/presentation/about_screen.dart';
+import '../features/settings/presentation/dev_logs_screen.dart';
 import '../features/chats/presentation/broadcast_screen.dart';
 import '../features/misc/presentation/help_screen.dart';
 import '../features/misc/presentation/qr_screen.dart';
@@ -126,6 +128,18 @@ final GoRouter appRouter = GoRouter(
       name: 'otp',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const OtpScreen()),
+    ),
+    // The phone flow is a *route*, not a pushed `MaterialPageRoute`. It has to
+    // be, so that `authRedirect` can see it: while it was pushed imperatively
+    // the router only knew about the login route underneath it, and the auth
+    // change at the end of a phone signup replaced that page — leaving the
+    // phone screen stacked over a login screen and reading as "signed in, then
+    // kicked straight back out".
+    GoRoute(
+      path: AppRoutes.phoneLogin,
+      name: 'phoneLogin',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const PhoneLoginScreen()),
     ),
     GoRoute(
       path: AppRoutes.profileSetup,
@@ -356,6 +370,15 @@ final GoRouter appRouter = GoRouter(
       name: 'about',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const AboutScreen()),
+    ),
+    // Developer-only. Not linked from any menu; reached by tapping the version
+    // text on Settings seven times. Registered as a normal route so the back
+    // gesture and deep-linking behave like every other screen.
+    GoRoute(
+      path: AppRoutes.devLogs,
+      name: 'devLogs',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const DevLogsScreen()),
     ),
     GoRoute(
       path: AppRoutes.lists,

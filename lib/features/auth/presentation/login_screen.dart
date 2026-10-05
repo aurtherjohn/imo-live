@@ -10,7 +10,6 @@ import '../../../core/widgets/brand_assets.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/oauth_webview_sheet.dart';
 import 'auth_providers.dart';
-import 'screens/phone_login_screen.dart';
 import 'widgets/auth_settings_button.dart';
 import 'widgets/auth_widgets.dart';
 import '../../../core/utils/l10n.dart';
@@ -97,11 +96,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   /// over from there.
   void _phone() {
     setState(() => _error = null);
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext _) => const PhoneLoginScreen(),
-      ),
-    );
+    // Pushed as a real `go_router` route rather than a bare `Navigator.push`.
+    //
+    // This matters beyond the transition. `GoRouter`'s redirect only rewrites
+    // locations it owns; a `MaterialPageRoute` pushed on top of the login route
+    // is invisible to it, so when the auth state changed mid-signup the router
+    // re-evaluated `/login` underneath and the pushed screen was left stacked
+    // over a page that had already been replaced — the user saw the app for an
+    // instant and then the login screen again. Registering the phone flow as a
+    // route keeps the redirect and the visible screen in agreement.
+    context.push(AppRoutes.phoneLogin);
   }
 
   Future<void> _forgotPassword() async {

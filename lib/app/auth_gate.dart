@@ -16,17 +16,24 @@ const Set<String> _authRoutes = <String>{
   AppRoutes.signup,
   AppRoutes.otp,
   AppRoutes.profileSetup,
+  // The phone flow lives here because it is a route now, not an imperative
+  // push. Leaving it out would make the gate itself the thing that bounces a
+  // phone signup: the user is mid-flow on a route it does not recognise while
+  // signed out, so it would redirect them to /login.
+  AppRoutes.phoneLogin,
 };
 
 /// Routes a *signed-out* user may still reach.
 ///
-/// Deliberately only the login screen, its signup sibling, and the splash that
-/// precedes them. Everything else — the chat shell, settings, the profile — is
-/// gated, because the whole app reads and writes under the signed-in uid.
+/// Deliberately only the login screen, its signup sibling, the phone flow, and
+/// the splash that precedes them. Everything else — the chat shell, settings,
+/// the profile — is gated, because the whole app reads and writes under the
+/// signed-in uid.
 const Set<String> _signedOutRoutes = <String>{
   AppRoutes.splash,
   AppRoutes.login,
   AppRoutes.signup,
+  AppRoutes.phoneLogin,
 };
 
 /// How long the gate waits for the first auth event **when Firebase never came

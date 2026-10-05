@@ -10,9 +10,9 @@ import '../../../core/widgets/brand_assets.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/oauth_webview_sheet.dart';
 import 'auth_providers.dart';
-import 'screens/phone_login_screen.dart';
 import 'widgets/auth_settings_button.dart';
 import 'widgets/auth_widgets.dart';
+import 'widgets/signup_error_dialog.dart';
 import '../../../core/utils/l10n.dart';
 
 /// Account creation, in the same luxury style as the login screen.
@@ -70,6 +70,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     if (outcome.isFailure) {
       setState(() => _error = outcome.error);
       iToast(context, outcome.error!, isError: true);
+      // The dialog carries the tail of the log buffer. A failed verification
+      // *send* is not a failure of `signUpWithEmail` at all — the account is
+      // created and the user is routed to the verify screen — so this is the
+      // path for "the account itself could not be made".
+      await showSignupError(context, outcome.error!);
       return;
     }
     if (outcome.needsVerification) {
@@ -102,11 +107,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   /// thing this screen does, minus the email address.
   void _phone() {
     setState(() => _error = null);
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext _) => const PhoneLoginScreen(),
-      ),
-    );
+    // A real route, not a bare `Navigator.push` — see the note in
+    // `login_screen.dart::_phone`. A pushed `MaterialPageRoute` is invisible to
+    // the router's redirect, which is what let the auth change replace the page
+    // underneath and bounce the user back to login.
+    context.push(AppRoutes.phoneLogin);
   }
 
   @override

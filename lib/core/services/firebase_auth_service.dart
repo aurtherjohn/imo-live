@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 
 import '../constants/app_constants.dart';
 import '../constants/country_data.dart';
+import 'in_app_logger.dart';
 import 'onesignal_service.dart';
 import 'remote_contact_service.dart';
 
@@ -76,6 +77,7 @@ class FirebaseAuthService {
     required String name,
   }) async {
     final String normalisedEmail = RemoteContactService.normaliseEmail(email);
+    InAppLogger.info('signUpWithEmail: start ($normalisedEmail)');
     try {
       final UserCredential credential =
           await _auth.createUserWithEmailAndPassword(
@@ -86,22 +88,56 @@ class FirebaseAuthService {
       if (user == null) {
         throw const AuthException('The account could not be created.');
       }
+      // The uid proves the account exists server-side. If everything after this
+      // line fails, the account is *not* rolled back — the user is signed in
+      // with a uid the app can repair on the next sign-in. See the note on
+      // `signUpWithPhone` for why nothing is deleted here.
+      InAppLogger.success('auth user created uid=${user.uid}');
 
       await user.updateDisplayName(name.trim());
+      InAppLogger.log('displayName set to "${name.trim()}"');
+
       final String username = await generateUniqueUsername();
+      InAppLogger.log('username allocated: $username');
+
       await _createUserDocument(
         uid: user.uid,
         name: name.trim(),
         email: normalisedEmail,
         username: username,
       );
+      InAppLogger.success('Firestore profile written for ${user.uid}');
+
       // Firebase sends the verification mail; the app cannot, and the link in
       // it is what flips `emailVerified`. The Verify-Email screen re-sends it on
       // demand and polls for the flag.
-      await _sendVerification(user);
+      //
+      // Wrapped so a failed send is *recorded* rather than swallowed: "the
+      // account exists but no mail arrived" is indistinguishable from "the send
+      // silently failed" without this line, and that is exactly the report this
+      // build is diagnosing.
+      try {
+        await _sendVerification(user);
+        InAppLogger.success('verification email dispatched to $normalisedEmail');
+      } on Object catch (error, stackTrace) {
+        InAppLogger.error(
+          'verification email FAILED for $normalisedEmail '
+          '(account kept — user can resend from the verify screen)',
+          error,
+          stackTrace,
+        );
+      }
+      InAppLogger.info('signUpWithEmail: complete (uid=${user.uid})');
       return user.uid;
     } on FirebaseAuthException catch (error) {
+      InAppLogger.error(
+        'signUpWithEmail failed: ${error.code}',
+        error.message,
+      );
       throw _translate(error);
+    } on Object catch (error, stackTrace) {
+      InAppLogger.error('signUpWithEmail failed (non-auth)', error, stackTrace);
+      rethrow;
     }
   }
 
@@ -187,12 +223,14 @@ class FirebaseAuthService {
   Future<void> _sendVerification(User user) async {
     try {
       await user.sendEmailVerification(_verificationSettings);
+      InAppLogger.success('sendEmailVerification(deep link) ok for ${user.email}');
     } on FirebaseAuthException catch (error) {
-      debugPrint(
+      InAppLogger.warn(
         'sendEmailVerification with continue URL failed (${error.code}); '
         'retrying without it.',
       );
       await user.sendEmailVerification();
+      InAppLogger.success('sendEmailVerification(plain) ok for ${user.email}');
     }
   }
 
@@ -365,7 +403,26 @@ class FirebaseAuthService {
         SetOptions(merge: true),
       );
     }
-    await batch.commit();
+    InAppLogger.log(
+      '_createUserDocument: committing batch '
+      '(uid=$uid user=$username email=${email.isEmpty ? "-" : email} '
+      'phone=${phoneDigits.isEmpty ? "-" : phoneDigits})',
+    );
+    try {
+      await batch.commit();
+      InAppLogger.success('_createUserDocument: committed for $uid');
+    } on Object catch (error, stackTrace) {
+      // Logged with the exception text, which for Firestore almost always
+      // names the offending collection or the rule that denied it. The account
+      // is deliberately left standing — a profile document can be rewritten on
+      // the next sign-in, an auth account cannot be recovered from the client.
+      InAppLogger.error(
+        '_createUserDocument FAILED for $uid (account NOT deleted)',
+        error,
+        stackTrace,
+      );
+      rethrow;
+    }
   }
 
   /// Creates the profile documents for a user who signed up through an OAuth
@@ -634,10 +691,19 @@ class FirebaseAuthService {
   ///
   /// ### Ordering
   ///
-  /// The auth account is created first, then the Firestore claim. If the claim
-  /// fails the auth account is deleted again ([_rollback]) — otherwise a
-  /// half-created account would hold the derived address and permanently block
-  /// the number.
+  /// The auth account is created first, then the Firestore claim. **Nothing is
+  /// deleted if a later step fails.** An earlier revision called `user.delete()`
+  /// on every error path to "clean up" a half-created account; that was the bug.
+  /// `delete()` on a freshly created account can be refused (`requires-recent-login`),
+  /// and the fallback was `signOut()` — so a Firestore hiccup destroyed the
+  /// session *after* the account had been created. The user saw the app, then
+  /// the login screen, and the console showed nothing, because the account
+  /// existed and was simply no longer signed in on the device.
+  ///
+  /// A half-created account is now an acceptable, repairable state: the claim
+  /// below is idempotent (`merge: true`), and [signInWithPhone] re-runs it for
+  /// an account that has no profile document. Recovery on next login beats
+  /// destruction at the wrong moment.
   Future<String> signUpWithPhone({
     required String phoneDigits,
     required String pin,
@@ -659,13 +725,14 @@ class FirebaseAuthService {
     // was created under — the derived address is the one thing about this flow
     // that is invisible to the user, and a mismatch here is the silent bug that
     // makes an account unreachable.
-    debugPrint('signUpWithPhone: derived address=$email (digits=$digits)');
+    InAppLogger.info(
+      'signUpWithPhone: start digits=$digits -> address=$email '
+      'name="$fullName" username="${username.trim()}"',
+    );
 
     User? created;
     // True when the account was not created here but *adopted* — see the
-    // `email-already-in-use` branch below. A recovered account must never be
-    // rolled back: `_rollback` deletes the auth user, and on that path the user
-    // is the caller's own account rather than a half-created one of ours.
+    // `email-already-in-use` branch below.
     bool recovered = false;
     try {
       try {
@@ -675,40 +742,61 @@ class FirebaseAuthService {
           password: pin,
         );
         created = credential.user;
+        InAppLogger.success(
+          'signUpWithPhone: auth account created uid=${created?.uid}',
+        );
       } on FirebaseAuthException catch (error) {
         // Only this one code is recoverable; everything else is a real failure.
-        if (error.code != 'email-already-in-use') rethrow;
+        if (error.code != 'email-already-in-use') {
+          InAppLogger.warn(
+            'signUpWithPhone: create rejected with ${error.code} '
+            '(address=$email)',
+          );
+          rethrow;
+        }
 
         // `email-already-in-use` on a *derived* address does not necessarily
         // mean the number belongs to someone else. It is also what a previous
         // attempt leaves behind when it created the auth account and then died
-        // before — or while — writing the Firestore claim, and the rollback
-        // could not delete it (`delete()` needs a recent login and can be
-        // refused). The account is then a ghost: it holds the address, has no
-        // profile document, and blocks the number forever while the user is
-        // told to "log in instead" to an account they cannot usefully log into.
+        // before — or while — writing the Firestore claim. The account is then
+        // a ghost: it holds the address, has no profile document, and blocks
+        // the number forever while the user is told to "log in instead" to an
+        // account they cannot usefully log into.
         //
         // So try the PIN the user just typed against the existing account. Same
         // number, same PIN — same person by definition of the credential. A
         // wrong PIN means it really is someone else's number, and the recovery
         // returns null so the honest message is shown instead.
-        debugPrint(
+        InAppLogger.warn(
           'signUpWithPhone($digits): derived address already exists; '
-          'attempting recovery with the submitted PIN.',
+          'attempting adoption with the submitted PIN.',
         );
         final User? adopted = await _recoverExistingPhoneAccount(
           email: email,
           pin: pin,
         );
-        if (adopted == null) throw _translatePhoneSignUp(error);
+        if (adopted == null) {
+          InAppLogger.error(
+            'signUpWithPhone: adoption refused — PIN does not match the '
+            'existing account at $email. Reporting "number already registered".',
+          );
+          throw _translatePhoneSignUp(error);
+        }
         created = adopted;
         recovered = true;
+        InAppLogger.success(
+          'signUpWithPhone: adopted existing account uid=${adopted.uid} — '
+          'will complete the (idempotent) profile claim',
+        );
       }
 
       if (created == null) {
         throw const AuthException('The account could not be created.');
       }
-      if (!recovered) await created.updateDisplayName(fullName);
+      if (!recovered) {
+        await created.updateDisplayName(fullName);
+        InAppLogger.log('signUpWithPhone: displayName set to "$fullName"');
+      }
 
       // The handle is claimed together with the number, inside one transaction.
       // A collision is resolved by widening the numeric suffix and retrying,
@@ -731,10 +819,17 @@ class FirebaseAuthService {
         }
       }
       if (!claimed) {
+        InAppLogger.error(
+          'signUpWithPhone: could not claim phone/$digits or a handle after 8 '
+          'attempts (account uid=${created.uid} kept)',
+        );
         throw const AuthException(
           'That number or username is already taken. Try another one.',
         );
       }
+      InAppLogger.success(
+        'signUpWithPhone: claimed phone/$digits and usernames/$handle',
+      );
 
       // Idempotent by construction: `_createUserDocument` writes with
       // `merge: true`, so re-running it for a recovered account fills in
@@ -751,17 +846,35 @@ class FirebaseAuthService {
         lastName: last,
         signupMethod: AppConstants.signupMethodPhone,
       );
+      InAppLogger.info(
+        'signUpWithPhone: complete (uid=${created.uid}). '
+        'Account and profile are live; no rollback will run.',
+      );
       return created.uid;
     } on FirebaseAuthException catch (error) {
-      debugPrint('signUpWithPhone($digits) failed: ${error.code}');
-      if (!recovered) await _rollback(created);
+      // ── The account is kept, always. ─────────────────────────────────────
+      // Previously: `if (!recovered) await _rollback(created);` — which deleted
+      // the auth user, or signed out when the delete was refused. That is what
+      // produced "enters the app, then is back at login, console empty".
+      InAppLogger.error(
+        'signUpWithPhone($digits) failed: ${error.code} '
+        '(auth account NOT deleted; recover on next login)',
+        error.message,
+      );
       throw _translatePhoneSignUp(error);
-    } on AuthException {
-      if (!recovered) await _rollback(created);
+    } on AuthException catch (error) {
+      InAppLogger.error(
+        'signUpWithPhone($digits) aborted: ${error.message} '
+        '(auth account ${created?.uid ?? "-"} NOT deleted)',
+      );
       rethrow;
-    } on Object catch (error) {
-      debugPrint('signUpWithPhone failed: $error');
-      if (!recovered) await _rollback(created);
+    } on Object catch (error, stackTrace) {
+      InAppLogger.error(
+        'signUpWithPhone($digits) failed with a non-auth error '
+        '(auth account ${created?.uid ?? "-"} NOT deleted)',
+        error,
+        stackTrace,
+      );
       throw const AuthException('The account could not be created.');
     }
   }
@@ -771,6 +884,21 @@ class FirebaseAuthService {
   /// The derived address is computed locally, so this needs **no Firestore
   /// read** — which is the only way it can work at all, since the caller is
   /// signed out and the rules require an authenticated request.
+  ///
+  /// ### Ghost-account recovery
+  ///
+  /// A phone account created by an earlier build could be left with no profile
+  /// document: the auth account committed, the Firestore claim did not, and the
+  /// old rollback signed the user out. Such an account can sign in — the
+  /// credentials are real — but every screen behind the auth gate reads under a
+  /// uid with no document, so the app behaves as if the user has no profile.
+  ///
+  /// Rather than make the user sign up again (which they cannot: the number is
+  /// taken), this detects the missing document after a successful sign-in and
+  /// rebuilds it. The name is unknowable at this point — sign-in asks for a
+  /// number and a PIN, nothing else — so the claim uses the digits as the
+  /// display name and the phone flow's generated handle; profile setup is where
+  /// a real name gets set.
   Future<String> signInWithPhone({
     required String phoneDigits,
     required String pin,
@@ -779,13 +907,76 @@ class FirebaseAuthService {
     if (digits.length < 6) {
       throw const AuthException('Enter a valid phone number.');
     }
+    final String email = AppConstants.phoneAuthEmailFor(digits);
+    InAppLogger.info('signInWithPhone: start digits=$digits -> $email');
     try {
       final UserCredential credential = await _auth.signInWithEmailAndPassword(
-        email: AppConstants.phoneAuthEmailFor(digits),
+        email: email,
         password: pin,
       );
       final User? user = credential.user;
       if (user == null) throw const AuthException('Sign-in failed.');
+      InAppLogger.success('signInWithPhone: signed in uid=${user.uid}');
+
+      // ── ghost-account check ───────────────────────────────────────────────
+      // Signed in, so the rules now permit a read of `users/{uid}`.
+      bool hasProfile = true;
+      try {
+        final DocumentSnapshot<Map<String, dynamic>> profile =
+            await _db.collection(usersCollection).doc(user.uid).get();
+        hasProfile = profile.exists;
+      } on Object catch (error) {
+        // A read failure is not proof of a missing document. Do not rebuild on
+        // a network error — that would overwrite a real profile with a stub.
+        InAppLogger.warn(
+          'signInWithPhone: profile read failed for ${user.uid} '
+          '($error) — skipping ghost recovery',
+        );
+      }
+
+      if (!hasProfile) {
+        InAppLogger.warn(
+          'GHOST ACCOUNT: uid=${user.uid} signed in but users/${user.uid} '
+          'does not exist. Rebuilding profile documents.',
+        );
+        try {
+          // The digits are recoverable from the address this sign-in used, but
+          // `digits` is already the normalised form of what the user typed —
+          // using it avoids any dependence on the address format.
+          final String handle = generateLocalUsername();
+          await _createUserDocument(
+            uid: user.uid,
+            name: digits,
+            email: '',
+            username: handle,
+            phone: digits,
+            signupMethod: AppConstants.signupMethodPhone,
+          );
+          await _claimPhoneIdentity(
+            uid: user.uid,
+            phoneDigits: digits,
+            username: handle,
+            authEmail: email,
+          );
+          InAppLogger.success(
+            'GHOST ACCOUNT RECOVERED: rebuilt users/${user.uid} '
+            '(handle=$handle). User stays signed in.',
+          );
+        } on Object catch (error, stackTrace) {
+          // Recovery is a repair, not a gate. The sign-in itself succeeded and
+          // the credentials are valid — failing here would tell a legitimate
+          // user their PIN is wrong. Log it and carry on.
+          InAppLogger.error(
+            'GHOST ACCOUNT RECOVERY FAILED for ${user.uid} '
+            '(sign-in still counts as successful)',
+            error,
+            stackTrace,
+          );
+        }
+      } else {
+        InAppLogger.log('signInWithPhone: profile present for ${user.uid}');
+      }
+
       // Bind the account to this device's OneSignal subscription. Fire and
       // forget: push registration must never delay or fail a sign-in, and the
       // auth stream re-runs it for a restored session.
@@ -793,6 +984,7 @@ class FirebaseAuthService {
       await touchPresence(user.uid, isOnline: true);
       return user.uid;
     } on FirebaseAuthException catch (error) {
+      InAppLogger.error('signInWithPhone($digits) failed: ${error.code}');
       throw _translatePhoneSignIn(error);
     }
   }
@@ -852,29 +1044,22 @@ class FirebaseAuthService {
     }
   }
 
-  /// Deletes a half-created auth account.
-  ///
-  /// Best-effort on purpose: every caller is already on an error path, and a
-  /// failed cleanup must not replace the real error with a confusing one.
-  ///
-  /// The sign-out fallback matters more than it looks. `delete()` needs a recent
-  /// login and can be refused. If it is, the account stays — but the *session*
-  /// must not, because the auth gate would walk the user straight into the app
-  /// as a signed-in account with no profile document, and every screen behind
-  /// that gate reads under a uid that does not exist.
-  Future<void> _rollback(User? user) async {
-    if (user == null) return;
-    try {
-      await user.delete();
-    } on Object catch (error) {
-      debugPrint('Rollback of ${user.uid} failed: $error');
-      try {
-        await _auth.signOut();
-      } on Object catch (signOutError) {
-        debugPrint('Rollback sign-out failed: $signOutError');
-      }
-    }
-  }
+  // ── REMOVED 2026-10-05: `_rollback(User?)`. ───────────────────────────────
+  //
+  // It called `user.delete()` and, when that was refused, `_auth.signOut()`.
+  // Both are destructive on a path where the account is already created, and
+  // together they produced the signature symptom of this bug report: signup
+  // appears to succeed, the app is visible for a moment, then the login screen
+  // returns — with nothing in the Firebase console to explain it, because the
+  // account was never deleted *or* the delete was refused and the sign-out did
+  // the damage instead.
+  //
+  // Do not reintroduce it. A half-created account is repaired by the idempotent
+  // claim in [signInWithPhone], not destroyed here.
+  //
+  // If a genuine "abandon this signup" action is ever needed, it belongs in the
+  // UI, behind a confirmation, with the user told their account will be removed.
+  // It does not belong on a catch path.
 
   /// Generates `imouser_XXXXXX` for a phone signup.
   ///

@@ -21,11 +21,56 @@ import 'widgets/settings_widgets.dart';
 ///
 /// Every row navigates to a real, functional screen — nothing here is a
 /// decorative placeholder.
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  /// Taps so far on the version text, and when the run started.
+  ///
+  /// Reset when more than [_tapWindow] passes between taps, so seven taps
+  /// spread over a minute do not unlock anything.
+  int _versionTaps = 0;
+  DateTime? _versionTapStart;
+  static const Duration _tapWindow = Duration(seconds: 5);
+
+  /// Counts taps on the version text and opens the log viewer on the seventh.
+  ///
+  /// A SnackBar at three taps is the only feedback: below that the screen stays
+  /// silent, because telling someone "1 more tap" on their first accidental tap
+  /// would advertise a feature the tap count is meant to keep quiet.
+  void _onVersionTap(BuildContext context) {
+    final DateTime now = DateTime.now();
+    final bool withinWindow = _versionTapStart != null &&
+        now.difference(_versionTapStart!) <= _tapWindow;
+    _versionTapStart = withinWindow ? _versionTapStart : now;
+    _versionTaps = withinWindow ? _versionTaps + 1 : 1;
+
+    if (_versionTaps >= 7) {
+      _versionTaps = 0;
+      _versionTapStart = null;
+      context.push(AppRoutes.devLogs);
+      return;
+    }
+    if (_versionTaps == 3) {
+      final int remaining = 7 - _versionTaps;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text('$remaining more taps to unlock developer menu'),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AsyncValue<Contact> self = ref.watch(selfProfileProvider);
     final Contact profile =
         self.valueOrNull ?? const Contact(id: 'self', firstName: 'You');
@@ -272,10 +317,21 @@ class SettingsScreen extends ConsumerWidget {
           Center(
             child: Column(
               children: <Widget>[
-                Text(
-                  context.l10n.fromImoLIVE,
-                  style: context.t.bodySmall?.copyWith(
-                    color: context.c.textSecondary,
+                // The version line doubles as the developer-menu unlock.
+                //
+                // Seven taps inside five seconds opens the log viewer. It is
+                // hidden rather than gated because the logs are the user's own
+                // device output and a stuck user needs them without hunting for
+                // a settings entry — but it should not be *stumbled into* by
+                // someone idly tapping.
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => _onVersionTap(context),
+                  child: Text(
+                    context.l10n.fromImoLIVE,
+                    style: context.t.bodySmall?.copyWith(
+                      color: context.c.textSecondary,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
@@ -287,6 +343,23 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+
+          // ------------------------------------------------------- developer
+          // A permanent, visible entry, kept alongside the tap gesture: the
+          // gesture is the discreet path, this is the one that can be described
+          // over the phone to someone who cannot find a hidden target.
+          SettingsGroup(
+            title: 'Developer',
+            children: <Widget>[
+              SettingsValueRow(
+                label: 'View Logs',
+                value: 'Developer only',
+                leadingIcon: Icons.bug_report_outlined,
+                onTap: () => context.push(AppRoutes.devLogs),
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.xl),
         ],

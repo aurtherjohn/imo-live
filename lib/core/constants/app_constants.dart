@@ -167,6 +167,13 @@ class AppRoutes {
   static const String language = '/settings/language';
   static const String help = '/settings/help';
   static const String about = '/settings/about';
+  /// Phone sign-in / sign-up, as a real route so the auth redirect and the
+  /// visible screen stay in agreement (see `login_screen.dart::_phone`).
+  static const String phoneLogin = '/auth/phone';
+  /// Developer-only log viewer. Reachable by tapping the version text on the
+  /// settings screen seven times — deliberately not linked from anywhere else,
+  /// so it is invisible unless it is being looked for.
+  static const String devLogs = '/settings/dev-logs';
   static const String lists = '/settings/lists';
   static const String linkedDevices = '/settings/devices';
   static const String blocked = '/settings/blocked';

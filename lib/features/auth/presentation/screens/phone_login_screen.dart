@@ -15,6 +15,7 @@ import '../auth_providers.dart';
 import '../widgets/auth_settings_button.dart';
 import '../widgets/auth_widgets.dart';
 import '../widgets/country_picker_sheet.dart';
+import '../widgets/signup_error_dialog.dart';
 
 /// Which half of the phone flow the screen is showing.
 enum PhoneAuthMode {
@@ -179,11 +180,26 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
     if (outcome.isFailure) {
       setState(() => _error = outcome.error);
       iToast(context, outcome.error!, isError: true);
+      // Also open the dialog: on a device with no ADB the toast is gone in two
+      // seconds, and the last few log lines are the only diagnosis available.
+      if (_mode == PhoneAuthMode.signUp) {
+        await showSignupError(context, outcome.error!);
+      }
       return;
     }
 
     // Signed in. Drop this route so the gate's swap is what the user sees;
     // staying pushed would leave the phone form sitting on top of the app.
+    //
+    // The pop is deferred one frame on purpose. This screen is pushed with a
+    // raw `Navigator.push`, while `GoRouter.redirect` reacts to the auth change
+    // independently — and right after `signUpWithPhone` returns, the router's
+    // cached user is still the stale (null) one, so the redirect rewrites the
+    // location back to /login underneath us. Popping in the same frame as the
+    // state change is what made the app appear for an instant and then return
+    // to the login screen. Letting the router settle first removes the race.
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) return;
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
