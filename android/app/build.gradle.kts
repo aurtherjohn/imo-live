@@ -1,3 +1,4 @@
+import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -49,6 +50,36 @@ val envKeystoreFile: String? = System.getenv("KEYSTORE_FILE")
 val resolvedStoreFile: String? =
     if (!envKeystoreFile.isNullOrBlank()) envKeystoreFile
     else keystoreProperties.getProperty("storeFile")
+
+/**
+ * Resolves [resolvedStoreFile] the way each source actually means it.
+ *
+ * ⚠️ **This is a trap worth stating plainly.** Inside an `android { }` block,
+ * `file(x)` resolves against the *module* directory — `android/app/` — not the
+ * repo root. The CI value is repo-root-relative (`android/app/imo-live-release.jks`,
+ * as the workflow writes it there), so passing it through `file()` produced
+ *
+ *     android/app/ + android/app/imo-live-release.jks
+ *
+ * which Gradle reported as `android/app/android/app/***-release.jks not found`
+ * and which failed the whole build with ~21 minutes already spent.
+ *
+ * `key.properties` documents its `storeFile` as ABSOLUTE (see the header), and a
+ * relative value there has always meant module-relative — so that source keeps
+ * `file()`. Only the env-var source is interpreted against the repo root, and an
+ * absolute path is honoured either way.
+ */
+val resolvedStoreFileObject: File? =
+    resolvedStoreFile?.takeIf { it.isNotBlank() }?.let { path ->
+        val raw = File(path)
+        when {
+            raw.isAbsolute -> raw
+            !envKeystoreFile.isNullOrBlank() && path == envKeystoreFile ->
+                rootProject.file(path)
+            else -> file(path)
+        }
+    }
+
 val resolvedStorePassword: String? =
     System.getenv("KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
         ?: keystoreProperties.getProperty("storePassword")
@@ -59,7 +90,7 @@ val resolvedKeyPassword: String? =
     System.getenv("KEY_PASSWORD")?.takeIf { it.isNotBlank() }
         ?: keystoreProperties.getProperty("keyPassword")
 
-val hasReleaseSigning = !resolvedStoreFile.isNullOrBlank() &&
+val hasReleaseSigning = resolvedStoreFileObject != null &&
     !resolvedStorePassword.isNullOrBlank() &&
     !resolvedKeyAlias.isNullOrBlank() &&
     !resolvedKeyPassword.isNullOrBlank()
@@ -82,6 +113,18 @@ task("assertReleaseSigning") {
                 "  Locally: create android/key.properties from " +
                 "key.properties.example, or use `flutter run` / " +
                 "`flutter build apk --debug` instead."
+            )
+        }
+        // Printed before the build starts: a path mistake is otherwise only
+        // discovered ~20 minutes in, by `validateSigningRelease`.
+        val storeFile = resolvedStoreFileObject!!
+        println("Release signing: storeFile=${storeFile.absolutePath} ")
+        println("  exists=${storeFile.exists()}  alias=${resolvedKeyAlias}")
+        if (!storeFile.exists()) {
+            throw GradleException(
+                "Release keystore not found at ${storeFile.absolutePath}. " +
+                "KEYSTORE_FILE is resolved against the REPO ROOT; " +
+                "key.properties storeFile is resolved against android/app/."
             )
         }
     }
@@ -137,7 +180,7 @@ android {
         // themselves nullable, so a direct assignment is correct and a `!!`
         // would only add a crash path.
         create("release") {
-            storeFile = resolvedStoreFile?.let { file(it) }
+            storeFile = resolvedStoreFileObject
             storePassword = resolvedStorePassword
             keyAlias = resolvedKeyAlias
             keyPassword = resolvedKeyPassword

@@ -79,17 +79,36 @@ jobs:
             exit 1
           fi
 
-      # ⚠️ This does NOT just print the fingerprint and hope. It asserts the
-      # keystore's SHA-1 against the value registered in Firebase and FAILS the
-      # build on a mismatch. A wrong keystore means Google Sign-In returns
-      # DEVELOPER_ERROR on every device, so shipping that APK is worse than
-      # shipping nothing — a red build here is the correct outcome.
+      # ⚠️ Runs BEFORE `flutter build`, on purpose. Gradle only notices a bad
+      # keystore path in `:app:validateSigningRelease`, which happens roughly 20
+      # minutes into the build — after the Dart/Flutter compile. Checking the
+      # path and the alias here turns a 20-minute failure into a 25-second one,
+      # and it is what caught the repo-root-vs-module path bug the first time.
       - name: Verify keystore fingerprint
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
           set -euo pipefail
+
+          # 1. The file the build will read must exist at the exact path Gradle
+          #    resolves. KEYSTORE_FILE is repo-root-relative; build.gradle.kts
+          #    resolves it with rootProject.file().
+          if [ ! -f "$KEYSTORE_PATH" ]; then
+            echo "::error::Keystore missing at $KEYSTORE_PATH (repo root relative) — the decode step did not write it."
+            exit 1
+          fi
+          echo "KEYSTORE_FILE=$KEYSTORE_PATH (exists, $(wc -c < "$KEYSTORE_PATH") bytes)"
+
+          # 2. The alias must exist IN this keystore. A wrong KEY_ALIAS fails
+          #    deep inside signing with a much less obvious message.
+          if ! keytool -list -keystore "$KEYSTORE_PATH" \
+                 -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" \
+                 > /dev/null 2>&1; then
+            echo "::error::Alias '$KEY_ALIAS' not found in the keystore, or the store password is wrong."
+            exit 1
+          fi
+
           keytool -list -v -keystore "$KEYSTORE_PATH" \
             -alias "$KEY_ALIAS" -storepass "$KEYSTORE_PASSWORD" > keystore-info.txt
 
@@ -127,17 +146,32 @@ jobs:
             --dart-define=GOOGLE_OAUTH_CLIENT_ID="$GOOGLE_OAUTH_CLIENT_ID"
 
       # Proves what actually ended up inside the shipped APK, not just what the
-      # keystore file held. If these two differ, signing did not take effect.
-      - name: Show signed APK SHA-1
+      # keystore file held. Asserts equality rather than printing for a human:
+      # a mismatch here means the artifact is signed with something other than
+      # the Firebase-registered key, and shipping it would silently reintroduce
+      # the Google Sign-In DEVELOPER_ERROR this whole change exists to fix.
+      - name: Verify signed APK certificate
         run: |
           set -euo pipefail
           APK=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-          if [ -f "$APK" ]; then
-            keytool -printcert -jarfile "$APK" | grep -E "SHA1|SHA256"
-          else
+          if [ ! -f "$APK" ]; then
             echo "::error::$APK not found — nothing was built."
             exit 1
           fi
+          keytool -printcert -jarfile "$APK" > apk-cert.txt
+          grep -E "SHA1|SHA256" apk-cert.txt || true
+
+          APK_SHA1=$(grep -i 'SHA1:' apk-cert.txt | head -1 \
+            | sed 's/.*SHA1: *//' | tr -d '\r' | xargs)
+          echo "APK SHA-1      : $APK_SHA1"
+          echo "EXPECTED SHA-1 : $EXPECTED_SHA1"
+
+          norm() { echo "$1" | tr 'a-f' 'A-F'; }
+          if [ "$(norm "$APK_SHA1")" != "$(norm "$EXPECTED_SHA1")" ]; then
+            echo "::error::The built APK is NOT signed with the Firebase-registered key. Google Sign-In will fail on device."
+            exit 1
+          fi
+          echo "::notice::Signed APK certificate matches the Firebase-registered SHA-1."
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
@@ -163,4 +197,4 @@ jobs:
       # private key should not outlive the step that needs it.
       - name: Clean up keystore
         if: always()
-        run: rm -f "$KEYSTORE_PATH" keystore-info.txt
+        run: rm -f "$KEYSTORE_PATH" keystore-info.txt apk-cert.txt
