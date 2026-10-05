@@ -254,7 +254,8 @@ jobs:
             echo "apksigner: $APKSIGNER"
           fi
 
-          CERT=""
+          CERT_SHA1=""
+          CERT_SHA256=""
           if [ -n "$APKSIGNER" ]; then
             # Fail loudly rather than exiting 0 on an unsigned/corrupt APK.
             if ! run_apksigner "$APKSIGNER" verify --print-certs "$APK" \
@@ -263,9 +264,17 @@ jobs:
               cat keytool-err.txt || true
               exit 1
             fi
-            grep -E 'Signer #1 certificate (DN|SHA-1|SHA-256)' apk-cert.txt || true
-            # Colon-less lowercase -> normalised for the compare below.
-            CERT=$(grep -i 'Signer #1 certificate SHA-1 digest' apk-cert.txt \
+            echo "--- apksigner output ---"
+            cat apk-cert.txt || true
+            # ⚠️ DO NOT anchor the label. apksigner's wording is NOT stable:
+            #   build-tools 35/36 -> "Signer #1 certificate SHA-1 digest: <hex>"
+            #   build-tools 37.0.0 -> "V2 Signer: certificate SHA-1 digest: <hex>"
+            # Run 40 was on 37.0.0; matching only "Signer #1" produced an empty
+            # value and a false failure even though the key was CORRECT. Match
+            # on the invariant substring ("certificate SHA-1 digest") instead.
+            CERT_SHA1=$(grep -i 'certificate SHA-1 digest' apk-cert.txt \
+              | head -1 | sed 's/.*digest: *//' | tr -d ' \r' || true)
+            CERT_SHA256=$(grep -i 'certificate SHA-256 digest' apk-cert.txt \
               | head -1 | sed 's/.*digest: *//' | tr -d ' \r' || true)
           else
             KEYTOOL="${JAVA_HOME:+$JAVA_HOME/bin/keytool}"
@@ -279,31 +288,45 @@ jobs:
               cat keytool-err.txt || true
               exit 1
             fi
-            grep -E 'SHA1|SHA256' apk-cert.txt || true
-            CERT=$(grep -i 'SHA1:' apk-cert.txt | head -1 \
+            echo "--- keytool output ---"
+            cat apk-cert.txt || true
+            CERT_SHA1=$(grep -i 'SHA1:' apk-cert.txt | head -1 \
               | sed 's/.*SHA1: *//' | tr -d '\r' | xargs || true)
+            CERT_SHA256=$(grep -i 'SHA256:' apk-cert.txt | head -1 \
+              | sed 's/.*SHA256: *//' | tr -d '\r' | xargs || true)
           fi
 
           # ⚠️ `tr -d :` on BOTH sides: apksigner prints colon-less hex, keytool
           # prints colon-separated. Comparing raw strings would always fail.
           norm() { echo "$1" | tr -d ':' | tr 'a-f' 'A-F' | xargs; }
-          APK_SHA1="$(norm "$CERT")"
-          EXPECTED_N="$(norm "$EXPECTED_SHA1")"
+          APK_SHA1="$(norm "$CERT_SHA1")"
+          APK_SHA256="$(norm "$CERT_SHA256")"
+          EXPECTED_SHA1_N="$(norm "$EXPECTED_SHA1")"
+          EXPECTED_SHA256_N="$(norm "$EXPECTED_SHA256")"
 
-          echo "APK SHA-1      : $APK_SHA1"
-          echo "EXPECTED SHA-1 : $EXPECTED_N"
+          echo "APK SHA-1        : $APK_SHA1"
+          echo "EXPECTED SHA-1   : $EXPECTED_SHA1_N"
+          echo "APK SHA-256      : $APK_SHA256"
+          echo "EXPECTED SHA-256 : $EXPECTED_SHA256_N"
 
           if [ -z "$APK_SHA1" ]; then
             echo "::error::Could not extract a SHA-1 from the APK certificate."
-            echo "A v2/v3-only APK (minSdk >= 24) reports 'Not a signed jar file' under keytool."
-            cat apk-cert.txt || true
+            echo "If the log above says 'Not a signed jar file', the APK is v2/v3-only and keytool cannot read it."
             exit 1
           fi
-          if [ "$APK_SHA1" != "$EXPECTED_N" ]; then
-            echo "::error::The built APK is NOT signed with the Firebase-registered key. Google Sign-In will fail on device."
+          if [ -z "$APK_SHA256" ]; then
+            echo "::error::Could not extract a SHA-256 from the APK certificate."
             exit 1
           fi
-          echo "::notice::Signed APK certificate matches the Firebase-registered SHA-1."
+          if [ "$APK_SHA1" != "$EXPECTED_SHA1_N" ]; then
+            echo "::error::APK SHA-1 mismatch. Google Sign-In will fail."
+            exit 1
+          fi
+          if [ "$APK_SHA256" != "$EXPECTED_SHA256_N" ]; then
+            echo "::error::APK SHA-256 mismatch."
+            exit 1
+          fi
+          echo "::notice::Signed APK matches Firebase-registered SHA-1 AND SHA-256."
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
