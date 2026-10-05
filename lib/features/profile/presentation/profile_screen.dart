@@ -212,7 +212,7 @@ class ProfileScreen extends ConsumerWidget {
               SettingsValueRow(
                 label: context.l10n.privacy,
                 leadingIcon: Icons.lock_outline_rounded,
-                value: 'Manage',
+                value: context.l10n.manage,
                 onTap: () => context.push(AppRoutes.privacy),
               ),
               SettingsValueRow(

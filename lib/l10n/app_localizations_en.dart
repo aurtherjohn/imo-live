@@ -5429,4 +5429,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapToAddAStatus => 'Tap to add a status update';
+
+  @override
+  String get lockLastSeenBlocked => 'Lock, last seen, blocked';
+
+  @override
+  String get themeEnterKeyAutoDownload => 'Theme, enter key, auto-download';
+
+  @override
+  String get accentTextSizeChatThemeIcon =>
+      'Accent, text size, chat theme, icon';
+
+  @override
+  String get faqContactUsTerms => 'FAQ, contact us, terms';
+
+  @override
+  String get channelsAndCommunities => 'Channels & communities';
+
+  @override
+  String get approveOrRejectChannelApplications =>
+      'Approve or reject channel applications';
+
+  @override
+  String get followingSystemDark => 'Following system · dark';
+
+  @override
+  String get followingSystemLight => 'Following system · light';
+
+  @override
+  String get localOnly => 'Local only';
+
+  @override
+  String get techStack => 'Flutter · Material 3 · Riverpod';
+
+  @override
+  String get offlineFirstFirebaseSync => 'Offline-first with Firebase sync';
 }

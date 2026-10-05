@@ -2559,5 +2559,16 @@
   "sharing2": "Sharing…",
   "shareUpdate": "Share update",
   "noViewsYet": "No views yet",
-  "tapToAddAStatus": "Tap to add a status update"
+  "tapToAddAStatus": "Tap to add a status update",
+  "lockLastSeenBlocked": "Lock, last seen, blocked",
+  "themeEnterKeyAutoDownload": "Theme, enter key, auto-download",
+  "accentTextSizeChatThemeIcon": "Accent, text size, chat theme, icon",
+  "faqContactUsTerms": "FAQ, contact us, terms",
+  "channelsAndCommunities": "Channels & communities",
+  "approveOrRejectChannelApplications": "Approve or reject channel applications",
+  "followingSystemDark": "Following system · dark",
+  "followingSystemLight": "Following system · light",
+  "localOnly": "Local only",
+  "techStack": "Flutter · Material 3 · Riverpod",
+  "offlineFirstFirebaseSync": "Offline-first with Firebase sync"
 }

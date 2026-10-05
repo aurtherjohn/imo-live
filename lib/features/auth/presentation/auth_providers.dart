@@ -103,42 +103,18 @@ final StreamProviderFamily<RemoteProfile?, String> remoteProfileProvider =
   return ref.watch(remoteContactServiceProvider).watchProfile(uid);
 });
 
-/// The address a just-created account must verify.
-///
-/// Set by the signup screen immediately before the auth gate swaps in the OTP
-/// screen, so the OTP screen can say "we sent a code to <address>" instead of
-/// "your email". Falls back to the signed-in user's own address, which covers
-/// the case where the app is restarted mid-verification.
-final StateProvider<String> pendingVerificationEmailProvider =
-    StateProvider<String>((Ref ref) => '');
-
-/// The address the OTP screen should name.
-final Provider<String> verificationEmailProvider = Provider<String>((Ref ref) {
-  final String pending = ref.watch(pendingVerificationEmailProvider);
-  if (pending.isNotEmpty) return pending;
-  return ref.watch(authStateProvider).valueOrNull?.email ?? '';
-});
-
-/// True when the signed-in account still has to verify its email.
-///
-/// OAuth users arrive verified, so this is false for them; password signups
-/// start true and flip once the server reports the address as confirmed.
-final Provider<bool> needsEmailVerificationProvider = Provider<bool>((Ref ref) {
-  // Depend on the stream so a reload-triggered auth event re-evaluates this.
-  ref.watch(authStateProvider);
-  final FirebaseAuthService service = ref.watch(firebaseAuthServiceProvider);
-  final User? user = service.currentUser;
-  if (user == null) return false;
-  // Google accounts are verified by the provider itself.
-  final bool isPasswordAccount = user.providerData.any(
-    (UserInfo info) => info.providerId == 'password',
-  );
-  // A phone account is *also* a `password` account, but its address is derived
-  // from the number and can never be confirmed — no mailbox exists. Without
-  // this it would sit on the OTP screen forever with no way forward.
-  final bool isPhoneAccount = AppConstants.isPhoneAuthEmail(user.email);
-  return isPasswordAccount && !isPhoneAccount && !user.emailVerified;
-});
+// NOTE: the email-verification state providers that used to live here
+// (`pendingVerificationEmailProvider`, `verificationEmailProvider`,
+// `needsEmailVerificationProvider`) were removed on 2026-10-06 along with email
+// sign-in and the OTP screen. Google and phone are the only providers left, and
+// neither has an email that can be "unverified":
+//
+//   * a Google account is verified by Google before Firebase sees it;
+//   * a phone account's address is derived from the number
+//     (`AppConstants.phoneAuthEmailFor`) and no mailbox exists to confirm it,
+//     so `emailVerified` would be false forever.
+//
+// The matching half of this rule is in `app/auth_gate.dart::authRedirect`.
 
 // ============================================================================
 // Controller
@@ -149,23 +125,16 @@ final Provider<bool> needsEmailVerificationProvider = Provider<bool>((Ref ref) {
 @immutable
 class AuthOutcome {
   const AuthOutcome.success([this.uid = ''])
-      : error = null,
-        needsVerification = false;
+      : error = null;
+
   const AuthOutcome.failure(String message)
       : uid = '',
-        error = message,
-        needsVerification = false;
-
-  /// Signed up, but the email still has to be verified on the OTP screen.
-  const AuthOutcome.verifyEmail(this.uid)
-      : error = null,
-        needsVerification = true;
+        error = message;
 
   final String uid;
   final String? error;
-  final bool needsVerification;
 
-  bool get isSuccess => error == null && !needsVerification;
+  bool get isSuccess => error == null;
   bool get isFailure => error != null;
 }
 
@@ -202,52 +171,11 @@ class AuthController extends Notifier<AsyncValue<void>> {
   FirebaseAuthService get _auth => ref.read(firebaseAuthServiceProvider);
   InAppOAuthService get _oauth => ref.read(inAppOAuthProvider);
 
-  Future<AuthOutcome> signInWithEmail({
-    required String email,
-    required String password,
-  }) async {
-    state = const AsyncLoading<void>();
-    try {
-      final String uid = await _auth.signInWithEmail(
-        email: email,
-        password: password,
-      );
-      state = const AsyncData<void>(null);
-      await _adoptSession();
-      return AuthOutcome.success(uid);
-    } on AuthException catch (error) {
-      state = AsyncError<void>(error, StackTrace.current);
-      return AuthOutcome.failure(error.message);
-    } on Object catch (error) {
-      state = AsyncError<void>(error, StackTrace.current);
-      return AuthOutcome.failure('Sign-in failed. Please try again.');
-    }
-  }
-
-  /// Creates an account. The result asks the caller to run email verification.
-  Future<AuthOutcome> signUpWithEmail({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
-    state = const AsyncLoading<void>();
-    try {
-      final String uid = await _auth.signUpWithEmail(
-        name: name,
-        email: email,
-        password: password,
-      );
-      state = const AsyncData<void>(null);
-      await _adoptSession();
-      return AuthOutcome.verifyEmail(uid);
-    } on AuthException catch (error) {
-      state = AsyncError<void>(error, StackTrace.current);
-      return AuthOutcome.failure(error.message);
-    } on Object catch (error) {
-      state = AsyncError<void>(error, StackTrace.current);
-      return AuthOutcome.failure('The account could not be created.');
-    }
-  }
+  // NOTE: `signInWithEmail` and `signUpWithEmail` were removed on 2026-10-06.
+  // They were the only flows that produced an account needing an emailed
+  // confirmation link, and that link never arrived on a real device — so the
+  // account existed and was permanently unusable. Google and phone are the two
+  // providers that complete inside the app.
 
   /// Completes a Google sign-in started from the login or signup screen.
   Future<AuthOutcome> signInWithGoogle() => _runOAuth(_oauth.signInWithGoogle);
@@ -256,8 +184,8 @@ class AuthController extends Notifier<AsyncValue<void>> {
   ///
   /// There is no verification step to hand back: the number is not confirmed by
   /// SMS, and the derived sign-in address has no mailbox to confirm. The account
-  /// is usable the moment this returns, so unlike [signUpWithEmail] the result
-  /// is a plain success and the gate sends the user straight into the app.
+  /// is usable the moment this returns, so the result is a plain success and
+  /// the gate sends the user straight into the app.
   Future<AuthOutcome> signUpWithPhone({
     required String phoneDigits,
     required String pin,
@@ -458,21 +386,8 @@ class AuthController extends Notifier<AsyncValue<void>> {
     ref.invalidate(languageProvider);
   }
 
-  /// Re-sends the verification email from the OTP screen.
-  Future<AuthOutcome> resendVerification() async {
-    try {
-      await _auth.resendVerificationEmail();
-      return const AuthOutcome.success();
-    } on AuthException catch (error) {
-      return AuthOutcome.failure(error.message);
-    } on Object {
-      return const AuthOutcome.failure('The code could not be sent again.');
-    }
-  }
-
-  /// The OTP screen's "Verify" button: reloads the account and reports whether
-  /// the server now considers the email verified.
-  Future<bool> confirmEmailVerified() => _auth.isEmailVerified();
+  // NOTE: `resendVerification` and `confirmEmailVerified` were removed with the
+  // OTP screen on 2026-10-06 — there is no email verification step left.
 
   /// Runs once a session is adopted: gives the local stores a clean slate for
   /// the new user and starts mirroring the remote conversation list.

@@ -5422,4 +5422,40 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get tapToAddAStatus => 'স্ট্যাটাস আপডেট যোগ করতে ট্যাপ করুন';
+
+  @override
+  String get lockLastSeenBlocked => 'লক, সর্বশেষ দেখা, ব্লক করা';
+
+  @override
+  String get themeEnterKeyAutoDownload =>
+      'থিম, এন্টার কী, স্বয়ংক্রিয় ডাউনলোড';
+
+  @override
+  String get accentTextSizeChatThemeIcon =>
+      'অ্যাকসেন্ট, লেখার আকার, চ্যাট থিম, আইকন';
+
+  @override
+  String get faqContactUsTerms => 'সাধারণ জিজ্ঞাসা, যোগাযোগ, শর্তাবলি';
+
+  @override
+  String get channelsAndCommunities => 'চ্যানেল ও কমিউনিটি';
+
+  @override
+  String get approveOrRejectChannelApplications =>
+      'চ্যানেলের আবেদন অনুমোদন বা বাতিল করুন';
+
+  @override
+  String get followingSystemDark => 'সিস্টেম অনুসরণ · ডার্ক';
+
+  @override
+  String get followingSystemLight => 'সিস্টেম অনুসরণ · লাইট';
+
+  @override
+  String get localOnly => 'শুধু এই ডিভাইসে';
+
+  @override
+  String get techStack => 'ফ্লাটার · মেটেরিয়াল ৩ · রিভারপড';
+
+  @override
+  String get offlineFirstFirebaseSync => 'অফলাইন-ফার্স্ট, ফায়ারবেস সিঙ্ক সহ';
 }

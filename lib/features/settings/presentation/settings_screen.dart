@@ -29,45 +29,12 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  /// Taps so far on the version text, and when the run started.
-  ///
-  /// Reset when more than [_tapWindow] passes between taps, so seven taps
-  /// spread over a minute do not unlock anything.
-  int _versionTaps = 0;
-  DateTime? _versionTapStart;
-  static const Duration _tapWindow = Duration(seconds: 5);
-
-  /// Counts taps on the version text and opens the log viewer on the seventh.
-  ///
-  /// A SnackBar at three taps is the only feedback: below that the screen stays
-  /// silent, because telling someone "1 more tap" on their first accidental tap
-  /// would advertise a feature the tap count is meant to keep quiet.
-  void _onVersionTap(BuildContext context) {
-    final DateTime now = DateTime.now();
-    final bool withinWindow = _versionTapStart != null &&
-        now.difference(_versionTapStart!) <= _tapWindow;
-    _versionTapStart = withinWindow ? _versionTapStart : now;
-    _versionTaps = withinWindow ? _versionTaps + 1 : 1;
-
-    if (_versionTaps >= 7) {
-      _versionTaps = 0;
-      _versionTapStart = null;
-      context.push(AppRoutes.devLogs);
-      return;
-    }
-    if (_versionTaps == 3) {
-      final int remaining = 7 - _versionTaps;
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text('$remaining more taps to unlock developer menu'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-    }
-  }
+  // NOTE: the seven-tap gesture on the version text, and the "Developer → View
+  // Logs" entry it unlocked, were removed on 2026-10-06. Both were diagnostic
+  // scaffolding added to chase the signup failures; that investigation is over,
+  // and a hidden menu plus a visible developer row have no place in a published
+  // build. `InAppLogger` itself is kept — it mirrors every line to
+  // `debugPrint`, which is what a tethered `adb logcat` reads.
 
   @override
   Widget build(BuildContext context) {
@@ -131,13 +98,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               SettingsValueRow(
                 label: context.l10n.privacy,
-                value: 'Lock, last seen, blocked',
+                value: context.l10n.lockLastSeenBlocked,
                 leadingIcon: Icons.lock_outline_rounded,
                 onTap: () => context.push(AppRoutes.privacy),
               ),
               SettingsValueRow(
                 label: context.l10n.linkedDevices,
-                value: 'Manage',
+                value: context.l10n.manage,
                 leadingIcon: Icons.devices_rounded,
                 onTap: () => context.push(AppRoutes.linkedDevices),
               ),
@@ -162,7 +129,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: <Widget>[
               SettingsValueRow(
                 label: context.l10n.chatSettings,
-                value: 'Theme, enter key, auto-download',
+                value: context.l10n.themeEnterKeyAutoDownload,
                 leadingIcon: Icons.chat_bubble_outline_rounded,
                 onTap: () => context.push(AppRoutes.chatSettings),
               ),
@@ -233,7 +200,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ThemeMode.dark => context.l10n.onDarkTheme,
                   ThemeMode.light => context.l10n.offLightTheme,
                   ThemeMode.system =>
-                    'Following system · ${MediaQuery.platformBrightnessOf(context) == Brightness.dark ? 'dark' : 'light'}',
+                    MediaQuery.platformBrightnessOf(context) ==
+                            Brightness.dark
+                        ? context.l10n.followingSystemDark
+                        : context.l10n.followingSystemLight,
                 },
                 leadingIcon: ref.watch(themeModeProvider) == ThemeMode.dark
                     ? Icons.dark_mode_rounded
@@ -248,16 +218,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               SettingsValueRow(
                 label: context.l10n.themeMode,
                 value: switch (ref.watch(themeModeProvider)) {
-                  ThemeMode.dark => 'Dark',
-                  ThemeMode.light => 'Light',
-                  ThemeMode.system => 'System',
+                  ThemeMode.dark => context.l10n.themeDark,
+                  ThemeMode.light => context.l10n.themeLight,
+                  ThemeMode.system => context.l10n.system,
                 },
                 leadingIcon: Icons.contrast_rounded,
                 onTap: () => context.push(AppRoutes.appearance),
               ),
               SettingsValueRow(
                 label: context.l10n.appearance,
-                value: 'Accent, text size, chat theme, icon',
+                value: context.l10n.accentTextSizeChatThemeIcon,
                 leadingIcon: Icons.palette_outlined,
                 onTap: () => context.push(AppRoutes.appearance),
               ),
@@ -278,13 +248,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: <Widget>[
               SettingsValueRow(
                 label: context.l10n.help,
-                value: 'FAQ, contact us, terms',
+                value: context.l10n.faqContactUsTerms,
                 leadingIcon: Icons.help_outline_rounded,
                 onTap: () => context.push(AppRoutes.help),
               ),
               SettingsValueRow(
                 label: context.l10n.subscriptions,
-                value: 'Channels & communities',
+                value: context.l10n.channelsAndCommunities,
                 leadingIcon: Icons.workspace_premium_outlined,
                 onTap: () => context.push(AppRoutes.subscriptions),
               ),
@@ -306,7 +276,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: <Widget>[
                 SettingsValueRow(
                   label: context.l10n.monetizationReview,
-                  value: 'Approve or reject channel applications',
+                  value: context.l10n.approveOrRejectChannelApplications,
                   leadingIcon: Icons.fact_check_outlined,
                   onTap: () => context.push(AppRoutes.monetizationAdmin),
                 ),
@@ -317,21 +287,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Center(
             child: Column(
               children: <Widget>[
-                // The version line doubles as the developer-menu unlock.
-                //
-                // Seven taps inside five seconds opens the log viewer. It is
-                // hidden rather than gated because the logs are the user's own
-                // device output and a stuck user needs them without hunting for
-                // a settings entry — but it should not be *stumbled into* by
-                // someone idly tapping.
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => _onVersionTap(context),
-                  child: Text(
-                    context.l10n.fromImoLIVE,
-                    style: context.t.bodySmall?.copyWith(
-                      color: context.c.textSecondary,
-                    ),
+                // The version line is informational now. It used to double as
+                // the developer-menu unlock (seven taps); that was removed with
+                // the log viewer on 2026-10-06.
+                Text(
+                  context.l10n.fromImoLIVE,
+                  style: context.t.bodySmall?.copyWith(
+                    color: context.c.textSecondary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
@@ -343,23 +305,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          // ------------------------------------------------------- developer
-          // A permanent, visible entry, kept alongside the tap gesture: the
-          // gesture is the discreet path, this is the one that can be described
-          // over the phone to someone who cannot find a hidden target.
-          SettingsGroup(
-            title: 'Developer',
-            children: <Widget>[
-              SettingsValueRow(
-                label: 'View Logs',
-                value: 'Developer only',
-                leadingIcon: Icons.bug_report_outlined,
-                onTap: () => context.push(AppRoutes.devLogs),
-              ),
-            ],
           ),
           const SizedBox(height: AppSpacing.xl),
         ],

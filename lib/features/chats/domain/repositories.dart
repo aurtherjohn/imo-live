@@ -49,7 +49,7 @@ abstract interface class MessageRepository {
   /// Messages for [chatId], oldest first.
   Future<List<Message>> getForChat(String chatId);
   Stream<List<Message>> watchForChat(String chatId);
-  Future<Message?> findById(String id);
+  Future<Message?> findById(String id, {String? chatId});
 
   Future<void> save(Message message);
   Future<void> saveAll(List<Message> messages);
@@ -71,9 +71,15 @@ abstract interface class MessageRepository {
   /// The implementation is therefore expected to be synchronous with respect
   /// to the network — the removal is durable the moment this future completes.
   ///
+  /// [chatId] is a hint, not a requirement: when the caller already knows which
+  /// conversation the message belongs to, passing it turns the lookup into a
+  /// single read instead of a scan of every conversation on the device. That
+  /// scan is what made deleting a message feel slow on an account with a long
+  /// chat list.
+  ///
   /// Contrast [deleteForEveryone], which *is* meant to reach the other device
   /// and is deliberately bounded by [Message.deleteForEveryoneWindow].
-  Future<void> deleteForMe(String id);
+  Future<void> deleteForMe(String id, {String? chatId});
 
   /// Retracts a message for everyone, replacing it with a "deleted" notice.
   ///
@@ -83,7 +89,7 @@ abstract interface class MessageRepository {
   /// re-checked here rather than trusted from the caller, because the action
   /// sheet is only one way in: a stale menu, a queued tap or a future call site
   /// would otherwise bypass it. See [Message.canDeleteForEveryoneAt].
-  Future<bool> deleteForEveryone(String id);
+  Future<bool> deleteForEveryone(String id, {String? chatId});
   Future<void> toggleStar(String id);
   Future<void> starAll(List<String> ids, bool starred);
 

@@ -1589,5 +1589,16 @@
   "sharing2": "শেয়ার করা হচ্ছে…",
   "shareUpdate": "আপডেট শেয়ার করুন",
   "noViewsYet": "এখনো কোনো ভিউ নেই",
-  "tapToAddAStatus": "স্ট্যাটাস আপডেট যোগ করতে ট্যাপ করুন"
+  "tapToAddAStatus": "স্ট্যাটাস আপডেট যোগ করতে ট্যাপ করুন",
+  "lockLastSeenBlocked": "লক, সর্বশেষ দেখা, ব্লক করা",
+  "themeEnterKeyAutoDownload": "থিম, এন্টার কী, স্বয়ংক্রিয় ডাউনলোড",
+  "accentTextSizeChatThemeIcon": "অ্যাকসেন্ট, লেখার আকার, চ্যাট থিম, আইকন",
+  "faqContactUsTerms": "সাধারণ জিজ্ঞাসা, যোগাযোগ, শর্তাবলি",
+  "channelsAndCommunities": "চ্যানেল ও কমিউনিটি",
+  "approveOrRejectChannelApplications": "চ্যানেলের আবেদন অনুমোদন বা বাতিল করুন",
+  "followingSystemDark": "সিস্টেম অনুসরণ · ডার্ক",
+  "followingSystemLight": "সিস্টেম অনুসরণ · লাইট",
+  "localOnly": "শুধু এই ডিভাইসে",
+  "techStack": "ফ্লাটার · মেটেরিয়াল ৩ · রিভারপড",
+  "offlineFirstFirebaseSync": "অফলাইন-ফার্স্ট, ফায়ারবেস সিঙ্ক সহ"
 }

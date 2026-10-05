@@ -19,6 +19,7 @@ import '../../../core/services/call_signaling_service.dart';
 import '../../../core/services/connectivity_service.dart';
 import '../../../core/services/contact_service.dart';
 import '../../../core/services/file_service.dart';
+import '../../../core/services/in_app_logger.dart';
 import '../../../core/services/media_service.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../core/services/r2_media_repository.dart';
@@ -245,7 +246,13 @@ final StreamProvider<List<CallDocument>> incomingCallsProvider =
 
 final Provider<ChatRepository> chatRepositoryProvider =
     Provider<ChatRepository>((Ref ref) {
-  final LocalChatRepository repository = LocalChatRepository();
+  // The uid is resolved at call time, not captured now: `currentUidProvider`
+  // is `''` until the auth stream's first event, and the deletion index is
+  // keyed by uid — a value frozen at construction would file every removal
+  // under the anonymous key for the whole first session.
+  final LocalChatRepository repository = LocalChatRepository(
+    uid: () => ref.read(currentUidProvider),
+  );
   ref.onDispose(repository.dispose);
   return repository;
 });
@@ -847,10 +854,55 @@ class ChatsNotifier extends AsyncNotifier<List<Chat>> {
     await refresh();
   }
 
+  /// Deletes a conversation from this device's list.
+  ///
+  /// ### Order, and what is deliberately not awaited
+  ///
+  /// 1. The local removal is written first and *emits immediately*: the row
+  ///    leaves the list before this future completes, online or not.
+  /// 2. The message store is cleared for the chat — also local, also immediate.
+  /// 3. The remote leg runs **detached**. Nothing about "remove this chat from
+  ///    my list" needs the network, and awaiting it is what left the row sitting
+  ///    on screen until the round-trip finished: the reported "takes too long".
+  ///
+  /// The deletion index written by `ChatRepository.delete` is what makes the
+  /// removal durable — without it the Firestore mirror re-adds the chat on its
+  /// next snapshot, which is the "it comes back after 30 seconds" bug.
   Future<void> deleteChat(String id) async {
+    InAppLogger.info('DELETE CHAT START: chatId=$id');
     await _repo.delete(id);
+    InAppLogger.success('DELETE CHAT: removed from local Hive');
     await ref.read(messageRepositoryProvider).deleteForChat(id);
+    InAppLogger.log('DELETE CHAT: local messages cleared');
     await refresh();
+    InAppLogger.success('DELETE CHAT: removed from UI list');
+
+    final String uid = ref.read(currentUidProvider);
+    if (uid.isEmpty) return;
+    unawaited(_deleteChatRemotely(id, uid));
+  }
+
+  /// The remote half of [deleteChat], deliberately detached.
+  ///
+  /// ⚠️ This never deletes a shared `chats/{chatId}` document while another
+  /// participant is still in it. The document is shared by both sides of a 1:1
+  /// conversation, so removing it would erase the conversation from the *other*
+  /// person's list as well — "delete chat" means "remove it from mine", not
+  /// "destroy it for both of us". It is removed only when this user is the last
+  /// participant, where nobody else can lose anything.
+  Future<void> _deleteChatRemotely(String chatId, String uid) async {
+    try {
+      final bool removed = await ref
+          .read(firestoreChatServiceProvider)
+          .deleteChatDocument(chatId: chatId, uid: uid);
+      InAppLogger.log(
+        removed
+            ? 'DELETE CHAT: removed from Firestore'
+            : 'DELETE CHAT: Firestore document kept (other participants remain)',
+      );
+    } on Object catch (error) {
+      InAppLogger.warn('DELETE CHAT: remote cleanup failed ($error)');
+    }
   }
 
   /// Clears messages but keeps the conversation entry.

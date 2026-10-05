@@ -63,176 +63,7 @@ class FirebaseAuthService {
     }
   }
 
-  // ----------------------------------------------------------------- email
-
-  /// Creates an account and the matching Firestore documents.
-  ///
-  /// Returns the new user. The email is *not* yet verified — the caller routes
-  /// to the OTP screen next. Uniqueness of the handle is guaranteed by writing
-  /// `usernames/{handle}` inside a transaction, so two simultaneous signups
-  /// cannot both claim the same handle.
-  Future<String> signUpWithEmail({
-    required String email,
-    required String password,
-    required String name,
-  }) async {
-    final String normalisedEmail = RemoteContactService.normaliseEmail(email);
-    InAppLogger.info('signUpWithEmail: start ($normalisedEmail)');
-    try {
-      final UserCredential credential =
-          await _auth.createUserWithEmailAndPassword(
-        email: normalisedEmail,
-        password: password,
-      );
-      final User? user = credential.user;
-      if (user == null) {
-        throw const AuthException('The account could not be created.');
-      }
-      // The uid proves the account exists server-side. If everything after this
-      // line fails, the account is *not* rolled back — the user is signed in
-      // with a uid the app can repair on the next sign-in. See the note on
-      // `signUpWithPhone` for why nothing is deleted here.
-      InAppLogger.success('auth user created uid=${user.uid}');
-
-      await user.updateDisplayName(name.trim());
-      InAppLogger.log('displayName set to "${name.trim()}"');
-
-      final String username = await generateUniqueUsername();
-      InAppLogger.log('username allocated: $username');
-
-      await _createUserDocument(
-        uid: user.uid,
-        name: name.trim(),
-        email: normalisedEmail,
-        username: username,
-      );
-      InAppLogger.success('Firestore profile written for ${user.uid}');
-
-      // Firebase sends the verification mail; the app cannot, and the link in
-      // it is what flips `emailVerified`. The Verify-Email screen re-sends it on
-      // demand and polls for the flag.
-      //
-      // Wrapped so a failed send is *recorded* rather than swallowed: "the
-      // account exists but no mail arrived" is indistinguishable from "the send
-      // silently failed" without this line, and that is exactly the report this
-      // build is diagnosing.
-      try {
-        await _sendVerification(user);
-        InAppLogger.success('verification email dispatched to $normalisedEmail');
-      } on Object catch (error, stackTrace) {
-        InAppLogger.error(
-          'verification email FAILED for $normalisedEmail '
-          '(account kept — user can resend from the verify screen)',
-          error,
-          stackTrace,
-        );
-      }
-      InAppLogger.info('signUpWithEmail: complete (uid=${user.uid})');
-      return user.uid;
-    } on FirebaseAuthException catch (error) {
-      InAppLogger.error(
-        'signUpWithEmail failed: ${error.code}',
-        error.message,
-      );
-      throw _translate(error);
-    } on Object catch (error, stackTrace) {
-      InAppLogger.error('signUpWithEmail failed (non-auth)', error, stackTrace);
-      rethrow;
-    }
-  }
-
-  Future<String> signInWithEmail({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      final UserCredential credential = await _auth.signInWithEmailAndPassword(
-        email: RemoteContactService.normaliseEmail(email),
-        password: password,
-      );
-      final User? user = credential.user;
-      if (user == null) throw const AuthException('Sign-in failed.');
-      // Bind the account to this device's OneSignal subscription. Fire and
-      // forget: push registration must never delay or fail a sign-in, and the
-      // auth stream re-runs it for a restored session.
-      unawaited(OneSignalService.linkUser(user.uid));
-      await touchPresence(user.uid, isOnline: true);
-      return user.uid;
-    } on FirebaseAuthException catch (error) {
-      throw _translate(error);
-    }
-  }
-
-  Future<void> sendPasswordReset(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(
-        email: RemoteContactService.normaliseEmail(email),
-      );
-    } on FirebaseAuthException catch (error) {
-      throw _translate(error);
-    }
-  }
-
-  /// Re-sends the verification email for the signed-in account.
-  Future<void> resendVerificationEmail() async {
-    final User? user = currentUser;
-    if (user == null) {
-      throw const AuthException('You are not signed in.');
-    }
-    try {
-      await _sendVerification(user);
-    } on FirebaseAuthException catch (error) {
-      throw _translate(error);
-    }
-  }
-
-  /// The continue URL the confirmation link comes back to.
-  ///
-  /// A custom scheme, registered in `AndroidManifest.xml` as an intent-filter
-  /// on `MainActivity` (`imo://verify-email`), so tapping the link in the
-  /// mailbox re-opens Imo LIVE instead of leaving the user parked in a browser
-  /// tab with no way back. It reuses the `imo` scheme the OAuth callback
-  /// already claims — one scheme, one intent-filter family, nothing new to
-  /// register with the OS.
-  static const String emailVerificationContinueUrl = 'imo://verify-email';
-
-  /// The settings handed to `sendEmailVerification`.
-  ///
-  /// `handleCodeInApp: false` on purpose, and it is not a shortcut: this is
-  /// email *verification*, not email-link sign-in. Verification has to happen
-  /// on Firebase's hosted page — the client cannot see the link, so it cannot
-  /// complete it — and the continue URL is where that page sends the user
-  /// afterwards. `handleCodeInApp: true` would be for a different feature
-  /// (passwordless sign-in), where the app itself parses the link.
-  static ActionCodeSettings get _verificationSettings => ActionCodeSettings(
-        url: emailVerificationContinueUrl,
-        handleCodeInApp: false,
-        androidPackageName: 'com.imo.live',
-        androidInstallApp: false,
-        androidMinimumVersion: '1',
-      );
-
-  /// Sends the verification mail, preferring the deep-link variant.
-  ///
-  /// The fallback is load-bearing, not defensive padding. A continue URL has to
-  /// be authorised for the project, and an unauthorised one makes
-  /// `sendEmailVerification` throw `unauthorized-continue-uri` — it does not
-  /// silently drop the URL. A signup must never fail over a redirect that is
-  /// only a convenience: verification works identically without it, and the
-  /// user simply returns to the app by hand instead of automatically.
-  Future<void> _sendVerification(User user) async {
-    try {
-      await user.sendEmailVerification(_verificationSettings);
-      InAppLogger.success('sendEmailVerification(deep link) ok for ${user.email}');
-    } on FirebaseAuthException catch (error) {
-      InAppLogger.warn(
-        'sendEmailVerification with continue URL failed (${error.code}); '
-        'retrying without it.',
-      );
-      await user.sendEmailVerification();
-      InAppLogger.success('sendEmailVerification(plain) ok for ${user.email}');
-    }
-  }
+  // ------------------------------------------------------------ phone accounts
 
   /// Codes from a sign-in that mean "these credentials are not that account".
   ///
@@ -278,17 +109,6 @@ class FirebaseAuthService {
     }
   }
 
-  /// Reloads the account and reports whether the email is verified yet.
-  ///
-  /// The OTP screen polls this: an email link cannot be observed directly, so
-  /// the only honest check is "has the server flipped the flag?".
-  Future<bool> isEmailVerified() async {
-    final User? user = currentUser;
-    if (user == null) return false;
-    await user.reload();
-    return _auth.currentUser?.emailVerified ?? false;
-  }
-
   // ---------------------------------------------------------------- signout
 
   Future<void> signOut() async {
@@ -317,7 +137,12 @@ class FirebaseAuthService {
     String phone = '',
     String firstName = '',
     String lastName = '',
-    String signupMethod = AppConstants.signupMethodEmail,
+    // Defaults to `google` because the only caller that omits it is
+    // `ensureProfileForExternalUser`, i.e. the OAuth path. The phone flow passes
+    // its own value explicitly. This used to default to `email`, which was
+    // correct while `signUpWithEmail` existed and became a lie for every Google
+    // account the moment it was removed.
+    String signupMethod = AppConstants.signupMethodGoogle,
   }) async {
     final String trimmedName = name.trim();
     final String phoneDigits = RemoteContactService.normalisePhone(phone);

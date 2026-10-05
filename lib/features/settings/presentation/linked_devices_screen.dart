@@ -160,7 +160,7 @@ class LinkedDevicesScreen extends ConsumerWidget {
                 children: <Widget>[
                   SettingsValueRow(
                     label: context.l10n.linkWithPhoneNumber,
-                    value: 'Not available yet',
+                    value: context.l10n.notAvailableYet,
                     leadingIcon: Icons.phone_iphone_rounded,
                     onTap: () => showBackendRequiredDialog(
                       context,
@@ -169,7 +169,7 @@ class LinkedDevicesScreen extends ConsumerWidget {
                   ),
                   SettingsValueRow(
                     label: context.l10n.logOutOfAllDevices,
-                    value: 'Not available yet',
+                    value: context.l10n.notAvailableYet,
                     leadingIcon: Icons.logout_rounded,
                     onTap: () async {
                       final bool ok = await showConfirmDialog(

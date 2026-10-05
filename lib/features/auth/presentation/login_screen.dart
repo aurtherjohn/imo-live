@@ -16,9 +16,16 @@ import '../../../core/utils/l10n.dart';
 
 /// The sign-in screen.
 ///
-/// Layout, top to bottom: brand lockup, the provider buttons, a divider, the
-/// email form, and the "create an account" footer. Everything animates in on
-/// first build so the screen assembles rather than appearing.
+/// Layout, top to bottom: brand lockup, the two provider buttons, the
+/// "create an account" footer.
+///
+/// ### Why there is no email form
+///
+/// Email/password sign-in was removed on 2026-10-06. It was the only provider
+/// whose flow depended on an emailed link arriving — and on a real device that
+/// link never did, which left accounts created but permanently unverifiable.
+/// Google and phone are the two flows that complete inside the app, so they are
+/// the two the app offers. See `auth_gate.dart` for the matching redirect rule.
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -27,48 +34,10 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
-
-  bool _obscure = true;
-  bool _busy = false;
   bool _googleBusy = false;
   String? _error;
 
-  @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
-  bool get _anyBusy => _busy || _googleBusy;
-
-  Future<void> _submit() async {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-
-    final AuthOutcome outcome =
-        await ref.read(authControllerProvider.notifier).signInWithEmail(
-              email: _email.text,
-              password: _password.text,
-            );
-
-    if (!mounted) return;
-    setState(() => _busy = false);
-
-    if (outcome.isFailure) {
-      setState(() => _error = outcome.error);
-      iToast(context, outcome.error!, isError: true);
-      return;
-    }
-    // The router's auth gate swaps to the home shell on its own once Firebase
-    // emits the signed-in user; nothing to navigate here.
-  }
+  bool get _anyBusy => _googleBusy;
 
   Future<void> _google() async {
     setState(() {
@@ -108,194 +77,84 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     context.push(AppRoutes.phoneLogin);
   }
 
-  Future<void> _forgotPassword() async {
-    final String email = _email.text.trim();
-    if (email.isEmpty) {
-      iToast(context, context.l10n.enterYourEmailFirstThen,
-          isError: true);
-      return;
-    }
-    final String? message = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => _EmailInputDialog(initial: email),
-    );
-    if (message == null || !mounted) return;
-    try {
-      await ref
-          .read(firebaseAuthServiceProvider)
-          .sendPasswordReset(message);
-      if (!mounted) return;
-      iToast(context, context.l10n.resetLinkSentTo(message));
-    } on Object catch (error) {
-      debugPrint('password reset failed: $error');
-      if (!mounted) return;
-      iToast(context, context.l10n.somethingWentWrong, isError: true);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
       topRight: const AuthSettingsButton(),
-      child: Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.xxl,
-            AppSpacing.xxl,
-            AppSpacing.xxl,
-            AppSpacing.xl,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const SizedBox(height: AppSpacing.xl),
-              FadeSlideIn(
-                child: const Center(child: BrandLockup(size: 86)),
-              ),
-              const SizedBox(height: AppSpacing.xxxl),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xxl,
+          AppSpacing.xxl,
+          AppSpacing.xxl,
+          AppSpacing.xl,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const SizedBox(height: AppSpacing.xl),
+            FadeSlideIn(
+              child: const Center(child: BrandLockup(size: 86)),
+            ),
+            const SizedBox(height: AppSpacing.xxxl),
 
-              // ------------------------------------------------ providers
-              //
-              // Stacked full-width rather than side by side. With one OAuth
-              // provider left, a two-up row would have been a lone button
-              // stretched to fill the row, and the phone option's label does
-              // not fit a half-width button without truncating.
-              FadeSlideIn(
-                delay: const Duration(milliseconds: 80),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    AuthProviderButton(
-                      label: context.l10n.google,
-                      logoAsset: BrandAssets.google,
-                      loading: _googleBusy,
-                      onPressed: _anyBusy ? null : _google,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    AuthProviderButton(
-                      label: context.l10n.continueWithPhone,
-                      icon: Icons.phone_rounded,
-                      onPressed: _anyBusy ? null : _phone,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.xl),
-              FadeSlideIn(
-                delay: const Duration(milliseconds: 130),
-                child: AuthDivider(label: context.l10n.orContinueWithEmail),
-              ),
-              const SizedBox(height: AppSpacing.xl),
-
-              // ----------------------------------------------------- form
-              FadeSlideIn(
-                delay: const Duration(milliseconds: 170),
-                child: AuthField(
-                  controller: _email,
-                  hint: context.l10n.emailAddress,
-                  iconAsset: BrandAssets.mail,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  autofillHints: const <String>[AutofillHints.email],
-                  enabled: !_anyBusy,
-                  validator: (String? value) {
-                    final String v = (value ?? '').trim();
-                    if (v.isEmpty) return 'Enter your email address';
-                    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v)) {
-                      return 'That email address doesn\'t look right';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: AppSpacing.md),
-              FadeSlideIn(
-                delay: const Duration(milliseconds: 200),
-                child: AuthField(
-                  controller: _password,
-                  hint: context.l10n.password,
-                  iconAsset: BrandAssets.lock,
-                  obscure: _obscure,
-                  enabled: !_anyBusy,
-                  textInputAction: TextInputAction.done,
-                  autofillHints: const <String>[AutofillHints.password],
-                  onToggleObscure: () => setState(() => _obscure = !_obscure),
-                  onSubmitted: (_) => _submit(),
-                  validator: (String? value) {
-                    if ((value ?? '').isEmpty) return 'Enter your password';
-                    return null;
-                  },
-                ),
-              ),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: _anyBusy ? null : _forgotPassword,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.xs,
-                    ),
-                    minimumSize: const Size(0, 36),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            // ------------------------------------------------ providers
+            //
+            // Stacked full-width rather than side by side. With two options
+            // left, a two-up row would truncate the phone label — Bengali
+            // labels are longer than English ones, so that bites in `bn` first.
+            FadeSlideIn(
+              delay: const Duration(milliseconds: 80),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  AuthProviderButton(
+                    label: context.l10n.google,
+                    logoAsset: BrandAssets.google,
+                    loading: _googleBusy,
+                    onPressed: _anyBusy ? null : _google,
                   ),
-                  child: Text(
-                    context.l10n.forgotPassword,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.accentLight,
-                    ),
+                  const SizedBox(height: AppSpacing.md),
+                  AuthProviderButton(
+                    label: context.l10n.continueWithPhone,
+                    icon: Icons.phone_rounded,
+                    onPressed: _anyBusy ? null : _phone,
                   ),
-                ),
+                ],
               ),
+            ),
 
-              // Inline error, so the reason is still on screen after the toast
-              // has gone.
-              AnimatedSize(
-                duration: AppDurations.fast,
-                child: _error == null
-                    ? const SizedBox(width: double.infinity)
-                    : Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                        child: _InlineError(message: _error!),
-                      ),
-              ),
+            // Inline error, so the reason is still on screen after the toast
+            // has gone.
+            AnimatedSize(
+              duration: AppDurations.fast,
+              child: _error == null
+                  ? const SizedBox(width: double.infinity)
+                  : Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.lg),
+                      child: _InlineError(message: _error!),
+                    ),
+            ),
 
-              const SizedBox(height: AppSpacing.sm),
-              FadeSlideIn(
-                delay: const Duration(milliseconds: 240),
-                child: AuthPrimaryButton(
-                  label: context.l10n.login,
-                  loading: _busy,
-                  onPressed: _anyBusy ? null : _submit,
-                ),
+            const Spacer(),
+            const SizedBox(height: AppSpacing.xl),
+            AuthFooterLink(
+              prompt: context.l10n.donTHaveAnAccount,
+              action: 'Create an Account',
+              onTap: _anyBusy
+                  ? () {}
+                  : () => context.push(AppRoutes.signup),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              context.l10n.byContinuingYouAgreeTo,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11,
+                height: 1.4,
+                color: Colors.white.withValues(alpha: 0.32),
               ),
-
-              const Spacer(),
-              const SizedBox(height: AppSpacing.xl),
-              AuthFooterLink(
-                prompt: context.l10n.donTHaveAnAccount,
-                action: 'Create an Account',
-                onTap: _anyBusy
-                    ? () {}
-                    : () => context.push(AppRoutes.signup),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                context.l10n.byContinuingYouAgreeTo,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  height: 1.4,
-                  color: Colors.white.withValues(alpha: 0.32),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -341,91 +200,6 @@ class _InlineError extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// Collects (or confirms) an email address before sending a reset link.
-class _EmailInputDialog extends StatefulWidget {
-  const _EmailInputDialog({required this.initial});
-
-  final String initial;
-
-  @override
-  State<_EmailInputDialog> createState() => _EmailInputDialogState();
-}
-
-class _EmailInputDialogState extends State<_EmailInputDialog> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.initial);
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: AppColors.darkCard,
-      shape: const RoundedRectangleBorder(borderRadius: AppRadius.rLg),
-      title: Text(
-        context.l10n.resetPassword,
-        style: TextStyle(color: Colors.white, fontSize: 17),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            context.l10n.weLlEmailYouA,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.6),
-              fontSize: 13,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          TextField(
-            controller: _controller,
-            autofocus: true,
-            keyboardType: TextInputType.emailAddress,
-            cursorColor: AppColors.accent,
-            style: const TextStyle(color: Colors.white, fontSize: 15),
-            decoration: InputDecoration(
-              hintText: context.l10n.emailAddress,
-              hintStyle: TextStyle(color: Colors.white38),
-              filled: true,
-              fillColor: Color(0x14FFFFFF),
-              border: OutlineInputBorder(
-                borderRadius: AppRadius.rMd,
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-        ],
-      ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            context.l10n.cancel,
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-          ),
-        ),
-        TextButton(
-          onPressed: () =>
-              Navigator.of(context).pop(_controller.text.trim()),
-          child: Text(
-            context.l10n.sendLink,
-            style: TextStyle(
-              color: AppColors.accentLight,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

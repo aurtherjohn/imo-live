@@ -96,13 +96,13 @@ class AboutScreen extends StatelessWidget {
               ),
               SettingsValueRow(
                 label: context.l10n.architecture,
-                value: 'Flutter · Material 3 · Riverpod',
+                value: context.l10n.techStack,
                 leadingIcon: Icons.architecture_rounded,
                 onTap: () => _showArchitecture(context),
               ),
               SettingsValueRow(
                 label: context.l10n.mode,
-                value: 'Offline-first with Firebase sync',
+                value: context.l10n.offlineFirstFirebaseSync,
                 leadingIcon: Icons.cloud_sync_outlined,
               ),
             ],

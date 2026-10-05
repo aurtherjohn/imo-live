@@ -313,6 +313,54 @@ class FirestoreChatService {
     return chatId;
   }
 
+  /// Removes the shared `chats/{chatId}` document — but only when [uid] is the
+  /// **last** participant.
+  ///
+  /// ### Why this is not simply `doc(chatId).delete()`
+  ///
+  /// A `chats` document is shared by both sides of a conversation: the
+  /// `participants` array holds both uids, and each device's chat list is a
+  /// `where('participants', arrayContains: me)` query over the same collection.
+  /// Deleting the document therefore removes the conversation from the *other*
+  /// person's list as well, along with every message in its subcollection.
+  ///
+  /// "Delete chat" in the UI means "remove this conversation from **my** list".
+  /// The local removal — and the deleted-chat index that keeps the mirror from
+  /// restoring it — is what implements that. This method exists for the one
+  /// case where a remote removal destroys nothing: nobody else is left in the
+  /// document.
+  ///
+  /// Returns `true` when the document was deleted, `false` when it was kept
+  /// (other participants remain, or the document could not be read).
+  Future<bool> deleteChatDocument({
+    required String chatId,
+    required String uid,
+  }) async {
+    final FirebaseFirestore? db = _db;
+    if (db == null || chatId.isEmpty || uid.isEmpty) return false;
+    final DocumentReference<Map<String, dynamic>> chat =
+        db.collection(chatsCollection).doc(chatId);
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> snapshot = await chat.get();
+      final Map<String, dynamic>? data = snapshot.data();
+      if (data == null) return false;
+
+      final List<String> participants =
+          (data['participants'] as List<dynamic>?)?.cast<String>() ??
+              const <String>[];
+      final bool soleParticipant = participants
+          .where((String id) => id.isNotEmpty && id != uid)
+          .isEmpty;
+      if (!soleParticipant) return false;
+
+      await chat.delete();
+      return true;
+    } on Object catch (error) {
+      debugPrint('deleteChatDocument($chatId) failed: $error');
+      return false;
+    }
+  }
+
   /// Live messages for one conversation, oldest first.
   ///
   /// Sealed bodies are opened here — the mirror image of [sendMessage] — so

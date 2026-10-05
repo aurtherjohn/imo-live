@@ -137,7 +137,15 @@ android {
         applicationId = "com.imo.live"
 
         minSdk = 24
+        // compileSdk / targetSdk come from the Flutter Gradle plugin
+        // (`flutter.compileSdkVersion` above, `flutter.targetSdkVersion` here),
+        // which on Flutter 3.47.3 resolve to API 36 — comfortably above the
+        // API 34 floor the Play Store requires for new submissions. They are
+        // deliberately NOT pinned to literals: the plugin moves them forward
+        // with each Flutter release, and a hardcoded 34 would silently rot.
         targetSdk = flutter.targetSdkVersion
+        // Both read the single source of truth in pubspec.yaml (`1.0.0+2` ->
+        // versionName 1.0.0, versionCode 2). See the note there before bumping.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
@@ -175,10 +183,14 @@ android {
             // See `assertReleaseSigning`: no debug fallback, on purpose.
             signingConfig = signingConfigs.getByName("release")
 
-            // Left off deliberately. Turning R8 on needs keep-rules for the
-            // Firebase, Facebook and WebView plugins, and reflection-based
-            // deserialisation in the local store; the current APK size is
-            // acceptable, so the risk is not worth taking here.
+            // Left off deliberately, and re-verified for the publish-ready
+            // build on 2026-10-06. R8 needs keep-rules for Firebase, Facebook
+            // and WebView, plus the reflection-based deserialisation in the
+            // local store; no `proguard-rules.pro` / `consumer-rules.pro` file
+            // exists in this module, so enabling minification would ship a
+            // release with zero keep-rules — which is how a release-only
+            // `NoSuchMethodError` on a reflected field gets published. The
+            // current APK size is acceptable, so the risk stays untaken.
             isMinifyEnabled = false
             isShrinkResources = false
         }

@@ -9643,6 +9643,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to add a status update'**
   String get tapToAddAStatus;
+
+  /// No description provided for @lockLastSeenBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock, last seen, blocked'**
+  String get lockLastSeenBlocked;
+
+  /// No description provided for @themeEnterKeyAutoDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, enter key, auto-download'**
+  String get themeEnterKeyAutoDownload;
+
+  /// No description provided for @accentTextSizeChatThemeIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent, text size, chat theme, icon'**
+  String get accentTextSizeChatThemeIcon;
+
+  /// No description provided for @faqContactUsTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQ, contact us, terms'**
+  String get faqContactUsTerms;
+
+  /// No description provided for @channelsAndCommunities.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels & communities'**
+  String get channelsAndCommunities;
+
+  /// No description provided for @approveOrRejectChannelApplications.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve or reject channel applications'**
+  String get approveOrRejectChannelApplications;
+
+  /// No description provided for @followingSystemDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Following system · dark'**
+  String get followingSystemDark;
+
+  /// No description provided for @followingSystemLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Following system · light'**
+  String get followingSystemLight;
+
+  /// No description provided for @localOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Local only'**
+  String get localOnly;
+
+  /// No description provided for @techStack.
+  ///
+  /// In en, this message translates to:
+  /// **'Flutter · Material 3 · Riverpod'**
+  String get techStack;
+
+  /// No description provided for @offlineFirstFirebaseSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-first with Firebase sync'**
+  String get offlineFirstFirebaseSync;
 }
 
 class _AppLocalizationsDelegate

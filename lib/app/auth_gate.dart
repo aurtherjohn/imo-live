@@ -14,7 +14,6 @@ const Set<String> _authRoutes = <String>{
   AppRoutes.splash,
   AppRoutes.login,
   AppRoutes.signup,
-  AppRoutes.otp,
   AppRoutes.profileSetup,
   // The phone flow lives here because it is a route now, not an imperative
   // push. Leaving it out would make the gate itself the thing that bounces a
@@ -218,30 +217,15 @@ String? authRedirect(BuildContext context, GoRouterState state) {
     return _signedOutRoutes.contains(location) ? null : AppRoutes.login;
   }
 
-  // Signed in but the email is still unverified: hold at the OTP screen.
-  // `providerData` distinguishes a password account from a Google one, because
-  // a Google account is verified by Google and must not be trapped here.
+  // Signed in. There is no verification step left: email sign-in and its
+  // link-based verification screen were removed on 2026-10-06, because the
+  // confirmation link never arrived on a real device and left accounts created
+  // but permanently unusable. Google is verified by Google; a phone account's
+  // address is derived from the number (`AppConstants.phoneAuthEmailFor`) and
+  // has no mailbox to confirm.
   //
-  // ⚠️ A phone account is a password account too, so `providerData` alone would
-  // trap it: its address is derived from the number (`AppConstants.
-  // phoneAuthEmailFor`) and no mailbox exists to confirm it, so `emailVerified`
-  // would stay false forever and the OTP screen would be a dead end. It is
-  // excluded here, and in `needsEmailVerificationProvider`, which is the same
-  // rule expressed for the UI.
-  final bool isPasswordAccount = user.providerData.any(
-    (UserInfo info) => info.providerId == 'password',
-  );
-  final bool isPhoneAccount = AppConstants.isPhoneAuthEmail(user.email);
-  final bool needsVerification =
-      isPasswordAccount && !isPhoneAccount && !user.emailVerified;
-
-  if (needsVerification) {
-    if (location == AppRoutes.otp) return null;
-    return AppRoutes.otp;
-  }
-
-  // Verified. A password or OAuth signup lands on profile setup until the
-  // profile has a name; a returning user goes straight through.
+  // A new account therefore lands on profile setup until the profile has a
+  // name; a returning user goes straight through.
   final bool profileIncomplete = (user.displayName ?? '').trim().isEmpty &&
       location != AppRoutes.profileSetup;
 

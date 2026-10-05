@@ -83,9 +83,14 @@ class AppConstants {
   /// Domain used for the derived address. Never a real mailbox.
   static const String phoneAuthEmailDomain = 'phone.imolive.app';
 
-  /// The value written to `users/{uid}.signupMethod` for phone accounts.
+  /// The value written to `users/{uid}.signupMethod`.
+  ///
+  /// `email` was the third value until 2026-10-06; email sign-up is gone, so
+  /// the only two writers left are the phone flow and the Google flow. The
+  /// field is descriptive metadata — nothing reads it back — so it is written
+  /// honestly rather than inferred.
   static const String signupMethodPhone = 'phone';
-  static const String signupMethodEmail = 'email';
+  static const String signupMethodGoogle = 'google';
 
   /// Derives the sign-in address for an E.164 number given as digits only.
   ///
@@ -170,10 +175,6 @@ class AppRoutes {
   /// Phone sign-in / sign-up, as a real route so the auth redirect and the
   /// visible screen stay in agreement (see `login_screen.dart::_phone`).
   static const String phoneLogin = '/auth/phone';
-  /// Developer-only log viewer. Reachable by tapping the version text on the
-  /// settings screen seven times — deliberately not linked from anywhere else,
-  /// so it is invisible unless it is being looked for.
-  static const String devLogs = '/settings/dev-logs';
   static const String lists = '/settings/lists';
   static const String linkedDevices = '/settings/devices';
   static const String blocked = '/settings/blocked';
@@ -209,16 +210,17 @@ class AppRoutes {
   // ---------------------------------------------------------------- auth
   // The auth screens live outside the shell, so they cover the whole screen
   // with no bottom navigation — the standard shape for a sign-in flow.
+  //
+  // NOTE: `/auth/verify` was removed on 2026-10-06 with email sign-in. There is
+  // no verification step left, so no route for one exists.
   static const String login = '/auth/login';
   static const String signup = '/auth/signup';
-  static const String otp = '/auth/verify';
   static const String profileSetup = '/auth/profile';
 
   /// Screens that must never be reachable while signed in, and vice versa.
   static const Set<String> authRoutes = <String>{
     login,
     signup,
-    otp,
     profileSetup,
   };
 }

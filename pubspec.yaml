@@ -2,7 +2,16 @@ name: imo_live
 description: "Imo LIVE - a modern, offline-first messaging application."
 publish_to: 'none'
 
-version: 1.0.0+1
+# versionName is the part before `+`, versionCode is the part after it.
+# `android/app/build.gradle.kts` reads both via `flutter.versionCode` /
+# `flutter.versionName`, so this line is the single source of truth for the
+# Android version — do not hardcode either value in the Gradle file, or the two
+# will drift and the APK will report a version nobody bumped.
+#
+# Bumped 1.0.0+1 -> 1.0.0+2 on 2026-10-06 for the publish-ready build:
+# versionName stays 1.0.0 (first public release), versionCode moves past the
+# build that is already installed on the test device so it updates in place.
+version: 1.0.0+2
 
 environment:
   sdk: ^3.13.3
@@ -115,6 +124,14 @@ dependencies:
   share_plus: ^10.1.2
   connectivity_plus: ^6.1.0
   flutter_local_notifications: ^18.0.1
+  # Plays the DEVICE's own ringtone for an incoming call — the sound the user
+  # picked in Settings, not a bundled asset. This is what makes the phone ring
+  # like a phone: `flutter_local_notifications` owns the notification-channel
+  # sound, and this owns the continuous ring while the incoming-call screen is
+  # up. Android only in practice (iOS has no public API for the system ringtone;
+  # the plugin falls back to a bundled tone there), which matches the app's
+  # current release target.
+  flutter_ringtone_player: ^4.0.0
   qr_flutter: ^4.1.0
   url_launcher: ^6.3.1
   intl: ^0.20.3

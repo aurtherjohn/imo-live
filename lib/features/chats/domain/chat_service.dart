@@ -400,8 +400,11 @@ class ChatService {
   /// [Message.deleteForEveryoneWindow] — and the caller should report that
   /// rather than pretend it worked.
   Future<bool> retractForEveryone(Message message) async {
-    final bool local =
-        await ref.read(messageRepositoryProvider).deleteForEveryone(message.id);
+    // The chat id is passed through so the repository can address the row
+    // directly instead of loading every conversation on the device to find it.
+    final bool local = await ref
+        .read(messageRepositoryProvider)
+        .deleteForEveryone(message.id, chatId: message.chatId);
     if (!local) return false;
 
     if (_uid.isEmpty) return true;

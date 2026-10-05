@@ -9,6 +9,7 @@ import '../../../core/models/contact.dart';
 import '../../../core/models/status.dart';
 import '../../../core/services/ad_service.dart';
 import '../../../core/services/call_service.dart';
+import '../../../core/services/ringtone_service.dart';
 import '../../../core/services/webrtc_call_service.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/i_avatar.dart';
@@ -139,6 +140,10 @@ class _CallScreenState extends ConsumerState<CallScreen>
 
   @override
   void dispose() {
+    // First, before anything that can await: `dispose` cannot await, and the
+    // back gesture pops the route without going through `_hangUp`. Without
+    // this the phone keeps ringing after the user has dismissed the call.
+    RingtoneService.stop();
     WidgetsBinding.instance.removeObserver(this);
     _stateSub?.cancel();
     _durationSub?.cancel();
@@ -183,7 +188,18 @@ class _CallScreenState extends ConsumerState<CallScreen>
     } else {
       // An incoming call is already ringing on the wire; the screen just has to
       // show the accept/decline UI.
+      //
+      // ⚠️ The `mounted` guard is not cosmetic. `_begin` runs from a
+      // post-frame callback, so the route can already have been popped by the
+      // time it fires. Without the guard, `setState` throws — and, worse,
+      // `startIncoming` runs *after* `dispose` has already called `stop`, so
+      // the ring starts on a screen that no longer exists and nothing is left
+      // to stop it: the phone rings until the process dies.
+      if (!mounted) return;
       setState(() => _state = CallSessionState.ringing);
+      // The push's channel sound played once, when the notification landed.
+      // This is what keeps the phone ringing until somebody answers it.
+      RingtoneService.startIncoming();
     }
   }
 
@@ -253,6 +269,15 @@ class _CallScreenState extends ConsumerState<CallScreen>
       if (next == CallSessionState.failed) _failureReason = _calls.lastError;
     });
     if (next == CallSessionState.connected) _elapsed = _calls.elapsed;
+    // The ring must not outlive the ringing. Accept stops it in `_accept`, but
+    // the caller can also drop the call before anyone picks up — and that
+    // arrives here as `ended`, not as a user action. Both paths, plus the
+    // back gesture handled in `dispose`, converge on this one call.
+    if (next == CallSessionState.connected ||
+        next == CallSessionState.ended ||
+        next == CallSessionState.failed) {
+      RingtoneService.stop();
+    }
     if (next == CallSessionState.ended || next == CallSessionState.failed) {
       unawaited(_finish(next));
     }
@@ -325,6 +350,10 @@ class _CallScreenState extends ConsumerState<CallScreen>
   /// most once per session (see [_oncePerSessionTriggers]) — an ad in front of
   /// every incoming call would be indefensible.
   Future<void> _accept() async {
+    // Stop the ring *before* anything can await, so the device is silent the
+    // instant the user commits to answering — not 200 ms later, after the
+    // token round-trip.
+    RingtoneService.stop();
     unawaited(
       ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.callAccepted),
     );
@@ -332,6 +361,7 @@ class _CallScreenState extends ConsumerState<CallScreen>
   }
 
   Future<void> _hangUp() async {
+    RingtoneService.stop();
     if (_state == CallSessionState.ringing && !widget.isOutgoing) {
       await _calls.decline();
     } else {

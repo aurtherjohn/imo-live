@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,11 +33,11 @@ final Provider<Stream<List<RemoteChat>>> firestoreChatsStreamProvider =
 /// The chat list the UI renders: Firestore as the transport, the local store as
 /// the cache.
 ///
-/// Every remote chat document is mirrored into Hive before the list is
-/// republished, which is what makes a conversation created on another device
-/// appear here without a refresh. Local-only rows (a chat opened but not yet
-/// written to) are kept, because [ChatRepository.getAll] is the source of the
-/// emitted list rather than the Firestore snapshot.
+/// Every remote chat document is mirrored into Hive, and the emitted list
+/// always comes from the local store — which is what makes a conversation
+/// created on another device appear here without a refresh, *and* what lets a
+/// local mutation reach the UI at once. See [_liveChats] for why that second
+/// half matters.
 ///
 /// If Firebase is unavailable the stream still yields the local rows, so the
 /// tab degrades to the offline cache instead of erroring.
@@ -58,31 +60,80 @@ final Provider<Stream<List<Chat>>> liveChatsStreamProvider =
 
 /// Builds the mirroring stream. Kept as a free function so the generator is
 /// testable without a `ProviderContainer`.
+///
+/// ### Why this is a controller and not an `async*` generator
+///
+/// The generator form had exactly one source of change: the Firestore snapshot.
+/// That is the bug behind "deleting a chat does not delete it". A Firestore
+/// `chats` query does not change when *this* device removes a row — no snapshot
+/// arrives — so the stream never re-emitted and the deleted chat stayed on
+/// screen until something unrelated happened to change the collection. Waiting
+/// for the server to confirm a purely local act is exactly the wrong way round.
+///
+/// The list is therefore driven by the **local store's own change stream**, and
+/// the Firestore mirror runs alongside it as a background writer. A delete, a
+/// pin or a mark-read is visible on the next tick, and the mirror can only ever
+/// write rows the user has not removed — `ChatRepository.save` refuses a chat
+/// that is in the deleted-chat index.
 Stream<List<Chat>> _liveChats({
   required String uid,
   required ChatRepository repo,
   required FirestoreChatService firestore,
   required ContactRepository contacts,
   required RemoteContactService directory,
-}) async* {
-  // Local rows first so the list paints immediately, before the first
-  // Firestore snapshot arrives.
-  yield await repo.getAll();
+}) {
+  late final StreamController<List<Chat>> out;
+  StreamSubscription<List<Chat>>? localSub;
+  StreamSubscription<List<RemoteChat>>? remoteSub;
 
-  if (uid.isEmpty) return;
-
-  await for (final List<RemoteChat> remote in firestore.watchChats(uid)) {
-    for (final RemoteChat chat in remote) {
-      await mirrorRemoteChat(
-        chat,
-        uid: uid,
-        repo: repo,
-        contacts: contacts,
-        directory: directory,
-      );
+  Future<void> start() async {
+    // The cache paints the first frame, before any subscription work.
+    try {
+      if (!out.isClosed) out.add(await repo.getAll());
+    } on Object catch (error) {
+      debugPrint('chat list read failed: $error');
     }
-    yield await repo.getAll();
+    if (out.isClosed) return;
+
+    localSub = repo.watchAll().listen(
+          (List<Chat> list) {
+            if (!out.isClosed) out.add(list);
+          },
+          onError: (Object error) =>
+              debugPrint('local chat stream failed: $error'),
+        );
+
+    if (uid.isEmpty) return;
+
+    // Detached from the emitted list on purpose: the mirror's only job is to
+    // write into the local store, and the store's own stream carries the result
+    // to the UI. An error here must not tear down the list.
+    remoteSub = firestore.watchChats(uid).listen(
+          (List<RemoteChat> remote) async {
+            for (final RemoteChat chat in remote) {
+              await mirrorRemoteChat(
+                chat,
+                uid: uid,
+                repo: repo,
+                contacts: contacts,
+                directory: directory,
+              );
+            }
+          },
+          onError: (Object error) => debugPrint('chat mirror failed: $error'),
+        );
   }
+
+  out = StreamController<List<Chat>>(
+    onListen: () => unawaited(start()),
+    onCancel: () async {
+      await localSub?.cancel();
+      await remoteSub?.cancel();
+      localSub = null;
+      remoteSub = null;
+    },
+  );
+  return out.stream;
 }
 
 /// Writes one Firestore chat document into the local store.
@@ -95,6 +146,9 @@ Stream<List<Chat>> _liveChats({
 /// knows participant uids — so it is resolved from the address book, falling
 /// back to the directory profile and caching it locally so the next launch has
 /// the name without a network round-trip.
+///
+/// A chat the user has deleted never reaches the store: `repo.save` refuses it.
+/// See `LocalChatRepository`.
 @visibleForTesting
 Future<void> mirrorRemoteChat(
   RemoteChat remote, {

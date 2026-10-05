@@ -539,7 +539,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Future<void> _deleteForMe(Message message) async {
     final bool confirmed = await confirmDeleteForMe(context);
     if (!confirmed || !mounted) return;
-    await ref.read(messageRepositoryProvider).deleteForMe(message.id);
+    await ref
+        .read(messageRepositoryProvider)
+        .deleteForMe(message.id, chatId: message.chatId);
     if (!mounted) return;
     await _resyncLastMessage(message);
   }
@@ -1064,7 +1066,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final bool confirmed = await confirmDeleteForMe(context, count: ids.length);
     if (!confirmed || !mounted) return;
     for (final String id in ids) {
-      await ref.read(messageRepositoryProvider).deleteForMe(id);
+      // The chat id is known here, so each removal is one read and two writes
+      // rather than a scan of every conversation on the device — which is what
+      // made a large selection feel like it had hung.
+      await ref
+          .read(messageRepositoryProvider)
+          .deleteForMe(id, chatId: widget.chatId);
     }
     ref.read(messageSelectionProvider.notifier).clear();
     if (mounted) iToast(context, context.l10n.messageSDeleted(ids.length));

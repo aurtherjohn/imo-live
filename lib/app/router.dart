@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../core/constants/app_constants.dart';
 import 'auth_gate.dart';
 import '../features/auth/presentation/login_screen.dart';
-import '../features/auth/presentation/otp_screen.dart';
 import '../features/auth/presentation/profile_setup_screen.dart';
 import '../features/auth/presentation/screens/phone_login_screen.dart';
 import '../features/auth/presentation/signup_screen.dart';
@@ -36,7 +35,6 @@ import '../features/earn/presentation/notifications_screen.dart';
 import '../features/groups/presentation/group_info_screen.dart';
 import '../features/groups/presentation/new_group_screen.dart';
 import '../features/misc/presentation/about_screen.dart';
-import '../features/settings/presentation/dev_logs_screen.dart';
 import '../features/chats/presentation/broadcast_screen.dart';
 import '../features/misc/presentation/help_screen.dart';
 import '../features/misc/presentation/qr_screen.dart';
@@ -74,17 +72,16 @@ import 'app.dart' show appPage;
 /// ### The auth gate
 ///
 /// [GoRouter]'s `refreshListenable` re-evaluates `redirect` whenever Firebase
-/// reports a change, so sign-in, sign-out and email verification are all
-/// handled in one place rather than by every screen pushing its own route. The
-/// rules are deliberately total — every combination of (signed in?, verified?,
-/// profile complete?) maps to exactly one destination:
+/// reports a change, so sign-in and sign-out are both handled in one place
+/// rather than by every screen pushing its own route. The rules are deliberately
+/// total — every combination of (signed in?, profile complete?) maps to exactly
+/// one destination:
 ///
-/// | signed in | email verified | profile complete | destination |
-/// | --- | --- | --- | --- |
-/// | no  | —   | —   | login  |
-/// | yes | no  | —   | verify |
-/// | yes | yes | no  | profile setup |
-/// | yes | yes | yes | the requested route |
+/// | signed in | profile complete | destination |
+/// | --- | --- | --- |
+/// | no  | —   | login  |
+/// | yes | no  | profile setup |
+/// | yes | yes | the requested route |
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   debugLogDiagnostics: false,
@@ -123,12 +120,10 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const SignupScreen()),
     ),
-    GoRoute(
-      path: AppRoutes.otp,
-      name: 'otp',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const OtpScreen()),
-    ),
+    // NOTE: the `/auth/verify` route was removed on 2026-10-06. It hosted the
+    // email-link verification screen, and email sign-in is gone — Google and
+    // phone both complete without a second step, so there is nothing for a
+    // verification route to do.
     // The phone flow is a *route*, not a pushed `MaterialPageRoute`. It has to
     // be, so that `authRedirect` can see it: while it was pushed imperatively
     // the router only knew about the login route underneath it, and the auth
@@ -370,15 +365,6 @@ final GoRouter appRouter = GoRouter(
       name: 'about',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const AboutScreen()),
-    ),
-    // Developer-only. Not linked from any menu; reached by tapping the version
-    // text on Settings seven times. Registered as a normal route so the back
-    // gesture and deep-linking behave like every other screen.
-    GoRoute(
-      path: AppRoutes.devLogs,
-      name: 'devLogs',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const DevLogsScreen()),
     ),
     GoRoute(
       path: AppRoutes.lists,

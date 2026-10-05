@@ -237,7 +237,7 @@ class PrivacySettingsScreen extends ConsumerWidget {
               ),
               SettingsValueRow(
                 label: context.l10n.advancedPrivacySettings,
-                value: 'Details',
+                value: context.l10n.details,
                 onTap: () => showInfoDialog(
                   context,
                   title: context.l10n.advancedPrivacy,

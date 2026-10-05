@@ -205,7 +205,7 @@ class AccountSettingsScreen extends ConsumerWidget {
               ),
               SettingsValueRow(
                 label: context.l10n.passkeys,
-                value: 'Not available yet',
+                value: context.l10n.notAvailableYet,
                 leadingIcon: Icons.key_rounded,
                 onTap: () => showBackendRequiredDialog(
                   context,
@@ -222,7 +222,7 @@ class AccountSettingsScreen extends ConsumerWidget {
             children: <Widget>[
               SettingsValueRow(
                 label: context.l10n.changeNumber,
-                value: 'Local only',
+                value: context.l10n.localOnly,
                 leadingIcon: Icons.phone_iphone_rounded,
                 onTap: () async {
                   final String? next = await showTextPrompt(

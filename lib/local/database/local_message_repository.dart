@@ -144,9 +144,19 @@ class LocalMessageRepository implements MessageRepository {
   }
 
   @override
-  Future<Message?> findById(String id) async {
-    for (final String chatId in _knownChatIds()) {
+  Future<Message?> findById(String id, {String? chatId}) async {
+    // The hint avoids a scan of every conversation on the device. That scan
+    // loads and JSON-decodes each chat's whole message list, so on an account
+    // with a long chat list it is the difference between an instant action and
+    // one that visibly hangs.
+    if (chatId != null && chatId.isNotEmpty) {
       for (final Message m in _read(chatId)) {
+        if (m.id == id) return m;
+      }
+      return null;
+    }
+    for (final String known in _knownChatIds()) {
+      for (final Message m in _read(known)) {
         if (m.id == id) return m;
       }
     }
@@ -244,16 +254,28 @@ class LocalMessageRepository implements MessageRepository {
     }
   }
 
+  /// Applies [change] to the message with [id], returning the new row.
+  ///
+  /// [chatId] is the same hint [findById] takes, and it matters for the same
+  /// reason: without it the loop below walks every conversation on the device,
+  /// loading and JSON-decoding each one's whole message list. The hint was
+  /// added to the read but not the write, which left "delete for everyone" slow
+  /// in a way that looked like the fix had not landed — the lookup became
+  /// instant and the mutation still scanned everything.
   Future<Message?> _mutate(
     String id,
-    Message Function(Message) change,
-  ) async {
-    for (final String chatId in _knownChatIds()) {
-      final List<Message> list = _read(chatId);
+    Message Function(Message) change, {
+    String? chatId,
+  }) async {
+    final Iterable<String> candidates = chatId != null && chatId.isNotEmpty
+        ? <String>[chatId]
+        : _knownChatIds();
+    for (final String candidate in candidates) {
+      final List<Message> list = _read(candidate);
       final int index = list.indexWhere((m) => m.id == id);
       if (index == -1) continue;
       list[index] = change(list[index]);
-      await _persist(chatId);
+      await _persist(candidate);
       return list[index];
     }
     return null;
@@ -297,28 +319,43 @@ class LocalMessageRepository implements MessageRepository {
   Future<void> edit(String id, String newContent) =>
       _mutate(id, (m) => m.copyWith(content: newContent, isEdited: true));
 
+  /// Removes one row from [chatId] and records it in that chat's index.
+  ///
+  /// Returns `true` when the row is gone — either because it was just removed
+  /// or because it had already been recorded here. Both mean the caller is
+  /// done with this chat.
+  Future<bool> _removeForMe(String chatId, String id) async {
+    if (_deletedIds(chatId).contains(id)) return true;
+
+    final List<Message> list = _read(chatId);
+    final int before = list.length;
+    list.removeWhere((m) => m.id == id);
+    if (list.length == before) return false;
+
+    _deletedIds(chatId).add(id);
+    await _persistDeletedIds(chatId);
+    await _persist(chatId);
+    return true;
+  }
+
   @override
-  Future<void> deleteForMe(String id) async {
+  Future<void> deleteForMe(String id, {String? chatId}) async {
     // Local-only — see the class docs for why that is a property of this
     // class rather than a promise in this comment.
     //
     // Two writes, both to [AppConstants.boxMessages]: the row goes, and the id
     // is recorded in the deletion index. Recording it is not belt-and-braces;
     // it is what stops the next Firestore snapshot from restoring the row.
-    for (final String chatId in _knownChatIds()) {
-      // Already recorded here — the row is invisible either way, so this chat
-      // is done.
-      if (_deletedIds(chatId).contains(id)) return;
-
-      final List<Message> list = _read(chatId);
-      final int before = list.length;
-      list.removeWhere((m) => m.id == id);
-      if (list.length != before) {
-        _deletedIds(chatId).add(id);
-        await _persistDeletedIds(chatId);
-        await _persist(chatId);
-        return;
-      }
+    //
+    // With the caller's [chatId] this is one read and two writes. Without it,
+    // every conversation on the device has to be loaded to find the row, which
+    // is what made the action feel slow — see the note on the interface.
+    if (chatId != null && chatId.isNotEmpty) {
+      await _removeForMe(chatId, id);
+      return;
+    }
+    for (final String known in _knownChatIds()) {
+      if (await _removeForMe(known, id)) return;
     }
     // No stored copy anywhere. The message may still arrive later — the user
     // removed it from this device, and this device is the only place the
@@ -327,8 +364,8 @@ class LocalMessageRepository implements MessageRepository {
   }
 
   @override
-  Future<bool> deleteForEveryone(String id) async {
-    final Message? existing = await findById(id);
+  Future<bool> deleteForEveryone(String id, {String? chatId}) async {
+    final Message? existing = await findById(id, chatId: chatId);
     if (existing == null) return false;
 
     // ⚠️ Re-checked here rather than trusted from the caller. The action sheet
@@ -337,7 +374,11 @@ class LocalMessageRepository implements MessageRepository {
     // would all bypass a UI-only rule. See `Message.canDeleteForEveryoneAt`.
     if (!existing.canDeleteForEveryone) return false;
 
-    final Message? updated = await _mutate(id, (Message m) => m.retracted());
+    // The hint is threaded through to the write as well as the read: [findById]
+    // resolving in one conversation and `_mutate` then scanning all of them
+    // would leave the action just as slow as before.
+    final Message? updated =
+        await _mutate(id, (Message m) => m.retracted(), chatId: chatId);
     return updated != null;
   }
 

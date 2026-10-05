@@ -1,41 +1,27 @@
 import 'package:flutter/foundation.dart';
 
-/// An in-memory ring buffer of log lines that the user can read on the device.
+/// A prefixed, timestamped facade over `debugPrint` for the auth and delete
+/// paths.
 ///
-/// Why this exists: the signup failures that prompted it happen on a real phone
-/// with no ADB attached. `debugPrint` goes nowhere the user can see, and
-/// `CrashLogger` only keeps what throws. A signup that *silently* walks the user
-/// back to the login screen throws nothing at all — so there was no evidence to
-/// work from, only a symptom.
+/// Why it exists: the signup failures that prompted it happen on a real phone
+/// with no ADB attached, where `debugPrint` output is the only evidence
+/// available and an unstructured log is hard to read. Every line is stamped and
+/// carries a severity marker, so `adb logcat | grep '\[+\]'` is a filter that
+/// actually works — and the same markers are what a Crashlytics non-fatal
+/// breadcrumb would be built from.
 ///
-/// This keeps the last [maxLines] lines in memory, stamped with the wall clock,
-/// mirroring everything to `debugPrint` so a tethered run is still readable.
-/// The developer-logs screen renders it and offers Copy All.
+/// ### It no longer buffers anything
 ///
-/// Deliberately **not** persisted: it is diagnostic scaffolding, and a phone
-/// account's derived address and a uid are the only sensitive things in it. If
-/// it ever needs to survive a restart, write it to a file the way
-/// `CrashLogger` does — do not put it in Hive or Firestore.
+/// It used to keep a 1000-line ring buffer in memory and expose `getLogs()` for
+/// the developer log screen. Both were removed on 2026-10-06, together with that
+/// screen and the "Copy Logs" action in the signup-failure dialog. What is left
+/// is the part that has value in a shipped build: the formatted line, echoed to
+/// the platform log.
+///
+/// Nothing here is persisted and nothing sensitive is ever passed to it — the
+/// phone flow's PIN goes straight to the auth SDK and is never logged.
 class InAppLogger {
   InAppLogger._();
-
-  /// Ring-buffer ceiling. The buffer is trimmed from the front, so the oldest
-  /// lines fall off first and the newest survive — which is what a "what just
-  /// happened" screen needs.
-  static const int maxLines = 1000;
-
-  static final List<LogEntry> _logs = <LogEntry>[];
-
-  /// Lines recorded so far, newest last.
-  static List<LogEntry> getLogs() => List<LogEntry>.unmodifiable(_logs);
-
-  /// How many lines are held. Cheap enough to poll for a "N lines" subtitle.
-  static int get count => _logs.length;
-
-  static void clear() {
-    _logs.clear();
-    debugPrint('[log] cleared');
-  }
 
   static void log(String message) => _append('   ', message);
 
@@ -75,25 +61,9 @@ class InAppLogger {
     final String line =
         '[${_two(now.hour)}:${_two(now.minute)}:${_two(now.second)}] '
         '$marker $message';
-    _logs.add(LogEntry(timestamp: now, line: line));
-    if (_logs.length > maxLines) {
-      _logs.removeRange(0, _logs.length - maxLines);
-    }
-    // Echo to the platform log so a tethered device shows the same thing.
+    // Echo to the platform log — the only sink there is now.
     debugPrint(line);
   }
 
   static String _two(int value) => value.toString().padLeft(2, '0');
-}
-
-/// One buffered line. The timestamp is kept separately from the formatted
-/// string so the viewer can style the time without re-parsing text.
-class LogEntry {
-  const LogEntry({required this.timestamp, required this.line});
-
-  final DateTime timestamp;
-  final String line;
-
-  @override
-  String toString() => line;
 }
