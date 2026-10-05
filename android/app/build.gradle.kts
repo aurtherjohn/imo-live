@@ -38,37 +38,44 @@ plugins {
 // config directly and never evaluate this block.
 //
 // ---------------------------------------------------------------------------
-// ⚠️ DO NOT ADD `import java.io.File` TO THIS FILE, AND DO NOT INTRODUCE A
-//    TOP-LEVEL `val` WHOSE DECLARED TYPE IS `File`.
+// ⚠️ NO `rootProject` ACCESS IN THIS FILE — and no bare `import java.io.File`.
 //
-// Doing either makes the build die at configuration time with:
+// Either one makes the build die at configuration time, ~2 minutes in, with:
 //
 //     Could not create an instance of type
 //     com.android.build.api.variant.impl.ApplicationVariantBuilderImpl
 //       > Namespace not specified. Specify a namespace in the module's build file
 //
 // …even though `namespace` IS set below, and even on a fresh clone with no
-// signing configured at all. It aborts in ~2 minutes, before any compiling.
+// signing configured at all. The message points at
+// `android/build.gradle.kts` line 32 and at a missing namespace; both are
+// misleading.
 //
-// This is a Kotlin-DSL script-compilation interaction: `android/build.gradle.kts`
-// runs `subprojects { evaluationDependsOn(":app") }`, so this script is compiled
-// and evaluated early. Bringing `java.io.File` into the script's top-level scope
-// changes how the generated script class resolves its `Project` delegate, and
-// AGP's `android { }` extension is then built before `namespace` is applied.
+// `android/build.gradle.kts` line 32 is Flutter's generated
+// `subprojects { project.evaluationDependsOn(":app") }`. It forces THIS script
+// to compile and evaluate while the root project is still configuring itself.
+// Reaching into `rootProject` from here re-enters that half-built state, and
+// AGP ends up constructing the `android { }` extension before `namespace` has
+// been applied.
 //
-// Verified by differential against the actual CI revisions:
-//   - b268a007 (run 29): no `import java.io.File`  → configured fine.
-//   - 145cedc2 (run 30): + `import java.io.File` + a `File?` val → died.
-//   - 42c28fb (run 31), c15dde0 (run 32): only renamed that val, kept the
-//     import → died identically. So the import, not the val's name or the
-//     timing of its evaluation, is the trigger.
-// See also https://github.com/gradle/gradle/issues (kotlin-dsl + AGP namespace).
+// Verified by differential against the real CI revisions (fetched through the
+// Git Data API — the API's commits have different shas than the local ones):
+//   - b268a007 (run 29): no new rootProject call, no java.io.File import
+//                        → configured fine (failed later on a path bug).
+//   - 145cedc2 (run 30) → 42c28fb (#31) → c15dde0 (#32) → 4bed12de (#33):
+//     every revision that added either construct died identically, regardless
+//     of how the `val` was typed, named, or ordered.
 //
-// Path arithmetic therefore uses `java.io.File` ONLY via the fully-qualified
-// name, inline, never as a script-level import or declared type.
+// Substitutes used below, both rooted in `project` only:
+//   rootProject.file("key.properties") → file("../key.properties")
+//   rootProject.file(path)             → "$repoRoot/$path", repoRoot from file("..")
+//   import java.io.File                → java.io.File(...) fully-qualified
 // ---------------------------------------------------------------------------
 val keystoreProperties = Properties()
-val keystorePropertiesFile = rootProject.file("key.properties")
+// ⚠️ `file("..")` — NOT `rootProject.file(...)`. See the note on
+// `resolvedStoreFilePath` below: any `rootProject` access from this script is
+// what trips the bogus "Namespace not specified" configuration failure.
+val keystorePropertiesFile = file("../key.properties")
 val hasKeyPropertiesFile = keystorePropertiesFile.exists()
 if (hasKeyPropertiesFile) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
@@ -93,20 +100,35 @@ val resolvedStoreFile: String? =
  * which Gradle reported as `android/app/android/app/***-release.jks not found`
  * and which failed the build with ~21 minutes already spent.
  *
- * `key.properties` documents its `storeFile` as ABSOLUTE (see the header), and a
- * relative value there has always meant module-relative — so that source keeps
- * `file()`. Only the env-var source is interpreted against the repo root, and an
- * absolute path is honoured either way.
+ * ⚠️ `rootProject.file(...)` is NOT used here, on purpose, even though it is the
+ * natural repo-root resolver. Calling it from this script — which
+ * `android/build.gradle.kts`'s `evaluationDependsOn(":app")` forces to evaluate
+ * early — drags the root project's configuration into this script's constructor
+ * and makes AGP build the `android { }` extension before `namespace` is applied,
+ * producing the wholly misleading:
  *
- * ⚠️ The result is a **String**, not a `File`. See the warning block above.
- * `java.io.File` is spelled fully-qualified at the two points of use.
+ *     Could not create an instance of type
+ *     com.android.build.api.variant.impl.ApplicationVariantBuilderImpl
+ *       > Namespace not specified. Specify a namespace in the module's build file
+ *
+ * The repo root is therefore derived positionally from this module's own
+ * directory: this module is `<root>/android/app`, so `file("..")` is
+ * `<root>/android` and its parent is the repo root. Nothing but `project` is
+ * touched.
+ *
+ * The result is a **String**; `java.io.File` is used only to test `isAbsolute`,
+ * and only in its fully-qualified form.
  */
+val repoRoot: String = file("..").absoluteFile.parentFile.absolutePath
+
 val resolvedStoreFilePath: String? = run {
     val path = resolvedStoreFile
     when {
         path.isNullOrBlank() -> null
         java.io.File(path).isAbsolute -> path
-        !envKeystoreFile.isNullOrBlank() -> rootProject.file(path).absolutePath
+        // CI: KEYSTORE_FILE is repo-root relative.
+        !envKeystoreFile.isNullOrBlank() -> "$repoRoot/$path"
+        // key.properties: historically module-relative.
         else -> file(path).absolutePath
     }
 }
