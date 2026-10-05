@@ -36,143 +36,104 @@ plugins {
 // a release APK now FAILS with an explanation instead. `flutter build apk
 // --debug` and plain `flutter run` are unaffected: they use the debug signing
 // config directly and never evaluate this block.
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-// ⚠️ CONFIGURATION-TIME CONTRACT — read before touching anything below.
 //
-// `android/build.gradle.kts` runs `subprojects { evaluationDependsOn(":app") }`,
-// which forces this project to evaluate while the ROOT project is still being
-// configured. Anything that reaches into `rootProject` (or evaluates `file()`)
-// from a top-level `val` initialiser therefore runs mid-configuration and makes
-// AGP fail with:
+// ---------------------------------------------------------------------------
+// ⚠️ DO NOT ADD `import java.io.File` TO THIS FILE, AND DO NOT INTRODUCE A
+//    TOP-LEVEL `val` WHOSE DECLARED TYPE IS `File`.
+//
+// Doing either makes the build die at configuration time with:
 //
 //     Could not create an instance of type
 //     com.android.build.api.variant.impl.ApplicationVariantBuilderImpl
 //       > Namespace not specified. Specify a namespace in the module's build file
 //
-// …even though `namespace` IS set below. A fresh clone that never sets up
-// signing hits the same wall, because the failure is about *when* the script
-// touches the root project, not about the secret being present.
+// …even though `namespace` IS set below, and even on a fresh clone with no
+// signing configured at all. It aborts in ~2 minutes, before any compiling.
 //
-// Therefore: NO top-level `val` in this file may call `rootProject.*` or
-// `file()`. Resolve lazily (a `() -> T` lambda invoked at execution time), or in
-// `afterEvaluate`. This is the same class of trap the `resolveStoreFilePath`
-// doc comment describes.
+// This is a Kotlin-DSL script-compilation interaction: `android/build.gradle.kts`
+// runs `subprojects { evaluationDependsOn(":app") }`, so this script is compiled
+// and evaluated early. Bringing `java.io.File` into the script's top-level scope
+// changes how the generated script class resolves its `Project` delegate, and
+// AGP's `android { }` extension is then built before `namespace` is applied.
+//
+// Verified by differential against the actual CI revisions:
+//   - b268a007 (run 29): no `import java.io.File`  → configured fine.
+//   - 145cedc2 (run 30): + `import java.io.File` + a `File?` val → died.
+//   - 42c28fb (run 31), c15dde0 (run 32): only renamed that val, kept the
+//     import → died identically. So the import, not the val's name or the
+//     timing of its evaluation, is the trigger.
+// See also https://github.com/gradle/gradle/issues (kotlin-dsl + AGP namespace).
+//
+// Path arithmetic therefore uses `java.io.File` ONLY via the fully-qualified
+// name, inline, never as a script-level import or declared type.
 // ---------------------------------------------------------------------------
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+val hasKeyPropertiesFile = keystorePropertiesFile.exists()
+if (hasKeyPropertiesFile) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+/** The keystore path CI writes, or the `storeFile` from key.properties. */
+val envKeystoreFile: String? = System.getenv("KEYSTORE_FILE")
+val resolvedStoreFile: String? =
+    if (!envKeystoreFile.isNullOrBlank()) envKeystoreFile
+    else keystoreProperties.getProperty("storeFile")
+
 /**
- * Resolves the release-signing credentials on demand.
+ * The keystore path, corrected for how each source means it.
  *
- * ⚠️ Deliberately a set of lazy `val`s backed by a local cache, NOT a nested
- * `class`. A class declared in a Kotlin DSL script body has **no access to the
- * script's implicit receivers** (`rootProject`, `file()`), so the calls below
- * would not even compile inside one.
- *
- * ⚠️ Also deliberately not top-level `val`s with initialisers. Those execute at
- * script-constructor scope — see the configuration-time contract above.
- *
- * Two traps are baked into this shape; do not "simplify" either away.
- *
- * **1. `file()` inside `android { }` is module-relative, not repo-root.** The CI
- * value `android/app/imo-live-release.jks` is repo-root relative, so passing it
- * through the implicit module `file()` produced
+ * ⚠️ `file(x)` inside an `android { }` block resolves against the *module*
+ * directory — `android/app/` — not the repo root. The CI value is
+ * repo-root-relative (`android/app/imo-live-release.jks`), so passing it through
+ * `file()` produced
  *
  *     android/app/ + android/app/imo-live-release.jks
  *
- * which Gradle reported as `android/app/android/app/***-release.jks not found`,
- * failing the build ~20 minutes in at `:app:validateSigningRelease`.
- * `rootProject.file()` is the repo-root-relative resolver; `key.properties`
- * keeps the module-relative `file()` it has always implied.
+ * which Gradle reported as `android/app/android/app/***-release.jks not found`
+ * and which failed the build with ~21 minutes already spent.
  *
- * **2. It must be resolved LAZILY, never at script-constructor scope.**
- * `android/build.gradle.kts` runs `subprojects { evaluationDependsOn(":app") }`,
- * which forces `:app` to evaluate while the ROOT project is still configuring
- * itself. A top-level `val … = run { … rootProject.file(path) … }` therefore
- * executes during that re-entrant early evaluation and touches the root
- * project's file resolver before its configuration has settled. AGP then fails
- * with:
+ * `key.properties` documents its `storeFile` as ABSOLUTE (see the header), and a
+ * relative value there has always meant module-relative — so that source keeps
+ * `file()`. Only the env-var source is interpreted against the repo root, and an
+ * absolute path is honoured either way.
  *
- *     Could not create an instance of type
- *     com.android.build.api.variant.impl.ApplicationVariantBuilderImpl
- *       > Namespace not specified. Specify a namespace in the module's build file
- *
- * …even though `namespace = "com.imo.live"` is set below, and even on a fresh
- * clone with no signing configured at all. It is a configuration-phase ordering
- * failure, which is why it aborts in ~2 minutes instead of at the end.
- *
- * Resolvers, in precedence order:
- *   1. Environment variables (CI).
- *   2. `android/key.properties` (local, gitignored).
+ * ⚠️ The result is a **String**, not a `File`. See the warning block above.
+ * `java.io.File` is spelled fully-qualified at the two points of use.
  */
-val signingProperties = Properties()
-var signingPropertiesLoaded = false
-
-/** Reads `android/key.properties` on first use. */
-fun signingProperties(): Properties {
-    if (!signingPropertiesLoaded) {
-        signingPropertiesLoaded = true
-        val file = rootProject.file("key.properties")
-        if (file.exists()) {
-            signingProperties.load(FileInputStream(file))
-        }
-    }
-    return signingProperties
-}
-
-fun signingEnv(name: String): String? =
-    System.getenv(name)?.takeIf { it.isNotBlank() }
-
-/** The keystore path CI writes, or the `storeFile` from key.properties. */
-fun rawStoreFile(): String? =
-    signingEnv("KEYSTORE_FILE") ?: signingProperties().getProperty("storeFile")
-
-val storePassword: String?
-    get() = signingEnv("KEYSTORE_PASSWORD")
-        ?: signingProperties().getProperty("storePassword")
-val keyAlias: String?
-    get() = signingEnv("KEY_ALIAS") ?: signingProperties().getProperty("keyAlias")
-val keyPassword: String?
-    get() = signingEnv("KEY_PASSWORD")
-        ?: signingProperties().getProperty("keyPassword")
-
-/**
- * The keystore as an **absolute path String**, resolved against the right base
- * directory for its source. Never called at configuration scope.
- */
-fun resolvedStoreFilePath(): String? {
-    val path = rawStoreFile()
-    val fromEnv = signingEnv("KEYSTORE_FILE") != null
-    return when {
+val resolvedStoreFilePath: String? = run {
+    val path = resolvedStoreFile
+    when {
         path.isNullOrBlank() -> null
-        File(path).isAbsolute -> path
-        // CI: KEYSTORE_FILE is repo-root relative.
-        fromEnv -> rootProject.file(path).absolutePath
-        // key.properties: historically module-relative.
+        java.io.File(path).isAbsolute -> path
+        !envKeystoreFile.isNullOrBlank() -> rootProject.file(path).absolutePath
         else -> file(path).absolutePath
     }
 }
 
-/** True only when a release build could actually be signed. */
-fun releaseSigningReady(): Boolean =
-    !resolvedStoreFilePath().isNullOrBlank() &&
-        !storePassword.isNullOrBlank() &&
-        !keyAlias.isNullOrBlank() &&
-        !keyPassword.isNullOrBlank()
+val resolvedStorePassword: String? =
+    System.getenv("KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty("storePassword")
+val resolvedKeyAlias: String? =
+    System.getenv("KEY_ALIAS")?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty("keyAlias")
+val resolvedKeyPassword: String? =
+    System.getenv("KEY_PASSWORD")?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty("keyPassword")
+
+val hasReleaseSigning = !resolvedStoreFilePath.isNullOrBlank() &&
+    !resolvedStorePassword.isNullOrBlank() &&
+    !resolvedKeyAlias.isNullOrBlank() &&
+    !resolvedKeyPassword.isNullOrBlank()
 
 /**
  * Refuses to produce a release artifact without real signing credentials, and
  * prints the resolved keystore path so a path mistake is visible immediately
  * rather than ~20 minutes into the build at `:app:validateSigningRelease`.
- *
- * Registered with the eager `task("…") { }` form, before `android { }`, matching
- * the shape that previously reached the signing validation step.
- *
- * ⚠️ Every access to the resolved path happens inside `doFirst` (execution
- * phase) — never at registration. Registration runs at configuration time,
- * which is exactly when the root project may still be mid-configuration.
  */
 task("assertReleaseSigning") {
     doFirst {
-        if (!releaseSigningReady()) {
+        if (!hasReleaseSigning) {
             throw GradleException(
                 "Release signing is not configured, refusing to produce an " +
                 "unsigned or debug-signed release APK.\n" +
@@ -184,10 +145,10 @@ task("assertReleaseSigning") {
                 "`flutter build apk --debug` instead."
             )
         }
-        val storeFilePath = resolvedStoreFilePath()!!
+        val storeFilePath = resolvedStoreFilePath!!
         println("Release signing: storeFile=$storeFilePath")
-        println("  exists=${File(storeFilePath).exists()}  alias=$keyAlias")
-        if (!File(storeFilePath).exists()) {
+        println("  exists=${java.io.File(storeFilePath).exists()}  alias=$resolvedKeyAlias")
+        if (!java.io.File(storeFilePath).exists()) {
             throw GradleException(
                 "Release keystore not found at $storeFilePath. " +
                 "KEYSTORE_FILE is resolved against the REPO ROOT; " +
@@ -238,30 +199,16 @@ android {
         // `assertReleaseSigning` task is what refuses to build a release APK
         // without real credentials.
         //
-        // ⚠️ `storeFile` is NOT assigned here. Reading the resolved path at this
-        // point would touch `rootProject` while it may still be configuring —
-        // the `evaluationDependsOn(":app")` trap documented above. It is
-        // assigned in `afterEvaluate` instead, which AGP reads from reliably.
-        //
-        // The credential values ARE read here, eagerly: they come straight from
-        // environment variables or from `key.properties`, and neither touches
-        // `rootProject`.
-        //
-        // ⚠️ The credential values MUST be snapshotted into LOCAL variables
-        // before the lambda. The lambda receiver is the `SigningConfig`, which
-        // has its own `storePassword` / `keyAlias` / `keyPassword` properties, so
-        // an unqualified `storePassword = storePassword` would be a
-        // self-assignment that silently discards the real value. Locals shadow
-        // the receiver's members, so this form is unambiguous — unlike
-        // `this@build_gradle`, which would depend on the generated script class
-        // name.
-        val signingStorePassword = storePassword
-        val signingKeyAlias = keyAlias
-        val signingKeyPassword = keyPassword
+        // ⚠️ `java.io.File` is spelled fully-qualified on purpose — a `File`
+        // import or a `File`-typed val at script scope breaks AGP configuration
+        // (see the warning at the top of this file). The values come from locals
+        // that are only dereferenced when `hasReleaseSigning` has already proved
+        // them non-null.
         create("release") {
-            storePassword = signingStorePassword
-            keyAlias = signingKeyAlias
-            keyPassword = signingKeyPassword
+            storeFile = resolvedStoreFilePath?.let { java.io.File(it) }
+            storePassword = resolvedStorePassword
+            keyAlias = resolvedKeyAlias
+            keyPassword = resolvedKeyPassword
         }
     }
 
@@ -286,25 +233,14 @@ kotlin {
     }
 }
 
-// Assigns the resolved keystore to the release signing config only once the
-// project has finished configuring. Doing this inside `android { }` above would
-// read `rootProject` during the re-entrant early evaluation that
-// `evaluationDependsOn(":app")` triggers — see the configuration-time contract above.
-afterEvaluate {
-    val storeFilePath = resolvedStoreFilePath()
-    if (!storeFilePath.isNullOrBlank()) {
-        android.signingConfigs.getByName("release").storeFile = File(storeFilePath)
-    }
-}
-
 flutter {
     source = "../.."
 }
 
 // Any `assembleRelease*` / `bundleRelease*` APK-or-AAB build depends on the
-// assertion task registered above, so a release artifact can never be produced
-// without real signing credentials. Matched by name prefix because the ABI
-// splits produce `assembleRelease`, `assembleArm64V8aRelease`, and so on.
+// assertion, so a release artifact can never be produced without real signing
+// credentials. Matched by name prefix because the ABI splits produce
+// `assembleRelease`, `assembleArm64V8aRelease`, and so on.
 tasks.matching { task ->
     (task.name.startsWith("assemble") || task.name.startsWith("bundle")) &&
         task.name.contains("Release")
