@@ -95,9 +95,14 @@ task("assertReleaseSigning") {
         // Any Project/AGP interaction at configuration scope in this file makes
         // AGP 9.1.0 fail with a bogus "Namespace not specified" — this project
         // runs with `android.newDsl=false`. See gradle.properties.
+        //
+        // ⚠️ `java.io.File` CANNOT be spelled fully-qualified here: inside a
+        // script body, Kotlin resolves `java` against names already in scope and
+        // reports "Unresolved reference 'io'". Do the check on the String.
         val storeFilePath = resolvedStoreFile
         if (!storeFilePath.isNullOrBlank() &&
-            !java.io.File(storeFilePath).isAbsolute
+            !storeFilePath.startsWith("/") &&
+            storeFilePath.getOrNull(1) != ':'
         ) {
             throw GradleException(
                 "KEYSTORE_FILE must be an ABSOLUTE path, got '$storeFilePath'. " +
