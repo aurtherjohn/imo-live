@@ -153,11 +153,13 @@ jobs:
           set -euo pipefail
           test -f "$KEYSTORE_FILE" || { echo "::error::keystore missing at $KEYSTORE_FILE"; exit 1; }
           echo "KEYSTORE_FILE=$KEYSTORE_FILE"
-          # --stacktrace is deliberate and should stay until the release build is
-          # green at least once: a configuration-time failure here reports only
-          # "Namespace not specified" against android/build.gradle.kts, which
-          # names neither the real cause nor the file that caused it.
-          flutter build apk --release --split-per-abi --stacktrace \
+          # ⚠️ Do NOT pass `--stacktrace` here: that is a Gradle flag, not a
+          # Flutter one, and Flutter rejects it with
+          #   Could not find an option named "--stacktrace".   (exit 64)
+          # If a configuration-time failure ever needs diagnosing again, read it
+          # from the build script's own context (gradle.properties flags, plugin
+          # versions) rather than trying to forward Gradle flags through Flutter.
+          flutter build apk --release --split-per-abi \
             --dart-define=GOOGLE_OAUTH_CLIENT_ID="$GOOGLE_OAUTH_CLIENT_ID"
 
       # Proves what actually ended up inside the shipped APK, not just what the
