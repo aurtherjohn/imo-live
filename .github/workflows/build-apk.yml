@@ -181,39 +181,30 @@ jobs:
       # a mismatch here means the artifact is signed with something other than
       # the Firebase-registered key, and shipping it would silently reintroduce
       # the Google Sign-In DEVELOPER_ERROR this whole change exists to fix.
-      # ⚠️ This step previously failed with NO OUTPUT AT ALL in ~0.7s. The cause
-      # was NOT keytool and NOT the APK: it was `set -e` interacting with a
-      # command substitution. GitHub runs this as `bash -e`, and:
+      # ⚠️ TWO separate traps live here. Read both before editing.
       #
-      #   APK_SHA1=$(grep -i 'SHA1:' apk-cert.txt | head -1 | ...)
+      # TRAP 1 — `keytool` CANNOT read this APK. `keytool -printcert -jarfile`
+      # reads *v1 (JAR)* signatures only (its own help says "-jarfile <file>
+      # signed jar file"). This app is `minSdk = 24`, and at minSdk >= 24 AGP
+      # disables v1 signing by default and signs with v2/v3 only. So keytool
+      # exits 0 and prints the literal string "Not a signed jar file", with no
+      # SHA1 anywhere — which is exactly the failure that cost a CI cycle.
+      # Proven locally by signing a stub APK both ways:
+      #   v2/v3 only  -> keytool exit 0, 21 bytes, "Not a signed jar file", 0 SHA1
+      #   v1 + v2/v3  -> keytool exit 0, full cert,                     1 SHA1
+      # The right tool is `apksigner verify --print-certs`, which reads v2/v3
+      # and works for v1 too. It prints a COLON-LESS lowercase digest:
+      #   Signer #1 certificate SHA-1 digest: f3020d543d8ce2a8e263843b01055116ab481101
+      # so comparison must normalise by stripping ':' and upper-casing BOTH sides.
       #
-      # `grep` exits 1 on no match; `pipefail` propagates that as the pipeline's
-      # status; `-e` then aborts the shell *at the assignment*, before the
-      # `echo` on the very next line. Result: exit 1, zero output, and no clue
-      # which command died. Reproduced locally three ways:
-      #   no-match + pipefail + -e  -> exit 1, no output   (the bug)
-      #   match    + pipefail + -e  -> fine
-      #   no-match + no pipefail    -> survives, var empty
-      #
-      # Two hardening rules, both applied below:
-      #   1. `set -uo pipefail` (NO -e) so a no-match cannot kill the step; the
-      #      explicit guards decide success, and they say WHY they failed.
-      #   2. Append `|| true` to every grep used for parsing, so an empty result
-      #      becomes an empty string and the diagnostic below explains it.
-      # Also: verify the cert file is non-empty before parsing it, so an empty
-      # keytool result is named as such instead of surfacing as a bare exit 1.
+      # TRAP 2 — `set -e` + a failing `$(grep …)` aborts the step with ZERO
+      # output. GitHub runs steps as `bash -e {0}`. `grep` exits 1 on no match,
+      # `pipefail` propagates it, and `-e` kills the shell at the assignment,
+      # before the next `echo`. Hence `set -uo pipefail` (no -e) plus `|| true`
+      # on every parsing grep, with explicit guards that NAME the failure.
       - name: Verify signed APK certificate
         run: |
           set -uo pipefail
-          # Resolve keytool through JAVA_HOME first: the runner has a JDK, but
-          # PATH is not contract. Fail loudly if it is genuinely absent.
-          KEYTOOL="${JAVA_HOME:+$JAVA_HOME/bin/keytool}"
-          [ -x "$KEYTOOL" ] || KEYTOOL="$(command -v keytool || true)"
-          if [ -z "$KEYTOOL" ] || [ ! -x "$KEYTOOL" ]; then
-            echo "::error::keytool not found (JAVA_HOME=$JAVA_HOME)"
-            exit 1
-          fi
-          echo "keytool: $KEYTOOL"
 
           APK=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
           if [ ! -f "$APK" ]; then
@@ -223,33 +214,92 @@ jobs:
           fi
           echo "APK: $APK ($(stat -c%s "$APK") bytes)"
 
-          if ! "$KEYTOOL" -printcert -jarfile "$APK" > apk-cert.txt 2> keytool-err.txt; then
-            echo "::error::keytool -printcert failed:"
-            cat keytool-err.txt
-            exit 1
-          fi
-          if [ ! -s apk-cert.txt ]; then
-            echo "::error::keytool -printcert produced no output for $APK."
-            echo "--- stderr ---"; cat keytool-err.txt || true
-            exit 1
+          # apksigner ships with the Android SDK build-tools. Locate it via
+          # ANDROID_HOME / ANDROID_SDK_ROOT, newest build-tools first.
+          # ⚠️ Two portability details that each broke this locally:
+          #   - `${VAR:-}` everywhere: under `set -u`, a bare `$ANDROID_SDK_ROOT`
+          #     aborts the step where it is unset ("unbound variable").
+          #   - `[ -x ]` is NOT the right test. On CI (ubuntu) `apksigner` is an
+          #     executable POSIX script; on a Windows SDK only `apksigner.bat`
+          #     exists and the executable bit is often unset. So prefer an
+          #     executable candidate, otherwise accept any existing one and
+          #     invoke it explicitly (bash for a script, cmd for a .bat).
+          find_apksigner() {
+            for root in "${ANDROID_HOME:-}" "${ANDROID_SDK_ROOT:-}" \
+                        "${ANDROID_HOME:-$HOME}/../Android/sdk" \
+                        /usr/local/lib/android/sdk; do
+              [ -n "$root" ] && [ -d "$root/build-tools" ] || continue
+              local v
+              v=$(ls -1 "$root/build-tools" 2>/dev/null | sort -V | tail -1)
+              [ -n "$v" ] || continue
+              for cand in "$root/build-tools/$v/apksigner" \
+                          "$root/build-tools/$v/apksigner.bat"; do
+                [ -e "$cand" ] && { echo "$cand"; return 0; }
+              done
+            done
+            return 1
+          }
+          # Run a discovered tool regardless of whether it is executable.
+          run_apksigner() {
+            case "$1" in
+              *.bat) cmd //c "$1" "${@:2}" ;;
+              *)     [ -x "$1" ] && "$1" "${@:2}" || bash "$1" "${@:2}" ;;
+            esac
+          }
+          APKSIGNER="$(find_apksigner || true)"
+          if [ -z "$APKSIGNER" ]; then
+            echo "::warning::apksigner not found; falling back to keytool."
+            echo "::warning::keytool only reads v1 signatures — a v2/v3-only APK will report 'Not a signed jar file'."
+          else
+            echo "apksigner: $APKSIGNER"
           fi
 
-          echo "--- certificate ---"
-          grep -E 'SHA1|SHA256|Owner|Valid' apk-cert.txt || true
+          CERT=""
+          if [ -n "$APKSIGNER" ]; then
+            # Fail loudly rather than exiting 0 on an unsigned/corrupt APK.
+            if ! run_apksigner "$APKSIGNER" verify --print-certs "$APK" \
+                   > apk-cert.txt 2> keytool-err.txt; then
+              echo "::error::apksigner verify failed — the APK is not correctly signed:"
+              cat keytool-err.txt || true
+              exit 1
+            fi
+            grep -E 'Signer #1 certificate (DN|SHA-1|SHA-256)' apk-cert.txt || true
+            # Colon-less lowercase -> normalised for the compare below.
+            CERT=$(grep -i 'Signer #1 certificate SHA-1 digest' apk-cert.txt \
+              | head -1 | sed 's/.*digest: *//' | tr -d ' \r' || true)
+          else
+            KEYTOOL="${JAVA_HOME:+$JAVA_HOME/bin/keytool}"
+            [ -x "$KEYTOOL" ] || KEYTOOL="$(command -v keytool || true)"
+            if [ -z "$KEYTOOL" ] || [ ! -x "$KEYTOOL" ]; then
+              echo "::error::neither apksigner nor keytool is available."
+              exit 1
+            fi
+            if ! "$KEYTOOL" -printcert -jarfile "$APK" > apk-cert.txt 2> keytool-err.txt; then
+              echo "::error::keytool -printcert failed:"
+              cat keytool-err.txt || true
+              exit 1
+            fi
+            grep -E 'SHA1|SHA256' apk-cert.txt || true
+            CERT=$(grep -i 'SHA1:' apk-cert.txt | head -1 \
+              | sed 's/.*SHA1: *//' | tr -d '\r' | xargs || true)
+          fi
 
-          # `|| true` on every parse: see the header comment. Without it a format
-          # change in keytool's output becomes a silent, clue-free failure.
-          APK_SHA1=$(grep -i 'SHA1:' apk-cert.txt | head -1 \
-            | sed 's/.*SHA1: *//' | tr -d '\r' | xargs || true)
+          # ⚠️ `tr -d :` on BOTH sides: apksigner prints colon-less hex, keytool
+          # prints colon-separated. Comparing raw strings would always fail.
+          norm() { echo "$1" | tr -d ':' | tr 'a-f' 'A-F' | xargs; }
+          APK_SHA1="$(norm "$CERT")"
+          EXPECTED_N="$(norm "$EXPECTED_SHA1")"
+
           echo "APK SHA-1      : $APK_SHA1"
-          echo "EXPECTED SHA-1 : $EXPECTED_SHA1"
+          echo "EXPECTED SHA-1 : $EXPECTED_N"
 
-          norm() { echo "$1" | tr 'a-f' 'A-F'; }
           if [ -z "$APK_SHA1" ]; then
             echo "::error::Could not extract a SHA-1 from the APK certificate."
+            echo "A v2/v3-only APK (minSdk >= 24) reports 'Not a signed jar file' under keytool."
+            cat apk-cert.txt || true
             exit 1
           fi
-          if [ "$(norm "$APK_SHA1")" != "$(norm "$EXPECTED_SHA1")" ]; then
+          if [ "$APK_SHA1" != "$EXPECTED_N" ]; then
             echo "::error::The built APK is NOT signed with the Firebase-registered key. Google Sign-In will fail on device."
             exit 1
           fi
