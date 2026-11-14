@@ -1,19 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/theme/app_tokens.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/services/ad_service.dart';
 import '../../../core/services/call_service.dart';
 import '../../../core/services/call_signaling_service.dart';
 import '../../../core/services/connectivity_service.dart';
 import '../../../core/services/webrtc_call_service.dart';
 import '../../../core/utils/l10n.dart';
 import '../../calls/presentation/widgets/call_listener_banner.dart';
-import '../../earn/presentation/providers.dart';
 import '../../updates/presentation/providers/updates_providers.dart';
 import 'providers.dart';
 import 'widgets/bottom_nav.dart';
@@ -124,13 +120,6 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
       bottomNavigationBar: IBottomNav(
         index: widget.navigationShell.currentIndex,
         onSelect: (int index) {
-          // Counted, not shown-on-every-tap: [AdService] only surfaces an
-          // interstitial once four switches have accumulated and the global
-          // cooldown has elapsed. Deliberately not awaited — navigation must
-          // never wait on an ad.
-          unawaited(
-            ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.tabSwitch),
-          );
           widget.navigationShell.goBranch(
             index,
             initialLocation: index == widget.navigationShell.currentIndex,

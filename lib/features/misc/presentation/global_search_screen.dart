@@ -187,16 +187,14 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
       case SearchKind.chat:
       case SearchKind.group:
         context.push('${AppRoutes.groupInfo}/${hit.id}');
-      case SearchKind.community:
-        context.push('${AppRoutes.community}/${hit.id}');
-      case SearchKind.channel:
-        context.push('${AppRoutes.channel}/${hit.id}');
       case SearchKind.contact:
         context.push('${AppRoutes.contactInfo}/${hit.id}');
       case SearchKind.message:
         // A message hit resolves to its conversation, which is the only place
         // a profile page could sensibly come from.
         if (hit.chatId != null) context.push('${AppRoutes.chat}/${hit.chatId}');
+      default:
+        break;
     }
   }
 
@@ -211,12 +209,8 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
         context.push('${AppRoutes.contactInfo}/${hit.id}');
       case SearchKind.group:
         context.push('${AppRoutes.groupInfo}/${hit.id}');
-      case SearchKind.community:
-        context.push('${AppRoutes.community}/${hit.id}');
-      case SearchKind.channel:
-        // Selecting a channel opens its posts as a conversation. The
-        // management feed is reached from the conversation's info action.
-        context.push('${AppRoutes.channelChat}/${hit.id}');
+      default:
+        break;
     }
   }
 

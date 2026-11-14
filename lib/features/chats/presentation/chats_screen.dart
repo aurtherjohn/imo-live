@@ -10,8 +10,6 @@ import '../../../app/theme/app_tokens.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/models/chat.dart';
 import '../../../core/models/contact.dart';
-import '../../../core/models/group.dart';
-import '../../../core/services/ad_service.dart';
 import '../../../core/services/contact_service.dart';
 import '../../../core/services/media_service.dart';
 import '../../../core/widgets/brand_assets.dart';
@@ -20,12 +18,10 @@ import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../../local/database/local_database.dart';
 import '../../auth/presentation/auth_providers.dart';
-import '../../earn/presentation/providers.dart';
 import '../../misc/presentation/startup.dart';
 import '../../misc/presentation/widgets/app_drawer.dart';
 import '../../settings/presentation/widgets/chat_actions_sheet.dart';
 import '../../settings/presentation/widgets/settings_widgets.dart';
-import '../../channels/presentation/widgets/channel_chat_tile.dart';
 import '../domain/chat_rows.dart';
 import '../domain/remote_chats_sync.dart';
 import 'providers.dart';
@@ -132,33 +128,11 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                   // -------------------------------------------------------
                   // The merged list.
                   //
-                  // Channels are folded in here rather than given their own
-                  // section, so the list is genuinely "everything that
-                  // happened", newest first — which is what a chat list
-                  // promises. The direct/group filter still governs the
-                  // conversation half; a channel is shown under `all`.
+                  // Direct chats and groups are merged into one list,
+                  // newest first — which is what a chat list promises.
                   // -------------------------------------------------------
-                  final List<Channel> channels =
-                      filter == ChatFilter.all || filter == ChatFilter.groups
-                          ? ref.watch(chatListChannelsProvider)
-                          : const <Channel>[];
-
-                  final List<Channel> filteredChannels =
-                      _query.trim().isEmpty
-                          ? channels
-                          : channels
-                              .where((Channel ch) =>
-                                  ch.name.toLowerCase().contains(
-                                        _query.trim().toLowerCase(),
-                                      ) ||
-                                  ch.username.toLowerCase().contains(
-                                        _query.trim().toLowerCase(),
-                                      ))
-                              .toList();
-
                   final List<ChatRow> rows = mergeChatRows(
                     chats: filtered,
-                    channels: filteredChannels,
                   );
 
                   final int archivedCount =
@@ -212,16 +186,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                                                 ref,
                                                 chat,
                                               );
-                                            },
-                                          ),
-                                        ChatRowChannel(:final Channel channel) =>
-                                          ChannelChatTile(
-                                            channel: channel,
-                                            onTap: () =>
-                                                _openChannel(channel),
-                                            onLongPress: () {
-                                              Haptics.tap();
-                                              _showChannelActions(channel);
                                             },
                                           ),
                                       },
@@ -353,103 +317,14 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       ),
       builder: (BuildContext sheetContext) => _NewChatSheet(
         onNewContact: () => context.push(AppRoutes.newContact),
-        onNewChannel: () => context.push(AppRoutes.newChannel),
-        onNewCommunity: () => context.push(AppRoutes.newCommunity),
       ),
     );
   }
 
   /// Opens a conversation from the merged list.
-  ///
-  /// The ad trigger is fired here rather than inside [ChatTile] so the tile
-  /// stays a presentational widget. Deliberately not awaited: opening a
-  /// conversation must never wait on an ad load.
   void _openConversation(Chat chat) {
     ref.read(chatsProvider.notifier).markRead(chat.id);
-    unawaited(
-      ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.chatsOpened),
-    );
     context.push('/chat/${chat.id}');
-  }
-
-  /// Opens a channel as a conversation.
-  void _openChannel(Channel channel) {
-    unawaited(
-      ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.chatsOpened),
-    );
-    context.push('${AppRoutes.channelChat}/${channel.id}');
-  }
-
-  /// Long-press actions for a channel row.
-  ///
-  /// Deliberately a shorter menu than a conversation's: a channel has no
-  /// archive, no pin and no "mark unread" in this app, and offering actions
-  /// that do nothing is how a list starts feeling broken. Mute, follow and
-  /// open-info are the three that exist.
-  Future<void> _showChannelActions(Channel channel) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (BuildContext sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              leading: const Icon(Icons.campaign_outlined),
-              title: Text(sheetContext.l10n.openChannel),
-              onTap: () {
-                Navigator.of(sheetContext).pop();
-                _openChannel(channel);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                channel.isMuted
-                    ? Icons.notifications_active_outlined
-                    : Icons.notifications_off_outlined,
-              ),
-              title: Text(
-                channel.isMuted
-                    ? sheetContext.l10n.unmute
-                    : sheetContext.l10n.mute,
-              ),
-              onTap: () async {
-                Navigator.of(sheetContext).pop();
-                await ref
-                    .read(channelsProvider.notifier)
-                    .toggleMute(channel.id);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                channel.isFollowing
-                    ? Icons.person_remove_outlined
-                    : Icons.person_add_outlined,
-              ),
-              title: Text(
-                channel.isFollowing
-                    ? sheetContext.l10n.unfollow
-                    : sheetContext.l10n.follow,
-              ),
-              onTap: () async {
-                Navigator.of(sheetContext).pop();
-                await ref
-                    .read(channelsProvider.notifier)
-                    .toggleFollow(channel.id);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info_outline_rounded),
-              title: Text(sheetContext.l10n.channelInfo),
-              onTap: () {
-                Navigator.of(sheetContext).pop();
-                context.push('${AppRoutes.channel}/${channel.id}');
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   /// Opens the profile behind a chat row.
@@ -781,13 +656,9 @@ class _EmptyChats extends ConsumerWidget {
 class _NewChatSheet extends ConsumerStatefulWidget {
   const _NewChatSheet({
     required this.onNewContact,
-    required this.onNewChannel,
-    required this.onNewCommunity,
   });
 
   final VoidCallback onNewContact;
-  final VoidCallback onNewChannel;
-  final VoidCallback onNewCommunity;
 
   @override
   ConsumerState<_NewChatSheet> createState() => _NewChatSheetState();
@@ -897,27 +768,6 @@ class _NewChatSheetState extends ConsumerState<_NewChatSheet> {
               widget.onNewContact();
             },
           ),
-          SettingsTile(
-            title: context.l10n.newChannel,
-            subtitle: context.l10n.broadcastToAnUnlimitedAudience,
-            leadingIcon: Icons.campaign_rounded,
-            leadingIconColor: context.c.accent,
-            onTap: () {
-              Navigator.pop(context);
-              widget.onNewChannel();
-            },
-          ),
-          SettingsTile(
-            title: context.l10n.newCommunity,
-            subtitle: context.l10n.groupRelatedChatsTogether,
-            leadingIcon: Icons.groups_rounded,
-            leadingIconColor: context.c.accent,
-            onTap: () {
-              Navigator.pop(context);
-              widget.onNewCommunity();
-            },
-          ),
-
           const Divider(height: 1),
 
           // ------------------------------------------------- device contacts

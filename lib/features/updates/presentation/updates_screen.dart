@@ -134,23 +134,6 @@ class UpdatesScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
-
-                // ------------------------------------------- channels shortcut
-                SectionHeader(title: context.l10n.discover),
-                SettingsTile(
-                  title: context.l10n.channels,
-                  subtitle: context.l10n.followBroadcastChannelsYouSubscribe,
-                  leadingIcon: Icons.podcasts_rounded,
-                  leadingIconColor: context.c.accent,
-                  onTap: () => context.push(AppRoutes.communities),
-                ),
-                IListDivider(indent: AppSpacing.lg + AppSpacing.xxl),
-                SettingsTile(
-                  title: context.l10n.createAChannel,
-                  subtitle: context.l10n.broadcastToFollowersWithoutA,
-                  leadingIcon: Icons.add_box_outlined,
-                  onTap: () => context.push(AppRoutes.newChannel),
-                ),
               ],
             ),
     );

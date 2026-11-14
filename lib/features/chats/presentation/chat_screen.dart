@@ -26,9 +26,6 @@ import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../../core/widgets/video_view.dart';
 import '../../auth/presentation/auth_providers.dart';
-import '../../earn/presentation/providers.dart';
-import '../../earn/presentation/widgets/gift_sheet.dart';
-import '../../../core/services/ad_service.dart';
 import '../domain/chat_service.dart';
 import '../domain/repositories.dart';
 import 'dialogs/chat_dialogs.dart';
@@ -347,12 +344,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         .read(chatsProvider.notifier)
         .touch(widget.chatId, message);
     if (mounted) _scrollToBottom();
-    // Counted, not shown-on-every-message: [AdService] surfaces an interstitial
-    // only once five have accumulated and its cooldown has elapsed. Not awaited
-    // — sending must never wait on an ad.
-    unawaited(
-      ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.messagesSent),
-    );
   }
 
   Future<void> _createEvent() async {
@@ -1034,25 +1025,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       return;
     }
 
-    final GiftReceipt? receipt = await showGiftSheet(
-      context,
-      toUid: peerUid,
-      toName: chat.title,
-      chatId: chat.id,
-    );
-    // Null means the sheet was dismissed. A failure was already reported by the
-    // sheet itself, so there is nothing to add here.
-    if (receipt == null || !receipt.result.success || !mounted) return;
-
-    await ref.read(chatServiceProvider).sendMessage(
-          chatId: chat.id,
-          text: receipt.gift.toMessageBody(),
-          type: MessageType.gift,
-          peerUid: peerUid,
-        );
-
     if (!mounted) return;
-    iToast(context, receipt.result.message);
     _scrollToBottom();
   }
 
@@ -1167,13 +1140,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       );
       if (!mounted || saved == null) return; // null == the user cancelled
       iToast(context, context.l10n.savedToDeviceStorage);
-      // A save is a completed action. The trigger is threshold-1 but still
-      // subject to the shared cooldown, so saving ten photos in a row is
-      // treated as one intent rather than ten ad opportunities. Deliberately
-      // not awaited: the toast must not wait on an ad load.
-      unawaited(
-        ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.mediaSaved),
-      );
     } on Exception catch (e) {
       if (!mounted) return;
       iToast(context, context.l10n.couldNotSaveTheFile(e), isError: true);

@@ -193,19 +193,6 @@ class _SelectContactScreenState extends ConsumerState<SelectContactScreen> {
                   onTap: () => context.push(AppRoutes.newContact),
                 ),
                 SettingsTile(
-                  title: context.l10n.newCommunity,
-                  leading: CircleAvatar(
-                    radius: 17,
-                    backgroundColor: context.c.accent.withValues(alpha: 0.16),
-                    child: Icon(
-                      Icons.groups_rounded,
-                      size: AppIconSizes.sm,
-                      color: context.c.accent,
-                    ),
-                  ),
-                  onTap: () => context.push(AppRoutes.newCommunity),
-                ),
-                SettingsTile(
                   title: context.l10n.syncDeviceContacts,
                   subtitle: context.l10n.importNamesAndNumbersFrom,
                   leading: CircleAvatar(

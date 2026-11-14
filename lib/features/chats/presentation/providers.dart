@@ -1253,24 +1253,16 @@ final Provider<List<Channel>> chatListChannelsProvider =
 
 /// Conversations and channels as one recency-ordered list.
 ///
-/// The single source for the Chats tab. Kept as a `Provider` over the two
-/// existing providers so it recomputes when either changes, and so the merge
-/// itself stays a pure function that a test can call directly.
+/// The single source for the Chats tab.
 final Provider<List<ChatRow>> mergedChatRowsProvider =
     Provider<List<ChatRow>>((Ref ref) {
   final List<Chat> chats = ref.watch(visibleChatsProvider);
-  final List<Channel> channels = ref.watch(chatListChannelsProvider);
-  return mergeChatRows(chats: chats, channels: channels);
+  return mergeChatRows(chats: chats);
 });
 
-/// Total unread across conversations *and* channels, for the tab badge.
+/// Total unread across conversations, for the tab badge.
 final Provider<int> totalUnreadWithChannelsProvider = Provider<int>((Ref ref) {
-  final int fromChats = ref.watch(totalUnreadProvider);
-  final int fromChannels = ref
-      .watch(chatListChannelsProvider)
-      .where((Channel c) => !c.isMuted && c.hasUnread)
-      .length;
-  return fromChats + fromChannels;
+  return ref.watch(totalUnreadProvider);
 });
 
 final channelByIdProvider = Provider.family<AsyncValue<Channel?>, String>((Ref ref, String id) {

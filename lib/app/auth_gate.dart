@@ -24,10 +24,10 @@ const Set<String> _authRoutes = <String>{
 
 /// Routes a *signed-out* user may still reach.
 ///
-/// Deliberately only the login screen, its signup sibling, the phone flow, and
-/// the splash that precedes them. Everything else — the chat shell, settings,
-/// the profile — is gated, because the whole app reads and writes under the
-/// signed-in uid.
+/// Deliberately only the login screen, its signup sibling, the phone flow,
+/// and the splash that precedes them. Everything else — the chat shell,
+/// settings, the profile — is gated, because the whole app reads and writes
+/// under the signed-in uid.
 const Set<String> _signedOutRoutes = <String>{
   AppRoutes.splash,
   AppRoutes.login,

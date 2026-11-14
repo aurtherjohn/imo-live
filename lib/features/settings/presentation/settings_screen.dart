@@ -12,9 +12,7 @@ import '../../../core/utils/l10n.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../auth/presentation/auth_providers.dart';
-import '../../channels/presentation/providers.dart';
 import '../../chats/presentation/providers.dart';
-import '../../earn/presentation/providers.dart';
 import 'widgets/settings_widgets.dart';
 
 /// The root settings screen.
@@ -70,19 +68,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           // covered rather than nagging them again.
           SettingsGroup(
             children: <Widget>[
-              SettingsValueRow(
-                label: context.l10n.goPremium,
-                value: ref.watch(isPremiumProvider)
-                    ? 'Active · '
-                        '${ref.watch(pointsAccountProvider).valueOrNull?.premiumDaysLeft ?? 0} days left'
-                    : '\$9.90 / month · no ads',
-                leadingIcon: Icons.workspace_premium_rounded,
-                leadingIconColor: context.c.accent,
-                valueColor: ref.watch(isPremiumProvider)
-                    ? context.c.onSuccess
-                    : context.c.accent,
-                onTap: () => context.push(AppRoutes.premium),
-              ),
             ],
           ),
 
@@ -253,12 +238,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onTap: () => context.push(AppRoutes.help),
               ),
               SettingsValueRow(
-                label: context.l10n.subscriptions,
-                value: context.l10n.channelsAndCommunities,
-                leadingIcon: Icons.workspace_premium_outlined,
-                onTap: () => context.push(AppRoutes.subscriptions),
-              ),
-              SettingsValueRow(
                 label: context.l10n.about,
                 value: '${AppConstants.appName} ${AppConstants.appVersion}',
                 leadingIcon: Icons.info_outline_rounded,
@@ -266,22 +245,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ],
           ),
-
-          // -------------------------------------------------------- reviewer
-          // Hidden unless `users/{uid}.isAdmin` is set, which the client cannot
-          // write — so the entry cannot be self-granted by a tampered build.
-          if (ref.watch(isAppAdminProvider).valueOrNull ?? false)
-            SettingsGroup(
-              title: context.l10n.reviewer,
-              children: <Widget>[
-                SettingsValueRow(
-                  label: context.l10n.monetizationReview,
-                  value: context.l10n.approveOrRejectChannelApplications,
-                  leadingIcon: Icons.fact_check_outlined,
-                  onTap: () => context.push(AppRoutes.monetizationAdmin),
-                ),
-              ],
-            ),
 
           const SizedBox(height: AppSpacing.xl),
           Center(

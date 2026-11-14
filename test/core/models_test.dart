@@ -22,7 +22,6 @@ void main() {
         AppRoutes.splash,
         AppRoutes.chats,
         AppRoutes.updates,
-        AppRoutes.communities,
         AppRoutes.calls,
         AppRoutes.chat,
         AppRoutes.settings,

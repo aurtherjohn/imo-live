@@ -584,9 +584,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get couldNotSendTheGift => 'উপহার পাঠানো যায়নি — সংযোগ পরীক্ষা করুন';
 
   @override
-  String get ad => 'বিজ্ঞাপন';
-
-  @override
   String get takeAPhoto => 'ছবি তুলুন';
 
   @override

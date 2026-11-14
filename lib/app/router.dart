@@ -12,26 +12,17 @@ import '../features/calls/presentation/calls_screen.dart';
 import '../features/calls/presentation/favorites_screen.dart';
 import '../features/calls/presentation/keypad_screen.dart';
 import '../features/calls/presentation/schedule_call_screen.dart';
-import '../features/channels/presentation/channel_chat_screen.dart';
-import '../features/channels/presentation/channel_screen.dart';
-import '../features/channels/presentation/monetization_admin_screen.dart';
-import '../features/channels/presentation/new_channel_screen.dart';
 import '../features/chats/presentation/archived_chats_screen.dart';
 import '../features/chats/presentation/chat_screen.dart';
 import '../features/chats/presentation/chat_search_screen.dart';
 import '../features/chats/presentation/chats_screen.dart';
 import '../features/chats/presentation/shell_screen.dart';
 import '../features/chats/presentation/starred_messages_screen.dart';
-import '../features/communities/presentation/communities_screen.dart';
-import '../features/communities/presentation/community_screen.dart';
-import '../features/communities/presentation/new_community_screen.dart';
 import '../features/contacts/presentation/contact_info_screen.dart';
 import '../features/contacts/presentation/contacts_screen.dart';
 import '../features/contacts/presentation/country_picker_screen.dart';
 import '../features/contacts/presentation/new_contact_screen.dart';
 import '../features/contacts/presentation/select_contact_screen.dart';
-import '../features/earn/presentation/earn_screen.dart';
-import '../features/earn/presentation/notifications_screen.dart';
 import '../features/groups/presentation/group_info_screen.dart';
 import '../features/groups/presentation/new_group_screen.dart';
 import '../features/misc/presentation/about_screen.dart';
@@ -42,7 +33,6 @@ import '../features/misc/presentation/splash_screen.dart';
 import '../features/profile/presentation/edit_profile_screen.dart';
 import '../features/profile/presentation/profile_screen.dart';
 import '../features/misc/presentation/global_search_screen.dart';
-import '../features/premium/presentation/premium_screen.dart';
 import '../features/settings/presentation/account_settings_screen.dart';
 import '../features/settings/presentation/appearance_screen.dart';
 import '../features/settings/presentation/blocked_contacts_screen.dart';
@@ -57,7 +47,6 @@ import '../features/updates/presentation/status_view_screen.dart';
 import '../features/updates/presentation/updates_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/settings/presentation/storage_screen.dart';
-import '../features/settings/presentation/subscriptions_screen.dart';
 import '../features/settings/presentation/wallpaper_screen.dart';
 import '../features/search/presentation/directory_search_screen.dart';
 import '../core/utils/l10n.dart';
@@ -174,16 +163,6 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
-              path: AppRoutes.communities,
-              name: 'communities',
-              pageBuilder: (BuildContext context, GoRouterState state) =>
-                  appPage(state, const CommunitiesScreen()),
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: <RouteBase>[
-            GoRoute(
               path: AppRoutes.contacts,
               name: 'contacts',
               pageBuilder: (BuildContext context, GoRouterState state) =>
@@ -261,20 +240,6 @@ final GoRouter appRouter = GoRouter(
       name: 'newGroup',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const NewGroupScreen()),
-    ),
-
-    // -------------------------------------------- communities / channels
-    GoRoute(
-      path: AppRoutes.newCommunity,
-      name: 'newCommunity',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const NewCommunityScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.newChannel,
-      name: 'newChannel',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const NewChannelScreen()),
     ),
 
     // ------------------------------------------------------------ status
@@ -390,48 +355,12 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const WallpaperScreen()),
     ),
-    GoRoute(
-      path: AppRoutes.subscriptions,
-      name: 'subscriptions',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const SubscriptionsScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.premium,
-      name: 'premium',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const PremiumScreen()),
-    ),
-
     // ----------------------------------------------------------- profile
     GoRoute(
       path: AppRoutes.profile,
       name: 'profile',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const ProfileScreen()),
-    ),
-    // -------------------------------------------------------------- earn
-    // Watch-to-Earn lives outside the shell: it is reached from the drawer, so
-    // it should cover the whole screen rather than sit inside a tab.
-    GoRoute(
-      path: AppRoutes.earn,
-      name: 'earn',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const EarnScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.notificationsCenter,
-      name: 'notificationsCenter',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const NotificationsScreen()),
-    ),
-    // Reviewer-only, and additionally gated inside the screen on
-    // `users/{uid}.isAdmin` — the route being reachable is not authorisation.
-    GoRoute(
-      path: AppRoutes.monetizationAdmin,
-      name: 'monetizationAdmin',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const MonetizationAdminScreen()),
     ),
     GoRoute(
       path: AppRoutes.editProfile,
@@ -535,34 +464,6 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (BuildContext context, GoRouterState state) => appPage(
         state,
         GroupInfoScreen(groupId: state.pathParameters['id'] ?? ''),
-      ),
-    ),
-    GoRoute(
-      path: '${AppRoutes.community}/:id',
-      name: 'community',
-      pageBuilder: (BuildContext context, GoRouterState state) => appPage(
-        state,
-        CommunityScreen(communityId: state.pathParameters['id'] ?? ''),
-      ),
-    ),
-    GoRoute(
-      path: '${AppRoutes.channel}/:id',
-      name: 'channel',
-      pageBuilder: (BuildContext context, GoRouterState state) => appPage(
-        state,
-        ChannelScreen(channelId: state.pathParameters['id'] ?? ''),
-      ),
-    ),
-    GoRoute(
-      // A channel as a conversation. Order matters: this is declared after
-      // `/channel/:id`, and GoRouter matches the more specific literal segment
-      // ('channelChat' vs 'channel') on the first path segment, so the two do
-      // not collide.
-      path: '${AppRoutes.channelChat}/:id',
-      name: 'channelChat',
-      pageBuilder: (BuildContext context, GoRouterState state) => appPage(
-        state,
-        ChannelChatScreen(channelId: state.pathParameters['id'] ?? ''),
       ),
     ),
   ],

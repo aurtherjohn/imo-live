@@ -7,14 +7,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/contact.dart';
 import '../../../core/models/status.dart';
-import '../../../core/services/ad_service.dart';
 import '../../../core/services/call_service.dart';
 import '../../../core/services/ringtone_service.dart';
 import '../../../core/services/webrtc_call_service.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../auth/presentation/auth_providers.dart';
-import '../../earn/presentation/providers.dart';
 import '../../chats/presentation/providers.dart';
 import '../../../core/utils/l10n.dart';
 
@@ -342,21 +340,13 @@ class _CallScreenState extends ConsumerState<CallScreen>
     }
   }
 
-  /// Accepts an incoming call, and counts the accept for the ad budget.
+  /// Accepts an incoming call.
   ///
-  /// The interstitial is fired *before* `accept()` and not awaited: the user is
-  /// about to be in a call, so the ad must appear while the call is still
-  /// connecting, never over live audio. [AdTrigger.callAccepted] is spent at
-  /// most once per session (see [_oncePerSessionTriggers]) — an ad in front of
-  /// every incoming call would be indefensible.
+  /// The ring is stopped *before* anything can await, so the device is silent
+  /// the instant the user commits to answering — not 200 ms later, after the
+  /// token round-trip.
   Future<void> _accept() async {
-    // Stop the ring *before* anything can await, so the device is silent the
-    // instant the user commits to answering — not 200 ms later, after the
-    // token round-trip.
     RingtoneService.stop();
-    unawaited(
-      ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.callAccepted),
-    );
     await _calls.accept();
   }
 

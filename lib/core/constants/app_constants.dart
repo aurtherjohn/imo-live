@@ -126,7 +126,6 @@ class AppRoutes {
   static const String chats = '/chats';
   static const String updates = '/updates';
   static const String contacts = '/contacts';
-  static const String communities = '/communities';
   static const String calls = '/calls';
 
   static const String chat = '/chat';
@@ -140,24 +139,10 @@ class AppRoutes {
   static const String starred = '/starred';
   static const String archived = '/archived';
   static const String broadcast = '/broadcast';
-
   static const String newContact = '/contact/new';
   static const String selectContact = '/contact/select';
   static const String newGroup = '/group/new';
   static const String groupInfo = '/group/info';
-
-  static const String newCommunity = '/community/new';
-  static const String community = '/community';
-  static const String newChannel = '/channel/new';
-  static const String channel = '/channel';
-
-  /// A channel opened as a conversation, from the merged chat list.
-  ///
-  /// A distinct path from [channel] on purpose: `/channel/:id` is the
-  /// management/discovery view (analytics, settings, monetization) and
-  /// `/channelChat/:id` is the read-and-post view. Keeping them separate means
-  /// opening a channel to *read* it cannot land the user on a settings page.
-  static const String channelChat = '/channelChat';
 
   static const String statusCompose = '/status/compose';
   static const String statusView = '/status/view';
@@ -179,21 +164,13 @@ class AppRoutes {
   static const String linkedDevices = '/settings/devices';
   static const String blocked = '/settings/blocked';
   static const String wallpaper = '/settings/wallpaper';
-  static const String subscriptions = '/settings/subscriptions';
   static const String premium = '/settings/premium';
 
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';
   static const String qr = '/qr';
 
-  /// Watch-to-Earn: watch rewarded ads, collect points, spend them on premium.
-  static const String earn = '/earn';
-
-  /// In-app notifications, including gift receipts.
   static const String notificationsCenter = '/notifications';
-
-  /// Reviewer-only: approve or reject pending channel monetization requests.
-  static const String monetizationAdmin = '/admin/monetization';
 
   static const String call = '/call';
   static const String callSchedule = '/call/schedule';

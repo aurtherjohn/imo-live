@@ -18,11 +18,6 @@ import '../../chats/domain/chat_service.dart' show chatMirrorProvider;
 import '../../chats/domain/remote_chats_sync.dart'
     show firestoreChatsStreamProvider, liveChatsStreamProvider;
 import '../../chats/presentation/providers.dart';
-import '../../earn/presentation/providers.dart'
-    show
-        appNotificationsProvider,
-        pointsAccountProvider,
-        pointsHistoryProvider;
 
 /// The Firebase Authentication facade.
 final Provider<FirebaseAuthService> firebaseAuthServiceProvider =
@@ -369,11 +364,6 @@ class AuthController extends Notifier<AsyncValue<void>> {
     ref.invalidate(chatByIdProvider);
     ref.invalidate(chatStreamProvider);
     ref.invalidate(remoteProfileProvider);
-
-    // Points, premium and notifications.
-    ref.invalidate(pointsAccountProvider);
-    ref.invalidate(pointsHistoryProvider);
-    ref.invalidate(appNotificationsProvider);
 
     // Device preferences live in the same settings box that was just cleared,
     // so their notifiers have to re-read rather than keep serving the old

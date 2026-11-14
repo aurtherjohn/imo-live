@@ -8,13 +8,11 @@ import '../../../../app/theme/app_color_scheme.dart';
 import '../../../../app/theme/app_tokens.dart';
 import '../../../../core/models/message.dart';
 import '../../../../core/models/message_parts.dart';
-import '../../../../core/services/ad_service.dart';
 import '../../../../core/services/audio_location_service.dart';
 import '../../../../core/services/file_service.dart';
 import '../../../../core/services/media_service.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../features/chats/presentation/providers.dart';
-import '../../../../features/earn/presentation/providers.dart';
 import 'attachment_sheet.dart';
 import 'emoji_picker.dart';
 import '../../../../core/utils/l10n.dart';
@@ -166,13 +164,6 @@ class _MessageComposerState extends ConsumerState<MessageComposer> {
           widget.replyTo,
         );
         HapticFeedback.lightImpact();
-        // A finished recording is a completed, deliberate action, so it is a
-        // defensible interstitial placement. Fired and forgotten — the send
-        // must never wait on an ad load. Paced by [AdService] like every other
-        // trigger.
-        unawaited(
-          ref.read(adServiceProvider).noteAndMaybeShow(AdTrigger.voiceMessage),
-        );
       } else if (result.error != null) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()

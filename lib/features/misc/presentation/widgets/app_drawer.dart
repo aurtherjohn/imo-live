@@ -6,14 +6,11 @@ import '../../../../app/theme/app_color_scheme.dart';
 import '../../../../app/theme/app_tokens.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/models/contact.dart';
-import '../../../../core/models/gift.dart';
-import '../../../../core/utils/formatters.dart';
 import '../../../../core/utils/l10n.dart';
 import '../../../../core/widgets/common_widgets.dart';
 import '../../../../core/widgets/i_avatar.dart';
 import '../../../chats/presentation/providers.dart';
 import '../../../contacts/presentation/dialogs/confirm_dialog.dart';
-import '../../../earn/presentation/providers.dart';
 
 /// The slide-in drawer from the Chats header.
 class AppDrawer extends ConsumerWidget {
@@ -25,8 +22,6 @@ class AppDrawer extends ConsumerWidget {
     final int archived = ref.watch(archivedChatsProvider).length;
     final int starred = ref.watch(starCountProvider);
     final int unread = ref.watch(totalUnreadProvider);
-    final PointsAccount? points = ref.watch(pointsAccountProvider).valueOrNull;
-    final int unreadNotes = ref.watch(unreadNotificationCountProvider);
 
     void close() => Navigator.pop(context);
 
@@ -110,32 +105,15 @@ class AppDrawer extends ConsumerWidget {
               onTap: () => go(AppRoutes.newGroup),
             ),
             _DrawerRow(
-              icon: Icons.campaign_outlined,
-              label: context.l10n.newChannel,
-              onTap: () => go(AppRoutes.newChannel),
-            ),
-            _DrawerRow(
-              icon: Icons.groups_outlined,
-              label: context.l10n.newCommunity,
-              onTap: () => go(AppRoutes.newCommunity),
-            ),
-            _DrawerRow(
               icon: Icons.person_add_alt_rounded,
               label: context.l10n.newContact,
               onTap: () => go(AppRoutes.newContact),
             ),
             const Divider(height: 1),
             _DrawerRow(
-              icon: Icons.stars_rounded,
-              label: context.l10n.earnPoints,
-              onTap: () => go(AppRoutes.earn),
-              trailing: points == null ? null : TextUtils.grouped(points.points),
-            ),
-            _DrawerRow(
               icon: Icons.notifications_none_rounded,
               label: context.l10n.notifications,
               onTap: () => go(AppRoutes.notificationsCenter),
-              trailing: unreadNotes == 0 ? null : '$unreadNotes',
             ),
             _DrawerRow(
               icon: Icons.contacts_outlined,

@@ -582,10 +582,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get couldNotSendTheGift =>
-      'Could not send the gift — check your connection';
-
-  @override
-  String get ad => 'Ad';
+      'Could not send the gift - check your connection';
 
   @override
   String get takeAPhoto => 'Take a photo';

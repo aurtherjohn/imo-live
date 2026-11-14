@@ -1229,14 +1229,8 @@ abstract class AppLocalizations {
   /// No description provided for @couldNotSendTheGift.
   ///
   /// In en, this message translates to:
-  /// **'Could not send the gift — check your connection'**
+  /// **'Could not send the gift - check your connection'**
   String get couldNotSendTheGift;
-
-  /// No description provided for @ad.
-  ///
-  /// In en, this message translates to:
-  /// **'Ad'**
-  String get ad;
 
   /// No description provided for @takeAPhoto.
   ///

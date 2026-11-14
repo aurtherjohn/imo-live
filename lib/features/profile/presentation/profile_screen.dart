@@ -9,8 +9,6 @@ import '../../../core/models/contact.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/i_avatar.dart';
 import '../../chats/presentation/providers.dart';
-import '../../earn/presentation/providers.dart';
-import '../../earn/presentation/widgets/premium_badge.dart';
 import '../../settings/presentation/widgets/settings_widgets.dart';
 import '../../../core/utils/l10n.dart';
 
@@ -97,10 +95,6 @@ class ProfileScreen extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (ref.watch(isPremiumProvider)) ...<Widget>[
-                      const SizedBox(width: AppSpacing.sm),
-                      const PremiumBadge(),
-                    ],
                   ],
                 ),
                 if (me.username.isNotEmpty) ...<Widget>[

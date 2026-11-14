@@ -162,8 +162,8 @@ dependencies:
   # Firestore as the signalling channel. See WebRtcCallService.
   flutter_webrtc: ^1.6.2+hotfix.3
   fl_chart: ^1.2.0
-  google_mobile_ads: ^9.1.0
   video_player: ^2.14.0
+
   # NOTE: `web_socket_channel`, `device_info_plus` and `battery_plus` are NOT
   # dependencies. They existed only to feed the removed background stack (a
   # persistent socket to a third-party server plus device fingerprinting) and

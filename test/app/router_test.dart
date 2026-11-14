@@ -72,11 +72,10 @@ void main() {
       expect(paths, contains(AppRoutes.splash));
     });
 
-    test('registers all five bottom-navigation tabs', () {
+    test('registers all four bottom-navigation tabs', () {
       expect(paths, containsAll(<String>[
         AppRoutes.chats,
         AppRoutes.updates,
-        AppRoutes.communities,
         AppRoutes.contacts,
         AppRoutes.calls,
       ]));
@@ -88,8 +87,6 @@ void main() {
       expect(paths, contains('${AppRoutes.chat}/:id'));
       expect(paths, contains('${AppRoutes.contactInfo}/:id'));
       expect(paths, contains('${AppRoutes.groupInfo}/:id'));
-      expect(paths, contains('${AppRoutes.community}/:id'));
-      expect(paths, contains('${AppRoutes.channel}/:id'));
     });
 
     test('registers the full settings subtree', () {
@@ -108,7 +105,6 @@ void main() {
         AppRoutes.linkedDevices,
         AppRoutes.blocked,
         AppRoutes.wallpaper,
-        AppRoutes.subscriptions,
       ]));
     });
 
@@ -137,8 +133,6 @@ void main() {
         AppRoutes.editProfile,
         AppRoutes.qr,
         AppRoutes.globalSearch,
-        AppRoutes.newCommunity,
-        AppRoutes.newChannel,
       ]));
     });
 
@@ -161,7 +155,6 @@ const List<String> _routeConstants = <String>[
   AppRoutes.shell,
   AppRoutes.chats,
   AppRoutes.updates,
-  AppRoutes.communities,
   AppRoutes.calls,
   AppRoutes.chat,
   AppRoutes.chatSearch,
@@ -173,10 +166,6 @@ const List<String> _routeConstants = <String>[
   AppRoutes.selectContact,
   AppRoutes.newGroup,
   AppRoutes.groupInfo,
-  AppRoutes.newCommunity,
-  AppRoutes.community,
-  AppRoutes.newChannel,
-  AppRoutes.channel,
   AppRoutes.statusCompose,
   AppRoutes.statusView,
   AppRoutes.settings,
@@ -193,7 +182,6 @@ const List<String> _routeConstants = <String>[
   AppRoutes.linkedDevices,
   AppRoutes.blocked,
   AppRoutes.wallpaper,
-  AppRoutes.subscriptions,
   AppRoutes.profile,
   AppRoutes.editProfile,
   AppRoutes.qr,

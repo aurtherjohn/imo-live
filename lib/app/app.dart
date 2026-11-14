@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,9 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../core/constants/app_constants.dart';
 import '../core/utils/l10n.dart';
 import 'theme/app_tokens.dart';
-import '../core/services/ad_service.dart';
 import '../features/chats/presentation/providers.dart';
-import '../features/earn/presentation/providers.dart';
 import '../l10n/app_localizations.dart';
 import 'router.dart';
 import 'theme/app_theme.dart';
@@ -26,57 +22,7 @@ class ImoLiveApp extends ConsumerStatefulWidget {
   ConsumerState<ImoLiveApp> createState() => _ImoLiveAppState();
 }
 
-class _ImoLiveAppState extends ConsumerState<ImoLiveApp>
-    with WidgetsBindingObserver {
-  /// The session-wide ad service, resolved once so [dispose] can release it
-  /// without touching `ref` while the element is unmounting.
-  ///
-  /// ⚠️ It must be disposed from here, not left to the provider container:
-  /// `AdService` owns a five-minute foreground timer and a bounded SDK-init
-  /// timer, and `flutter_test` asserts that no timer outlives the widget tree.
-  /// The container's own `onDispose` fires later than that check.
-  late final AdService _ads;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _ads = ref.read(adServiceProvider);
-    // Bring the ads SDK up once, off the first frame, and start the
-    // continuous-foreground clock that gates the foreground interstitial.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      unawaited(_ads.init());
-      _ads.startForegroundClock();
-    });
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _ads.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        // Restarted rather than resumed: the interval measures *continuous*
-        // foreground time, so backgrounding for four minutes and returning must
-        // not immediately produce an ad.
-        _ads.startForegroundClock();
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-      case AppLifecycleState.hidden:
-        _ads.stopForegroundClock();
-      case AppLifecycleState.inactive:
-        // Transient (a permission dialog, the app switcher). Leave the clock
-        // running — the user has not really left.
-        break;
-    }
-  }
-
+class _ImoLiveAppState extends ConsumerState<ImoLiveApp> {
   @override
   Widget build(BuildContext context) {
     final ThemeMode themeMode = ref.watch(themeModeProvider);
