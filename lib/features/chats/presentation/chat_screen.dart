@@ -703,14 +703,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               },
             ),
             SettingsTile(
-              title: context.l10n.sendGift,
-              leadingIcon: Icons.card_giftcard_rounded,
-              onTap: () {
-                Navigator.pop(sheetContext);
-                _sendGift(chat);
-              },
-            ),
-            SettingsTile(
               title: context.l10n.mediaLinksAndDocs,
               leadingIcon: Icons.photo_library_outlined,
               onTap: () {
@@ -1004,29 +996,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     context.push(
       '${AppRoutes.call}?id=$peerUid&name=${Uri.encodeComponent(name)}&video=$video',
     );
-  }
-
-  /// Opens the gift picker and posts the gift into this conversation.
-  ///
-  /// The order matters: the points are spent first, by `PointsService.sendGift`,
-  /// and the message is only written once the payment succeeded. Writing the
-  /// message first would leave a gift sitting in the conversation that was never
-  /// paid for — and would have to be deleted again on failure.
-  Future<void> _sendGift(Chat chat) async {
-    final String? peerUid = chat.peerUid(ref.read(currentUidProvider));
-    if (peerUid == null) {
-      iToast(
-        context,
-        (chat.isDirect || !chat.isGroup)
-            ? context.l10n.thisChatHasNoOne2
-            : context.l10n.giftsAreForOneTo,
-        isError: true,
-      );
-      return;
-    }
-
-    if (!mounted) return;
-    _scrollToBottom();
   }
 
   /// Removes every selected message from **this device**, after confirming.
