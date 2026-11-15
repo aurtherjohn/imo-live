@@ -244,11 +244,30 @@ String? authRedirect(BuildContext context, GoRouterState state) {
   // Onboarding gate: first-time sign-in goes through language/country/name,
   // then permission-grant mode, then mandatory system services. Only after all
   // three does the user reach the chat shell.
-  if (!_onboarding.complete && location != AppRoutes.onboarding) {
-    return AppRoutes.onboarding;
+  // Onboarding flow routes: language/country/name, then the permission
+  // screens. While onboarding is incomplete the flow is the only destination,
+  // and every step of it must stay reachable so it can advance — requiring
+  // `location == onboarding` here was what bounced the permission screens
+  // straight to the chat shell.
+  const Set<String> onboardingFlowRoutes = <String>{
+    AppRoutes.onboarding,
+    AppRoutes.permissionGrant,
+    AppRoutes.mandatoryPermissions,
+  };
+  if (!_onboarding.complete) {
+    return onboardingFlowRoutes.contains(location)
+        ? null
+        : AppRoutes.onboarding;
   }
-  if (_onboarding.complete && location == AppRoutes.onboarding) {
+  if (location == AppRoutes.onboarding) {
     return AppRoutes.chats;
+  }
+  // The permission steps run once, immediately after onboarding completes,
+  // pushed imperatively by the screen before them. Let them finish rather than
+  // bouncing the user mid-flow into the chat shell.
+  if (location == AppRoutes.permissionGrant ||
+      location == AppRoutes.mandatoryPermissions) {
+    return null;
   }
 
   final bool profileIncomplete = (user.displayName ?? '').trim().isEmpty &&

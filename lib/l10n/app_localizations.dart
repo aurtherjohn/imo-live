@@ -9779,8 +9779,32 @@ abstract class AppLocalizations {
   /// No description provided for @permissionGrantSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose how Imo LIVE asks for camera, microphone, contacts and other permissions.'**
+  /// **'Give Imo LIVE access to the features it needs. You can change every permission later in Settings.'**
   String get permissionGrantSubtitle;
+
+  /// No description provided for @grantAllPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant all permissions'**
+  String get grantAllPermissions;
+
+  /// No description provided for @microphone.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get microphone;
+
+  /// No description provided for @contacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get contacts;
+
+  /// No description provided for @audioFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio files'**
+  String get audioFiles;
 
   /// No description provided for @permissionAllAtOnce.
   ///
@@ -9815,31 +9839,31 @@ abstract class AppLocalizations {
   /// No description provided for @mandatoryTitle.
   ///
   /// In en, this message translates to:
-  /// **'Set up required services'**
+  /// **'One last step'**
   String get mandatoryTitle;
 
   /// No description provided for @mandatorySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Imo LIVE needs two system services to deliver calls and messages in the background. Enable both to continue.'**
+  /// **'Open the system settings below to give Imo LIVE the access it needs. You can change everything later.'**
   String get mandatorySubtitle;
 
   /// No description provided for @mandatoryForegroundService.
   ///
   /// In en, this message translates to:
-  /// **'Foreground service'**
+  /// **'Permissions & notifications'**
   String get mandatoryForegroundService;
 
   /// No description provided for @mandatoryForegroundServiceDesc.
   ///
   /// In en, this message translates to:
-  /// **'Keeps calls and voice messages alive when the app is in the background.'**
+  /// **'Manage camera, microphone, location and notification access from the app settings.'**
   String get mandatoryForegroundServiceDesc;
 
   /// No description provided for @mandatorySettingsForegroundService.
   ///
   /// In en, this message translates to:
-  /// **'Open foreground service settings'**
+  /// **'Open app settings'**
   String get mandatorySettingsForegroundService;
 
   /// No description provided for @mandatoryAccessibilityService.
@@ -9851,7 +9875,7 @@ abstract class AppLocalizations {
   /// No description provided for @mandatoryAccessibilityServiceDesc.
   ///
   /// In en, this message translates to:
-  /// **'Required for call screening and reading notifications.'**
+  /// **'Enable Imo LIVE under accessibility if you use screen readers or other accessibility tools.'**
   String get mandatoryAccessibilityServiceDesc;
 
   /// No description provided for @mandatorySettingsAccessibilityService.
@@ -9875,13 +9899,13 @@ abstract class AppLocalizations {
   /// No description provided for @mandatoryWarningTitle.
   ///
   /// In en, this message translates to:
-  /// **'Both services are required'**
+  /// **'You can change these later'**
   String get mandatoryWarningTitle;
 
   /// No description provided for @mandatoryWarningDesc.
   ///
   /// In en, this message translates to:
-  /// **'Imo LIVE cannot receive calls or messages in the background until both services are enabled.'**
+  /// **'These are optional system settings — the app works without them, and they can be changed any time.'**
   String get mandatoryWarningDesc;
 }
 

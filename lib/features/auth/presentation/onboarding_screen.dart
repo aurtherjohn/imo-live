@@ -36,11 +36,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     super.dispose();
   }
 
+  /// Page 0 only needs a language — the country and the name live on page 1,
+  /// so requiring the country here is what used to leave Continue permanently
+  /// disabled on the language screen.
   bool get _canContinue {
     if (_page == 0) {
-      return _selectedLanguage != null && _selectedCountry != null;
+      return _selectedLanguage != null;
     }
-    return _nameController.text.trim().isNotEmpty;
+    return _selectedCountry != null && _nameController.text.trim().isNotEmpty;
   }
 
   Future<void> _finish() async {
@@ -244,6 +247,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 child: ITextField(
                                   controller: _nameController,
                                   hint: l10n.onboardingNameHint,
+                                  onChanged: (_) => setState(() {}),
                                   prefixIcon: const Icon(
                                     Icons.person_outline_rounded,
                                   ),
@@ -272,7 +276,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   Expanded(
                     flex: 2,
                     child: FilledButton(
-                      onPressed: _canContinue ? _finish : null,
+                      // Page 0 advances to the country/name step; only the
+                      // final page finishes onboarding. Before this, page 1
+                      // was unreachable because `_page` was never set to 1.
+                      onPressed: _canContinue
+                          ? () {
+                              if (_page == 0) {
+                                setState(() => _page = 1);
+                              } else {
+                                _finish();
+                              }
+                            }
+                          : null,
                       child: Text(
                         _page == 0
                             ? l10n.onboardingContinue

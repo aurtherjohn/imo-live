@@ -5496,7 +5496,19 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get permissionGrantSubtitle =>
-      'ক্যামেরা, মাইক্রোফোন, পরিচিতি ও অন্যান্য অনুমতি কীভাবে চাওয়া হবে তা বেছে নিন।';
+      'Imo LIVE-কে প্রয়োজনীয় ফিচারগুলোর অ্যাক্সেস দিন। প্রতিটি অনুমতি পরে সেটিংস থেকে বদলানো যাবে।';
+
+  @override
+  String get grantAllPermissions => 'সব অনুমতি দিন';
+
+  @override
+  String get microphone => 'মাইক্রোফোন';
+
+  @override
+  String get contacts => 'পরিচিতি';
+
+  @override
+  String get audioFiles => 'অডিও ফাইল';
 
   @override
   String get permissionAllAtOnce => 'একসাথে সব';
@@ -5516,29 +5528,28 @@ class AppLocalizationsBn extends AppLocalizations {
   String get permissionContinue => 'চালিয়ে যান';
 
   @override
-  String get mandatoryTitle => 'প্রয়োজনীয় সার্ভিস সেটআপ';
+  String get mandatoryTitle => 'শেষ ধাপ';
 
   @override
   String get mandatorySubtitle =>
-      'ব্যাকগ্রাউন্ডে কল ও মেসেজ পেতে Imo LIVE-এর দুটি সিস্টেম সার্ভিস দরকার। এগিয়ে যেতে দুটোই চালু করুন।';
+      'Imo LIVE-কে প্রয়োজনীয় অ্যাক্সেস দিতে নিচের সিস্টেম সেটিংস খুলুন। সবকিছু পরে বদলাতে পারবেন।';
 
   @override
-  String get mandatoryForegroundService => 'ফোরগ্রাউন্ড সার্ভিস';
+  String get mandatoryForegroundService => 'অনুমতি ও নোটিফিকেশন';
 
   @override
   String get mandatoryForegroundServiceDesc =>
-      'অ্যাপ ব্যাকগ্রাউন্ডে থাকলেও কল ও ভয়েস মেসেজ চালু রাখে।';
+      'অ্যাপ সেটিংস থেকে ক্যামেরা, মাইক্রোফোন, লোকেশন ও নোটিফিকেশনের অ্যাক্সেস পরিচালনা করুন।';
 
   @override
-  String get mandatorySettingsForegroundService =>
-      'ফোরগ্রাউন্ড সার্ভিসের সেটিংস খুলুন';
+  String get mandatorySettingsForegroundService => 'অ্যাপ সেটিংস খুলুন';
 
   @override
   String get mandatoryAccessibilityService => 'অ্যাক্সেসিবিলিটি সার্ভিস';
 
   @override
   String get mandatoryAccessibilityServiceDesc =>
-      'কল স্ক্রিনিং ও নোটিফিকেশন পড়ার জন্য প্রয়োজন।';
+      'স্ক্রিন রিডার বা অন্য অ্যাক্সেসিবিলিটি টুল ব্যবহার করলে অ্যাক্সেসিবিলিটি সেটিংসে Imo LIVE চালু করুন।';
 
   @override
   String get mandatorySettingsAccessibilityService =>
@@ -5551,9 +5562,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get mandatoryContinue => 'চালিয়ে যান';
 
   @override
-  String get mandatoryWarningTitle => 'দুটি সার্ভিসই আবশ্যক';
+  String get mandatoryWarningTitle => 'এগুলো পরে বদলাতে পারবেন';
 
   @override
   String get mandatoryWarningDesc =>
-      'দুটি সার্ভিস চালু না হওয়া পর্যন্ত ব্যাকগ্রাউন্ডে কল বা মেসেজ পাওয়া যাবে না।';
+      'এগুলো ঐচ্ছিক সিস্টেম সেটিংস — এগুলো ছাড়াও অ্যাপ চলবে, আর যেকোনো সময় বদলানো যাবে।';
 }

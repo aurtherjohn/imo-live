@@ -65,13 +65,13 @@ void main() {
   });
 }
 
-/// Brings up the OneSignal SDK, registers the notification listeners, and asks
-/// for the permission.
+/// Brings up the OneSignal SDK and registers the notification listeners.
 ///
 /// Synchronous by design: `initialize` is a plain SDK call and must not be
 /// awaited before `runApp`, because nothing about push is worth delaying the
-/// first frame for. The permission prompt is fired and forgotten — a denial is
-/// a normal outcome, and the app works without it.
+/// first frame for. The notification permission is deliberately NOT requested
+/// here: a system prompt over the login screen asks before the user knows what
+/// the app is. It is requested later, from the first-run permission flow.
 ///
 /// The service is created **here** rather than in [_initPush] so its listeners
 /// exist before the first frame: a tap on a notification that *launched* the
@@ -85,7 +85,6 @@ void main() {
 void _initOneSignal() {
   try {
     OneSignal.initialize(AppSecrets.oneSignalAppId);
-    unawaited(OneSignal.Notifications.requestPermission(true));
 
     final PushNotificationService push = PushNotificationService(
       notifications: appContainer.read(notificationServiceProvider),

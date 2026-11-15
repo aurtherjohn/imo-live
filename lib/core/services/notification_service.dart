@@ -49,7 +49,6 @@ class LocalNotificationService implements NotificationService {
 
   final FlutterLocalNotificationsPlugin _plugin;
   bool _initialized = false;
-  bool _permissionRequested = false;
 
   /// True once [init] succeeded. Callers can use this to avoid telling the
   /// user a notification was delivered when the plugin is unavailable.
@@ -71,7 +70,6 @@ class LocalNotificationService implements NotificationService {
         const InitializationSettings(android: android, iOS: ios),
       );
       await _createChannels();
-      await _requestPermission();
       _initialized = true;
     } on Object catch (e) {
       // Catches `LateInitializationError` too, which is an `Error` rather than
@@ -83,27 +81,12 @@ class LocalNotificationService implements NotificationService {
     }
   }
 
-  /// Asks for the runtime notification permission.
-  ///
-  /// Android 13+ (API 33) requires `POST_NOTIFICATIONS` at runtime; without it
-  /// every notification is silently dropped. The manifest declares it, but
-  /// nothing was requesting it, so notifications never appeared on modern
-  /// devices. iOS is handled by the plugin's own Darwin settings.
-  Future<void> _requestPermission() async {
-    if (_permissionRequested) return;
-    _permissionRequested = true;
-    try {
-      final AndroidFlutterLocalNotificationsPlugin? android =
-          _plugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
-      // Returns null on iOS/desktop; a bool on Android 13+.
-      await android?.requestNotificationsPermission();
-    } on Exception catch (e) {
-      // A denied permission is a normal outcome, not an error — notifications
-      // simply stay silent, and the app keeps working.
-      debugPrint('Notification permission not granted: $e');
-    }
-  }
+  /// NOTE: the runtime notification permission (`POST_NOTIFICATIONS` on
+  /// Android 13+) is deliberately NOT requested here. This service is built at
+  /// launch, so asking from here put a system prompt over the login screen
+  /// before the user knew what the app was. The first-run permission flow
+  /// (`PermissionGrantScreen`) requests it through `PermissionService`, which
+  /// maps to the same OS dialog.
 
   Future<void> _createChannels() async {
     final AndroidFlutterLocalNotificationsPlugin? android =
