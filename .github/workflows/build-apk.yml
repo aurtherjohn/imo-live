@@ -79,7 +79,21 @@ jobs:
             echo "::error::Release signing secrets are required — the Gradle build deliberately refuses to produce a debug-signed release APK."
             exit 1
           fi
-          echo "$KEYSTORE_BASE64" | base64 --decode > "$GITHUB_WORKSPACE/upload-keystore.jks"
+          # Strip every whitespace char first — copy/paste into the secret
+          # often wraps lines or sneaks in stray spaces that GNU base64
+          # rejects as "invalid input". The expected value is the exact
+          # contents of D:\keys\keystore.base64.txt (3040 chars, no spaces).
+          clean="$(printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]')"
+          if ! printf '%s' "$clean" | base64 --decode > "$GITHUB_WORKSPACE/upload-keystore.jks" 2>/dev/null; then
+            echo "::error::KEYSTORE_BASE64 could not be decoded (length after cleanup: ${#clean}, expected 3040). Re-copy the file exactly: Get-Content D:\\keys\\keystore.base64.txt -Raw | Set-Clipboard, then paste into the secret."
+            exit 1
+          fi
+          # JKS keystores always start with the magic bytes FE ED FE ED — this
+          # catches a secret that decodes but holds the wrong content.
+          if [ "$(head -c 4 "$GITHUB_WORKSPACE/upload-keystore.jks" | od -An -tx1 | tr -d ' \n')" != "feedfeed" ]; then
+            echo "::error::KEYSTORE_BASE64 decoded, but the file is not a JKS keystore (magic bytes do not match). The secret holds the wrong text."
+            exit 1
+          fi
           echo "KEYSTORE_FILE=$GITHUB_WORKSPACE/upload-keystore.jks" >> "$GITHUB_ENV"
 
       # KEYSTORE_FILE must be ABSOLUTE (build.gradle.kts asserts that), and
