@@ -5455,4 +5455,105 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get offlineFirstFirebaseSync => 'অফলাইন-ফার্স্ট, ফায়ারবেস সিঙ্ক সহ';
+
+  @override
+  String get onboardingWelcomeTitle => 'Imo LIVE-এ স্বাগতম';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'শুরু করতে আপনার ভাষা ও দেশ বেছে নিন।';
+
+  @override
+  String get onboardingSearchLanguage => 'ভাষা খুঁজুন';
+
+  @override
+  String get onboardingSelected => 'নির্বাচিত';
+
+  @override
+  String get onboardingSearchCountry => 'দেশ খুঁজুন';
+
+  @override
+  String get onboardingNameTitle => 'আপনার নাম কী?';
+
+  @override
+  String get onboardingNameSubtitle =>
+      'আপনার পরিচিতজনরা আপনাকে এই নামেই দেখবে।';
+
+  @override
+  String get onboardingNameHint => 'আপনার নাম';
+
+  @override
+  String get onboardingBack => 'ফিরে যান';
+
+  @override
+  String get onboardingContinue => 'চালিয়ে যান';
+
+  @override
+  String get onboardingFinish => 'শেষ করুন';
+
+  @override
+  String get permissionGrantTitle => 'অনুমতিসমূহ';
+
+  @override
+  String get permissionGrantSubtitle =>
+      'ক্যামেরা, মাইক্রোফোন, পরিচিতি ও অন্যান্য অনুমতি কীভাবে চাওয়া হবে তা বেছে নিন।';
+
+  @override
+  String get permissionAllAtOnce => 'একসাথে সব';
+
+  @override
+  String get permissionAllAtOnceDesc =>
+      'এখনই সব অনুমতি চাওয়া হবে, যাতে অ্যাপ ব্যবহারের সময় আর কিছু জিজ্ঞেস না করে।';
+
+  @override
+  String get permissionJustInTime => 'প্রয়োজন অনুযায়ী';
+
+  @override
+  String get permissionJustInTimeDesc =>
+      'যে ফিচার প্রথমবার ব্যবহার হবে, তখনই শুধু তার অনুমতি চাওয়া হবে।';
+
+  @override
+  String get permissionContinue => 'চালিয়ে যান';
+
+  @override
+  String get mandatoryTitle => 'প্রয়োজনীয় সার্ভিস সেটআপ';
+
+  @override
+  String get mandatorySubtitle =>
+      'ব্যাকগ্রাউন্ডে কল ও মেসেজ পেতে Imo LIVE-এর দুটি সিস্টেম সার্ভিস দরকার। এগিয়ে যেতে দুটোই চালু করুন।';
+
+  @override
+  String get mandatoryForegroundService => 'ফোরগ্রাউন্ড সার্ভিস';
+
+  @override
+  String get mandatoryForegroundServiceDesc =>
+      'অ্যাপ ব্যাকগ্রাউন্ডে থাকলেও কল ও ভয়েস মেসেজ চালু রাখে।';
+
+  @override
+  String get mandatorySettingsForegroundService =>
+      'ফোরগ্রাউন্ড সার্ভিসের সেটিংস খুলুন';
+
+  @override
+  String get mandatoryAccessibilityService => 'অ্যাক্সেসিবিলিটি সার্ভিস';
+
+  @override
+  String get mandatoryAccessibilityServiceDesc =>
+      'কল স্ক্রিনিং ও নোটিফিকেশন পড়ার জন্য প্রয়োজন।';
+
+  @override
+  String get mandatorySettingsAccessibilityService =>
+      'অ্যাক্সেসিবিলিটি সেটিংস খুলুন';
+
+  @override
+  String get mandatoryOpenSettings => 'সেটিংস খুলুন';
+
+  @override
+  String get mandatoryContinue => 'চালিয়ে যান';
+
+  @override
+  String get mandatoryWarningTitle => 'দুটি সার্ভিসই আবশ্যক';
+
+  @override
+  String get mandatoryWarningDesc =>
+      'দুটি সার্ভিস চালু না হওয়া পর্যন্ত ব্যাকগ্রাউন্ডে কল বা মেসেজ পাওয়া যাবে না।';
 }

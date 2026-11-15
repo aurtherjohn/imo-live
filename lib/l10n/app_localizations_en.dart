@@ -5461,4 +5461,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineFirstFirebaseSync => 'Offline-first with Firebase sync';
+
+  @override
+  String get onboardingWelcomeTitle => 'Welcome to Imo LIVE';
+
+  @override
+  String get onboardingWelcomeSubtitle =>
+      'Choose your language and country to get started.';
+
+  @override
+  String get onboardingSearchLanguage => 'Search language';
+
+  @override
+  String get onboardingSelected => 'Selected';
+
+  @override
+  String get onboardingSearchCountry => 'Search country';
+
+  @override
+  String get onboardingNameTitle => 'What\'s your name?';
+
+  @override
+  String get onboardingNameSubtitle =>
+      'This is how your contacts will see you.';
+
+  @override
+  String get onboardingNameHint => 'Your name';
+
+  @override
+  String get onboardingBack => 'Back';
+
+  @override
+  String get onboardingContinue => 'Continue';
+
+  @override
+  String get onboardingFinish => 'Finish';
+
+  @override
+  String get permissionGrantTitle => 'Permissions';
+
+  @override
+  String get permissionGrantSubtitle =>
+      'Choose how Imo LIVE asks for camera, microphone, contacts and other permissions.';
+
+  @override
+  String get permissionAllAtOnce => 'All at once';
+
+  @override
+  String get permissionAllAtOnceDesc =>
+      'Request every permission now, so nothing asks again while you use the app.';
+
+  @override
+  String get permissionJustInTime => 'Just in time';
+
+  @override
+  String get permissionJustInTimeDesc =>
+      'Ask for each permission only when the feature that needs it is first used.';
+
+  @override
+  String get permissionContinue => 'Continue';
+
+  @override
+  String get mandatoryTitle => 'Set up required services';
+
+  @override
+  String get mandatorySubtitle =>
+      'Imo LIVE needs two system services to deliver calls and messages in the background. Enable both to continue.';
+
+  @override
+  String get mandatoryForegroundService => 'Foreground service';
+
+  @override
+  String get mandatoryForegroundServiceDesc =>
+      'Keeps calls and voice messages alive when the app is in the background.';
+
+  @override
+  String get mandatorySettingsForegroundService =>
+      'Open foreground service settings';
+
+  @override
+  String get mandatoryAccessibilityService => 'Accessibility service';
+
+  @override
+  String get mandatoryAccessibilityServiceDesc =>
+      'Required for call screening and reading notifications.';
+
+  @override
+  String get mandatorySettingsAccessibilityService =>
+      'Open accessibility settings';
+
+  @override
+  String get mandatoryOpenSettings => 'Open settings';
+
+  @override
+  String get mandatoryContinue => 'Continue';
+
+  @override
+  String get mandatoryWarningTitle => 'Both services are required';
+
+  @override
+  String get mandatoryWarningDesc =>
+      'Imo LIVE cannot receive calls or messages in the background until both services are enabled.';
 }

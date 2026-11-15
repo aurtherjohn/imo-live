@@ -9703,6 +9703,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Offline-first with Firebase sync'**
   String get offlineFirstFirebaseSync;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Imo LIVE'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your language and country to get started.'**
+  String get onboardingWelcomeSubtitle;
+
+  /// No description provided for @onboardingSearchLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Search language'**
+  String get onboardingSearchLanguage;
+
+  /// No description provided for @onboardingSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get onboardingSelected;
+
+  /// No description provided for @onboardingSearchCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search country'**
+  String get onboardingSearchCountry;
+
+  /// No description provided for @onboardingNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s your name?'**
+  String get onboardingNameTitle;
+
+  /// No description provided for @onboardingNameSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This is how your contacts will see you.'**
+  String get onboardingNameSubtitle;
+
+  /// No description provided for @onboardingNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get onboardingNameHint;
+
+  /// No description provided for @onboardingBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboardingBack;
+
+  /// No description provided for @onboardingContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get onboardingContinue;
+
+  /// No description provided for @onboardingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get onboardingFinish;
+
+  /// No description provided for @permissionGrantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions'**
+  String get permissionGrantTitle;
+
+  /// No description provided for @permissionGrantSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how Imo LIVE asks for camera, microphone, contacts and other permissions.'**
+  String get permissionGrantSubtitle;
+
+  /// No description provided for @permissionAllAtOnce.
+  ///
+  /// In en, this message translates to:
+  /// **'All at once'**
+  String get permissionAllAtOnce;
+
+  /// No description provided for @permissionAllAtOnceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Request every permission now, so nothing asks again while you use the app.'**
+  String get permissionAllAtOnceDesc;
+
+  /// No description provided for @permissionJustInTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Just in time'**
+  String get permissionJustInTime;
+
+  /// No description provided for @permissionJustInTimeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for each permission only when the feature that needs it is first used.'**
+  String get permissionJustInTimeDesc;
+
+  /// No description provided for @permissionContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get permissionContinue;
+
+  /// No description provided for @mandatoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up required services'**
+  String get mandatoryTitle;
+
+  /// No description provided for @mandatorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Imo LIVE needs two system services to deliver calls and messages in the background. Enable both to continue.'**
+  String get mandatorySubtitle;
+
+  /// No description provided for @mandatoryForegroundService.
+  ///
+  /// In en, this message translates to:
+  /// **'Foreground service'**
+  String get mandatoryForegroundService;
+
+  /// No description provided for @mandatoryForegroundServiceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps calls and voice messages alive when the app is in the background.'**
+  String get mandatoryForegroundServiceDesc;
+
+  /// No description provided for @mandatorySettingsForegroundService.
+  ///
+  /// In en, this message translates to:
+  /// **'Open foreground service settings'**
+  String get mandatorySettingsForegroundService;
+
+  /// No description provided for @mandatoryAccessibilityService.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessibility service'**
+  String get mandatoryAccessibilityService;
+
+  /// No description provided for @mandatoryAccessibilityServiceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Required for call screening and reading notifications.'**
+  String get mandatoryAccessibilityServiceDesc;
+
+  /// No description provided for @mandatorySettingsAccessibilityService.
+  ///
+  /// In en, this message translates to:
+  /// **'Open accessibility settings'**
+  String get mandatorySettingsAccessibilityService;
+
+  /// No description provided for @mandatoryOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get mandatoryOpenSettings;
+
+  /// No description provided for @mandatoryContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get mandatoryContinue;
+
+  /// No description provided for @mandatoryWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Both services are required'**
+  String get mandatoryWarningTitle;
+
+  /// No description provided for @mandatoryWarningDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Imo LIVE cannot receive calls or messages in the background until both services are enabled.'**
+  String get mandatoryWarningDesc;
 }
 
 class _AppLocalizationsDelegate
