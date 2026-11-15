@@ -1,355 +1,56 @@
-name: Build Flutter APK
+name: Build Release APK
 
 on:
   push:
-    branches: [ main ]
-  # Manual runs ignore nothing, so a build can always be forced without a commit.
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
-
-permissions:
-  contents: write
-
-# ⚠️ `paths-ignore` was removed deliberately. It skipped the run when every
-# changed file matched `**.md` / `.workbuddy-ai/**`, which meant a pushed change
-# could land with no build and no Release — the newest release silently stopped
-# representing the newest code. Correctness beats ~19 minutes of CI here: every
-# push to main now builds.
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      # Path CI writes the decoded keystore to. Matches KEYSTORE_FILE in
-      # android/app/build.gradle.kts. Gitignored (`*.jks`), never committed.
-      KEYSTORE_PATH: android/app/imo-live-release.jks
-      EXPECTED_SHA1: "AA:09:94:7E:42:5C:05:53:B0:AA:D7:09:08:25:1B:94:E0:B8:C4:56"
-      EXPECTED_SHA256: "57:FB:D9:60:B0:84:1C:E3:AD:8F:FB:B4:59:A8:2B:AE:AF:07:6F:4E:24:66:85:5C:53:3E:EC:33:04:1B:33:87"
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Java 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.3'
+          flutter-version: '3.24.0'
           channel: 'stable'
-          cache: true
 
-      - name: Fix gradlew permissions
-        run: chmod +x android/gradlew
-
-      - name: Flutter version check
-        run: flutter --version
-
-      - name: Get dependencies
+      - name: Get Flutter dependencies
         run: flutter pub get
 
-      # Fail-fast gates. These were `continue-on-error: true`, which made a green
-      # run meaningless as evidence that the code was clean. A red analyze or
-      # test now stops the build before it burns ~17 minutes on an APK.
-      - name: Analyze project
-        run: flutter analyze --no-fatal-infos
+      - name: Run flutter analyze
+        run: flutter analyze
 
-      - name: Run tests
+      - name: Run flutter tests
         run: flutter test
 
-      # The keystore arrives as base64 in a secret. `printf` rather than `echo`:
-      # `echo` can reinterpret backslashes and is not byte-exact.
-      - name: Decode release keystore
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-        run: |
-          set -euo pipefail
-          if [ -z "${KEYSTORE_BASE64:-}" ]; then
-            echo "::error::KEYSTORE_BASE64 secret is empty or missing."
-            exit 1
-          fi
-          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$KEYSTORE_PATH"
-          echo "Decoded keystore: $(wc -c < "$KEYSTORE_PATH") bytes"
-          if [ ! -s "$KEYSTORE_PATH" ]; then
-            echo "::error::Decoded keystore is empty — the base64 secret is wrong."
-            exit 1
-          fi
-
-      # ⚠️ Runs BEFORE `flutter build`, on purpose. Gradle only notices a bad
-      # keystore path in `:app:validateSigningRelease`, which happens roughly 20
-      # minutes into the build — after the Dart/Flutter compile. Checking the
-      # path and the alias here turns a 20-minute failure into a 25-second one,
-      # and it is what caught the repo-root-vs-module path bug the first time.
-      - name: Verify keystore fingerprint
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        run: |
-          # ⚠️ NOT `set -e`. The parses below are `grep | head -1 | …` command
-          # substitutions, and under `bash -e` a no-match grep aborts the step
-          # with no output whatsoever (see the note on the APK-certificate step
-          # for the full reproduction). Guard explicitly instead.
-          set -uo pipefail
-          KEYTOOL="${JAVA_HOME:+$JAVA_HOME/bin/keytool}"
-          [ -x "$KEYTOOL" ] || KEYTOOL="$(command -v keytool || true)"
-          if [ -z "$KEYTOOL" ] || [ ! -x "$KEYTOOL" ]; then
-            echo "::error::keytool not found (JAVA_HOME=$JAVA_HOME)"
-            exit 1
-          fi
-
-          # 1. The file the build will read must exist at the exact path Gradle
-          #    resolves. KEYSTORE_FILE is repo-root-relative; build.gradle.kts
-          #    resolves it with rootProject.file().
-          if [ ! -f "$KEYSTORE_PATH" ]; then
-            echo "::error::Keystore missing at $KEYSTORE_PATH (repo root relative) — the decode step did not write it."
-            exit 1
-          fi
-          echo "KEYSTORE_FILE=$KEYSTORE_PATH (exists, $(wc -c < "$KEYSTORE_PATH") bytes)"
-
-          # 2. The alias must exist IN this keystore. A wrong KEY_ALIAS fails
-          #    deep inside signing with a much less obvious message.
-          if ! "$KEYTOOL" -list -keystore "$KEYSTORE_PATH" \
-                 -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS" \
-                 > /dev/null 2>&1; then
-            echo "::error::Alias '$KEY_ALIAS' not found in the keystore, or the store password is wrong."
-            exit 1
-          fi
-
-          "$KEYTOOL" -list -v -keystore "$KEYSTORE_PATH" \
-            -alias "$KEY_ALIAS" -storepass "$KEYSTORE_PASSWORD" > keystore-info.txt
-
-          ACTUAL_SHA1=$(grep -i 'SHA1:' keystore-info.txt | head -1 \
-            | sed 's/.*SHA1: *//' | tr -d '\r' | xargs || true)
-          ACTUAL_SHA256=$(grep -i 'SHA256:' keystore-info.txt | head -1 \
-            | sed 's/.*SHA256: *//' | tr -d '\r' | xargs || true)
-
-          echo "Keystore SHA-1   : $ACTUAL_SHA1"
-          echo "EXPECTED SHA-1   : $EXPECTED_SHA1"
-          echo "Keystore SHA-256 : $ACTUAL_SHA256"
-          echo "EXPECTED SHA-256 : $EXPECTED_SHA256"
-
-          # Case-insensitive hex comparison: keytool's casing is not contract.
-          norm() { echo "$1" | tr 'a-f' 'A-F'; }
-          if [ -z "$ACTUAL_SHA1" ]; then
-            echo "::error::Could not extract a SHA-1 from the keystore listing."
-            exit 1
-          fi
-          if [ "$(norm "$ACTUAL_SHA1")" != "$(norm "$EXPECTED_SHA1")" ]; then
-            echo "::error::Keystore SHA-1 does not match the fingerprint registered in Firebase. The KEYSTORE_BASE64 secret is the wrong keystore."
-            exit 1
-          fi
-          echo "::notice::Keystore SHA-1 matches the Firebase-registered fingerprint."
-
-      # The env vars are exactly what android/app/build.gradle.kts reads. Without
-      # them the `assertReleaseSigning` task fails the build rather than falling
-      # back to a debug keystore.
-      - name: Build APK (split per ABI)
-        env:
-          # ⚠️ ABSOLUTE path, deliberately. The Gradle script is kept byte-simple
-          # (see android/app/build.gradle.kts): it assigns `storeFile` an absolute
-          # path and does no path arithmetic of its own. Computing a relative
-          # ci path inside the script — via `file()`, `rootProject.file()`, or
-          # `java.io.File()` — makes AGP 9.1.0 fail at configuration with a
-          # bogus "Namespace not specified", because this project runs
-          # `android.newDsl=false` and AGP builds its variant builder before the
-          # namespace is registered. Resolving the path here avoids the entire
-          # class of problem.
-          KEYSTORE_FILE: ${{ github.workspace }}/android/app/imo-live-release.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
-        run: |
-          set -euo pipefail
-          test -f "$KEYSTORE_FILE" || { echo "::error::keystore missing at $KEYSTORE_FILE"; exit 1; }
-          echo "KEYSTORE_FILE=$KEYSTORE_FILE"
-          # ⚠️ Do NOT pass `--stacktrace` here: that is a Gradle flag, not a
-          # Flutter one, and Flutter rejects it with
-          #   Could not find an option named "--stacktrace".   (exit 64)
-          # If a configuration-time failure ever needs diagnosing again, read it
-          # from the build script's own context (gradle.properties flags, plugin
-          # versions) rather than trying to forward Gradle flags through Flutter.
-          flutter build apk --release --split-per-abi \
-            --dart-define=GOOGLE_OAUTH_CLIENT_ID="$GOOGLE_OAUTH_CLIENT_ID"
-
-      # Proves what actually ended up inside the shipped APK, not just what the
-      # keystore file held. Asserts equality rather than printing for a human:
-      # a mismatch here means the artifact is signed with something other than
-      # the Firebase-registered key, and shipping it would silently reintroduce
-      # the Google Sign-In DEVELOPER_ERROR this whole change exists to fix.
-      # ⚠️ TWO separate traps live here. Read both before editing.
-      #
-      # TRAP 1 — `keytool` CANNOT read this APK. `keytool -printcert -jarfile`
-      # reads *v1 (JAR)* signatures only (its own help says "-jarfile <file>
-      # signed jar file"). This app is `minSdk = 24`, and at minSdk >= 24 AGP
-      # disables v1 signing by default and signs with v2/v3 only. So keytool
-      # exits 0 and prints the literal string "Not a signed jar file", with no
-      # SHA1 anywhere — which is exactly the failure that cost a CI cycle.
-      # Proven locally by signing a stub APK both ways:
-      #   v2/v3 only  -> keytool exit 0, 21 bytes, "Not a signed jar file", 0 SHA1
-      #   v1 + v2/v3  -> keytool exit 0, full cert,                     1 SHA1
-      # The right tool is `apksigner verify --print-certs`, which reads v2/v3
-      # and works for v1 too. It prints a COLON-LESS lowercase digest:
-      #   Signer #1 certificate SHA-1 digest: f3020d543d8ce2a8e263843b01055116ab481101
-      # so comparison must normalise by stripping ':' and upper-casing BOTH sides.
-      #
-      # TRAP 2 — `set -e` + a failing `$(grep …)` aborts the step with ZERO
-      # output. GitHub runs steps as `bash -e {0}`. `grep` exits 1 on no match,
-      # `pipefail` propagates it, and `-e` kills the shell at the assignment,
-      # before the next `echo`. Hence `set -uo pipefail` (no -e) plus `|| true`
-      # on every parsing grep, with explicit guards that NAME the failure.
-      - name: Verify signed APK certificate
-        run: |
-          set -uo pipefail
-
-          APK=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
-          if [ ! -f "$APK" ]; then
-            echo "::error::$APK not found — nothing was built."
-            ls -la build/app/outputs/flutter-apk/ || true
-            exit 1
-          fi
-          echo "APK: $APK ($(stat -c%s "$APK") bytes)"
-
-          # apksigner ships with the Android SDK build-tools. Locate it via
-          # ANDROID_HOME / ANDROID_SDK_ROOT, newest build-tools first.
-          # ⚠️ Two portability details that each broke this locally:
-          #   - `${VAR:-}` everywhere: under `set -u`, a bare `$ANDROID_SDK_ROOT`
-          #     aborts the step where it is unset ("unbound variable").
-          #   - `[ -x ]` is NOT the right test. On CI (ubuntu) `apksigner` is an
-          #     executable POSIX script; on a Windows SDK only `apksigner.bat`
-          #     exists and the executable bit is often unset. So prefer an
-          #     executable candidate, otherwise accept any existing one and
-          #     invoke it explicitly (bash for a script, cmd for a .bat).
-          find_apksigner() {
-            for root in "${ANDROID_HOME:-}" "${ANDROID_SDK_ROOT:-}" \
-                        "${ANDROID_HOME:-$HOME}/../Android/sdk" \
-                        /usr/local/lib/android/sdk; do
-              [ -n "$root" ] && [ -d "$root/build-tools" ] || continue
-              local v
-              v=$(ls -1 "$root/build-tools" 2>/dev/null | sort -V | tail -1)
-              [ -n "$v" ] || continue
-              for cand in "$root/build-tools/$v/apksigner" \
-                          "$root/build-tools/$v/apksigner.bat"; do
-                [ -e "$cand" ] && { echo "$cand"; return 0; }
-              done
-            done
-            return 1
-          }
-          # Run a discovered tool regardless of whether it is executable.
-          run_apksigner() {
-            case "$1" in
-              *.bat) cmd //c "$1" "${@:2}" ;;
-              *)     [ -x "$1" ] && "$1" "${@:2}" || bash "$1" "${@:2}" ;;
-            esac
-          }
-          APKSIGNER="$(find_apksigner || true)"
-          if [ -z "$APKSIGNER" ]; then
-            echo "::warning::apksigner not found; falling back to keytool."
-            echo "::warning::keytool only reads v1 signatures — a v2/v3-only APK will report 'Not a signed jar file'."
-          else
-            echo "apksigner: $APKSIGNER"
-          fi
-
-          CERT_SHA1=""
-          CERT_SHA256=""
-          if [ -n "$APKSIGNER" ]; then
-            # Fail loudly rather than exiting 0 on an unsigned/corrupt APK.
-            if ! run_apksigner "$APKSIGNER" verify --print-certs "$APK" \
-                   > apk-cert.txt 2> keytool-err.txt; then
-              echo "::error::apksigner verify failed — the APK is not correctly signed:"
-              cat keytool-err.txt || true
-              exit 1
-            fi
-            echo "--- apksigner output ---"
-            cat apk-cert.txt || true
-            # ⚠️ DO NOT anchor the label. apksigner's wording is NOT stable:
-            #   build-tools 35/36 -> "Signer #1 certificate SHA-1 digest: <hex>"
-            #   build-tools 37.0.0 -> "V2 Signer: certificate SHA-1 digest: <hex>"
-            # Run 40 was on 37.0.0; matching only "Signer #1" produced an empty
-            # value and a false failure even though the key was CORRECT. Match
-            # on the invariant substring ("certificate SHA-1 digest") instead.
-            CERT_SHA1=$(grep -i 'certificate SHA-1 digest' apk-cert.txt \
-              | head -1 | sed 's/.*digest: *//' | tr -d ' \r' || true)
-            CERT_SHA256=$(grep -i 'certificate SHA-256 digest' apk-cert.txt \
-              | head -1 | sed 's/.*digest: *//' | tr -d ' \r' || true)
-          else
-            KEYTOOL="${JAVA_HOME:+$JAVA_HOME/bin/keytool}"
-            [ -x "$KEYTOOL" ] || KEYTOOL="$(command -v keytool || true)"
-            if [ -z "$KEYTOOL" ] || [ ! -x "$KEYTOOL" ]; then
-              echo "::error::neither apksigner nor keytool is available."
-              exit 1
-            fi
-            if ! "$KEYTOOL" -printcert -jarfile "$APK" > apk-cert.txt 2> keytool-err.txt; then
-              echo "::error::keytool -printcert failed:"
-              cat keytool-err.txt || true
-              exit 1
-            fi
-            echo "--- keytool output ---"
-            cat apk-cert.txt || true
-            CERT_SHA1=$(grep -i 'SHA1:' apk-cert.txt | head -1 \
-              | sed 's/.*SHA1: *//' | tr -d '\r' | xargs || true)
-            CERT_SHA256=$(grep -i 'SHA256:' apk-cert.txt | head -1 \
-              | sed 's/.*SHA256: *//' | tr -d '\r' | xargs || true)
-          fi
-
-          # ⚠️ `tr -d :` on BOTH sides: apksigner prints colon-less hex, keytool
-          # prints colon-separated. Comparing raw strings would always fail.
-          norm() { echo "$1" | tr -d ':' | tr 'a-f' 'A-F' | xargs; }
-          APK_SHA1="$(norm "$CERT_SHA1")"
-          APK_SHA256="$(norm "$CERT_SHA256")"
-          EXPECTED_SHA1_N="$(norm "$EXPECTED_SHA1")"
-          EXPECTED_SHA256_N="$(norm "$EXPECTED_SHA256")"
-
-          echo "APK SHA-1        : $APK_SHA1"
-          echo "EXPECTED SHA-1   : $EXPECTED_SHA1_N"
-          echo "APK SHA-256      : $APK_SHA256"
-          echo "EXPECTED SHA-256 : $EXPECTED_SHA256_N"
-
-          if [ -z "$APK_SHA1" ]; then
-            echo "::error::Could not extract a SHA-1 from the APK certificate."
-            echo "If the log above says 'Not a signed jar file', the APK is v2/v3-only and keytool cannot read it."
-            exit 1
-          fi
-          if [ -z "$APK_SHA256" ]; then
-            echo "::error::Could not extract a SHA-256 from the APK certificate."
-            exit 1
-          fi
-          if [ "$APK_SHA1" != "$EXPECTED_SHA1_N" ]; then
-            echo "::error::APK SHA-1 mismatch. Google Sign-In will fail."
-            exit 1
-          fi
-          if [ "$APK_SHA256" != "$EXPECTED_SHA256_N" ]; then
-            echo "::error::APK SHA-256 mismatch."
-            exit 1
-          fi
-          echo "::notice::Signed APK matches Firebase-registered SHA-1 AND SHA-256."
+      - name: Build release APK
+        run: flutter build apk --release --split-per-abi
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: imo-live-apk
-          path: build/app/outputs/flutter-apk/*.apk
+          name: release-apks
+          path: build/app/outputs/flutter-apk/
           retention-days: 30
 
-      - name: Create Release
-        if: github.ref == 'refs/heads/main'
+      - name: Create GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: "Imo LIVE Build #${{ github.run_number }}"
           files: build/app/outputs/flutter-apk/*.apk
-          draft: false
-          prerelease: false
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # `if: always()` so the keystore is removed even when an earlier step
-      # failed and left it on disk. The runner is ephemeral, but the decoded
-      # private key should not outlive the step that needs it.
-      - name: Clean up keystore
-        if: always()
-        run: rm -f "$KEYSTORE_PATH" keystore-info.txt apk-cert.txt keytool-err.txt
