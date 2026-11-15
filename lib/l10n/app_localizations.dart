@@ -974,6 +974,12 @@ abstract class AppLocalizations {
   /// **'Country'**
   String get country;
 
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a language'**
+  String get selectLanguage;
+
   /// No description provided for @selectCountry.
   ///
   /// In en, this message translates to:
@@ -9722,53 +9728,17 @@ abstract class AppLocalizations {
   /// **'Search language'**
   String get onboardingSearchLanguage;
 
-  /// No description provided for @onboardingSelected.
-  ///
-  /// In en, this message translates to:
-  /// **'Selected'**
-  String get onboardingSelected;
-
   /// No description provided for @onboardingSearchCountry.
   ///
   /// In en, this message translates to:
   /// **'Search country'**
   String get onboardingSearchCountry;
 
-  /// No description provided for @onboardingNameTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'What\'s your name?'**
-  String get onboardingNameTitle;
-
-  /// No description provided for @onboardingNameSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'This is how your contacts will see you.'**
-  String get onboardingNameSubtitle;
-
-  /// No description provided for @onboardingNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Your name'**
-  String get onboardingNameHint;
-
-  /// No description provided for @onboardingBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get onboardingBack;
-
   /// No description provided for @onboardingContinue.
   ///
   /// In en, this message translates to:
   /// **'Continue'**
   String get onboardingContinue;
-
-  /// No description provided for @onboardingFinish.
-  ///
-  /// In en, this message translates to:
-  /// **'Finish'**
-  String get onboardingFinish;
 
   /// No description provided for @permissionGrantTitle.
   ///
@@ -9787,6 +9757,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Grant all permissions'**
   String get grantAllPermissions;
+
+  /// No description provided for @requestingPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Asking for permissions…'**
+  String get requestingPermissions;
 
   /// No description provided for @microphone.
   ///
@@ -9835,78 +9811,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get permissionContinue;
-
-  /// No description provided for @mandatoryTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'One last step'**
-  String get mandatoryTitle;
-
-  /// No description provided for @mandatorySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Open the system settings below to give Imo LIVE the access it needs. You can change everything later.'**
-  String get mandatorySubtitle;
-
-  /// No description provided for @mandatoryForegroundService.
-  ///
-  /// In en, this message translates to:
-  /// **'Permissions & notifications'**
-  String get mandatoryForegroundService;
-
-  /// No description provided for @mandatoryForegroundServiceDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage camera, microphone, location and notification access from the app settings.'**
-  String get mandatoryForegroundServiceDesc;
-
-  /// No description provided for @mandatorySettingsForegroundService.
-  ///
-  /// In en, this message translates to:
-  /// **'Open app settings'**
-  String get mandatorySettingsForegroundService;
-
-  /// No description provided for @mandatoryAccessibilityService.
-  ///
-  /// In en, this message translates to:
-  /// **'Accessibility service'**
-  String get mandatoryAccessibilityService;
-
-  /// No description provided for @mandatoryAccessibilityServiceDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable Imo LIVE under accessibility if you use screen readers or other accessibility tools.'**
-  String get mandatoryAccessibilityServiceDesc;
-
-  /// No description provided for @mandatorySettingsAccessibilityService.
-  ///
-  /// In en, this message translates to:
-  /// **'Open accessibility settings'**
-  String get mandatorySettingsAccessibilityService;
-
-  /// No description provided for @mandatoryOpenSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Open settings'**
-  String get mandatoryOpenSettings;
-
-  /// No description provided for @mandatoryContinue.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue'**
-  String get mandatoryContinue;
-
-  /// No description provided for @mandatoryWarningTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'You can change these later'**
-  String get mandatoryWarningTitle;
-
-  /// No description provided for @mandatoryWarningDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'These are optional system settings — the app works without them, and they can be changed any time.'**
-  String get mandatoryWarningDesc;
 }
 
 class _AppLocalizationsDelegate

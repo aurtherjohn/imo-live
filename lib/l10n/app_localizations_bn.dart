@@ -452,6 +452,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get country => 'দেশ';
 
   @override
+  String get selectLanguage => 'ভাষা নির্বাচন করুন';
+
+  @override
   String get selectCountry => 'দেশ নির্বাচন করুন';
 
   @override
@@ -5467,29 +5470,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get onboardingSearchLanguage => 'ভাষা খুঁজুন';
 
   @override
-  String get onboardingSelected => 'নির্বাচিত';
-
-  @override
   String get onboardingSearchCountry => 'দেশ খুঁজুন';
 
   @override
-  String get onboardingNameTitle => 'আপনার নাম কী?';
-
-  @override
-  String get onboardingNameSubtitle =>
-      'আপনার পরিচিতজনরা আপনাকে এই নামেই দেখবে।';
-
-  @override
-  String get onboardingNameHint => 'আপনার নাম';
-
-  @override
-  String get onboardingBack => 'ফিরে যান';
-
-  @override
   String get onboardingContinue => 'চালিয়ে যান';
-
-  @override
-  String get onboardingFinish => 'শেষ করুন';
 
   @override
   String get permissionGrantTitle => 'অনুমতিসমূহ';
@@ -5500,6 +5484,9 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get grantAllPermissions => 'সব অনুমতি দিন';
+
+  @override
+  String get requestingPermissions => 'অনুমতি চাওয়া হচ্ছে…';
 
   @override
   String get microphone => 'মাইক্রোফোন';
@@ -5526,45 +5513,4 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get permissionContinue => 'চালিয়ে যান';
-
-  @override
-  String get mandatoryTitle => 'শেষ ধাপ';
-
-  @override
-  String get mandatorySubtitle =>
-      'Imo LIVE-কে প্রয়োজনীয় অ্যাক্সেস দিতে নিচের সিস্টেম সেটিংস খুলুন। সবকিছু পরে বদলাতে পারবেন।';
-
-  @override
-  String get mandatoryForegroundService => 'অনুমতি ও নোটিফিকেশন';
-
-  @override
-  String get mandatoryForegroundServiceDesc =>
-      'অ্যাপ সেটিংস থেকে ক্যামেরা, মাইক্রোফোন, লোকেশন ও নোটিফিকেশনের অ্যাক্সেস পরিচালনা করুন।';
-
-  @override
-  String get mandatorySettingsForegroundService => 'অ্যাপ সেটিংস খুলুন';
-
-  @override
-  String get mandatoryAccessibilityService => 'অ্যাক্সেসিবিলিটি সার্ভিস';
-
-  @override
-  String get mandatoryAccessibilityServiceDesc =>
-      'স্ক্রিন রিডার বা অন্য অ্যাক্সেসিবিলিটি টুল ব্যবহার করলে অ্যাক্সেসিবিলিটি সেটিংসে Imo LIVE চালু করুন।';
-
-  @override
-  String get mandatorySettingsAccessibilityService =>
-      'অ্যাক্সেসিবিলিটি সেটিংস খুলুন';
-
-  @override
-  String get mandatoryOpenSettings => 'সেটিংস খুলুন';
-
-  @override
-  String get mandatoryContinue => 'চালিয়ে যান';
-
-  @override
-  String get mandatoryWarningTitle => 'এগুলো পরে বদলাতে পারবেন';
-
-  @override
-  String get mandatoryWarningDesc =>
-      'এগুলো ঐচ্ছিক সিস্টেম সেটিংস — এগুলো ছাড়াও অ্যাপ চলবে, আর যেকোনো সময় বদলানো যাবে।';
 }

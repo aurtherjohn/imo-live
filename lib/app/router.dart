@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../core/constants/app_constants.dart';
 import 'auth_gate.dart';
 import '../features/auth/presentation/login_screen.dart';
-import '../features/auth/presentation/mandatory_permission_blocker.dart';
 import '../features/auth/presentation/onboarding_screen.dart';
 import '../features/auth/presentation/permission_grant_screen.dart';
 import '../features/auth/presentation/profile_setup_screen.dart';
@@ -145,12 +144,6 @@ final GoRouter appRouter = GoRouter(
       name: 'permissionGrant',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const PermissionGrantScreen()),
-    ),
-    GoRoute(
-      path: AppRoutes.mandatoryPermissions,
-      name: 'mandatoryPermissions',
-      pageBuilder: (BuildContext context, GoRouterState state) =>
-          appPage(state, const MandatoryPermissionBlocker()),
     ),
 
     // -------------------------------------------------------------- shell

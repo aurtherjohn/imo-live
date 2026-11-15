@@ -10,7 +10,6 @@ import '../../../core/widgets/brand_assets.dart';
 import '../../../core/widgets/common_widgets.dart';
 import '../../../core/widgets/oauth_webview_sheet.dart';
 import 'auth_providers.dart';
-import 'widgets/auth_settings_button.dart';
 import 'widgets/auth_widgets.dart';
 import '../../../core/utils/l10n.dart';
 
@@ -80,7 +79,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return AuthScaffold(
-      topRight: const AuthSettingsButton(),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.xxl,

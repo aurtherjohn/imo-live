@@ -194,7 +194,6 @@ class AppRoutes {
   static const String profileSetup = '/auth/profile';
   static const String onboarding = '/auth/onboarding';
   static const String permissionGrant = '/auth/permissions';
-  static const String mandatoryPermissions = '/auth/mandatory-permissions';
 
   /// Screens that must never be reachable while signed in, and vice versa.
   static const Set<String> authRoutes = <String>{
@@ -203,6 +202,5 @@ class AppRoutes {
     profileSetup,
     onboarding,
     permissionGrant,
-    mandatoryPermissions,
   };
 }

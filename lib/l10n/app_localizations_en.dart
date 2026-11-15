@@ -452,6 +452,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get country => 'Country';
 
   @override
+  String get selectLanguage => 'Select a language';
+
+  @override
   String get selectCountry => 'Select country';
 
   @override
@@ -5473,29 +5476,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingSearchLanguage => 'Search language';
 
   @override
-  String get onboardingSelected => 'Selected';
-
-  @override
   String get onboardingSearchCountry => 'Search country';
 
   @override
-  String get onboardingNameTitle => 'What\'s your name?';
-
-  @override
-  String get onboardingNameSubtitle =>
-      'This is how your contacts will see you.';
-
-  @override
-  String get onboardingNameHint => 'Your name';
-
-  @override
-  String get onboardingBack => 'Back';
-
-  @override
   String get onboardingContinue => 'Continue';
-
-  @override
-  String get onboardingFinish => 'Finish';
 
   @override
   String get permissionGrantTitle => 'Permissions';
@@ -5506,6 +5490,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get grantAllPermissions => 'Grant all permissions';
+
+  @override
+  String get requestingPermissions => 'Asking for permissions…';
 
   @override
   String get microphone => 'Microphone';
@@ -5532,45 +5519,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionContinue => 'Continue';
-
-  @override
-  String get mandatoryTitle => 'One last step';
-
-  @override
-  String get mandatorySubtitle =>
-      'Open the system settings below to give Imo LIVE the access it needs. You can change everything later.';
-
-  @override
-  String get mandatoryForegroundService => 'Permissions & notifications';
-
-  @override
-  String get mandatoryForegroundServiceDesc =>
-      'Manage camera, microphone, location and notification access from the app settings.';
-
-  @override
-  String get mandatorySettingsForegroundService => 'Open app settings';
-
-  @override
-  String get mandatoryAccessibilityService => 'Accessibility service';
-
-  @override
-  String get mandatoryAccessibilityServiceDesc =>
-      'Enable Imo LIVE under accessibility if you use screen readers or other accessibility tools.';
-
-  @override
-  String get mandatorySettingsAccessibilityService =>
-      'Open accessibility settings';
-
-  @override
-  String get mandatoryOpenSettings => 'Open settings';
-
-  @override
-  String get mandatoryContinue => 'Continue';
-
-  @override
-  String get mandatoryWarningTitle => 'You can change these later';
-
-  @override
-  String get mandatoryWarningDesc =>
-      'These are optional system settings — the app works without them, and they can be changed any time.';
 }

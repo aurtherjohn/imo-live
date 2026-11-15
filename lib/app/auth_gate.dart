@@ -18,7 +18,6 @@ const Set<String> _authRoutes = <String>{
   AppRoutes.profileSetup,
   AppRoutes.onboarding,
   AppRoutes.permissionGrant,
-  AppRoutes.mandatoryPermissions,
   // The phone flow lives here because it is a route now, not an imperative
   // push. Leaving it out would make the gate itself the thing that bounces a
   // phone signup: the user is mid-flow on a route it does not recognise while
@@ -241,18 +240,17 @@ String? authRedirect(BuildContext context, GoRouterState state) {
   // A new account therefore lands on profile setup until the profile has a
   // name; a returning user goes straight through.
   //
-  // Onboarding gate: first-time sign-in goes through language/country/name,
-  // then permission-grant mode, then mandatory system services. Only after all
-  // three does the user reach the chat shell.
-  // Onboarding flow routes: language/country/name, then the permission
-  // screens. While onboarding is incomplete the flow is the only destination,
-  // and every step of it must stay reachable so it can advance — requiring
-  // `location == onboarding` here was what bounced the permission screens
+  // Onboarding gate: first-time sign-in goes through language/country, then
+  // the permission walk, and lands straight in the chat shell.
+  //
+  // Onboarding flow routes: the welcome screen, then the permission screen.
+  // While onboarding is incomplete the flow is the only destination, and every
+  // step of it must stay reachable so it can advance — requiring
+  // `location == onboarding` here was what bounced the permission screen
   // straight to the chat shell.
   const Set<String> onboardingFlowRoutes = <String>{
     AppRoutes.onboarding,
     AppRoutes.permissionGrant,
-    AppRoutes.mandatoryPermissions,
   };
   if (!_onboarding.complete) {
     return onboardingFlowRoutes.contains(location)
@@ -262,11 +260,10 @@ String? authRedirect(BuildContext context, GoRouterState state) {
   if (location == AppRoutes.onboarding) {
     return AppRoutes.chats;
   }
-  // The permission steps run once, immediately after onboarding completes,
-  // pushed imperatively by the screen before them. Let them finish rather than
+  // The permission screen runs once, immediately after the welcome screen
+  // completes, pushed imperatively by that screen. Let it finish rather than
   // bouncing the user mid-flow into the chat shell.
-  if (location == AppRoutes.permissionGrant ||
-      location == AppRoutes.mandatoryPermissions) {
+  if (location == AppRoutes.permissionGrant) {
     return null;
   }
 
