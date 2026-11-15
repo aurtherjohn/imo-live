@@ -3,6 +3,10 @@ name: Build Release APK
 on:
   push:
     branches: [ main, master ]
+    # A `v*` tag push builds the APK and attaches it to a GitHub Release —
+    # release assets do NOT count against the Actions artifact storage quota
+    # (which a private repo's 500 MB free tier exhausts easily with APKs).
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
@@ -112,6 +116,11 @@ jobs:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
+        # Best-effort only: when the account's 500 MB artifact storage quota is
+        # exhausted this fails with "Artifact storage quota has been hit". That
+        # must NOT turn the run red or hide the fact that the APK built fine —
+        # the tag build publishes the APK as a GitHub Release asset instead.
+        continue-on-error: true
 
       - name: Create GitHub Release (on tag)
         if: startsWith(github.ref, 'refs/tags/')
