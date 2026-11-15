@@ -46,6 +46,13 @@ silent failure), and `android_channel_id` (visible only in `rawPayload` on a dev
 `imagePath:` alone shows initials for everyone else. The write was never the bug — the read path was.
 
 ## App traps
+- ⚠️ **The bottom nav and the shell branches are positionally coupled.** `goBranch(index)` navigates by
+  *position*, so `IBottomNav`'s item list and the `StatefulShellRoute` branches in `router.dart` must be the
+  same length and the same order. They drifted once: the bar kept a fifth "Communities" item after that
+  feature was removed while the router still declared four branches — Communities opened Contacts, Contacts
+  opened Calls, and Calls indexed past the end of the branch list. `tabCommunities` is still in the ARB
+  files (unused, harmless). Guarded by `test/app/router_test.dart` → group "bottom navigation"; the tab
+  indices live in the `_ShellTab` enum in `shell_screen.dart`.
 - ⚠️ A `Row(mainAxisSize: min)` inside a `Center` hands non-flexible children **unbounded width** → a long
   label overflows instead of shrinking (`AuthPrimaryButton` did exactly this). Wrap it in
   `Flexible` + `FittedBox(BoxFit.scaleDown)`. Bengali labels are longer than English, so this bites in `bn` first.

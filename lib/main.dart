@@ -16,7 +16,8 @@ import 'core/config/app_secrets.dart';
 import 'core/constants/app_constants.dart';
 import 'core/services/push_notification_service.dart';
 import 'core/utils/row_keys.dart';
-import 'features/chats/presentation/providers.dart' show notificationServiceProvider;
+import 'features/chats/presentation/providers.dart'
+    show notificationServiceProvider;
 import 'utils/crash_logger.dart';
 import 'core/utils/l10n.dart';
 
@@ -100,9 +101,7 @@ void _initOneSignal() {
 /// Brings Firebase up and connects it to the router's auth gate.
 Future<void> _initFirebase() async {
   try {
-    await Firebase.initializeApp().timeout(
-      const Duration(seconds: 8),
-    );
+    await Firebase.initializeApp().timeout(const Duration(seconds: 8));
   } on Object catch (error) {
     debugPrint('Firebase.initializeApp failed: $error');
     resolveAuthWithoutFirebase();
@@ -153,10 +152,9 @@ Future<void> _initFirebase() async {
         publishAuthState(null);
       },
     );
-    await FirebaseAuth.instance
-        .authStateChanges()
-        .first
-        .timeout(const Duration(seconds: 5));
+    await FirebaseAuth.instance.authStateChanges().first.timeout(
+      const Duration(seconds: 5),
+    );
   } on Object catch (error) {
     // ⚠️ Deliberately does **not** force the app to signed-out. Firebase is up
     // and `connectAuthStream` has already run, so a real session is still on its
@@ -180,7 +178,8 @@ Future<void> _initPush() async {
   try {
     // The instance was created by [_initOneSignal] so its listeners exist before
     // the first frame. Fall back to creating one only if that failed.
-    final PushNotificationService push = pushService ??
+    final PushNotificationService push =
+        pushService ??
         PushNotificationService(
           notifications: appContainer.read(notificationServiceProvider),
         );
@@ -278,7 +277,7 @@ class _StartupErrorWidget extends StatelessWidget {
               children: <Widget>[
                 const Icon(
                   Icons.error_outline_rounded,
-                  color: AppColors.accent,
+                  color: Color.fromARGB(255, 242, 34, 72),
                   size: 44,
                 ),
                 const SizedBox(height: 16),

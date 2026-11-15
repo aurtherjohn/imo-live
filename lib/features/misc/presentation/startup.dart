@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/auth_gate.dart' show setOnboardingState;
 import '../../../core/constants/app_constants.dart';
+import '../../../core/models/settings.dart';
 import '../../../core/services/connectivity_service.dart';
 import '../../../local/database/local_settings_repository.dart';
 import '../../../local/database/local_database.dart';
@@ -53,6 +55,13 @@ class StartupService {
         await LocalSettingsRepository().getAppearance();
         await LocalSettingsRepository().getLanguage();
         await LocalSettingsRepository().getWallpaper();
+
+        // Prime onboarding state so the auth gate can decide synchronously.
+        await _guard('onboarding cache', () async {
+          final OnboardingSettings state =
+              await LocalSettingsRepository().getOnboarding();
+          setOnboardingState(state);
+        });
       });
     } else {
       debugPrint(

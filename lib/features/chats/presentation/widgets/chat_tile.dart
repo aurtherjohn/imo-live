@@ -66,13 +66,9 @@ class ChatTile extends StatelessWidget {
                   colorSeed: chat.avatarColor,
                   size: AppSizes.avatarMd + 4,
                   isOnline: chat.isOnline,
-                  showPresence: !chat.isGroup && !chat.isChannel,
+                  showPresence: !chat.isGroup,
                   isGroup: chat.isGroup,
-                  icon: chat.isChannel
-                      ? Icons.campaign_rounded
-                      : chat.isBroadcast
-                          ? Icons.podcasts_rounded
-                          : null,
+                  icon: null,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),

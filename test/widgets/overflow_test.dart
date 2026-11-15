@@ -77,7 +77,7 @@ void main() {
     ) async {
       await pumpNarrow(
         tester,
-        const Center(child: IPill(label: 'Community administrator')),
+        const Center(child: IPill(label: 'Group administrator')),
       );
       expect(tester.takeException(), isNull);
     });

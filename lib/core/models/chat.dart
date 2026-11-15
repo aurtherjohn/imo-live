@@ -18,9 +18,6 @@ class Chat {
     this.avatarUrl,
     this.avatarColor,
     this.isGroup = false,
-    this.isChannel = false,
-    this.isCommunity = false,
-    this.isBroadcast = false,
     this.unreadCount = 0,
     this.isPinned = false,
     this.isMuted = false,
@@ -48,15 +45,12 @@ class Chat {
   final String? avatarPath;
 
   /// The peer's remote avatar — `users/{uid}.avatarUrl`, resolved by
-  /// [mirrorRemoteChat]. Null for a group/channel, and for a peer who has never
+  /// [mirrorRemoteChat]. Null for a group, and for a peer who has never
   /// set a picture. [avatarPath] stays the local, self-only identifier.
   final String? avatarUrl;
 
   final int? avatarColor;
   final bool isGroup;
-  final bool isChannel;
-  final bool isCommunity;
-  final bool isBroadcast;
   final int unreadCount;
   final bool isPinned;
   final bool isMuted;
@@ -83,8 +77,7 @@ class Chat {
   bool get hasUnread => unreadCount > 0 || isMarkedUnread;
 
   /// True for a conversation that can only ever hold two people.
-  bool get isDirect =>
-      !isGroup && !isChannel && !isCommunity && !isBroadcast;
+  bool get isDirect => !isGroup;
 
   /// The other participant's **uid** in a 1:1 chat, or null when there is not
   /// exactly one.
@@ -94,7 +87,7 @@ class Chat {
   /// misses, which is what made the profile screen report "not found". This is
   /// the single place that turns a [Chat] back into a real uid.
   ///
-  /// Null is returned for groups/channels/broadcasts, when [selfUid] is unknown,
+  /// Null is returned for groups, when [selfUid] is unknown,
   /// when [selfUid] is not among [memberIds] (a chat mirrored from another
   /// account), or when the members do not resolve to exactly one other person.
   /// Callers must treat null as "no profile to open" rather than guessing.
@@ -116,9 +109,6 @@ class Chat {
     String? avatarUrl,
     int? avatarColor,
     bool? isGroup,
-    bool? isChannel,
-    bool? isCommunity,
-    bool? isBroadcast,
     int? unreadCount,
     bool? isPinned,
     bool? isMuted,
@@ -147,9 +137,6 @@ class Chat {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       avatarColor: avatarColor ?? this.avatarColor,
       isGroup: isGroup ?? this.isGroup,
-      isChannel: isChannel ?? this.isChannel,
-      isCommunity: isCommunity ?? this.isCommunity,
-      isBroadcast: isBroadcast ?? this.isBroadcast,
       unreadCount: unreadCount ?? this.unreadCount,
       isPinned: isPinned ?? this.isPinned,
       isMuted: isMuted ?? this.isMuted,
@@ -180,9 +167,6 @@ class Chat {
         'avatarUrl': avatarUrl,
         'avatarColor': avatarColor,
         'isGroup': isGroup,
-        'isChannel': isChannel,
-        'isCommunity': isCommunity,
-        'isBroadcast': isBroadcast,
         'unreadCount': unreadCount,
         'isPinned': isPinned,
         'isMuted': isMuted,
@@ -214,9 +198,6 @@ class Chat {
         avatarUrl: json['avatarUrl'] as String?,
         avatarColor: (json['avatarColor'] as num?)?.toInt(),
         isGroup: json['isGroup'] as bool? ?? false,
-        isChannel: json['isChannel'] as bool? ?? false,
-        isCommunity: json['isCommunity'] as bool? ?? false,
-        isBroadcast: json['isBroadcast'] as bool? ?? false,
         unreadCount: (json['unreadCount'] as num?)?.toInt() ?? 0,
         isPinned: json['isPinned'] as bool? ?? false,
         isMuted: json['isMuted'] as bool? ?? false,

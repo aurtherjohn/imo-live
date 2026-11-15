@@ -128,7 +128,6 @@ class _ContactInfoScreenState extends ConsumerState<ContactInfoScreen> {
         .where(
           (Chat c) =>
               !c.isGroup &&
-              !c.isChannel &&
               (c.memberIds.contains(contact.id) ||
                   c.title.toLowerCase() == contact.fullName.toLowerCase()),
         )

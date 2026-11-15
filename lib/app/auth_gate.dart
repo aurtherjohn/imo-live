@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/constants/app_constants.dart';
+import '../core/models/settings.dart';
 
 /// Routes that belong to the sign-in flow itself.
 ///
@@ -15,6 +16,9 @@ const Set<String> _authRoutes = <String>{
   AppRoutes.login,
   AppRoutes.signup,
   AppRoutes.profileSetup,
+  AppRoutes.onboarding,
+  AppRoutes.permissionGrant,
+  AppRoutes.mandatoryPermissions,
   // The phone flow lives here because it is a route now, not an imperative
   // push. Leaving it out would make the gate itself the thing that bounces a
   // phone signup: the user is mid-flow on a route it does not recognise while
@@ -91,6 +95,16 @@ final AuthRefreshListenable authRefreshListenable = AuthRefreshListenable();
 /// A late-bound global rather than a provider read because the router is
 /// constructed at library load time, before any `ProviderContainer` exists.
 Stream<User?> _authStream = const Stream<User?>.empty();
+
+/// Cached onboarding state — read once at startup, updated when the user
+/// completes the welcome flow. Used synchronously in [authRedirect].
+OnboardingSettings _onboarding = const OnboardingSettings();
+
+/// Sets the cached onboarding state. Called after settings are loaded at
+/// startup and whenever the onboarding flow completes.
+void setOnboardingState(OnboardingSettings state) {
+  _onboarding = state;
+}
 
 /// True once [connectAuthStream] has run — i.e. Firebase came up and a real
 /// session may still be on its way.
@@ -226,12 +240,26 @@ String? authRedirect(BuildContext context, GoRouterState state) {
   //
   // A new account therefore lands on profile setup until the profile has a
   // name; a returning user goes straight through.
+  //
+  // Onboarding gate: first-time sign-in goes through language/country/name,
+  // then permission-grant mode, then mandatory system services. Only after all
+  // three does the user reach the chat shell.
+  if (!_onboarding.complete && location != AppRoutes.onboarding) {
+    return AppRoutes.onboarding;
+  }
+  if (_onboarding.complete && location == AppRoutes.onboarding) {
+    return AppRoutes.chats;
+  }
+
   final bool profileIncomplete = (user.displayName ?? '').trim().isEmpty &&
       location != AppRoutes.profileSetup;
 
   if (isAuthRoute || onSplash) {
     // Never leave a signed-in user on a signed-out screen.
-    return profileIncomplete ? AppRoutes.profileSetup : AppRoutes.chats;
+    if (_onboarding.complete && profileIncomplete) {
+      return AppRoutes.profileSetup;
+    }
+    return _onboarding.complete ? AppRoutes.chats : AppRoutes.onboarding;
   }
   return null;
 }

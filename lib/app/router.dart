@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../core/constants/app_constants.dart';
 import 'auth_gate.dart';
 import '../features/auth/presentation/login_screen.dart';
+import '../features/auth/presentation/mandatory_permission_blocker.dart';
+import '../features/auth/presentation/onboarding_screen.dart';
+import '../features/auth/presentation/permission_grant_screen.dart';
 import '../features/auth/presentation/profile_setup_screen.dart';
 import '../features/auth/presentation/screens/phone_login_screen.dart';
 import '../features/auth/presentation/signup_screen.dart';
@@ -130,6 +133,24 @@ final GoRouter appRouter = GoRouter(
       name: 'profileSetup',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const ProfileSetupScreen()),
+    ),
+    GoRoute(
+      path: AppRoutes.onboarding,
+      name: 'onboarding',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const OnboardingScreen()),
+    ),
+    GoRoute(
+      path: AppRoutes.permissionGrant,
+      name: 'permissionGrant',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const PermissionGrantScreen()),
+    ),
+    GoRoute(
+      path: AppRoutes.mandatoryPermissions,
+      name: 'mandatoryPermissions',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const MandatoryPermissionBlocker()),
     ),
 
     // -------------------------------------------------------------- shell

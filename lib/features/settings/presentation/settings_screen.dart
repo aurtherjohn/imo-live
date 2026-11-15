@@ -62,15 +62,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const InfoBanner(),
 
-          // ------------------------------------------------------------ premium
-          // Placed above the account group so the upgrade is the first thing
-          // seen, and its value line tells a paying user they are already
-          // covered rather than nagging them again.
-          SettingsGroup(
-            children: <Widget>[
-            ],
-          ),
-
           // ------------------------------------------------------------ account
           SettingsGroup(
             title: context.l10n.account,

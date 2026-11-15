@@ -101,12 +101,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   /// conversation opened on its *oldest* message — the user had to scroll all
   /// the way down to find the conversation they came for.
   ///
-  /// Retried across frames rather than done once, because on the first frame
-  /// the list has not been laid out yet and `maxScrollExtent` is still 0.
-  /// `jumpTo` and not `animateTo`: the user must never watch the list scroll
-  /// past them on entry. Gives up after [maxAttempts] so an empty chat cannot
-  /// schedule frames forever.
-  void _scrollToBottomOnOpen({int attempt = 0}) {
+  /// Retried across frames until the list has layout and content, because on
+  /// the first frame the list has not been laid out yet and `maxScrollExtent`
+  /// is still 0. `jumpTo` and not `animateTo`: the user must never watch the
+  /// list scroll past them on entry. Never gives up while the widget is
+  /// mounted — an empty chat stops retrying when the first message arrives
+  /// through the `ref.listen` path below instead.
+  void _scrollToBottomOnOpen() {
     if (_didInitialScroll || !mounted) return;
     if (_scrollController.hasClients) {
       final double target = _scrollController.position.maxScrollExtent;
@@ -116,15 +117,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         return;
       }
     }
-    if (attempt >= 10) {
-      // Empty or shorter than the viewport — there is nothing to scroll to, and
-      // the first message to arrive takes the `ref.listen` path instead.
-      _didInitialScroll = true;
-      return;
-    }
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _scrollToBottomOnOpen(attempt: attempt + 1),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottomOnOpen());
   }
 
   /// Listens to `chats/{chatId}/messages` for the lifetime of the screen.
@@ -800,8 +793,24 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         (AsyncValue<List<Message>>? previous, AsyncValue<List<Message>> next) {
       final int before = previous?.valueOrNull?.length ?? 0;
       final int after = next.valueOrNull?.length ?? 0;
-      if (after > before && _didInitialScroll) {
+      // First load: chat just opened and messages appeared for the first time.
+      // Scroll straight to the newest message so the user sees the end of the
+      /// conversation, not the middle.
+      if (before == 0 && after > 0 && !_didInitialScroll) {
+        _didInitialScroll = true;
         WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+      }
+      // A new message arrived while viewing — scroll to bottom only when the
+      /// user is already at or near the bottom, so we never yank the viewport
+      /// away while they are reading older messages.
+      else if (after > before && _didInitialScroll) {
+        if (!_scrollController.hasClients) return;
+        final double distanceFromBottom =
+            _scrollController.position.maxScrollExtent -
+            _scrollController.offset;
+        if (distanceFromBottom < 200) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+        }
       }
     });
 
@@ -954,12 +963,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   /// reports "not found". The peer is resolved from `memberIds`, the only field
   /// that actually carries uids.
   void _openChatInfo(Chat chat) {
-    if (chat.isGroup || chat.isCommunity) {
+    if (chat.isGroup) {
       context.push('${AppRoutes.groupInfo}/${chat.id}');
-      return;
-    }
-    if (chat.isChannel || chat.isBroadcast) {
-      iToast(context, context.l10n.channelsAndBroadcastsHaveNo);
       return;
     }
     final String? peerUid = chat.peerUid(ref.read(currentUidProvider));

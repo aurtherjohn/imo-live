@@ -482,3 +482,108 @@ class Country {
 
   String get display => nativeName.isEmpty ? name : '$name ($nativeName)';
 }
+
+/// The mode in which permissions are requested.
+enum PermissionMode { allAtOnce, justInTime }
+
+/// Onboarding state persisted across launches.
+///
+/// Keeps track of whether the welcome flow has completed, the language and
+/// country the user picked, and which permission-grant mode they chose.
+@immutable
+class OnboardingSettings {
+  const OnboardingSettings({
+    this.complete = false,
+    this.languageCode = 'en',
+    this.countryCode = 'BD',
+    this.countryName = 'Bangladesh',
+    this.userName = '',
+    this.permissionMode = PermissionMode.justInTime,
+  });
+
+  /// Whether the welcome flow (language, country, name, permissions) finished.
+  final bool complete;
+
+  /// The language code selected during onboarding, e.g. `en` or `bn`.
+  final String languageCode;
+
+  /// The ISO country code selected during onboarding, e.g. `BD`.
+  final String countryCode;
+
+  /// The display name of the selected country.
+  final String countryName;
+
+  /// The name the user entered during onboarding.
+  final String userName;
+
+  /// Whether permissions are requested all at once or just-in-time.
+  final PermissionMode permissionMode;
+
+  OnboardingSettings copyWith({
+    bool? complete,
+    String? languageCode,
+    String? countryCode,
+    String? countryName,
+    String? userName,
+    PermissionMode? permissionMode,
+  }) =>
+      OnboardingSettings(
+        complete: complete ?? this.complete,
+        languageCode: languageCode ?? this.languageCode,
+        countryCode: countryCode ?? this.countryCode,
+        countryName: countryName ?? this.countryName,
+        userName: userName ?? this.userName,
+        permissionMode: permissionMode ?? this.permissionMode,
+      );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'complete': complete,
+        'languageCode': languageCode,
+        'countryCode': countryCode,
+        'countryName': countryName,
+        'userName': userName,
+        'permissionMode': permissionMode.index,
+      };
+
+  factory OnboardingSettings.fromJson(Map<String, dynamic> json) {
+    final int modeIndex = (json['permissionMode'] as int?) ?? 1;
+    return OnboardingSettings(
+      complete: json['complete'] as bool? ?? false,
+      languageCode: json['languageCode'] as String? ?? 'en',
+      countryCode: json['countryCode'] as String? ?? 'BD',
+      countryName: json['countryName'] as String? ?? 'Bangladesh',
+      userName: json['userName'] as String? ?? '',
+      permissionMode: PermissionMode.values[modeIndex],
+    );
+  }
+}
+
+/// The list of countries offered during onboarding, with flag emojis and dial
+/// codes derived from the shared [Country] model.
+final List<Country> onboardingCountries = <Country>[
+  Country(name: 'Bangladesh', iso: 'BD', dialCode: '+880', nativeName: 'বাংলাদেশ'),
+  Country(name: 'India', iso: 'IN', dialCode: '+91', nativeName: 'भारत'),
+  Country(name: 'Pakistan', iso: 'PK', dialCode: '+92', nativeName: 'پاکستان'),
+  Country(name: 'United States', iso: 'US', dialCode: '+1', nativeName: 'United States'),
+  Country(name: 'United Kingdom', iso: 'GB', dialCode: '+44', nativeName: 'United Kingdom'),
+  Country(name: 'Canada', iso: 'CA', dialCode: '+1', nativeName: 'Canada'),
+  Country(name: 'Australia', iso: 'AU', dialCode: '+61', nativeName: 'Australia'),
+  Country(name: 'Germany', iso: 'DE', dialCode: '+49', nativeName: 'Deutschland'),
+  Country(name: 'France', iso: 'FR', dialCode: '+33', nativeName: 'France'),
+  Country(name: 'United Arab Emirates', iso: 'AE', dialCode: '+971', nativeName: 'الإمارات'),
+  Country(name: 'Saudi Arabia', iso: 'SA', dialCode: '+966', nativeName: 'المملكة العربية السعودية'),
+  Country(name: 'Malaysia', iso: 'MY', dialCode: '+60', nativeName: 'Malaysia'),
+  Country(name: 'Singapore', iso: 'SG', dialCode: '+65', nativeName: 'Singapore'),
+  Country(name: 'Nepal', iso: 'NP', dialCode: '+977', nativeName: 'नेपाल'),
+  Country(name: 'Sri Lanka', iso: 'LK', dialCode: '+94', nativeName: 'ශ්‍රී ලංකාව'),
+];
+
+/// The languages offered during onboarding.
+final List<({String code, String name, String nativeName})> onboardingLanguages =
+    <({String code, String name, String nativeName})>[
+  (code: 'en', name: 'English', nativeName: 'English'),
+  (code: 'bn', name: 'Bengali', nativeName: 'বাংলা'),
+  (code: 'hi', name: 'Hindi', nativeName: 'हिन्दी'),
+  (code: 'ur', name: 'Urdu', nativeName: 'اردو'),
+  (code: 'ar', name: 'Arabic', nativeName: 'العربية'),
+];

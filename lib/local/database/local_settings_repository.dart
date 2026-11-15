@@ -19,6 +19,7 @@ class LocalSettingsRepository implements SettingsRepository {
   static const String _kSyncContacts = 'sync_contacts_save';
   static const String _kDevices = 'linked_devices';
   static const String _kBroadcasts = 'broadcast_lists';
+  static const String _kOnboarding = 'onboarding';
 
   static const String box = AppConstants.boxSettings;
 
@@ -254,6 +255,39 @@ class LocalSettingsRepository implements SettingsRepository {
   @override
   Future<void> saveBroadcastLists(List<BroadcastList> lists) =>
       _db.writeList<BroadcastList>(box, _kBroadcasts, lists, (l) => l.toJson());
+
+  // -------------------------------------------------------------- onboarding
+
+  @override
+  Future<OnboardingSettings> getOnboarding() async {
+    final Map<String, dynamic>? json = _db.readJson(box, _kOnboarding);
+    if (json == null) return const OnboardingSettings();
+    return OnboardingSettings.fromJson(json);
+  }
+
+  @override
+  Future<void> saveOnboarding(OnboardingSettings settings) =>
+      _db.writeJson(box, _kOnboarding, settings.toJson());
+
+  @override
+  Future<void> markOnboardingComplete({
+    required String languageCode,
+    required String countryCode,
+    required String countryName,
+    required String userName,
+    required PermissionMode permissionMode,
+  }) async {
+    await saveOnboarding(
+      OnboardingSettings(
+        complete: true,
+        languageCode: languageCode,
+        countryCode: countryCode,
+        countryName: countryName,
+        userName: userName,
+        permissionMode: permissionMode,
+      ),
+    );
+  }
 
   // ------------------------------------------------------------------ reset
 

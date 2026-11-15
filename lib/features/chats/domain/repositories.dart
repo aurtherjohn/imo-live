@@ -163,34 +163,6 @@ abstract interface class GroupRepository {
   Future<List<Group>> search(String query);
 }
 
-// ------------------------------------------------------------- communities
-
-abstract interface class CommunityRepository {
-  Future<List<Community>> getAll();
-  Stream<List<Community>> watchAll();
-  Future<Community?> findById(String id);
-  Future<Community> save(Community community);
-  Future<void> delete(String id);
-  Future<void> clear();
-  Future<Community> addGroup(String communityId, String groupId);
-  Future<Community> createAnnouncementGroup(String communityId);
-}
-
-// ---------------------------------------------------------------- channels
-
-abstract interface class ChannelRepository {
-  Future<List<Channel>> getAll();
-  Stream<List<Channel>> watchAll();
-  Future<Channel?> findById(String id);
-  Future<Channel> save(Channel channel);
-  Future<void> delete(String id);
-  Future<void> clear();
-  Future<void> setFollowing(String id, bool following);
-  Future<void> setMuted(String id, bool muted);
-  Future<List<Channel>> getFollowed();
-  Future<List<Channel>> search(String query);
-}
-
 // ------------------------------------------------------------------ status
 
 abstract interface class StatusRepository {
@@ -249,6 +221,18 @@ abstract interface class SettingsRepository {
   Future<List<BroadcastList>> getBroadcastLists();
   Future<void> saveBroadcastLists(List<BroadcastList> lists);
   Future<void> resetAll();
+
+  // ------------------------------------------------------------- onboarding
+
+  Future<OnboardingSettings> getOnboarding();
+  Future<void> saveOnboarding(OnboardingSettings settings);
+  Future<void> markOnboardingComplete({
+    required String languageCode,
+    required String countryCode,
+    required String countryName,
+    required String userName,
+    required PermissionMode permissionMode,
+  });
 }
 
 // ------------------------------------------------------------------- media

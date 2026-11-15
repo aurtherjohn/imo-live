@@ -117,7 +117,6 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
           (kind: SearchKind.message, icon: Icons.article_outlined, label: context.l10n.messages),
           (kind: SearchKind.contact, icon: Icons.person_outline_rounded, label: context.l10n.tabContacts),
           (kind: SearchKind.group, icon: Icons.groups_rounded, label: context.l10n.filterGroups),
-          (kind: SearchKind.channel, icon: Icons.podcasts_rounded, label: context.l10n.channels),
         ])
           SettingsTile(
             title: entry.label,
@@ -193,8 +192,6 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
         // A message hit resolves to its conversation, which is the only place
         // a profile page could sensibly come from.
         if (hit.chatId != null) context.push('${AppRoutes.chat}/${hit.chatId}');
-      default:
-        break;
     }
   }
 
@@ -209,8 +206,6 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
         context.push('${AppRoutes.contactInfo}/${hit.id}');
       case SearchKind.group:
         context.push('${AppRoutes.groupInfo}/${hit.id}');
-      default:
-        break;
     }
   }
 
@@ -228,10 +223,6 @@ class _GlobalSearchScreenState extends ConsumerState<GlobalSearchScreen> {
         return context.l10n.tabContacts;
       case SearchKind.group:
         return context.l10n.filterGroups;
-      case SearchKind.community:
-        return context.l10n.tabCommunities;
-      case SearchKind.channel:
-        return context.l10n.channels;
     }
   }
 
@@ -261,9 +252,7 @@ class _SearchResultRow extends StatelessWidget {
   /// is not given its own target — that would only add a confusing dead zone.
   bool get _avatarIsDistinct =>
       hit.kind == SearchKind.contact ||
-      hit.kind == SearchKind.group ||
-      hit.kind == SearchKind.community ||
-      hit.kind == SearchKind.channel;
+      hit.kind == SearchKind.group;
 
   @override
   Widget build(BuildContext context) {
@@ -350,10 +339,6 @@ class _GlobalSearchIcons {
         return Icons.person_outline_rounded;
       case SearchKind.group:
         return Icons.groups_rounded;
-      case SearchKind.community:
-        return Icons.groups_2_rounded;
-      case SearchKind.channel:
-        return Icons.podcasts_rounded;
     }
   }
 }

@@ -26,7 +26,7 @@ class ListsScreen extends ConsumerWidget {
       ChatFilter.unread: chats.where((Chat c) => c.hasUnread).toList(),
       ChatFilter.favorites: chats.where((Chat c) => c.isFavorite).toList(),
       ChatFilter.groups:
-          chats.where((Chat c) => c.isGroup || c.isCommunity || c.isBroadcast).toList(),
+          chats.where((Chat c) => c.isGroup).toList(),
       ChatFilter.work: chats.where((Chat c) => c.isWork).toList(),
     };
 

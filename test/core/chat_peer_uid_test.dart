@@ -61,7 +61,7 @@ void main() {
       expect(chat.peerUid('alice'), isNull);
     });
 
-    test('returns null for groups, channels, communities and broadcasts', () {
+    test('returns null for groups', () {
       final Chat group = Chat(
         id: 'grp_1',
         title: 'Team',
@@ -70,34 +70,8 @@ void main() {
         isGroup: true,
         memberIds: <String>['alice', 'bob'],
       );
-      final Chat channel = Chat(
-        id: 'chan_1',
-        title: 'News',
-        lastMessage: '',
-        lastTimestamp: DateTime(2026, 1, 1),
-        isChannel: true,
-        memberIds: <String>['alice', 'bob'],
-      );
-      final Chat community = Chat(
-        id: 'com_1',
-        title: 'Area',
-        lastMessage: '',
-        lastTimestamp: DateTime(2026, 1, 1),
-        isCommunity: true,
-        memberIds: <String>['alice', 'bob'],
-      );
-      final Chat broadcast = Chat(
-        id: 'bc_1',
-        title: 'List',
-        lastMessage: '',
-        lastTimestamp: DateTime(2026, 1, 1),
-        isBroadcast: true,
-        memberIds: <String>['alice', 'bob'],
-      );
 
-      for (final Chat chat in <Chat>[group, channel, community, broadcast]) {
-        expect(chat.peerUid('alice'), isNull, reason: '${chat.id} has no peer');
-      }
+      expect(group.peerUid('alice'), isNull, reason: '${group.id} has no peer');
     });
   });
 
@@ -106,22 +80,6 @@ void main() {
       expect(direct(members: <String>['alice', 'bob']).isDirect, isTrue);
       expect(
         direct(members: <String>['alice', 'bob']).copyWith(isGroup: true).isDirect,
-        isFalse,
-      );
-      expect(
-        direct(members: <String>['alice', 'bob']).copyWith(isChannel: true).isDirect,
-        isFalse,
-      );
-      expect(
-        direct(members: <String>['alice', 'bob'])
-            .copyWith(isCommunity: true)
-            .isDirect,
-        isFalse,
-      );
-      expect(
-        direct(members: <String>['alice', 'bob'])
-            .copyWith(isBroadcast: true)
-            .isDirect,
         isFalse,
       );
     });

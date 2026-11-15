@@ -197,7 +197,7 @@ class _ChatActionsSheet extends StatelessWidget {
               },
             ),
 
-            if (chat.isGroup || chat.isCommunity)
+            if (chat.isGroup)
               SettingsTile(
                 title: context.l10n.groupInfo,
                 leadingIcon: Icons.info_outline_rounded,
@@ -275,10 +275,6 @@ class _ChatActionsSheet extends StatelessWidget {
   /// peer has to be resolved from `memberIds`. This mirrors
   /// `ChatScreen._openChatInfo` exactly, so both entry points agree.
   void _openChatInfo(BuildContext context) {
-    if (chat.isChannel || chat.isBroadcast) {
-      iToast(context, context.l10n.channelsAndBroadcastsHaveNo);
-      return;
-    }
     final String? peerUid = chat.peerUid(ref.read(currentUidProvider));
     if (peerUid == null) {
       iToast(context, context.l10n.thisChatHasNoLinked, isError: true);

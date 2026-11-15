@@ -82,7 +82,3 @@ final Provider<int> missedCallCountProvider = Provider<int>((Ref ref) {
   return calls.where((CallRecord c) => c.isMissed).length;
 });
 
-/// Channels the user follows, for the Updates → Channels section.
-final Provider<int> followedChannelCountProvider = Provider<int>(
-  (Ref ref) => ref.watch(channelsProvider).orEmpty.length,
-);

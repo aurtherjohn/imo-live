@@ -297,16 +297,12 @@ class AccountSettingsScreen extends ConsumerWidget {
                   await ref.read(messageRepositoryProvider).clear();
                   await ref.read(contactRepositoryProvider).clear();
                   await ref.read(groupRepositoryProvider).clear();
-                  await ref.read(communityRepositoryProvider).clear();
-                  await ref.read(channelRepositoryProvider).clear();
                   await ref.read(statusRepositoryProvider).clear();
                   await ref.read(callRepositoryProvider).clear();
 
                   await ref.read(chatsProvider.notifier).refresh();
                   await ref.read(contactsProvider.notifier).refresh();
                   await ref.read(groupsProvider.notifier).refresh();
-                  await ref.read(communitiesProvider.notifier).refresh();
-                  await ref.read(channelsProvider.notifier).refresh();
                   await ref.read(statusesProvider.notifier).refresh();
                   await ref.read(callsProvider.notifier).refresh();
                   await ref.read(starredMessagesProvider.notifier).refresh();

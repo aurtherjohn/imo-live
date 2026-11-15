@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/chat.dart';
 import '../../../core/models/contact.dart';
 import '../../../core/models/group.dart';
-import '../domain/chat_rows.dart';
 import '../../../core/models/message.dart';
 import '../../../core/models/settings.dart';
 import '../../../core/models/status.dart';
@@ -270,20 +269,6 @@ final Provider<ContactRepository> contactRepositoryProvider =
 final Provider<GroupRepository> groupRepositoryProvider =
     Provider<GroupRepository>((Ref ref) {
   final LocalGroupRepository repository = LocalGroupRepository();
-  ref.onDispose(repository.dispose);
-  return repository;
-});
-
-final Provider<CommunityRepository> communityRepositoryProvider =
-    Provider<CommunityRepository>((Ref ref) {
-  final LocalCommunityRepository repository = LocalCommunityRepository();
-  ref.onDispose(repository.dispose);
-  return repository;
-});
-
-final Provider<ChannelRepository> channelRepositoryProvider =
-    Provider<ChannelRepository>((Ref ref) {
-  final LocalChannelRepository repository = LocalChannelRepository();
   ref.onDispose(repository.dispose);
   return repository;
 });
@@ -1003,7 +988,7 @@ List<Chat> applyChatFilter(List<Chat> chats, ChatFilter filter) {
     ChatFilter.unread => active.where((Chat c) => c.hasUnread).toList(),
     ChatFilter.favorites => active.where((Chat c) => c.isFavorite).toList(),
     ChatFilter.groups => active
-        .where((Chat c) => c.isGroup || c.isCommunity || c.isBroadcast)
+        .where((Chat c) => c.isGroup)
         .toList(),
     ChatFilter.work => active.where((Chat c) => c.isWork).toList(),
   };
@@ -1138,136 +1123,6 @@ class GroupsNotifier extends AsyncNotifier<List<Group>> {
 final groupByIdProvider = Provider.family<AsyncValue<Group?>, String>((Ref ref, String id) {
   return ref.watch(groupsProvider).whenData(
         (List<Group> list) => list.where((Group g) => g.id == id).firstOrNull,
-      );
-});
-
-final AsyncNotifierProvider<CommunitiesNotifier, List<Community>>
-    communitiesProvider =
-    AsyncNotifierProvider<CommunitiesNotifier, List<Community>>(
-  CommunitiesNotifier.new,
-);
-
-class CommunitiesNotifier extends AsyncNotifier<List<Community>> {
-  CommunityRepository get _repo => ref.read(communityRepositoryProvider);
-
-  @override
-  Future<List<Community>> build() => _repo.getAll();
-
-  Future<void> refresh() async =>
-      state = AsyncData<List<Community>>(await _repo.getAll());
-
-  Future<Community> create(Community community) async {
-    final Community saved = await _repo.save(community);
-    // Every community gets an announcement group.
-    await _repo.createAnnouncementGroup(saved.id);
-    await refresh();
-    return saved;
-  }
-
-  Future<void> persist(Community community) async {
-    await _repo.save(community);
-    await refresh();
-  }
-
-  Future<void> delete(String id) async {
-    await _repo.delete(id);
-    await refresh();
-  }
-}
-
-final communityByIdProvider = Provider.family<AsyncValue<Community?>, String>((Ref ref, String id) {
-  return ref.watch(communitiesProvider).whenData(
-        (List<Community> list) =>
-            list.where((Community c) => c.id == id).firstOrNull,
-      );
-});
-
-final AsyncNotifierProvider<ChannelsNotifier, List<Channel>> channelsProvider =
-    AsyncNotifierProvider<ChannelsNotifier, List<Channel>>(ChannelsNotifier.new);
-
-class ChannelsNotifier extends AsyncNotifier<List<Channel>> {
-  ChannelRepository get _repo => ref.read(channelRepositoryProvider);
-
-  @override
-  Future<List<Channel>> build() => _repo.getAll();
-
-  Future<void> refresh() async =>
-      state = AsyncData<List<Channel>>(await _repo.getAll());
-
-  Future<Channel> create(Channel channel) async {
-    final Channel saved = await _repo.save(channel);
-    await refresh();
-    return saved;
-  }
-
-  Future<void> persist(Channel channel) async {
-    await _repo.save(channel);
-    await refresh();
-  }
-
-  Future<void> toggleFollow(String id) async {
-    final Channel? channel = await _repo.findById(id);
-    if (channel == null) return;
-    await _repo.setFollowing(id, !channel.isFollowing);
-    await refresh();
-  }
-
-  Future<void> toggleMute(String id) async {
-    final Channel? channel = await _repo.findById(id);
-    if (channel == null) return;
-    await _repo.setMuted(id, !channel.isMuted);
-    await refresh();
-  }
-
-  Future<void> delete(String id) async {
-    await _repo.delete(id);
-    await refresh();
-  }
-}
-
-final Provider<List<Channel>> followedChannelsProvider = Provider<List<Channel>>((Ref ref) {
-  final List<Channel> list = ref.watch(channelsProvider).valueOrNull ?? <Channel>[];
-  return list.where((Channel c) => c.isFollowing).toList();
-});
-
-/// The channels that belong in the merged Chats tab.
-///
-/// A channel earns a row if the viewer follows it **or** owns it. Ownership is
-/// included because an owner who is not listed as a follower of their own
-/// channel would lose the only entry point to it — the Communities tab is for
-/// discovery and management, not for reading, and the directive's whole point
-/// is that a channel is read like a conversation.
-///
-/// Muted channels are kept. `isMuted` suppresses the *notification*, not the
-/// row: hiding a channel the user deliberately muted would be a different
-/// feature than the one the mute control promises.
-final Provider<List<Channel>> chatListChannelsProvider =
-    Provider<List<Channel>>((Ref ref) {
-  final String uid = ref.watch(authStateProvider).valueOrNull?.uid ?? '';
-  final List<Channel> list = ref.watch(channelsProvider).valueOrNull ?? <Channel>[];
-  return list
-      .where((Channel c) =>
-          c.isFollowing || (uid.isNotEmpty && c.ownerId == uid))
-      .toList();
-});
-
-/// Conversations and channels as one recency-ordered list.
-///
-/// The single source for the Chats tab.
-final Provider<List<ChatRow>> mergedChatRowsProvider =
-    Provider<List<ChatRow>>((Ref ref) {
-  final List<Chat> chats = ref.watch(visibleChatsProvider);
-  return mergeChatRows(chats: chats);
-});
-
-/// Total unread across conversations, for the tab badge.
-final Provider<int> totalUnreadWithChannelsProvider = Provider<int>((Ref ref) {
-  return ref.watch(totalUnreadProvider);
-});
-
-final channelByIdProvider = Provider.family<AsyncValue<Channel?>, String>((Ref ref, String id) {
-  return ref.watch(channelsProvider).whenData(
-        (List<Channel> list) => list.where((Channel c) => c.id == id).firstOrNull,
       );
 });
 
@@ -1409,7 +1264,7 @@ class SearchHit {
   final String? matchQuery;
 }
 
-enum SearchKind { chat, contact, message, group, community, channel }
+enum SearchKind { chat, contact, message, group }
 
 /// Recent search history.
 final AsyncNotifierProvider<RecentSearchesNotifier, List<String>>
@@ -1456,13 +1311,7 @@ final globalSearchProvider = FutureProvider.family<List<SearchHit>, String>((Ref
         chat.lastMessage.toLowerCase().contains(q)) {
       hits.add(
         SearchHit(
-          kind: chat.isGroup
-              ? SearchKind.group
-              : chat.isCommunity
-                  ? SearchKind.community
-                  : chat.isChannel
-                      ? SearchKind.channel
-                      : SearchKind.chat,
+          kind: chat.isGroup ? SearchKind.group : SearchKind.chat,
           id: chat.id,
           title: chat.title,
           subtitle: chat.lastMessage,

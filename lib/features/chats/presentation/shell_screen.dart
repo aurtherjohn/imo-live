@@ -14,6 +14,29 @@ import '../../updates/presentation/providers/updates_providers.dart';
 import 'providers.dart';
 import 'widgets/bottom_nav.dart';
 
+/// The bottom-navigation tabs, in the order the bar renders them.
+///
+/// These are **not** free-standing numbers: index N is the Nth
+/// `StatefulShellBranch` declared in `lib/app/router.dart`. The bar and the
+/// branches have to stay the same length and in the same order, because
+/// `goBranch(index)` navigates by position.
+///
+/// The two lists drifted apart once already: the bar carried a fifth
+/// "Communities" item after that feature was removed, while the router still
+/// declared four branches. Every tab from that point on opened the wrong
+/// screen, and the last one indexed past the end of the branch list
+/// entirely. `test/app/router_test.dart` guards the pairing.
+enum _ShellTab {
+  chats,
+  updates,
+  contacts,
+  calls;
+
+  /// The number of tabs the bar renders, and therefore the number of shell
+  /// branches the router has to declare.
+  static int get count => values.length;
+}
+
 /// The persistent app shell holding the four main tabs.
 class ShellScreen extends ConsumerStatefulWidget {
   const ShellScreen({super.key, required this.navigationShell});
@@ -120,6 +143,14 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
       bottomNavigationBar: IBottomNav(
         index: widget.navigationShell.currentIndex,
         onSelect: (int index) {
+          // `goBranch` navigates by *position*, so an index past the end of
+          // the branch list is a programming error, not a user error. The
+          // assert names the offending index instead of leaving a bare
+          // go_router range error to be read out of a stack trace.
+          assert(
+            index >= 0 && index < _ShellTab.count,
+            'bottom-nav index $index has no matching shell branch',
+          );
           widget.navigationShell.goBranch(
             index,
             initialLocation: index == widget.navigationShell.currentIndex,
@@ -137,11 +168,6 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
             activeIcon: Icons.donut_large_rounded,
           ),
           IBottomNavItem(
-            label: context.l10n.tabCommunities,
-            icon: Icons.groups_outlined,
-            activeIcon: Icons.groups_rounded,
-          ),
-          IBottomNavItem(
             label: context.l10n.tabContacts,
             icon: Icons.contacts_outlined,
             activeIcon: Icons.contacts_rounded,
@@ -152,10 +178,10 @@ class _ShellScreenState extends ConsumerState<ShellScreen> {
             activeIcon: Icons.call_rounded,
           ),
         ],
-        unreadCounts: <int, int>{0: unreadChats},
+        unreadCounts: <int, int>{_ShellTab.chats.index: unreadChats},
         badges: <int, String>{
-          if (unreadUpdates > 0) 1: '$unreadUpdates',
-          if (missedCalls > 0) 4: '$missedCalls',
+          if (unreadUpdates > 0) _ShellTab.updates.index: '$unreadUpdates',
+          if (missedCalls > 0) _ShellTab.calls.index: '$missedCalls',
         },
       ),
     );

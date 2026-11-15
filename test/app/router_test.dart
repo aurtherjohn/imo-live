@@ -146,6 +146,73 @@ void main() {
       expect(source, contains('AppRoutes.chats'));
     });
   });
+
+  group('bottom navigation', () {
+    test('has exactly one nav item per shell branch', () {
+      // `goBranch(index)` navigates by *position*, so the bar and the branch
+      // list have to be the same length. They were not, once: the bar kept a
+      // fifth "Communities" item after that feature was removed, so the last
+      // tab indexed past the end of the branch list and the ones before it
+      // opened the wrong screen.
+      expect(
+        _navItemLabels().length,
+        _shellBranchPaths().length,
+        reason: 'the bottom bar and the shell branches must be the same '
+            'length, and in the same order',
+      );
+    });
+
+    test('each nav item targets the branch at the same position', () {
+      const Map<String, String> expectedLabelKey = <String, String>{
+        AppRoutes.chats: 'tabChats',
+        AppRoutes.updates: 'tabUpdates',
+        AppRoutes.contacts: 'tabContacts',
+        AppRoutes.calls: 'tabCalls',
+      };
+      final List<String> branches = _shellBranchPaths();
+      final List<String> labels = _navItemLabels();
+      expect(labels, hasLength(branches.length));
+      for (int i = 0; i < branches.length; i++) {
+        expect(
+          labels[i],
+          expectedLabelKey[branches[i]],
+          reason: 'tab $i (${branches[i]}) is wired to the wrong label',
+        );
+      }
+    });
+  });
+}
+
+/// The paths of the shell branches, in the order the router declares them.
+///
+/// This list *is* the tab order the bottom bar has to match, because
+/// `goBranch` navigates by position.
+List<String> _shellBranchPaths() {
+  for (final RouteBase route in appRouter.configuration.routes) {
+    if (route is StatefulShellRoute) {
+      return <String>[
+        for (final StatefulShellBranch branch in route.branches)
+          (branch.routes.first as GoRoute).path,
+      ];
+    }
+  }
+  return const <String>[];
+}
+
+/// The `l10n` key of each bottom-nav item, in declaration order.
+///
+/// Read from the source rather than from a widget: the bar is built inside
+/// `ShellScreen`, which needs a live `StatefulNavigationShell` and a fully
+/// initialised Firestore, neither of which a unit test has. The labels are a
+/// flat list in the source, which is all the test needs to know.
+List<String> _navItemLabels() {
+  final String source = File(
+    'lib/features/chats/presentation/shell_screen.dart',
+  ).readAsStringSync();
+  return RegExp(r'l10n\.(tab\w+)')
+      .allMatches(source)
+      .map((Match match) => match.group(1)!)
+      .toList();
 }
 
 /// Mirrors `AppRoutes` so that adding a constant forces this list to be

@@ -337,8 +337,6 @@ class AuthController extends Notifier<AsyncValue<void>> {
     ref.invalidate(messageRepositoryProvider);
     ref.invalidate(contactRepositoryProvider);
     ref.invalidate(groupRepositoryProvider);
-    ref.invalidate(communityRepositoryProvider);
-    ref.invalidate(channelRepositoryProvider);
     ref.invalidate(statusRepositoryProvider);
     ref.invalidate(callRepositoryProvider);
     ref.invalidate(settingsRepositoryProvider);
@@ -348,8 +346,6 @@ class AuthController extends Notifier<AsyncValue<void>> {
     ref.invalidate(contactsProvider);
     ref.invalidate(selfProfileProvider);
     ref.invalidate(groupsProvider);
-    ref.invalidate(communitiesProvider);
-    ref.invalidate(channelsProvider);
     ref.invalidate(statusesProvider);
     ref.invalidate(callsProvider);
     ref.invalidate(starredMessagesProvider);
