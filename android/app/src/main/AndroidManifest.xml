@@ -4,15 +4,14 @@
     <!-- ================= Connectivity ================= -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <!-- The agora_rtc_engine AAR declares READ_PHONE_STATE in its own manifest,
-         so the manifest merger puts it back even though nothing here reads call
-         state. Removing it needs tools:node="remove" — a plain absence from this
-         file is not enough. Verified against the built APK with
-         `aapt2 dump badging`. -->
-    <uses-permission
-        android:name="android.permission.READ_PHONE_STATE"
-        tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS"/>
 
     <!-- ================= Calls & Phone ================= -->
     <!-- NOTE: READ_PHONE_STATE, MANAGE_OWN_CALLS, READ_CALL_LOG and
