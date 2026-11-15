@@ -15,17 +15,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # The release build needs ~5.6 GB of transient space (Gradle caches,
+      # Flutter build dirs). Freeing disk BEFORE the JDK/Flutter SDKs are
+      # installed gives the whole pipeline more headroom. The preinstalled
+      # Android SDK is deliberately kept — removing it only makes AGP
+      # re-download the components again.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d/dotnet*
+          sudo rm -rf /opt/ghc /usr/local/share/boost
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force 2>/dev/null || true
+          df -h /
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
+      # Must match the toolchain used locally (Flutter 3.47.3 / Dart 3.13.3):
+      # pubspec.yaml requires Dart ^3.13.3, so anything older fails at
+      # `flutter pub get` with an SDK-constraint error.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.47.3'
           channel: 'stable'
+          cache: true
 
       - name: Get Flutter dependencies
         run: flutter pub get
@@ -36,15 +53,39 @@ jobs:
       - name: Run flutter tests
         run: flutter test
 
-      - name: Free disk space
+      # android/app/build.gradle.kts has NO debug-signing fallback on purpose —
+      # a release build without real credentials fails ~20 minutes into Gradle.
+      # This step fails fast instead, and decodes the keystore that Gradle's
+      # `assertReleaseSigning` task will consume via the env vars below.
+      - name: Decode release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/share/boost
-          sudo rm -rf $AGENT_TOOLSDIRECTORY
-          df -h
+          missing=0
+          for s in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!s:-}" ]; then
+              echo "::error::Secret '$s' is not set. Add it under Settings → Secrets and variables → Actions."
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "::error::Release signing secrets are required — the Gradle build deliberately refuses to produce a debug-signed release APK."
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$GITHUB_WORKSPACE/upload-keystore.jks"
+          echo "KEYSTORE_FILE=$GITHUB_WORKSPACE/upload-keystore.jks" >> "$GITHUB_ENV"
 
+      # KEYSTORE_FILE must be ABSOLUTE (build.gradle.kts asserts that), and
+      # $GITHUB_WORKSPACE always is.
       - name: Build release APK
+        env:
+          KEYSTORE_FILE: ${{ env.KEYSTORE_FILE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: flutter build apk --release
 
       - name: Upload APK artifact
