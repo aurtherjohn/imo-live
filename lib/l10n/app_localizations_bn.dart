@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -211,29 +210,25 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noBlockedContacts => 'ব্লক করা পরিচিতি নেই';
 
   @override
-  String get noBlockedMessage =>
-      'আপনি যে পরিচিতিদের ব্লক করবেন তারা এখানে দেখা যাবে।';
+  String get noBlockedMessage => 'আপনি যে পরিচিতিদের ব্লক করবেন তারা এখানে দেখা যাবে।';
 
   @override
   String get noChannels => 'আপডেট দেখতে চ্যানেল ফলো করুন';
 
   @override
-  String get noChannelsMessage =>
-      'চ্যানেল দিয়ে মানুষ ও প্রতিষ্ঠানের আপডেট ফলো করা যায়।';
+  String get noChannelsMessage => 'চ্যানেল দিয়ে মানুষ ও প্রতিষ্ঠানের আপডেট ফলো করা যায়।';
 
   @override
   String get noUpdates => 'এখনও কোনো আপডেট নেই';
 
   @override
-  String get noUpdatesMessage =>
-      'আপনার পরিচিতিদের স্ট্যাটাস ২৪ ঘণ্টার জন্য এখানে দেখা যায়।';
+  String get noUpdatesMessage => 'আপনার পরিচিতিদের স্ট্যাটাস ২৪ ঘণ্টার জন্য এখানে দেখা যায়।';
 
   @override
   String get stayConnected => 'কমিউনিটির সাথে যুক্ত থাকুন';
 
   @override
-  String get stayConnectedMessage =>
-      'কমিউনিটি সদস্যদের বিষয়ভিত্তিক গ্রুপে একত্রিত করে এবং সহজেই ঘোষণা পাঠাতে দেয়।';
+  String get stayConnectedMessage => 'কমিউনিটি সদস্যদের বিষয়ভিত্তিক গ্রুপে একত্রিত করে এবং সহজেই ঘোষণা পাঠাতে দেয়।';
 
   @override
   String get startYourCommunity => 'আপনার কমিউনিটি শুরু করুন';
@@ -566,8 +561,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get signInToStartEarning => 'আয় শুরু করতে সাইন ইন করুন';
 
   @override
-  String get couldNotAddPointsCheck =>
-      'পয়েন্ট যোগ করা যায়নি — সংযোগ পরীক্ষা করুন';
+  String get couldNotAddPointsCheck => 'পয়েন্ট যোগ করা যায়নি — সংযোগ পরীক্ষা করুন';
 
   @override
   String get signInFirst => 'আগে সাইন ইন করুন';
@@ -576,12 +570,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get premiumActiveUntil => 'প্রিমিয়াম সক্রিয় আছে ';
 
   @override
-  String get couldNotActivatePremiumCheck =>
-      'প্রিমিয়াম চালু করা যায়নি — সংযোগ পরীক্ষা করুন';
+  String get couldNotActivatePremiumCheck => 'প্রিমিয়াম চালু করা যায়নি — সংযোগ পরীক্ষা করুন';
 
   @override
-  String get thisContactHasNoAccount =>
-      'এই পরিচিতির উপহার গ্রহণের অ্যাকাউন্ট নেই';
+  String get thisContactHasNoAccount => 'এই পরিচিতির উপহার গ্রহণের অ্যাকাউন্ট নেই';
 
   @override
   String get couldNotSendTheGift => 'উপহার পাঠানো যায়নি — সংযোগ পরীক্ষা করুন';
@@ -626,19 +618,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get verifyYourEmail => 'আপনার ইমেইল যাচাই করুন';
 
   @override
-  String get weSentAConfirmationLinkTo =>
-      'আমরা একটি নিশ্চিতকরণ লিংক পাঠিয়েছি ';
+  String get weSentAConfirmationLinkTo => 'আমরা একটি নিশ্চিতকরণ লিংক পাঠিয়েছি ';
 
   @override
-  String get openYourInboxAndClickLink =>
-      'আপনার ইমেইল ইনবক্স খুলে নিশ্চিতকরণ লিংকে ক্লিক করুন।';
+  String get openYourInboxAndClickLink => 'আপনার ইমেইল ইনবক্স খুলে নিশ্চিতকরণ লিংকে ক্লিক করুন।';
 
   @override
   String get checkYourSpamFolder => 'না দেখলে স্প্যাম ফোল্ডারে দেখুন।';
 
   @override
-  String get returnToAppAfterConfirming =>
-      'নিশ্চিত করার পর এই অ্যাপে ফিরে আসুন।';
+  String get returnToAppAfterConfirming => 'নিশ্চিত করার পর এই অ্যাপে ফিরে আসুন।';
 
   @override
   String get resendEmail => 'ইমেইল আবার পাঠান';
@@ -647,15 +636,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get iHaveConfirmedMyEmail => 'আমি আমার ইমেইল নিশ্চিত করেছি';
 
   @override
-  String get emailNotConfirmedYet =>
-      'এখনও নিশ্চিত হয়নি। ইমেইলের লিংকে ক্লিক করে আবার চেষ্টা করুন।';
+  String get emailNotConfirmedYet => 'এখনও নিশ্চিত হয়নি। ইমেইলের লিংকে ক্লিক করে আবার চেষ্টা করুন।';
 
   @override
   String get emailResent => 'নিশ্চিতকরণ ইমেইল আবার পাঠানো হয়েছে';
 
   @override
-  String get openTheLinkInThe =>
-      'এই ঠিকানা নিশ্চিত করতে ইমেইলের লিংকটি খুলুন। ';
+  String get openTheLinkInThe => 'এই ঠিকানা নিশ্চিত করতে ইমেইলের লিংকটি খুলুন। ';
 
   @override
   String get resendNow => 'এখনই আবার পাঠান';
@@ -667,8 +654,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get setUpYourProfile => 'আপনার প্রোফাইল সেট করুন';
 
   @override
-  String get thisIsHowOtherPeople =>
-      'এভাবেই অন্যরা Imo LIVE-এ আপনাকে খুঁজে পাবে।';
+  String get thisIsHowOtherPeople => 'এভাবেই অন্যরা Imo LIVE-এ আপনাকে খুঁজে পাবে।';
 
   @override
   String get addAPhoto => 'ছবি যোগ করুন';
@@ -716,8 +702,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get clearCallLog2 => 'কল লগ মুছবেন?';
 
   @override
-  String get everyCallEntryOnThis =>
-      'এই ডিভাইসের প্রতিটি কল এন্ট্রি মুছে যাবে। পরিচিতি ও ';
+  String get everyCallEntryOnThis => 'এই ডিভাইসের প্রতিটি কল এন্ট্রি মুছে যাবে। পরিচিতি ও ';
 
   @override
   String get clearLog => 'লগ মুছুন';
@@ -744,8 +729,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get clear => 'মুছুন';
 
   @override
-  String get remindersFireFromTheLocal =>
-      'রিমাইন্ডার স্থানীয় নোটিফিকেশন প্লাগইন থেকে আসে। এগুলো ';
+  String get remindersFireFromTheLocal => 'রিমাইন্ডার স্থানীয় নোটিফিকেশন প্লাগইন থেকে আসে। এগুলো ';
 
   @override
   String get who => 'কে';
@@ -802,8 +786,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get postReach => 'পোস্ট রিচ';
 
   @override
-  String get postImpressionsPerDayLast =>
-      'প্রতিদিন পোস্ট ইম্প্রেশন · শেষ ২৮ দিন';
+  String get postImpressionsPerDayLast => 'প্রতিদিন পোস্ট ইম্প্রেশন · শেষ ২৮ দিন';
 
   @override
   String get reactions => 'রিঅ্যাকশন';
@@ -836,8 +819,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noPendingRequests => 'কোনো অপেক্ষমাণ অনুরোধ নেই';
 
   @override
-  String get shareTheSecretKeyWith =>
-      'যাদের ঢুকতে দিতে চান তাদের সাথে গোপন কী শেয়ার করুন। ';
+  String get shareTheSecretKeyWith => 'যাদের ঢুকতে দিতে চান তাদের সাথে গোপন কী শেয়ার করুন। ';
 
   @override
   String get reject => 'প্রত্যাখ্যান';
@@ -861,15 +843,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get postToYourChannel => 'আপনার চ্যানেলে পোস্ট করুন';
 
   @override
-  String get writeSomethingForYourFollowers =>
-      'আপনার ফলোয়ারদের জন্য কিছু লিখুন…';
+  String get writeSomethingForYourFollowers => 'আপনার ফলোয়ারদের জন্য কিছু লিখুন…';
 
   @override
   String get deleteThisPost => 'এই পোস্ট মুছবেন?';
 
   @override
-  String get itDisappearsForEveryFollower =>
-      'এটি সাথে সাথেই প্রতিটি ফলোয়ারের কাছ থেকে মুছে যাবে।';
+  String get itDisappearsForEveryFollower => 'এটি সাথে সাথেই প্রতিটি ফলোয়ারের কাছ থেকে মুছে যাবে।';
 
   @override
   String get sendGiftToOwner => 'মালিককে উপহার পাঠান';
@@ -890,8 +870,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get thisChannelIsPrivate => 'এই চ্যানেলটি ব্যক্তিগত';
 
   @override
-  String get postsAreOnlyVisibleTo =>
-      'পোস্ট শুধু সদস্যরা দেখতে পায়। অনুরোধ পাঠান, মালিক ';
+  String get postsAreOnlyVisibleTo => 'পোস্ট শুধু সদস্যরা দেখতে পায়। অনুরোধ পাঠান, মালিক ';
 
   @override
   String get requestToJoin => 'যোগদানের অনুরোধ';
@@ -900,8 +879,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get premiumChannel => 'প্রিমিয়াম চ্যানেল';
 
   @override
-  String get thisChannelIsReservedFor =>
-      'এই চ্যানেল শুধু প্রিমিয়াম সদস্যদের জন্য। পয়েন্ট অর্জন করুন ';
+  String get thisChannelIsReservedFor => 'এই চ্যানেল শুধু প্রিমিয়াম সদস্যদের জন্য। পয়েন্ট অর্জন করুন ';
 
   @override
   String get getPremium => 'প্রিমিয়াম নিন';
@@ -927,8 +905,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get channelInfo => 'চ্যানেলের তথ্য';
 
   @override
-  String get onlyAdminsCanSendMessages =>
-      'এই চ্যানেলে কেবল অ্যাডমিনরা বার্তা পাঠাতে পারেন';
+  String get onlyAdminsCanSendMessages => 'এই চ্যানেলে কেবল অ্যাডমিনরা বার্তা পাঠাতে পারেন';
 
   @override
   String get writeAPost => 'একটি পোস্ট লিখুন';
@@ -979,8 +956,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get applyForMonetization2 => 'মনিটাইজেশনের জন্য আবেদন করবেন?';
 
   @override
-  String get yourChannelMeetsTheRequirements =>
-      'আপনার চ্যানেল শর্ত পূরণ করেছে। একজন পর্যালোচক ';
+  String get yourChannelMeetsTheRequirements => 'আপনার চ্যানেল শর্ত পূরণ করেছে। একজন পর্যালোচক ';
 
   @override
   String get apply => 'আবেদন করুন';
@@ -989,8 +965,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get ownerTools => 'মালিকের টুল';
 
   @override
-  String get followerGrowthReachAndReactions =>
-      '২৮ দিনে ফলোয়ার বৃদ্ধি, রিচ ও রিঅ্যাকশন';
+  String get followerGrowthReachAndReactions => '২৮ দিনে ফলোয়ার বৃদ্ধি, রিচ ও রিঅ্যাকশন';
 
   @override
   String get tapToChangeTheChannel => 'চ্যানেল ছবি বদলাতে ট্যাপ করুন';
@@ -1002,8 +977,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get channelName => 'চ্যানেলের নাম';
 
   @override
-  String get approveOrRejectPeopleWho =>
-      'যাদের কাছে কী আছে তাদের অনুমোদন বা প্রত্যাখ্যান করুন';
+  String get approveOrRejectPeopleWho => 'যাদের কাছে কী আছে তাদের অনুমোদন বা প্রত্যাখ্যান করুন';
 
   @override
   String get category => 'বিভাগ';
@@ -1012,15 +986,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get rotateTheSecretKey => 'গোপন কী পরিবর্তন করবেন?';
 
   @override
-  String get everyoneCurrentlyUsingTheOld =>
-      'পুরনো কী ব্যবহারকারীদের অ্যাক্সেস থাকবে, কিন্তু ';
+  String get everyoneCurrentlyUsingTheOld => 'পুরনো কী ব্যবহারকারীদের অ্যাক্সেস থাকবে, কিন্তু ';
 
   @override
   String get generate => 'তৈরি করুন';
 
   @override
-  String get aReviewerWillCheckThat =>
-      'একজন পর্যালোচক যাচাই করবেন যে আপনার চ্যানেল শর্ত পূরণ করে ';
+  String get aReviewerWillCheckThat => 'একজন পর্যালোচক যাচাই করবেন যে আপনার চ্যানেল শর্ত পূরণ করে ';
 
   @override
   String get monetizationReview => 'মনিটাইজেশন পর্যালোচনা';
@@ -1029,15 +1001,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get reviewersOnly => 'শুধু পর্যালোচকদের জন্য';
 
   @override
-  String get thisScreenIsLimitedTo =>
-      'এই স্ক্রিনটি শুধু প্রকল্প পর্যালোচকদের জন্য।';
+  String get thisScreenIsLimitedTo => 'এই স্ক্রিনটি শুধু প্রকল্প পর্যালোচকদের জন্য।';
 
   @override
   String get nothingToReview => 'পর্যালোচনার কিছু নেই';
 
   @override
-  String get channelsAppearHereOnceThey =>
-      'চ্যানেল ফলোয়ার ও রিঅ্যাকশনের শর্ত পেরোলে এখানে দেখা যাবে ';
+  String get channelsAppearHereOnceThey => 'চ্যানেল ফলোয়ার ও রিঅ্যাকশনের শর্ত পেরোলে এখানে দেখা যাবে ';
 
   @override
   String get channelPhoto => 'চ্যানেল ছবি';
@@ -1064,22 +1034,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get nothingArchived => 'কিছু আর্কাইভ করা নেই';
 
   @override
-  String get archivedChatsAreHiddenFrom =>
-      'আর্কাইভ করা চ্যাট মূল তালিকা থেকে লুকানো থাকে কিন্তু ';
+  String get archivedChatsAreHiddenFrom => 'আর্কাইভ করা চ্যাট মূল তালিকা থেকে লুকানো থাকে কিন্তু ';
 
   @override
   String get newList => 'নতুন তালিকা';
 
   @override
-  String get aBroadcastSendsAnIndividual =>
-      'ব্রডকাস্ট আপনার বার্তার আলাদা কপি প্রত্যেককে পাঠায় ';
+  String get aBroadcastSendsAnIndividual => 'ব্রডকাস্ট আপনার বার্তার আলাদা কপি প্রত্যেককে পাঠায় ';
 
   @override
   String get noBroadcastLists => 'কোনো ব্রডকাস্ট তালিকা নেই';
 
   @override
-  String get createAListOfUp =>
-      'সর্বোচ্চ ২৫৬ জন প্রাপকের তালিকা তৈরি করে তাদের বার্তা পাঠান ';
+  String get createAListOfUp => 'সর্বোচ্চ ২৫৬ জন প্রাপকের তালিকা তৈরি করে তাদের বার্তা পাঠান ';
 
   @override
   String get actions => 'অ্যাকশন';
@@ -1100,8 +1067,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get deleteList => 'তালিকা মুছুন';
 
   @override
-  String get theListIsDeletedExisting =>
-      'তালিকাটি মুছে যাবে। এর সদস্যদের সাথে চলমান কথোপকথন ';
+  String get theListIsDeletedExisting => 'তালিকাটি মুছে যাবে। এর সদস্যদের সাথে চলমান কথোপকথন ';
 
   @override
   String get newBroadcastList => 'নতুন ব্রডকাস্ট তালিকা';
@@ -1116,8 +1082,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sendABroadcast => 'ব্রডকাস্ট পাঠান';
 
   @override
-  String get localStorageCouldNotBe =>
-      'স্থানীয় স্টোরেজ খোলা যায়নি, তাই আপনার চ্যাট, পরিচিতি ';
+  String get localStorageCouldNotBe => 'স্থানীয় স্টোরেজ খোলা যায়নি, তাই আপনার চ্যাট, পরিচিতি ';
 
   @override
   String get menu => 'মেনু';
@@ -1141,8 +1106,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get saveSomeoneToThisDevice => 'এই ডিভাইসে কাউকে সংরক্ষণ করুন';
 
   @override
-  String get broadcastToAnUnlimitedAudience =>
-      'সীমাহীন দর্শকের কাছে ব্রডকাস্ট করুন';
+  String get broadcastToAnUnlimitedAudience => 'সীমাহীন দর্শকের কাছে ব্রডকাস্ট করুন';
 
   @override
   String get groupRelatedChatsTogether => 'সম্পর্কিত চ্যাট একসাথে গ্রুপ করুন';
@@ -1235,8 +1199,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get clearThisChat => 'এই চ্যাট মুছবেন?';
 
   @override
-  String get allMessagesInThisConversation =>
-      'এই কথোপকথনের সব বার্তা এই ডিভাইস থেকে মুছে যাবে। ';
+  String get allMessagesInThisConversation => 'এই কথোপকথনের সব বার্তা এই ডিভাইস থেকে মুছে যাবে। ';
 
   @override
   String get noEmojiFound => 'কোনো ইমোজি পাওয়া যায়নি';
@@ -1290,8 +1253,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noCommunitiesYet => 'এখনো কোনো কমিউনিটি নেই';
 
   @override
-  String get aCommunityGroupsRelatedChats =>
-      'একটি কমিউনিটি সম্পর্কিত চ্যাটগুলো একটি ঘোষণা চ্যানেলের অধীনে রাখে। ';
+  String get aCommunityGroupsRelatedChats => 'একটি কমিউনিটি সম্পর্কিত চ্যাটগুলো একটি ঘোষণা চ্যানেলের অধীনে রাখে। ';
 
   @override
   String get communityActions => 'কমিউনিটি অ্যাকশন';
@@ -1309,15 +1271,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get deleteCommunity => 'কমিউনিটি মুছুন';
 
   @override
-  String get theCommunityAndItsAnnouncement =>
-      'কমিউনিটি ও তার ঘোষণা গ্রুপ থেকে মুছে যাবে ';
+  String get theCommunityAndItsAnnouncement => 'কমিউনিটি ও তার ঘোষণা গ্রুপ থেকে মুছে যাবে ';
 
   @override
   String get noChannelsYet => 'এখনো কোনো চ্যানেল নেই';
 
   @override
-  String get channelsBroadcastOneWayTo =>
-      'চ্যানেল ফলোয়ারদের কাছে একমুখী সম্প্রচার করে। একটি তৈরি করুন বা ফলো করুন ';
+  String get channelsBroadcastOneWayTo => 'চ্যানেল ফলোয়ারদের কাছে একমুখী সম্প্রচার করে। একটি তৈরি করুন বা ফলো করুন ';
 
   @override
   String get community => 'কমিউনিটি';
@@ -1338,8 +1298,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get createAGroupHere => 'এখানে একটি গ্রুপ তৈরি করুন';
 
   @override
-  String get newGroupThatIsAutomatically =>
-      'নতুন গ্রুপ যা স্বয়ংক্রিয়ভাবে এই কমিউনিটির অংশ';
+  String get newGroupThatIsAutomatically => 'নতুন গ্রুপ যা স্বয়ংক্রিয়ভাবে এই কমিউনিটির অংশ';
 
   @override
   String get addExistingGroups => 'বিদ্যমান গ্রুপ যোগ করুন';
@@ -1372,8 +1331,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get addGroups => 'গ্রুপ যোগ করুন';
 
   @override
-  String get theCommunityIsRemovedFrom =>
-      'কমিউনিটি এই ডিভাইস থেকে মুছে যাবে। ভেতরের গ্রুপগুলো থাকবে ';
+  String get theCommunityIsRemovedFrom => 'কমিউনিটি এই ডিভাইস থেকে মুছে যাবে। ভেতরের গ্রুপগুলো থাকবে ';
 
   @override
   String get addACommunityPhoto => 'কমিউনিটি ছবি যোগ করুন';
@@ -1388,8 +1346,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get contactNotFound => 'পরিচিতি পাওয়া যায়নি';
 
   @override
-  String get thisPersonIsNotIn =>
-      'এই ব্যক্তি আপনার পরিচিতিতে নেই এবং Imo LIVE অ্যাকাউন্টও নেই ';
+  String get thisPersonIsNotIn => 'এই ব্যক্তি আপনার পরিচিতিতে নেই এবং Imo LIVE অ্যাকাউন্টও নেই ';
 
   @override
   String get contactInfo => 'পরিচিতির তথ্য';
@@ -1407,8 +1364,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sharedMedia => 'শেয়ার করা মিডিয়া';
 
   @override
-  String get mediaAttachesToConversationsOpen =>
-      'মিডিয়া কথোপকথনের সাথে সংযুক্ত হয়। চ্যাট খুলে ব্যবহার করুন ';
+  String get mediaAttachesToConversationsOpen => 'মিডিয়া কথোপকথনের সাথে সংযুক্ত হয়। চ্যাট খুলে ব্যবহার করুন ';
 
   @override
   String get statusUpdates => 'স্ট্যাটাস আপডেট';
@@ -1417,12 +1373,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get muteAlertsForThisConversation => 'এই কথোপকথনের সতর্কতা বন্ধ করুন';
 
   @override
-  String get openTheChatAndChoose =>
-      'চ্যাট খুলে \'অদৃশ্য হওয়া বার্তা\' বেছে নিন ';
+  String get openTheChatAndChoose => 'চ্যাট খুলে \'অদৃশ্য হওয়া বার্তা\' বেছে নিন ';
 
   @override
-  String get removesThisConversationAndIts =>
-      'এই কথোপকথন ও তার বার্তা মুছে দেয়';
+  String get removesThisConversationAndIts => 'এই কথোপকথন ও তার বার্তা মুছে দেয়';
 
   @override
   String get deleteChat2 => 'চ্যাট মুছবেন?';
@@ -1431,8 +1385,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get deleteContact => 'পরিচিতি মুছুন';
 
   @override
-  String get theContactIsRemovedFrom =>
-      'পরিচিতিটি আপনার তালিকা থেকে মুছে যাবে। চলমান চ্যাট ';
+  String get theContactIsRemovedFrom => 'পরিচিতিটি আপনার তালিকা থেকে মুছে যাবে। চলমান চ্যাট ';
 
   @override
   String get shareContact => 'পরিচিতি শেয়ার করুন';
@@ -1468,15 +1421,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get addressBookUnavailable => 'ঠিকানা বই পাওয়া যাচ্ছে না';
 
   @override
-  String get imoLIVECouldNotRead =>
-      'Imo LIVE আপনার ডিভাইসের পরিচিতি পড়তে পারেনি। পরিচিতির অনুমতি দিন ';
+  String get imoLIVECouldNotRead => 'Imo LIVE আপনার ডিভাইসের পরিচিতি পড়তে পারেনি। পরিচিতির অনুমতি দিন ';
 
   @override
   String get newMessagesInThisChat => 'এই চ্যাটের নতুন বার্তা পরে অদৃশ্য হবে ';
 
   @override
-  String get thisNumberIsNotOn =>
-      'এই নম্বরটি এখনো Imo LIVE-এ নেই। আমন্ত্রণ জানাবেন?';
+  String get thisNumberIsNotOn => 'এই নম্বরটি এখনো Imo LIVE-এ নেই। আমন্ত্রণ জানাবেন?';
 
   @override
   String get redeem => 'রিডিম';
@@ -1512,8 +1463,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get premiumChannels => 'প্রিমিয়াম চ্যানেল';
 
   @override
-  String get openChannelsReservedForMembers =>
-      'সদস্যদের জন্য সংরক্ষিত চ্যানেল খুলুন';
+  String get openChannelsReservedForMembers => 'সদস্যদের জন্য সংরক্ষিত চ্যানেল খুলুন';
 
   @override
   String get earningHistory => 'আয়ের ইতিহাস';
@@ -1537,8 +1487,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noNotificationsYet => 'এখনো কোনো নোটিফিকেশন নেই';
 
   @override
-  String get giftsYouReceiveWillShow =>
-      'আপনি যে উপহার পাবেন তা এখানে দেখা যাবে।';
+  String get giftsYouReceiveWillShow => 'আপনি যে উপহার পাবেন তা এখানে দেখা যাবে।';
 
   @override
   String get groupInfo => 'গ্রুপ তথ্য';
@@ -1547,8 +1496,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get groupNotFound => 'গ্রুপ পাওয়া যায়নি';
 
   @override
-  String get thisGroupWasDeletedOr =>
-      'এই গ্রুপটি মুছে ফেলা হয়েছে বা এই ডিভাইসে কখনো ছিল না।';
+  String get thisGroupWasDeletedOr => 'এই গ্রুপটি মুছে ফেলা হয়েছে বা এই ডিভাইসে কখনো ছিল না।';
 
   @override
   String get editGroup => 'গ্রুপ সম্পাদনা';
@@ -1566,8 +1514,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get silenceAlertsForThisGroup => 'এই গ্রুপের সতর্কতা বন্ধ করুন';
 
   @override
-  String get openTheConversationAndTap =>
-      'কথোপকথন খুলে ফিল্টার করতে সার্চ আইকনে ট্যাপ করুন ';
+  String get openTheConversationAndTap => 'কথোপকথন খুলে ফিল্টার করতে সার্চ আইকনে ট্যাপ করুন ';
 
   @override
   String get adminPermissions => 'অ্যাডমিন অনুমতি';
@@ -1576,55 +1523,46 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sendMessages => 'বার্তা পাঠান';
 
   @override
-  String get allowMembersToSendMessages =>
-      'সদস্যদের গ্রুপে বার্তা পাঠানোর অনুমতি দিন';
+  String get allowMembersToSendMessages => 'সদস্যদের গ্রুপে বার্তা পাঠানোর অনুমতি দিন';
 
   @override
   String get editGroupInfo => 'গ্রুপ তথ্য সম্পাদনা';
 
   @override
-  String get allowMembersToChangeThe =>
-      'সদস্যদের নাম, ছবি ও বিবরণ বদলানোর অনুমতি দিন';
+  String get allowMembersToChangeThe => 'সদস্যদের নাম, ছবি ও বিবরণ বদলানোর অনুমতি দিন';
 
   @override
-  String get allowMembersToAddOther =>
-      'সদস্যদের অন্য মানুষ যোগ করার অনুমতি দিন';
+  String get allowMembersToAddOther => 'সদস্যদের অন্য মানুষ যোগ করার অনুমতি দিন';
 
   @override
   String get inviteViaLink => 'লিংকের মাধ্যমে আমন্ত্রণ';
 
   @override
-  String get anyoneWithTheInviteLink =>
-      'আমন্ত্রণ লিংক যার আছে সে যোগ দিতে পারবে';
+  String get anyoneWithTheInviteLink => 'আমন্ত্রণ লিংক যার আছে সে যোগ দিতে পারবে';
 
   @override
   String get approveNewMembers => 'নতুন সদস্য অনুমোদন';
 
   @override
-  String get adminsMustApproveEveryoneWho =>
-      'যোগ দিতে চাওয়া প্রত্যেককে অ্যাডমিনকে অনুমোদন দিতে হবে';
+  String get adminsMustApproveEveryoneWho => 'যোগ দিতে চাওয়া প্রত্যেককে অ্যাডমিনকে অনুমোদন দিতে হবে';
 
   @override
-  String get theInviteCodeIsGenerated =>
-      'আমন্ত্রণ কোড স্থানীয়ভাবে তৈরি হয়। লিংক দিয়ে যোগ দিতে দরকার ';
+  String get theInviteCodeIsGenerated => 'আমন্ত্রণ কোড স্থানীয়ভাবে তৈরি হয়। লিংক দিয়ে যোগ দিতে দরকার ';
 
   @override
   String get resetInviteLink => 'আমন্ত্রণ লিংক রিসেট';
 
   @override
-  String get invalidateTheCurrentCodeAnd =>
-      'বর্তমান কোড বাতিল করে নতুন একটি দিন';
+  String get invalidateTheCurrentCodeAnd => 'বর্তমান কোড বাতিল করে নতুন একটি দিন';
 
   @override
-  String get invalidatingAnInviteLinkIs =>
-      'আমন্ত্রণ লিংক বাতিল করা একটি সার্ভার অ্যাকশন — পুরনো ';
+  String get invalidatingAnInviteLinkIs => 'আমন্ত্রণ লিংক বাতিল করা একটি সার্ভার অ্যাকশন — পুরনো ';
 
   @override
   String get clearMessages => 'বার্তা মুছুন';
 
   @override
-  String get deleteEveryMessageInThis =>
-      'গ্রুপ রেখে এই গ্রুপের প্রতিটি বার্তা মুছুন';
+  String get deleteEveryMessageInThis => 'গ্রুপ রেখে এই গ্রুপের প্রতিটি বার্তা মুছুন';
 
   @override
   String get clearAllMessages => 'সব বার্তা মুছবেন?';
@@ -1645,30 +1583,25 @@ class AppLocalizationsBn extends AppLocalizations {
   String get removeFromGroup => 'গ্রুপ থেকে সরান';
 
   @override
-  String get youLeaveTheGroupYour =>
-      'আপনি গ্রুপ ছাড়বেন। আপনার বিদ্যমান বার্তা কথোপকথনে থাকবে ';
+  String get youLeaveTheGroupYour => 'আপনি গ্রুপ ছাড়বেন। আপনার বিদ্যমান বার্তা কথোপকথনে থাকবে ';
 
   @override
-  String get theGroupItsMembersAnd =>
-      'গ্রুপ, তার সদস্য ও প্রতিটি বার্তা স্থায়ীভাবে মুছে যাবে ';
+  String get theGroupItsMembersAnd => 'গ্রুপ, তার সদস্য ও প্রতিটি বার্তা স্থায়ীভাবে মুছে যাবে ';
 
   @override
   String get noMembersYet => 'এখনো কোনো সদস্য নেই';
 
   @override
-  String get aGroupNeedsAtLeast =>
-      'গ্রুপে অন্তত আরেকজন দরকার। আপনাকে যোগ করা হবে ';
+  String get aGroupNeedsAtLeast => 'গ্রুপে অন্তত আরেকজন দরকার। আপনাকে যোগ করা হবে ';
 
   @override
   String get youWillBeTheGroup => 'আপনি গ্রুপের অ্যাডমিন হবেন';
 
   @override
-  String get adminsCanAddOrRemove =>
-      'অ্যাডমিন সদস্য যোগ বা সরাতে, গ্রুপ ছবি সম্পাদনা করতে পারেন, ';
+  String get adminsCanAddOrRemove => 'অ্যাডমিন সদস্য যোগ বা সরাতে, গ্রুপ ছবি সম্পাদনা করতে পারেন, ';
 
   @override
-  String get imoLIVESyncsThroughFirebase =>
-      'Imo LIVE Firebase-এর মাধ্যমে সিঙ্ক করে — Authentication ও Cloud ';
+  String get imoLIVESyncsThroughFirebase => 'Imo LIVE Firebase-এর মাধ্যমে সিঙ্ক করে — Authentication ও Cloud ';
 
   @override
   String get build => 'বিল্ড';
@@ -1683,19 +1616,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get architecture => 'আর্কিটেকচার';
 
   @override
-  String get imoLIVEFollowsAClean =>
-      'Imo LIVE একটি পরিচ্ছন্ন, ফিচার-প্রথম লেআউট অনুসরণ করে।';
+  String get imoLIVEFollowsAClean => 'Imo LIVE একটি পরিচ্ছন্ন, ফিচার-প্রথম লেআউট অনুসরণ করে।';
 
   @override
-  String get everyScreenDependsOnAn =>
-      'প্রতিটি স্ক্রিন একটি বিমূর্ত রিপোজিটরি ইন্টারফেসের উপর নির্ভর করে। চ্যাট ';
+  String get everyScreenDependsOnAn => 'প্রতিটি স্ক্রিন একটি বিমূর্ত রিপোজিটরি ইন্টারফেসের উপর নির্ভর করে। চ্যাট ';
 
   @override
   String get whatStillNeedsConfiguring => 'যা এখনো কনফিগার করা দরকার';
 
   @override
-  String get everythingBelowAlreadyHasIts =>
-      'নিচের সবকিছুর ইন্টারফেস ও স্থানীয় বাস্তবায়ন আগেই আছে ';
+  String get everythingBelowAlreadyHasIts => 'নিচের সবকিছুর ইন্টারফেস ও স্থানীয় বাস্তবায়ন আগেই আছে ';
 
   @override
   String get searchEverything => 'সবকিছু খুঁজুন';
@@ -1731,8 +1661,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get copyCode => 'কোড কপি করুন';
 
   @override
-  String get theCodeCarriesAnImo =>
-      'কোডটিতে Imo LIVE শনাক্তকারী থাকে। অন্য কেউ পারবে ';
+  String get theCodeCarriesAnImo => 'কোডটিতে Imo LIVE শনাক্তকারী থাকে। অন্য কেউ পারবে ';
 
   @override
   String get shareCode => 'কোড শেয়ার করুন';
@@ -1744,8 +1673,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get editProfile => 'প্রোফাইল সম্পাদনা';
 
   @override
-  String get yourNameIsVisibleTo =>
-      'আপনার নাম আপনি যাদের বার্তা পাঠান সবাই দেখতে পায়।';
+  String get yourNameIsVisibleTo => 'আপনার নাম আপনি যাদের বার্তা পাঠান সবাই দেখতে পায়।';
 
   @override
   String get requiredLabel => 'আবশ্যক';
@@ -1781,19 +1709,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get searchUnavailable => 'সার্চ পাওয়া যাচ্ছে না';
 
   @override
-  String get imoLIVECouldNotBe =>
-      'Imo LIVE-এ পৌঁছানো যায়নি। সংযোগ পরীক্ষা করুন এবং ';
+  String get imoLIVECouldNotBe => 'Imo LIVE-এ পৌঁছানো যায়নি। সংযোগ পরীক্ষা করুন এবং ';
 
   @override
-  String get inviteThemToImoLIVE =>
-      'তাদের Imo LIVE-এ আমন্ত্রণ জানান, তখনই চ্যাট শুরু করতে পারবেন ';
+  String get inviteThemToImoLIVE => 'তাদের Imo LIVE-এ আমন্ত্রণ জানান, তখনই চ্যাট শুরু করতে পারবেন ';
 
   @override
   String get passkeys => 'পাসকি';
 
   @override
-  String get enterANewPhoneNumber =>
-      'নতুন ফোন নম্বর লিখুন (শুধু স্থানীয়ভাবে সংরক্ষিত)';
+  String get enterANewPhoneNumber => 'নতুন ফোন নম্বর লিখুন (শুধু স্থানীয়ভাবে সংরক্ষিত)';
 
   @override
   String get verifiedNumber => 'যাচাইকৃত নম্বর';
@@ -1805,15 +1730,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get clearAllLocalData => 'সব স্থানীয় ডেটা মুছুন';
 
   @override
-  String get deletesChatsMessagesContactsStatuses =>
-      'চ্যাট, বার্তা, পরিচিতি, স্ট্যাটাস ও সেটিংস মুছে দেয় ';
+  String get deletesChatsMessagesContactsStatuses => 'চ্যাট, বার্তা, পরিচিতি, স্ট্যাটাস ও সেটিংস মুছে দেয় ';
 
   @override
   String get clearAllLocalData2 => 'সব স্থানীয় ডেটা মুছবেন?';
 
   @override
-  String get everyChatMessageContactAnd =>
-      'Imo LIVE-এ সংরক্ষিত প্রতিটি চ্যাট, বার্তা, পরিচিতি ও সেটিং ';
+  String get everyChatMessageContactAnd => 'Imo LIVE-এ সংরক্ষিত প্রতিটি চ্যাট, বার্তা, পরিচিতি ও সেটিং ';
 
   @override
   String get clearEverything => 'সবকিছু মুছুন';
@@ -1831,19 +1754,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get restoreDefaultAppearance => 'ডিফল্ট চেহারা ফিরিয়ে আনুন';
 
   @override
-  String get darkThemeRoseAccent100 =>
-      'ডার্ক থিম, গোলাপি অ্যাকসেন্ট, ১০০% টেক্সট আকার';
+  String get darkThemeRoseAccent100 => 'ডার্ক থিম, গোলাপি অ্যাকসেন্ট, ১০০% টেক্সট আকার';
 
   @override
   String get blockAContact => 'পরিচিতি ব্লক করুন';
 
   @override
-  String get blockedContactsCannotMessageOr =>
-      'ব্লক করা পরিচিতি এই থেকে আপনাকে বার্তা বা কল করতে পারবে না ';
+  String get blockedContactsCannotMessageOr => 'ব্লক করা পরিচিতি এই থেকে আপনাকে বার্তা বা কল করতে পারবে না ';
 
   @override
-  String get unblockingRestoresTheContactTo =>
-      'আনব্লক করলে পরিচিতিটি আপনার চ্যাট তালিকায় ফিরে আসবে এবং ';
+  String get unblockingRestoresTheContactTo => 'আনব্লক করলে পরিচিতিটি আপনার চ্যাট তালিকায় ফিরে আসবে এবং ';
 
   @override
   String get unknownSenders => 'অজানা প্রেরক';
@@ -1855,8 +1775,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get blockedCallers => 'ব্লক করা কলার';
 
   @override
-  String get blockedContactsAreAlsoPrevented =>
-      'ব্লক করা পরিচিতিরা কল করতেও বাধা পাবে';
+  String get blockedContactsAreAlsoPrevented => 'ব্লক করা পরিচিতিরা কল করতেও বাধা পাবে';
 
   @override
   String get display => 'ডিসপ্লে';
@@ -1871,8 +1790,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get mediaVisibility => 'মিডিয়া দৃশ্যমানতা';
 
   @override
-  String get showNewlyDownloadedMediaIn =>
-      'নতুন ডাউনলোড করা মিডিয়া ডিভাইস গ্যালারিতে দেখান';
+  String get showNewlyDownloadedMediaIn => 'নতুন ডাউনলোড করা মিডিয়া ডিভাইস গ্যালারিতে দেখান';
 
   @override
   String get chatHistory => 'চ্যাট ইতিহাস';
@@ -1881,8 +1799,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get keepChatsArchived => 'চ্যাট আর্কাইভে রাখুন';
 
   @override
-  String get newMessagesStayInThe =>
-      'নতুন বার্তা ফিরিয়ে না এনে আর্কাইভে থাকবে ';
+  String get newMessagesStayInThe => 'নতুন বার্তা ফিরিয়ে না এনে আর্কাইভে থাকবে ';
 
   @override
   String get chatBackup => 'চ্যাট ব্যাকআপ';
@@ -1903,8 +1820,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get autoDownload => 'স্বয়ংক্রিয় ডাউনলোড';
 
   @override
-  String get appliesToMediaYouReceive =>
-      'মোবাইল বা Wi-Fi নেটওয়ার্কে পাওয়া মিডিয়ার ক্ষেত্রে প্রযোজ্য।';
+  String get appliesToMediaYouReceive => 'মোবাইল বা Wi-Fi নেটওয়ার্কে পাওয়া মিডিয়ার ক্ষেত্রে প্রযোজ্য।';
 
   @override
   String get photos => 'ছবি';
@@ -1919,22 +1835,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get resetChatSettings => 'চ্যাট সেটিংস রিসেট';
 
   @override
-  String get restoreEveryChatPreferenceTo =>
-      'প্রতিটি চ্যাট পছন্দ ডিফল্টে ফিরিয়ে আনুন';
+  String get restoreEveryChatPreferenceTo => 'প্রতিটি চ্যাট পছন্দ ডিফল্টে ফিরিয়ে আনুন';
 
   @override
   String get resetChatSettings2 => 'চ্যাট সেটিংস রিসেট করবেন?';
 
   @override
-  String get chatPreferencesReturnToTheir =>
-      'চ্যাট পছন্দ ডিফল্টে ফিরবে। কোনো চ্যাট বা ';
+  String get chatPreferencesReturnToTheir => 'চ্যাট পছন্দ ডিফল্টে ফিরবে। কোনো চ্যাট বা ';
 
   @override
   String get syncContactsOnSave => 'সংরক্ষণে পরিচিতি সিঙ্ক করুন';
 
   @override
-  String get offerToAddANumber =>
-      'আপনি যখন তখন নম্বর ডিভাইসের ঠিকানা বইতে যোগ করতে বলুন ';
+  String get offerToAddANumber => 'আপনি যখন তখন নম্বর ডিভাইসের ঠিকানা বইতে যোগ করতে বলুন ';
 
   @override
   String get appLanguage => 'অ্যাপের ভাষা';
@@ -1943,8 +1856,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get appDisplayLanguage => 'অ্যাপ প্রদর্শনের ভাষা';
 
   @override
-  String get translationsAreBundledWithThe =>
-      'অনুবাদগুলো ARB রিসোর্স হিসেবে অ্যাপের সাথে থাকে। ';
+  String get translationsAreBundledWithThe => 'অনুবাদগুলো ARB রিসোর্স হিসেবে অ্যাপের সাথে থাকে। ';
 
   @override
   String get comingSoon => 'শীঘ্রই আসছে';
@@ -2007,19 +1919,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get timeFormat => 'সময়ের ফরম্যাট';
 
   @override
-  String get imoLIVEFollowsYourDevice =>
-      'Imo LIVE আপনার ডিভাইস সেটিং অনুসরণ করে যাতে সময় ';
+  String get imoLIVEFollowsYourDevice => 'Imo LIVE আপনার ডিভাইস সেটিং অনুসরণ করে যাতে সময় ';
 
   @override
-  String get pairingASecondDeviceIs =>
-      'দ্বিতীয় ডিভাইস পেয়ারিং এখনো নেই। এই স্ক্রিনটি ';
+  String get pairingASecondDeviceIs => 'দ্বিতীয় ডিভাইস পেয়ারিং এখনো নেই। এই স্ক্রিনটি ';
 
   @override
   String get linkADevice => 'ডিভাইস লিংক করুন';
 
   @override
-  String get openImoLIVEOnAnother =>
-      'অন্য ডিভাইসে Imo LIVE খুলে এই কোড স্ক্যান করুন। ';
+  String get openImoLIVEOnAnother => 'অন্য ডিভাইসে Imo LIVE খুলে এই কোড স্ক্যান করুন। ';
 
   @override
   String get pairADevice => 'ডিভাইস পেয়ার করুন';
@@ -2040,8 +1949,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get removeAllLinkedDevices => 'সব লিংক করা ডিভাইস সরাবেন?';
 
   @override
-  String get everyNonCurrentEntryIs =>
-      'বর্তমান ছাড়া প্রতিটি এন্ট্রি এখান থেকে মুছে যাবে ';
+  String get everyNonCurrentEntryIs => 'বর্তমান ছাড়া প্রতিটি এন্ট্রি এখান থেকে মুছে যাবে ';
 
   @override
   String get removeAll => 'সব সরান';
@@ -2050,22 +1958,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get builtInLists => 'অন্তর্নির্মিত তালিকা';
 
   @override
-  String get aListIsASaved =>
-      'একটি তালিকা হলো আপনার চ্যাটের সংরক্ষিত ফিল্টার। একটিতে ট্যাপ করলে প্রযোজ্য হয় ';
+  String get aListIsASaved => 'একটি তালিকা হলো আপনার চ্যাটের সংরক্ষিত ফিল্টার। একটিতে ট্যাপ করলে প্রযোজ্য হয় ';
 
   @override
   String get customLists => 'কাস্টম তালিকা';
 
   @override
-  String get theWorkListIsA =>
-      '\'Work\' তালিকা প্রতিটি চ্যাটে সংরক্ষিত ফ্ল্যাগ, তাই এটি টিকে থাকে ';
+  String get theWorkListIsA => '\'Work\' তালিকা প্রতিটি চ্যাটে সংরক্ষিত ফ্ল্যাগ, তাই এটি টিকে থাকে ';
 
   @override
   String get manage => 'ব্যবস্থাপনা';
 
   @override
-  String get pickAFilterAndApply =>
-      'একটি ফিল্টার বেছে নিয়ে চ্যাট ট্যাবে প্রয়োগ করুন';
+  String get pickAFilterAndApply => 'একটি ফিল্টার বেছে নিয়ে চ্যাট ট্যাবে প্রয়োগ করুন';
 
   @override
   String get showAllChats => 'সব চ্যাট দেখান';
@@ -2083,8 +1988,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get directChat => 'সরাসরি চ্যাট';
 
   @override
-  String get pickTheChatsThisList =>
-      'এই তালিকা যে চ্যাট সবসময় দেখাবে তা বেছে নিন।';
+  String get pickTheChatsThisList => 'এই তালিকা যে চ্যাট সবসময় দেখাবে তা বেছে নিন।';
 
   @override
   String get chatsYouStarred => 'আপনার স্টার করা চ্যাট';
@@ -2099,8 +2003,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noFiltering => 'ফিল্টার নেই';
 
   @override
-  String get notificationsAreDeliveredLocallyBy =>
-      'নোটিফিকেশন OS স্থানীয়ভাবে পৌঁছে দেয়। কোনো ';
+  String get notificationsAreDeliveredLocallyBy => 'নোটিফিকেশন OS স্থানীয়ভাবে পৌঁছে দেয়। কোনো ';
 
   @override
   String get messageNotifications => 'বার্তার নোটিফিকেশন';
@@ -2109,8 +2012,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get showNotifications => 'নোটিফিকেশন দেখান';
 
   @override
-  String get masterSwitchForEveryMessage =>
-      'প্রতিটি বার্তা সতর্কতার প্রধান সুইচ';
+  String get masterSwitchForEveryMessage => 'প্রতিটি বার্তা সতর্কতার প্রধান সুইচ';
 
   @override
   String get vibrate => 'কম্পন';
@@ -2137,26 +2039,22 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sendATestNotification => 'পরীক্ষামূলক নোটিফিকেশন পাঠান';
 
   @override
-  String get postsALocalNotificationThrough =>
-      'OS-এর মাধ্যমে একটি স্থানীয় নোটিফিকেশন পাঠায়';
+  String get postsALocalNotificationThrough => 'OS-এর মাধ্যমে একটি স্থানীয় নোটিফিকেশন পাঠায়';
 
   @override
   String get resetNotificationSettings => 'নোটিফিকেশন সেটিংস রিসেট';
 
   @override
-  String get restoreEveryNotificationOptionTo =>
-      'প্রতিটি নোটিফিকেশন অপশন ডিফল্টে ফিরিয়ে আনুন';
+  String get restoreEveryNotificationOptionTo => 'প্রতিটি নোটিফিকেশন অপশন ডিফল্টে ফিরিয়ে আনুন';
 
   @override
-  String get theseSwitchesControlWhatImo =>
-      'এই সুইচগুলো নিয়ন্ত্রণ করে Imo LIVE কী সংরক্ষণ ও প্রদর্শন করবে ';
+  String get theseSwitchesControlWhatImo => 'এই সুইচগুলো নিয়ন্ত্রণ করে Imo LIVE কী সংরক্ষণ ও প্রদর্শন করবে ';
 
   @override
   String get whoCanSeeMyPersonal => 'আমার ব্যক্তিগত তথ্য কে দেখতে পারবে';
 
   @override
-  String get changingLastSeenAlsoAffects =>
-      '\"শেষ দেখা\" বদলালে read receipt-ও প্রভাবিত হয় ';
+  String get changingLastSeenAlsoAffects => '\"শেষ দেখা\" বদলালে read receipt-ও প্রভাবিত হয় ';
 
   @override
   String get lastSeenAndOnline => 'শেষ দেখা ও অনলাইন';
@@ -2168,29 +2066,25 @@ class AppLocalizationsBn extends AppLocalizations {
   String get silenceUnknownCallers => 'অজানা কলার নীরব করুন';
 
   @override
-  String get muteCallNotificationsFromPeople =>
-      'যাদের সংরক্ষণ করেননি তাদের কল নোটিফিকেশন বন্ধ করুন';
+  String get muteCallNotificationsFromPeople => 'যাদের সংরক্ষণ করেননি তাদের কল নোটিফিকেশন বন্ধ করুন';
 
   @override
   String get appSecurity => 'অ্যাপ নিরাপত্তা';
 
   @override
-  String get requireADeviceCredentialBefore =>
-      'অ্যাপ খোলার আগে ডিভাইস ক্রেডেনশিয়াল চান';
+  String get requireADeviceCredentialBefore => 'অ্যাপ খোলার আগে ডিভাইস ক্রেডেনশিয়াল চান';
 
   @override
   String get appLockEnabled => 'অ্যাপ লক চালু হয়েছে';
 
   @override
-  String get imoLIVEWillAskFor =>
-      'পরবর্তী বার Imo LIVE আপনার ডিভাইস ক্রেডেনশিয়াল চাইবে ';
+  String get imoLIVEWillAskFor => 'পরবর্তী বার Imo LIVE আপনার ডিভাইস ক্রেডেনশিয়াল চাইবে ';
 
   @override
   String get liveLocation => 'লাইভ অবস্থান';
 
   @override
-  String get allowSharingYourCurrentLocation =>
-      'চ্যাটে আপনার বর্তমান অবস্থান শেয়ারের অনুমতি দিন। অবস্থান ';
+  String get allowSharingYourCurrentLocation => 'চ্যাটে আপনার বর্তমান অবস্থান শেয়ারের অনুমতি দিন। অবস্থান ';
 
   @override
   String get advancedPrivacySettings => 'উন্নত গোপনীয়তা সেটিংস';
@@ -2199,8 +2093,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get advancedPrivacy => 'উন্নত গোপনীয়তা';
 
   @override
-  String get imoLIVEDoesNotClaim =>
-      'Imo LIVE এন্ড-টু-এন্ড এনক্রিপশনের দাবি করে না। বার্তা ';
+  String get imoLIVEDoesNotClaim => 'Imo LIVE এন্ড-টু-এন্ড এনক্রিপশনের দাবি করে না। বার্তা ';
 
   @override
   String get storage => 'স্টোরেজ';
@@ -2209,19 +2102,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get resetPrivacySettings => 'গোপনীয়তা সেটিংস রিসেট';
 
   @override
-  String get restoreEveryPrivacyOptionTo =>
-      'প্রতিটি গোপনীয়তা অপশন ডিফল্টে ফিরিয়ে আনুন';
+  String get restoreEveryPrivacyOptionTo => 'প্রতিটি গোপনীয়তা অপশন ডিফল্টে ফিরিয়ে আনুন';
 
   @override
   String get resetPrivacySettings2 => 'গোপনীয়তা সেটিংস রিসেট করবেন?';
 
   @override
-  String get allPrivacyOptionsReturnTo =>
-      'সব গোপনীয়তা অপশন ডিফল্টে ফিরবে। আপনার ';
+  String get allPrivacyOptionsReturnTo => 'সব গোপনীয়তা অপশন ডিফল্টে ফিরবে। আপনার ';
 
   @override
-  String get onDevicePrivacyModelSyncs =>
-      'ডিভাইসে থাকা গোপনীয়তা মডেল · Cloud Firestore-এ সিঙ্ক হয়';
+  String get onDevicePrivacyModelSyncs => 'ডিভাইসে থাকা গোপনীয়তা মডেল · Cloud Firestore-এ সিঙ্ক হয়';
 
   @override
   String get mediaStoredOnThisDevice => 'এই ডিভাইসে সংরক্ষিত মিডিয়া';
@@ -2230,8 +2120,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get deleteAllMediaFiles => 'সব মিডিয়া ফাইল মুছুন';
 
   @override
-  String get removesEveryFileKeptIn =>
-      'উপরের ফোল্ডারগুলোতে রাখা প্রতিটি ফাইল মুছে দেয়';
+  String get removesEveryFileKeptIn => 'উপরের ফোল্ডারগুলোতে রাখা প্রতিটি ফাইল মুছে দেয়';
 
   @override
   String get deleteAllMedia => 'সব মিডিয়া মুছবেন?';
@@ -2246,19 +2135,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noChannelSubscriptions => 'কোনো চ্যানেল সাবস্ক্রিপশন নেই';
 
   @override
-  String get followAChannelFromThe =>
-      'আপডেট ট্যাব থেকে একটি চ্যানেল ফলো করুন, এটি এখানে দেখা যাবে ';
+  String get followAChannelFromThe => 'আপডেট ট্যাব থেকে একটি চ্যানেল ফলো করুন, এটি এখানে দেখা যাবে ';
 
   @override
   String get followedChannels => 'ফলো করা চ্যানেল';
 
   @override
-  String get mutingAChannelKeepsIt =>
-      'চ্যানেল নীরব করলে তালিকায় থাকবে কিন্তু তার নোটিফিকেশন বন্ধ হবে ';
+  String get mutingAChannelKeepsIt => 'চ্যানেল নীরব করলে তালিকায় থাকবে কিন্তু তার নোটিফিকেশন বন্ধ হবে ';
 
   @override
-  String get createOrJoinOneFrom =>
-      'কমিউনিটি ট্যাব থেকে একটি তৈরি করুন বা যোগ দিন';
+  String get createOrJoinOneFrom => 'কমিউনিটি ট্যাব থেকে একটি তৈরি করুন বা যোগ দিন';
 
   @override
   String get discover => 'আবিষ্কার';
@@ -2267,15 +2153,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get findChannels => 'চ্যানেল খুঁজুন';
 
   @override
-  String get browsePublicChannelsByCategory =>
-      'বিভাগ অনুসারে পাবলিক চ্যানেল ব্রাউজ করুন';
+  String get browsePublicChannelsByCategory => 'বিভাগ অনুসারে পাবলিক চ্যানেল ব্রাউজ করুন';
 
   @override
   String get createAChannelOfYour => 'নিজের একটি চ্যানেল তৈরি করুন';
 
   @override
-  String get startACommunityWithAnnouncement =>
-      'ঘোষণা গ্রুপসহ একটি কমিউনিটি শুরু করুন';
+  String get startACommunityWithAnnouncement => 'ঘোষণা গ্রুপসহ একটি কমিউনিটি শুরু করুন';
 
   @override
   String get notificationDefaults => 'নোটিফিকেশন ডিফল্ট';
@@ -2320,19 +2204,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get removeWallpaper => 'ওয়ালপেপার সরাবেন?';
 
   @override
-  String get theCopiedImageFileIs =>
-      'কপি করা ছবির ফাইলটি মুছে যাবে এবং ডিফল্ট ';
+  String get theCopiedImageFileIs => 'কপি করা ছবির ফাইলটি মুছে যাবে এবং ডিফল্ট ';
 
   @override
   String get clearChat2 => 'চ্যাট মুছবেন?';
 
   @override
-  String get allMessagesInThisChat =>
-      'এই চ্যাটের সব বার্তা এই ডিভাইস থেকে মুছে যাবে। ';
+  String get allMessagesInThisChat => 'এই চ্যাটের সব বার্তা এই ডিভাইস থেকে মুছে যাবে। ';
 
   @override
-  String get thisConversationAndAllIts =>
-      'এই কথোপকথন ও তার সব বার্তা থেকে মুছে যাবে ';
+  String get thisConversationAndAllIts => 'এই কথোপকথন ও তার সব বার্তা থেকে মুছে যাবে ';
 
   @override
   String get newUpdate => 'নতুন আপডেট';
@@ -2362,8 +2243,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get addAPhotoOrVideo => 'ছবি বা ভিডিও যোগ করুন';
 
   @override
-  String get pickMediaFromYourGallery =>
-      'স্ট্যাটাস আপডেট হিসেবে ব্যবহার করতে গ্যালারি থেকে মিডিয়া বেছে নিন।';
+  String get pickMediaFromYourGallery => 'স্ট্যাটাস আপডেট হিসেবে ব্যবহার করতে গ্যালারি থেকে মিডিয়া বেছে নিন।';
 
   @override
   String get chooseMedia => 'মিডিয়া বেছে নিন';
@@ -2387,8 +2267,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get deleteUpdate => 'আপডেট মুছবেন?';
 
   @override
-  String get thisUpdateIsRemovedFor =>
-      'এই আপডেটটি সাথে সাথেই সবার কাছ থেকে মুছে যাবে।';
+  String get thisUpdateIsRemovedFor => 'এই আপডেটটি সাথে সাথেই সবার কাছ থেকে মুছে যাবে।';
 
   @override
   String get sendAMessage => 'একটি বার্তা পাঠান…';
@@ -2397,8 +2276,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get statusPrivacy => 'স্ট্যাটাস গোপনীয়তা';
 
   @override
-  String get theRestOfTheApp =>
-      'অ্যাপের বাকি অংশ কাজ করছে। ফিরে গিয়ে আবার চেষ্টা করুন।';
+  String get theRestOfTheApp => 'অ্যাপের বাকি অংশ কাজ করছে। ফিরে গিয়ে আবার চেষ্টা করুন।';
 
   @override
   String get goToChats => 'চ্যাটে যান';
@@ -2407,8 +2285,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get login => 'লগ ইন';
 
   @override
-  String get byContinuingYouAgreeTo =>
-      'চালিয়ে গেলে আপনি Imo LIVE-এর শর্তাবলি ও গোপনীয়তা নীতিতে সম্মত হচ্ছেন।';
+  String get byContinuingYouAgreeTo => 'চালিয়ে গেলে আপনি Imo LIVE-এর শর্তাবলি ও গোপনীয়তা নীতিতে সম্মত হচ্ছেন।';
 
   @override
   String get aboutAShortLineAbout => 'সম্পর্কে — আপনার সম্পর্কে সংক্ষেপে';
@@ -2435,15 +2312,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noContactsYet => 'এখনো কোনো পরিচিতি নেই';
 
   @override
-  String get addContactsThenStarThe =>
-      'পরিচিতি যোগ করুন, তারপর যাদের বেশি কল করেন তাদের স্টার করুন ';
+  String get addContactsThenStarThe => 'পরিচিতি যোগ করুন, তারপর যাদের বেশি কল করেন তাদের স্টার করুন ';
 
   @override
   String get noFavouritesYet => 'এখনো কোনো প্রিয় নেই';
 
   @override
-  String get tapEditAndStarThe =>
-      'সম্পাদনা ট্যাপ করে যাদের বেশি কল করেন তাদের স্টার করুন ';
+  String get tapEditAndStarThe => 'সম্পাদনা ট্যাপ করে যাদের বেশি কল করেন তাদের স্টার করুন ';
 
   @override
   String get otherContacts => 'অন্য পরিচিতি';
@@ -2485,8 +2360,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get publicChannel => 'পাবলিক চ্যানেল';
 
   @override
-  String get changesAreWrittenToFirestore =>
-      'পরিবর্তন সাথে সাথেই Firestore-এ লেখা হয়। ফলোয়ারেরা সেগুলো ';
+  String get changesAreWrittenToFirestore => 'পরিবর্তন সাথে সাথেই Firestore-এ লেখা হয়। ফলোয়ারেরা সেগুলো ';
 
   @override
   String get whatDoesThisChannelPost => 'এই চ্যানেল কী নিয়ে পোস্ট করে?';
@@ -2495,8 +2369,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get visibility => 'দৃশ্যমানতা';
 
   @override
-  String get a12CharacterSecretKey =>
-      'তৈরি করার সময় ১২ অক্ষরের একটি গোপন কী তৈরি হয় ';
+  String get a12CharacterSecretKey => 'তৈরি করার সময় ১২ অক্ষরের একটি গোপন কী তৈরি হয় ';
 
   @override
   String get deletePost => 'পোস্ট মুছুন';
@@ -2523,8 +2396,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get fromThem => 'তাদের থেকে';
 
   @override
-  String get thisMessageIsQueuedOn =>
-      'এই বার্তাটি আপনার ডিভাইসে অপেক্ষমাণ এবং এখনো ';
+  String get thisMessageIsQueuedOn => 'এই বার্তাটি আপনার ডিভাইসে অপেক্ষমাণ এবং এখনো ';
 
   @override
   String get starts => 'শুরু';
@@ -2545,15 +2417,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noContacts => 'কোনো পরিচিতি নেই';
 
   @override
-  String get addAContactFirstTo =>
-      'চ্যাটে শেয়ার করতে আগে একটি পরিচিতি যোগ করুন।';
+  String get addAContactFirstTo => 'চ্যাটে শেয়ার করতে আগে একটি পরিচিতি যোগ করুন।';
 
   @override
   String get deleteForEveryone2 => 'সবার জন্য মুছবেন?';
 
   @override
-  String get theMessageIsRemovedFrom =>
-      'বার্তাটি এই ডিভাইস থেকে মুছে গিয়ে \"মুছে ফেলা\" দিয়ে প্রতিস্থাপিত হয় ';
+  String get theMessageIsRemovedFrom => 'বার্তাটি এই ডিভাইস থেকে মুছে গিয়ে \"মুছে ফেলা\" দিয়ে প্রতিস্থাপিত হয় ';
 
   @override
   String get photoUnavailable => 'ছবি পাওয়া যাচ্ছে না';
@@ -2565,15 +2435,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get announcements => 'ঘোষণা';
 
   @override
-  String get everyoneInTheCommunityReceives =>
-      'কমিউনিটির সবাই ঘোষণা বার্তা পায়। ';
+  String get everyoneInTheCommunityReceives => 'কমিউনিটির সবাই ঘোষণা বার্তা পায়। ';
 
   @override
   String get openAnnouncementChat => 'ঘোষণা চ্যাট খুলুন';
 
   @override
-  String get everyoneYouAddBecomesA =>
-      'আপনি যাকে যোগ করবেন সে ঘোষণা গ্রুপের সদস্য হবে। ';
+  String get everyoneYouAddBecomesA => 'আপনি যাকে যোগ করবেন সে ঘোষণা গ্রুপের সদস্য হবে। ';
 
   @override
   String get pickPeopleFromYourContacts => 'আপনার পরিচিতি থেকে মানুষ বেছে নিন';
@@ -2582,12 +2450,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get adminOnlyAnnouncements => 'শুধু অ্যাডমিনের ঘোষণা';
 
   @override
-  String get onlyYouAndOtherAdmins =>
-      'শুধু আপনি ও অন্য অ্যাডমিনরা ঘোষণা পোস্ট করতে পারেন';
+  String get onlyYouAndOtherAdmins => 'শুধু আপনি ও অন্য অ্যাডমিনরা ঘোষণা পোস্ট করতে পারেন';
 
   @override
-  String get communitiesLiveOnThisDevice =>
-      'কমিউনিটি এই ডিভাইসে থাকে। আমন্ত্রণ লিংক তৈরি হয় ';
+  String get communitiesLiveOnThisDevice => 'কমিউনিটি এই ডিভাইসে থাকে। আমন্ত্রণ লিংক তৈরি হয় ';
 
   @override
   String get noMatchingCountry => 'মিলে যাওয়া দেশ নেই';
@@ -2611,8 +2477,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get checkingImoLIVE => 'Imo LIVE যাচাই করা হচ্ছে…';
 
   @override
-  String get couldNotReachImoLIVE =>
-      'Imo LIVE-এ পৌঁছানো যায়নি। নম্বরটি স্থানীয়ভাবে সংরক্ষিত হয়েছে।';
+  String get couldNotReachImoLIVE => 'Imo LIVE-এ পৌঁছানো যায়নি। নম্বরটি স্থানীয়ভাবে সংরক্ষিত হয়েছে।';
 
   @override
   String get thisUserIsOnImo => 'এই ব্যবহারকারী Imo LIVE-এ আছেন';
@@ -2630,29 +2495,25 @@ class AppLocalizationsBn extends AppLocalizations {
   String get capabilities => 'সামর্থ্য';
 
   @override
-  String get theseAreTheBoundariesOf =>
-      'এগুলো এই বিল্ডের সীমা। প্রতিটি সৎভাবে ';
+  String get theseAreTheBoundariesOf => 'এগুলো এই বিল্ডের সীমা। প্রতিটি সৎভাবে ';
 
   @override
   String get connected => 'সংযুক্ত';
 
   @override
-  String get emailGoogleAndFacebookSign =>
-      'ইমেইল, Google ও ফোন সাইন-ইন, প্রোফাইল ও মানুষ ';
+  String get emailGoogleAndFacebookSign => 'ইমেইল, Google ও ফোন সাইন-ইন, প্রোফাইল ও মানুষ ';
 
   @override
   String get worksOffline => 'অফলাইনে কাজ করে';
 
   @override
-  String get chatsMessagesMediaVoiceNotes =>
-      'চ্যাট, বার্তা, মিডিয়া, ভয়েস নোট, পোল, ইভেন্ট, ';
+  String get chatsMessagesMediaVoiceNotes => 'চ্যাট, বার্তা, মিডিয়া, ভয়েস নোট, পোল, ইভেন্ট, ';
 
   @override
   String get needsConfiguration => 'কনফিগারেশন দরকার';
 
   @override
-  String get cloudflareR2CredentialsTheFacebook =>
-      'Cloudflare R2 ক্রেডেনশিয়াল, পুশ ';
+  String get cloudflareR2CredentialsTheFacebook => 'Cloudflare R2 ক্রেডেনশিয়াল, পুশ ';
 
   @override
   String get whereToNext => 'এরপর কোথায়';
@@ -2670,8 +2531,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get contactUs => 'আমাদের সাথে যোগাযোগ';
 
   @override
-  String get theseActionsHandOffTo =>
-      'এই অ্যাকশনগুলো আপনার নিজের অ্যাপে চলে যায় — কিছুই পাঠানো হয় না ';
+  String get theseActionsHandOffTo => 'এই অ্যাকশনগুলো আপনার নিজের অ্যাপে চলে যায় — কিছুই পাঠানো হয় না ';
 
   @override
   String get emailSupport => 'ইমেইল সহায়তা';
@@ -2683,12 +2543,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get removePhoto => 'ছবি সরাবেন?';
 
   @override
-  String get yourProfilePhotoIsDeleted =>
-      'আপনার প্রোফাইল ছবি এই ডিভাইস থেকে মুছে যাবে।';
+  String get yourProfilePhotoIsDeleted => 'আপনার প্রোফাইল ছবি এই ডিভাইস থেকে মুছে যাবে।';
 
   @override
-  String get yourNameAboutTextAnd =>
-      'আপনার নাম, পরিচিতি ও ছবি এই ডিভাইসে সংরক্ষিত হয় এবং ';
+  String get yourNameAboutTextAnd => 'আপনার নাম, পরিচিতি ও ছবি এই ডিভাইসে সংরক্ষিত হয় এবং ';
 
   @override
   String get myDetails => 'আমার তথ্য';
@@ -2715,23 +2573,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sendYourNameAndNumber => 'আপনার নাম ও নম্বর পাঠান';
 
   @override
-  String get resultsComeLiveFromImo =>
-      'ফলাফল Imo LIVE থেকে সরাসরি আসে। যাদের এখনো ';
+  String get resultsComeLiveFromImo => 'ফলাফল Imo LIVE থেকে সরাসরি আসে। যাদের এখনো ';
 
   @override
   String get signOut2 => 'সাইন আউট করবেন?';
 
   @override
-  String get yourChatsStayOnThis =>
-      'আপনার চ্যাট এই ডিভাইসে থাকবে, কিন্তু সেগুলো ';
+  String get yourChatsStayOnThis => 'আপনার চ্যাট এই ডিভাইসে থাকবে, কিন্তু সেগুলো ';
 
   @override
-  String get twoStepVerificationAndEnd =>
-      'টু-স্টেপ যাচাই ও এন্ড-টু-এন্ড এনক্রিপশনের জন্য দরকার ';
+  String get twoStepVerificationAndEnd => 'টু-স্টেপ যাচাই ও এন্ড-টু-এন্ড এনক্রিপশনের জন্য দরকার ';
 
   @override
-  String get requireADeviceCredentialTo =>
-      'Imo LIVE খুলতে ডিভাইস ক্রেডেনশিয়াল চান';
+  String get requireADeviceCredentialTo => 'Imo LIVE খুলতে ডিভাইস ক্রেডেনশিয়াল চান';
 
   @override
   String get accentColour => 'অ্যাকসেন্ট রঙ';
@@ -2752,12 +2606,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get appIcon => 'অ্যাপ আইকন';
 
   @override
-  String get changingTheLauncherIconIs =>
-      'লঞ্চার আইকন বদলানো একটি প্ল্যাটফর্ম অ্যাকশন। পছন্দটি ';
+  String get changingTheLauncherIconIs => 'লঞ্চার আইকন বদলানো একটি প্ল্যাটফর্ম অ্যাকশন। পছন্দটি ';
 
   @override
-  String get thisContactWillBeAble =>
-      'এই পরিচিতি আবার আপনার সাথে যোগাযোগ করতে পারবে ';
+  String get thisContactWillBeAble => 'এই পরিচিতি আবার আপনার সাথে যোগাযোগ করতে পারবে ';
 
   @override
   String get small => 'ছোট';
@@ -2775,8 +2627,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get devices => 'ডিভাইস';
 
   @override
-  String get unlinkingRemovesADeviceFrom =>
-      'আনলিংক করলে ডিভাইসটি এই তালিকা থেকে মুছে যায়। যেহেতু পেয়ারিং ';
+  String get unlinkingRemovesADeviceFrom => 'আনলিংক করলে ডিভাইসটি এই তালিকা থেকে মুছে যায়। যেহেতু পেয়ারিং ';
 
   @override
   String get theDeviceIsRemovedFrom => 'ডিভাইসটি এই স্থানীয় থেকে মুছে যায় ';
@@ -2806,8 +2657,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get appExperience => 'অ্যাপ অভিজ্ঞতা';
 
   @override
-  String get theSwitchMatchesTheSystem =>
-      '\"সিস্টেম\" নির্বাচিত থাকলে সুইচটি সিস্টেম অনুসরণ করে। ';
+  String get theSwitchMatchesTheSystem => '\"সিস্টেম\" নির্বাচিত থাকলে সুইচটি সিস্টেম অনুসরণ করে। ';
 
   @override
   String get darkMode => 'ডার্ক মোড';
@@ -2828,8 +2678,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get nothingStoredYet => 'এখনো কিছু সংরক্ষিত নেই';
 
   @override
-  String get photosVideosVoiceNotesAnd =>
-      'আপনার পাঠানো বা পাওয়া ছবি, ভিডিও, ভয়েস নোট ও ডকুমেন্ট ';
+  String get photosVideosVoiceNotesAnd => 'আপনার পাঠানো বা পাওয়া ছবি, ভিডিও, ভয়েস নোট ও ডকুমেন্ট ';
 
   @override
   String get breakdown => 'বিস্তারিত';
@@ -2841,8 +2690,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get purgeExpiredMessages => 'মেয়াদোত্তীর্ণ বার্তা মুছুন';
 
   @override
-  String get removesMessagesWhoseDisappearingTimer =>
-      'যেসব বার্তার অদৃশ্য হওয়ার সময় ইতিমধ্যে ';
+  String get removesMessagesWhoseDisappearingTimer => 'যেসব বার্তার অদৃশ্য হওয়ার সময় ইতিমধ্যে ';
 
   @override
   String get addACaption => 'ক্যাপশন যোগ করুন…';
@@ -2854,23 +2702,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get reply2 => 'উত্তর…';
 
   @override
-  String get shareATextPhotoOr =>
-      'একটি টেক্সট, ছবি বা ভিডিও আপডেট শেয়ার করুন। এটি অদৃশ্য হয় ';
+  String get shareATextPhotoOr => 'একটি টেক্সট, ছবি বা ভিডিও আপডেট শেয়ার করুন। এটি অদৃশ্য হয় ';
 
   @override
-  String get updatesAreStoredOnThis =>
-      'আপডেট শুধু এই ডিভাইসে সংরক্ষিত হয়। ২৪ ঘণ্টা পরে মেয়াদ শেষ ';
+  String get updatesAreStoredOnThis => 'আপডেট শুধু এই ডিভাইসে সংরক্ষিত হয়। ২৪ ঘণ্টা পরে মেয়াদ শেষ ';
 
   @override
-  String get followBroadcastChannelsYouSubscribe =>
-      'আপনি যে সম্প্রচার চ্যানেল সাবস্ক্রাইব করেন সেগুলো ফলো করুন';
+  String get followBroadcastChannelsYouSubscribe => 'আপনি যে সম্প্রচার চ্যানেল সাবস্ক্রাইব করেন সেগুলো ফলো করুন';
 
   @override
   String get createAChannel => 'একটি চ্যানেল তৈরি করুন';
 
   @override
-  String get broadcastToFollowersWithoutA =>
-      'গ্রুপ ছাড়াই ফলোয়ারদের কাছে সম্প্রচার করুন';
+  String get broadcastToFollowersWithoutA => 'গ্রুপ ছাড়াই ফলোয়ারদের কাছে সম্প্রচার করুন';
 
   @override
   String get groupNotifications => 'গ্রুপ নোটিফিকেশন';
@@ -2882,8 +2726,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get includeMessageTextInThe => 'নোটিফিকেশনে বার্তার লেখা রাখুন';
 
   @override
-  String get notifyWhenSomeoneReactsTo =>
-      'কেউ আপনার বার্তায় রিঅ্যাক্ট করলে জানান';
+  String get notifyWhenSomeoneReactsTo => 'কেউ আপনার বার্তায় রিঅ্যাক্ট করলে জানান';
 
   @override
   String get callsStatus => 'কল ও স্ট্যাটাস';
@@ -2913,8 +2756,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get readReceipts => 'পঠিত রসিদ';
 
   @override
-  String get sendDeliveryAndReadTicks =>
-      'ডেলিভারি ও পঠিত টিক পাঠান। এটি বন্ধ করলে ';
+  String get sendDeliveryAndReadTicks => 'ডেলিভারি ও পঠিত টিক পাঠান। এটি বন্ধ করলে ';
 
   @override
   String get whoCanAddMeTo => 'আমাকে কে গ্রুপে যোগ করতে পারবে';
@@ -2926,44 +2768,34 @@ class AppLocalizationsBn extends AppLocalizations {
   String get pickAnExistingPhotoOr => 'বিদ্যমান ছবি বা ভিডিও বাছুন';
 
   @override
-  String get openTheLinkInThe2 =>
-      'এই ঠিকানা নিশ্চিত করতে ইমেইলের লিংকটি খুলুন। এই স্ক্রিনটি নিজে থেকেই শেষ হয়ে যায়।';
+  String get openTheLinkInThe2 => 'এই ঠিকানা নিশ্চিত করতে ইমেইলের লিংকটি খুলুন। এই স্ক্রিনটি নিজে থেকেই শেষ হয়ে যায়।';
 
   @override
-  String get everyCallEntryOnThis2 =>
-      'এই ডিভাইসের প্রতিটি কল এন্ট্রি মুছে যাবে। পরিচিতি ও নির্ধারিত কল সংরক্ষিত থাকবে।';
+  String get everyCallEntryOnThis2 => 'এই ডিভাইসের প্রতিটি কল এন্ট্রি মুছে যাবে। পরিচিতি ও নির্ধারিত কল সংরক্ষিত থাকবে।';
 
   @override
-  String get addContactsThenStarThe2 =>
-      'পরিচিতি যোগ করুন, তারপর যাদের সবচেয়ে বেশি কল করেন তাদের স্টার করুন যাতে এখান থেকে তাদের কাছে পৌঁছাতে পারেন।';
+  String get addContactsThenStarThe2 => 'পরিচিতি যোগ করুন, তারপর যাদের সবচেয়ে বেশি কল করেন তাদের স্টার করুন যাতে এখান থেকে তাদের কাছে পৌঁছাতে পারেন।';
 
   @override
-  String get tapEditAndStarThe2 =>
-      'এডিট-এ ট্যাপ করে যাদের সবচেয়ে বেশি কল করেন তাদের স্টার করুন। দ্রুত ডায়ালের জন্য তারা এখানে দেখা যাবে।';
+  String get tapEditAndStarThe2 => 'এডিট-এ ট্যাপ করে যাদের সবচেয়ে বেশি কল করেন তাদের স্টার করুন। দ্রুত ডায়ালের জন্য তারা এখানে দেখা যাবে।';
 
   @override
-  String get remindersFireFromTheLocal2 =>
-      'রিমাইন্ডারগুলো স্থানীয় বিজ্ঞপ্তি প্লাগইন থেকে চলে। এগুলো আমন্ত্রণ নয় — অন্য ব্যক্তিকে জানানো হয় না।';
+  String get remindersFireFromTheLocal2 => 'রিমাইন্ডারগুলো স্থানীয় বিজ্ঞপ্তি প্লাগইন থেকে চলে। এগুলো আমন্ত্রণ নয় — অন্য ব্যক্তিকে জানানো হয় না।';
 
   @override
-  String get shareTheSecretKeyWith2 =>
-      'যাদের ঢুকতে দিতে চান তাদের সঙ্গে গোপন কী শেয়ার করুন। তাদের অনুরোধ এখানে দেখা যাবে।';
+  String get shareTheSecretKeyWith2 => 'যাদের ঢুকতে দিতে চান তাদের সঙ্গে গোপন কী শেয়ার করুন। তাদের অনুরোধ এখানে দেখা যাবে।';
 
   @override
-  String get itIsNotOnThis2 =>
-      'এটি এই ডিভাইসে নেই এবং সার্ভার থেকে লোড করা যায়নি। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+  String get itIsNotOnThis2 => 'এটি এই ডিভাইসে নেই এবং সার্ভার থেকে লোড করা যায়নি। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
 
   @override
-  String get postsAreOnlyVisibleTo2 =>
-      'পোস্ট কেবল সদস্যরাই দেখতে পান। একটি অনুরোধ পাঠান, মালিক সিদ্ধান্ত নেবেন আপনাকে ঢুকতে দেবেন কি না।';
+  String get postsAreOnlyVisibleTo2 => 'পোস্ট কেবল সদস্যরাই দেখতে পান। একটি অনুরোধ পাঠান, মালিক সিদ্ধান্ত নেবেন আপনাকে ঢুকতে দেবেন কি না।';
 
   @override
-  String get thisChannelIsReservedFor2 =>
-      'এই চ্যানেলটি প্রিমিয়াম সদস্যদের জন্য সংরক্ষিত। বিজ্ঞাপন দেখে পয়েন্ট অর্জন করুন, তারপর প্রিমিয়ামের জন্য ভাঙিয়ে এটি পড়ুন।';
+  String get thisChannelIsReservedFor2 => 'এই চ্যানেলটি প্রিমিয়াম সদস্যদের জন্য সংরক্ষিত। বিজ্ঞাপন দেখে পয়েন্ট অর্জন করুন, তারপর প্রিমিয়ামের জন্য ভাঙিয়ে এটি পড়ুন।';
 
   @override
-  String get yourChannelMeetsTheRequirements2 =>
-      'আপনার চ্যানেল শর্ত পূরণ করে। একজন পর্যালোচক এটি যাচাই করবেন এবং সিদ্ধান্ত আপনার জানানো হবে।';
+  String get yourChannelMeetsTheRequirements2 => 'আপনার চ্যানেল শর্ত পূরণ করে। একজন পর্যালোচক এটি যাচাই করবেন এবং সিদ্ধান্ত আপনার জানানো হবে।';
 
   @override
   String get premiumOnly => 'শুধুমাত্র প্রিমিয়াম';
@@ -2972,48 +2804,37 @@ class AppLocalizationsBn extends AppLocalizations {
   String get coverImage => 'কভার ছবি';
 
   @override
-  String get tapToCopyThisIs =>
-      'কপি করতে ট্যাপ করুন — এটি কেবল এই একবারই দেখানো হচ্ছে';
+  String get tapToCopyThisIs => 'কপি করতে ট্যাপ করুন — এটি কেবল এই একবারই দেখানো হচ্ছে';
 
   @override
-  String get changesAreWrittenToFirestore2 =>
-      'পরিবর্তনগুলো সঙ্গে সঙ্গে ফায়ারস্টোরে লেখা হয়। অনুসারীরা তাদের পরবর্তী সিঙ্কে তা দেখতে পান।';
+  String get changesAreWrittenToFirestore2 => 'পরিবর্তনগুলো সঙ্গে সঙ্গে ফায়ারস্টোরে লেখা হয়। অনুসারীরা তাদের পরবর্তী সিঙ্কে তা দেখতে পান।';
 
   @override
-  String get everyoneCurrentlyUsingTheOld2 =>
-      'যারা এখন পুরোনো কী ব্যবহার করছেন তাদের অ্যাক্সেস বহাল থাকবে, কিন্তু পুরোনো কী দিয়ে আর যোগদানের অনুরোধ করা যাবে না।';
+  String get everyoneCurrentlyUsingTheOld2 => 'যারা এখন পুরোনো কী ব্যবহার করছেন তাদের অ্যাক্সেস বহাল থাকবে, কিন্তু পুরোনো কী দিয়ে আর যোগদানের অনুরোধ করা যাবে না।';
 
   @override
-  String get aReviewerWillCheckThat2 =>
-      'একজন পর্যালোচক যাচাই করবেন যে আপনার চ্যানেল দর্শক ও এনগেজমেন্টের শর্ত পূরণ করে।';
+  String get aReviewerWillCheckThat2 => 'একজন পর্যালোচক যাচাই করবেন যে আপনার চ্যানেল দর্শক ও এনগেজমেন্টের শর্ত পূরণ করে।';
 
   @override
-  String get channelsAppearHereOnceThey2 =>
-      'চ্যানেলগুলো অনুসারী ও প্রতিক্রিয়ার সীমা পেরিয়ে আবেদন করলে এখানে দেখা যাবে।';
+  String get channelsAppearHereOnceThey2 => 'চ্যানেলগুলো অনুসারী ও প্রতিক্রিয়ার সীমা পেরিয়ে আবেদন করলে এখানে দেখা যাবে।';
 
   @override
-  String get a12CharacterSecretKey2 =>
-      'চ্যানেল তৈরি করার সময় একটি ১২ অক্ষরের গোপন কী তৈরি হয়। এটি আপনি একবারই দেখতে পাবেন — যাদের ঢুকতে দিতে চান তাদের সঙ্গে এটি শেয়ার করুন।';
+  String get a12CharacterSecretKey2 => 'চ্যানেল তৈরি করার সময় একটি ১২ অক্ষরের গোপন কী তৈরি হয়। এটি আপনি একবারই দেখতে পাবেন — যাদের ঢুকতে দিতে চান তাদের সঙ্গে এটি শেয়ার করুন।';
 
   @override
-  String get archivedChatsAreHiddenFrom2 =>
-      'আর্কাইভ করা চ্যাট মূল তালিকা থেকে লুকানো থাকে কিন্তু তাদের সব বার্তা সংরক্ষিত থাকে। একটি চ্যাট সোয়াইপ করে আর্কাইভ বেছে নিলে তা এখানে চলে আসবে।';
+  String get archivedChatsAreHiddenFrom2 => 'আর্কাইভ করা চ্যাট মূল তালিকা থেকে লুকানো থাকে কিন্তু তাদের সব বার্তা সংরক্ষিত থাকে। একটি চ্যাট সোয়াইপ করে আর্কাইভ বেছে নিলে তা এখানে চলে আসবে।';
 
   @override
-  String get aBroadcastSendsAnIndividual2 =>
-      'ব্রডকাস্ট প্রতিটি প্রাপকের কাছে আপনার বার্তার আলাদা কপি পাঠায়। উত্তর সাধারণ এক-একটি চ্যাট হিসেবে আসে।';
+  String get aBroadcastSendsAnIndividual2 => 'ব্রডকাস্ট প্রতিটি প্রাপকের কাছে আপনার বার্তার আলাদা কপি পাঠায়। উত্তর সাধারণ এক-একটি চ্যাট হিসেবে আসে।';
 
   @override
-  String get createAListOfUp2 =>
-      'সর্বোচ্চ ২৫৬ জন প্রাপকের একটি তালিকা তৈরি করুন এবং একবারে সবার কাছে বার্তা পাঠান। প্রত্যেকে একটি ব্যক্তিগত কপি পায়।';
+  String get createAListOfUp2 => 'সর্বোচ্চ ২৫৬ জন প্রাপকের একটি তালিকা তৈরি করুন এবং একবারে সবার কাছে বার্তা পাঠান। প্রত্যেকে একটি ব্যক্তিগত কপি পায়।';
 
   @override
-  String get theListIsDeletedExisting2 =>
-      'তালিকাটি মুছে যাবে। এর প্রাপকদের সঙ্গে বিদ্যমান কথোপকথন সংরক্ষিত থাকবে।';
+  String get theListIsDeletedExisting2 => 'তালিকাটি মুছে যাবে। এর প্রাপকদের সঙ্গে বিদ্যমান কথোপকথন সংরক্ষিত থাকবে।';
 
   @override
-  String get localStorageCouldNotBe2 =>
-      'স্থানীয় স্টোরেজ খোলা যায়নি, তাই আপনার চ্যাট, পরিচিতি ও সেটিংস সংরক্ষিত হচ্ছে না। অ্যাপ বন্ধ হলে বার্তাগুলো হারিয়ে যাবে।';
+  String get localStorageCouldNotBe2 => 'স্থানীয় স্টোরেজ খোলা যায়নি, তাই আপনার চ্যাট, পরিচিতি ও সেটিংস সংরক্ষিত হচ্ছে না। অ্যাপ বন্ধ হলে বার্তাগুলো হারিয়ে যাবে।';
 
   @override
   String get fromMe => 'আমার থেকে';
@@ -3025,128 +2846,97 @@ class AppLocalizationsBn extends AppLocalizations {
   String get read => 'পড়া হয়েছে';
 
   @override
-  String get thisMessageIsQueuedOn2 =>
-      'এই বার্তাটি আপনার ডিভাইসে সারিবদ্ধ আছে এবং এখনও পাঠানো হয়নি। আপনি অনলাইনে ফিরলেই এটি নিজে থেকে চলে যাবে।';
+  String get thisMessageIsQueuedOn2 => 'এই বার্তাটি আপনার ডিভাইসে সারিবদ্ধ আছে এবং এখনও পাঠানো হয়নি। আপনি অনলাইনে ফিরলেই এটি নিজে থেকে চলে যাবে।';
 
   @override
-  String get allMessagesInThisConversation2 =>
-      'এই কথোপকথনের সব বার্তা এই ডিভাইস থেকে সরানো হবে। এটি ফেরানো যাবে না।';
+  String get allMessagesInThisConversation2 => 'এই কথোপকথনের সব বার্তা এই ডিভাইস থেকে সরানো হবে। এটি ফেরানো যাবে না।';
 
   @override
-  String get aCommunityGroupsRelatedChats2 =>
-      'কমিউনিটি সম্পর্কিত চ্যাটগুলোকে একটি ঘোষণা চ্যানেলের অধীনে একত্র করে। ক্লাব, ক্লাস বা পাড়া গোছানোর জন্য একটি তৈরি করুন।';
+  String get aCommunityGroupsRelatedChats2 => 'কমিউনিটি সম্পর্কিত চ্যাটগুলোকে একটি ঘোষণা চ্যানেলের অধীনে একত্র করে। ক্লাব, ক্লাস বা পাড়া গোছানোর জন্য একটি তৈরি করুন।';
 
   @override
-  String get theCommunityAndItsAnnouncement2 =>
-      'কমিউনিটি ও তার ঘোষণা গ্রুপ এই ডিভাইস থেকে সরানো হবে। সদস্যদের চ্যাট সংরক্ষিত থাকবে।';
+  String get theCommunityAndItsAnnouncement2 => 'কমিউনিটি ও তার ঘোষণা গ্রুপ এই ডিভাইস থেকে সরানো হবে। সদস্যদের চ্যাট সংরক্ষিত থাকবে।';
 
   @override
-  String get channelsBroadcastOneWayTo2 =>
-      'চ্যানেলগুলো অনুসারীদের কাছে একমুখী সম্প্রচার করে। একটি তৈরি করুন, বা একটি চ্যানেল অনুসরণ করে তার আপডেট এখানে দেখুন।';
+  String get channelsBroadcastOneWayTo2 => 'চ্যানেলগুলো অনুসারীদের কাছে একমুখী সম্প্রচার করে। একটি তৈরি করুন, বা একটি চ্যানেল অনুসরণ করে তার আপডেট এখানে দেখুন।';
 
   @override
-  String get everyoneInTheCommunityReceives2 =>
-      'কমিউনিটির সবাই ঘোষণা বার্তা পায়। কেবল অ্যাডমিনরা পোস্ট করতে পারেন।';
+  String get everyoneInTheCommunityReceives2 => 'কমিউনিটির সবাই ঘোষণা বার্তা পায়। কেবল অ্যাডমিনরা পোস্ট করতে পারেন।';
 
   @override
-  String get theCommunityIsRemovedFrom2 =>
-      'কমিউনিটি এই ডিভাইস থেকে সরানো হবে। এর ভিতরের গ্রুপগুলো সাধারণ গ্রুপ হিসেবে থাকবে।';
+  String get theCommunityIsRemovedFrom2 => 'কমিউনিটি এই ডিভাইস থেকে সরানো হবে। এর ভিতরের গ্রুপগুলো সাধারণ গ্রুপ হিসেবে থাকবে।';
 
   @override
-  String get everyoneYouAddBecomesA2 =>
-      'আপনি যাকে যোগ করবেন সে ঘোষণা গ্রুপের সদস্য হবে। পরে আরও মানুষ যোগ করতে পারবেন।';
+  String get everyoneYouAddBecomesA2 => 'আপনি যাকে যোগ করবেন সে ঘোষণা গ্রুপের সদস্য হবে। পরে আরও মানুষ যোগ করতে পারবেন।';
 
   @override
-  String get communitiesLiveOnThisDevice2 =>
-      'কমিউনিটিগুলো এই ডিভাইসে থাকে। আমন্ত্রণ লিংক স্থানীয়ভাবে তৈরি হয়, তাই অন্য কেউ এখনও সেগুলো খুলতে পারে না।';
+  String get communitiesLiveOnThisDevice2 => 'কমিউনিটিগুলো এই ডিভাইসে থাকে। আমন্ত্রণ লিংক স্থানীয়ভাবে তৈরি হয়, তাই অন্য কেউ এখনও সেগুলো খুলতে পারে না।';
 
   @override
-  String get thisPersonIsNotIn2 =>
-      'এই ব্যক্তি আপনার পরিচিতিতে নেই এবং তার Imo LIVE অ্যাকাউন্ট নেই, তাই দেখানোর মতো কোনো প্রোফাইল নেই।';
+  String get thisPersonIsNotIn2 => 'এই ব্যক্তি আপনার পরিচিতিতে নেই এবং তার Imo LIVE অ্যাকাউন্ট নেই, তাই দেখানোর মতো কোনো প্রোফাইল নেই।';
 
   @override
-  String get mediaAttachesToConversationsOpen2 =>
-      'মিডিয়া কথোপকথনের সঙ্গে যুক্ত হয়। চ্যাট খুলে সার্চ আইকন ব্যবহার করে এই ব্যক্তির ছবি, ভিডিও, লিংক ও নথি ফিল্টার করুন।';
+  String get mediaAttachesToConversationsOpen2 => 'মিডিয়া কথোপকথনের সঙ্গে যুক্ত হয়। চ্যাট খুলে সার্চ আইকন ব্যবহার করে এই ব্যক্তির ছবি, ভিডিও, লিংক ও নথি ফিল্টার করুন।';
 
   @override
-  String get openTheChatAndChoose2 =>
-      'এই সেটিং পরিবর্তন করতে চ্যাট খুলে মেনু থেকে অদৃশ্য হওয়া বার্তা বেছে নিন। এটি কেবল নতুন বার্তায় প্রযোজ্য।';
+  String get openTheChatAndChoose2 => 'এই সেটিং পরিবর্তন করতে চ্যাট খুলে মেনু থেকে অদৃশ্য হওয়া বার্তা বেছে নিন। এটি কেবল নতুন বার্তায় প্রযোজ্য।';
 
   @override
-  String get theContactIsRemovedFrom2 =>
-      'পরিচিতিটি আপনার তালিকা থেকে সরানো হবে। বিদ্যমান চ্যাটগুলো আগের জায়গায় থাকবে।';
+  String get theContactIsRemovedFrom2 => 'পরিচিতিটি আপনার তালিকা থেকে সরানো হবে। বিদ্যমান চ্যাটগুলো আগের জায়গায় থাকবে।';
 
   @override
-  String get importNamesAndNumbersFrom =>
-      'আপনার অ্যাড্রেস বুক থেকে নাম ও নম্বর আমদানি করুন';
+  String get importNamesAndNumbersFrom => 'আপনার অ্যাড্রেস বুক থেকে নাম ও নম্বর আমদানি করুন';
 
   @override
-  String get imoLIVECouldNotRead2 =>
-      'Imo LIVE আপনার ডিভাইসের পরিচিতি পড়তে পারেনি। আপনার সিস্টেম সেটিংসে পরিচিতির অনুমতি দিন এবং আবার চেষ্টা করুন।';
+  String get imoLIVECouldNotRead2 => 'Imo LIVE আপনার ডিভাইসের পরিচিতি পড়তে পারেনি। আপনার সিস্টেম সেটিংসে পরিচিতির অনুমতি দিন এবং আবার চেষ্টা করুন।';
 
   @override
-  String get newMessagesInThisChat2 =>
-      'এই চ্যাটের নতুন বার্তাগুলো নির্বাচিত সময়ের পরে অদৃশ্য হয়ে যাবে। পরিবর্তনের আগে পাঠানো বার্তাগুলো তাদের মূল টাইমার ধরে রাখে।';
+  String get newMessagesInThisChat2 => 'এই চ্যাটের নতুন বার্তাগুলো নির্বাচিত সময়ের পরে অদৃশ্য হয়ে যাবে। পরিবর্তনের আগে পাঠানো বার্তাগুলো তাদের মূল টাইমার ধরে রাখে।';
 
   @override
-  String get openTheConversationAndTap2 =>
-      'কথোপকথন খুলে সার্চ আইকনে ট্যাপ করে এই গ্রুপে শেয়ার করা মিডিয়া, লিংক ও নথি ফিল্টার করুন।';
+  String get openTheConversationAndTap2 => 'কথোপকথন খুলে সার্চ আইকনে ট্যাপ করে এই গ্রুপে শেয়ার করা মিডিয়া, লিংক ও নথি ফিল্টার করুন।';
 
   @override
-  String get theInviteCodeIsGenerated2 =>
-      'আমন্ত্রণ কোড স্থানীয়ভাবে তৈরি হয়। লিংকের মাধ্যমে যোগ দিতে কোডটিকে গ্রুপে রূপান্তর করার জন্য একটি সার্ভার প্রয়োজন।';
+  String get theInviteCodeIsGenerated2 => 'আমন্ত্রণ কোড স্থানীয়ভাবে তৈরি হয়। লিংকের মাধ্যমে যোগ দিতে কোডটিকে গ্রুপে রূপান্তর করার জন্য একটি সার্ভার প্রয়োজন।';
 
   @override
-  String get invalidatingAnInviteLinkIs2 =>
-      'আমন্ত্রণ লিংক বাতিল করা একটি সার্ভার কাজ — পুরোনো কোড বিশ্বব্যাপী অকার্যকর হতে হবে। স্থানীয়ভাবে নতুন কোড তৈরি করা যায় কিন্তু পুরোনোটি কার্যকর থাকে।';
+  String get invalidatingAnInviteLinkIs2 => 'আমন্ত্রণ লিংক বাতিল করা একটি সার্ভার কাজ — পুরোনো কোড বিশ্বব্যাপী অকার্যকর হতে হবে। স্থানীয়ভাবে নতুন কোড তৈরি করা যায় কিন্তু পুরোনোটি কার্যকর থাকে।';
 
   @override
-  String get youLeaveTheGroupYour2 =>
-      'আপনি গ্রুপ ছেড়ে দেবেন। আপনি চ্যাটটি মুছে না ফেললে আপনার বিদ্যমান বার্তাগুলো কথোপকথনে থেকে যাবে।';
+  String get youLeaveTheGroupYour2 => 'আপনি গ্রুপ ছেড়ে দেবেন। আপনি চ্যাটটি মুছে না ফেললে আপনার বিদ্যমান বার্তাগুলো কথোপকথনে থেকে যাবে।';
 
   @override
-  String get theGroupItsMembersAnd2 =>
-      'গ্রুপ, তার সদস্য ও প্রতিটি বার্তা এই ডিভাইস থেকে স্থায়ীভাবে মুছে যাবে।';
+  String get theGroupItsMembersAnd2 => 'গ্রুপ, তার সদস্য ও প্রতিটি বার্তা এই ডিভাইস থেকে স্থায়ীভাবে মুছে যাবে।';
 
   @override
-  String get aGroupNeedsAtLeast2 =>
-      'একটি গ্রুপের জন্য অন্তত আরেকজন প্রয়োজন। আপনাকে স্রষ্টা ও প্রথম অ্যাডমিন হিসেবে যোগ করা হবে।';
+  String get aGroupNeedsAtLeast2 => 'একটি গ্রুপের জন্য অন্তত আরেকজন প্রয়োজন। আপনাকে স্রষ্টা ও প্রথম অ্যাডমিন হিসেবে যোগ করা হবে।';
 
   @override
-  String get adminsCanAddOrRemove2 =>
-      'অ্যাডমিনরা সদস্য যোগ বা সরাতে, গ্রুপের ছবি, নাম ও বিবরণ সম্পাদনা করতে এবং বার্তা মুছতে পারেন। সদস্যরা বার্তা পাঠাতে ও মিডিয়া শেয়ার করতে পারেন।';
+  String get adminsCanAddOrRemove2 => 'অ্যাডমিনরা সদস্য যোগ বা সরাতে, গ্রুপের ছবি, নাম ও বিবরণ সম্পাদনা করতে এবং বার্তা মুছতে পারেন। সদস্যরা বার্তা পাঠাতে ও মিডিয়া শেয়ার করতে পারেন।';
 
   @override
-  String get imoLIVESyncsThroughFirebase2 =>
-      'Imo LIVE Firebase — Authentication ও Cloud Firestore — দিয়ে সিঙ্ক করে এবং মিডিয়া Cloudflare R2-তে সংরক্ষণ করে। ডিভাইসের একটি কপি সংযোগ ছাড়াই প্রতিটি স্ক্রিন চালু রাখে।';
+  String get imoLIVESyncsThroughFirebase2 => 'Imo LIVE Firebase — Authentication ও Cloud Firestore — দিয়ে সিঙ্ক করে এবং মিডিয়া Cloudflare R2-তে সংরক্ষণ করে। ডিভাইসের একটি কপি সংযোগ ছাড়াই প্রতিটি স্ক্রিন চালু রাখে।';
 
   @override
-  String get theseAreTheBoundariesOf2 =>
-      'এগুলো এই বিল্ডের সীমা। প্রতিটি সৎভাবে বলে দেয় আজ কী কাজ করে আর কী এখনও কনফিগার করা প্রয়োজন।';
+  String get theseAreTheBoundariesOf2 => 'এগুলো এই বিল্ডের সীমা। প্রতিটি সৎভাবে বলে দেয় আজ কী কাজ করে আর কী এখনও কনফিগার করা প্রয়োজন।';
 
   @override
-  String get emailGoogleAndFacebookSign2 =>
-      'ইমেইল, Google ও ফোন সাইন-ইন, প্রোফাইল ও পরিচিতি ডিরেক্টরি, রিয়েল-টাইম চ্যাট ও বার্তা সিঙ্ক, এবং Cloudflare R2 দিয়ে মিডিয়া আপলোড';
+  String get emailGoogleAndFacebookSign2 => 'ইমেইল, Google ও ফোন সাইন-ইন, প্রোফাইল ও পরিচিতি ডিরেক্টরি, রিয়েল-টাইম চ্যাট ও বার্তা সিঙ্ক, এবং Cloudflare R2 দিয়ে মিডিয়া আপলোড';
 
   @override
-  String get chatsMessagesMediaVoiceNotes2 =>
-      'চ্যাট, বার্তা, মিডিয়া, ভয়েস নোট, পোল, ইভেন্ট, অবস্থান শেয়ার, অবস্থা, চ্যানেল, কমিউনিটি, কল UI, সেটিংস ও স্থানীয়করণ';
+  String get chatsMessagesMediaVoiceNotes2 => 'চ্যাট, বার্তা, মিডিয়া, ভয়েস নোট, পোল, ইভেন্ট, অবস্থান শেয়ার, অবস্থা, চ্যানেল, কমিউনিটি, কল UI, সেটিংস ও স্থানীয়করণ';
 
   @override
-  String get cloudflareR2CredentialsTheFacebook2 =>
-      'Cloudflare R2 ক্রেডেনশিয়াল, পুশ ডেলিভারি, ডিভাইস পেয়ারিং ও এন্ড-টু-এন্ড এনক্রিপশন';
+  String get cloudflareR2CredentialsTheFacebook2 => 'Cloudflare R2 ক্রেডেনশিয়াল, পুশ ডেলিভারি, ডিভাইস পেয়ারিং ও এন্ড-টু-এন্ড এনক্রিপশন';
 
   @override
-  String get everyScreenDependsOnAn2 =>
-      'প্রতিটি স্ক্রিন একটি বিমূর্ত রিপোজিটরি ইন্টারফেসের উপর নির্ভর করে। চ্যাট ও বার্তা Hive ক্যাশ থেকে পড়া হয় এবং Cloud Firestore থেকে মিরর করা হয়, আর মিডিয়া একই MediaRepository ইন্টারফেস দিয়ে Cloudflare R2-তে যায় — তাই কোনো স্ক্রিন সরাসরি নেটওয়ার্কের সঙ্গে কথা বলে না।';
+  String get everyScreenDependsOnAn2 => 'প্রতিটি স্ক্রিন একটি বিমূর্ত রিপোজিটরি ইন্টারফেসের উপর নির্ভর করে। চ্যাট ও বার্তা Hive ক্যাশ থেকে পড়া হয় এবং Cloud Firestore থেকে মিরর করা হয়, আর মিডিয়া একই MediaRepository ইন্টারফেস দিয়ে Cloudflare R2-তে যায় — তাই কোনো স্ক্রিন সরাসরি নেটওয়ার্কের সঙ্গে কথা বলে না।';
 
   @override
-  String get everythingBelowAlreadyHasIts2 =>
-      'নিচের সবকিছুর ইন্টারফেস ও স্থানীয় বাস্তবায়ন ইতিমধ্যেই রয়েছে, তাই এটি যুক্ত করা সংযোজনমূলক — কোনো স্ক্রিন পরিবর্তন করতে হবে না।';
+  String get everythingBelowAlreadyHasIts2 => 'নিচের সবকিছুর ইন্টারফেস ও স্থানীয় বাস্তবায়ন ইতিমধ্যেই রয়েছে, তাই এটি যুক্ত করা সংযোজনমূলক — কোনো স্ক্রিন পরিবর্তন করতে হবে না।';
 
   @override
-  String get theseActionsHandOffTo2 =>
-      'এই কাজগুলো আপনার নিজের অ্যাপে হস্তান্তরিত হয় — Imo LIVE নিজে কিছু পাঠায় না।';
+  String get theseActionsHandOffTo2 => 'এই কাজগুলো আপনার নিজের অ্যাপে হস্তান্তরিত হয় — Imo LIVE নিজে কিছু পাঠায় না।';
 
   @override
   String get openTheWebsite => 'ওয়েবসাইট খুলুন';
@@ -3155,8 +2945,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get diagnostics => 'ডায়াগনস্টিকস';
 
   @override
-  String get locallyStoredCountsAndStorage =>
-      'ডিভাইসে সংরক্ষিত সংখ্যা ও স্টোরেজ ব্যবহার';
+  String get locallyStoredCountsAndStorage => 'ডিভাইসে সংরক্ষিত সংখ্যা ও স্টোরেজ ব্যবহার';
 
   @override
   String get legal => 'আইনি';
@@ -3168,201 +2957,154 @@ class AppLocalizationsBn extends AppLocalizations {
   String get privacyPolicy => 'গোপনীয়তা নীতি';
 
   @override
-  String get imoLIVECollectsNoAnalytics =>
-      'Imo LIVE কোনো অ্যানালিটিক্স সংগ্রহ করে না। আপনার প্রোফাইল, চ্যাট ও বার্তা এই ডিভাইসে সংরক্ষিত থাকে এবং আপনার অ্যাকাউন্টের অধীনে Cloud Firestore-এ সিঙ্ক করা হয়; মিডিয়া Cloudflare R2-তে আপলোড করা হয় যাতে প্রাপক তা আনতে পারে। অ্যাপ মুছে দিলে ডিভাইসের কপি মুছে যায় কিন্তু আপনার অ্যাকাউন্টের ডেটা যায় না — আগে অ্যাকাউন্ট সেটিংস থেকে তা মুছে ফেলুন।';
+  String get imoLIVECollectsNoAnalytics => 'Imo LIVE কোনো অ্যানালিটিক্স সংগ্রহ করে না। আপনার প্রোফাইল, চ্যাট ও বার্তা এই ডিভাইসে সংরক্ষিত থাকে এবং আপনার অ্যাকাউন্টের অধীনে Cloud Firestore-এ সিঙ্ক করা হয়; মিডিয়া Cloudflare R2-তে আপলোড করা হয় যাতে প্রাপক তা আনতে পারে। অ্যাপ মুছে দিলে ডিভাইসের কপি মুছে যায় কিন্তু আপনার অ্যাকাউন্টের ডেটা যায় না — আগে অ্যাকাউন্ট সেটিংস থেকে তা মুছে ফেলুন।';
 
   @override
-  String get theCodeCarriesAnImo2 =>
-      'কোডটিতে একটি Imo LIVE শনাক্তকারী থাকে। অন্য কেউ সার্চে আপনার ইউজার আইডি খুঁজতে পারে, তবে অ্যাপের ভিতর থেকে কোড স্ক্যান করা এখনও সমর্থিত নয়।';
+  String get theCodeCarriesAnImo2 => 'কোডটিতে একটি Imo LIVE শনাক্তকারী থাকে। অন্য কেউ সার্চে আপনার ইউজার আইডি খুঁজতে পারে, তবে অ্যাপের ভিতর থেকে কোড স্ক্যান করা এখনও সমর্থিত নয়।';
 
   @override
-  String get optionalHandleOthersCanSearch =>
-      'ঐচ্ছিক হ্যান্ডেল যা অন্যরা খুঁজতে পারবে';
+  String get optionalHandleOthersCanSearch => 'ঐচ্ছিক হ্যান্ডেল যা অন্যরা খুঁজতে পারবে';
 
   @override
-  String get yourNameAboutTextAnd2 =>
-      'আপনার নাম, পরিচিতি টেক্সট ও ছবি এই ডিভাইসে সংরক্ষিত হয় এবং আপনার Imo LIVE অ্যাকাউন্টে প্রকাশিত হয় যাতে পরিচিতিরা আপনাকে খুঁজে পায়। নির্দ্বিধায় সম্পাদনা করুন — আপনার প্রোফাইলের বাইরে কিছুই শেয়ার হয় না।';
+  String get yourNameAboutTextAnd2 => 'আপনার নাম, পরিচিতি টেক্সট ও ছবি এই ডিভাইসে সংরক্ষিত হয় এবং আপনার Imo LIVE অ্যাকাউন্টে প্রকাশিত হয় যাতে পরিচিতিরা আপনাকে খুঁজে পায়। নির্দ্বিধায় সম্পাদনা করুন — আপনার প্রোফাইলের বাইরে কিছুই শেয়ার হয় না।';
 
   @override
-  String get resultsComeLiveFromImo2 =>
-      'ফলাফল Imo LIVE থেকে সরাসরি আসে। যারা এখনও যোগ দেননি তাদের পরিচিতি স্ক্রিন থেকে আমন্ত্রণ জানানো যায়।';
+  String get resultsComeLiveFromImo2 => 'ফলাফল Imo LIVE থেকে সরাসরি আসে। যারা এখনও যোগ দেননি তাদের পরিচিতি স্ক্রিন থেকে আমন্ত্রণ জানানো যায়।';
 
   @override
-  String get imoLIVECouldNotBe2 =>
-      'Imo LIVE-এ পৌঁছানো যায়নি। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+  String get imoLIVECouldNotBe2 => 'Imo LIVE-এ পৌঁছানো যায়নি। আপনার সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
 
   @override
-  String get inviteThemToImoLIVE2 =>
-      'তাদের Imo LIVE-এ আমন্ত্রণ জানান, তারা যোগ দিলেই আপনি চ্যাট শুরু করতে পারবেন।';
+  String get inviteThemToImoLIVE2 => 'তাদের Imo LIVE-এ আমন্ত্রণ জানান, তারা যোগ দিলেই আপনি চ্যাট শুরু করতে পারবেন।';
 
   @override
-  String get yourChatsStayOnThis2 =>
-      'আপনার চ্যাটগুলো এই ডিভাইসে থাকে, তবে আপনি আবার সাইন ইন না করা পর্যন্ত সেগুলোর সিঙ্ক বন্ধ থাকে।';
+  String get yourChatsStayOnThis2 => 'আপনার চ্যাটগুলো এই ডিভাইসে থাকে, তবে আপনি আবার সাইন ইন না করা পর্যন্ত সেগুলোর সিঙ্ক বন্ধ থাকে।';
 
   @override
-  String get twoStepVerificationAndEnd2 =>
-      'দুই-ধাপ যাচাই ও এন্ড-টু-এন্ড এনক্রিপশনের জন্য একটি সার্ভার ও কী-এক্সচেঞ্জ স্তর দরকার, যা এই স্থানীয় বিল্ডের অংশ নয়। এখানে কিছুই সেই সুরক্ষা সক্রিয় বলে ভান করে না।';
+  String get twoStepVerificationAndEnd2 => 'দুই-ধাপ যাচাই ও এন্ড-টু-এন্ড এনক্রিপশনের জন্য একটি সার্ভার ও কী-এক্সচেঞ্জ স্তর দরকার, যা এই স্থানীয় বিল্ডের অংশ নয়। এখানে কিছুই সেই সুরক্ষা সক্রিয় বলে ভান করে না।';
 
   @override
-  String get deletesChatsMessagesContactsStatuses2 =>
-      'এই ডিভাইস থেকে চ্যাট, বার্তা, পরিচিতি, অবস্থা ও সেটিংস মুছে দেয়';
+  String get deletesChatsMessagesContactsStatuses2 => 'এই ডিভাইস থেকে চ্যাট, বার্তা, পরিচিতি, অবস্থা ও সেটিংস মুছে দেয়';
 
   @override
-  String get everyChatMessageContactAnd2 =>
-      'Imo LIVE এই ডিভাইসে সংরক্ষিত প্রতিটি চ্যাট, বার্তা, পরিচিতি ও সেটিংস সরিয়ে ফেলা হবে। আপনার অ্যাকাউন্ট মুছে যাবে না, তাই পরের বার অনলাইনে এলে ক্লাউড থেকে আপনার চ্যাটগুলো ফিরে আসবে।';
+  String get everyChatMessageContactAnd2 => 'Imo LIVE এই ডিভাইসে সংরক্ষিত প্রতিটি চ্যাট, বার্তা, পরিচিতি ও সেটিংস সরিয়ে ফেলা হবে। আপনার অ্যাকাউন্ট মুছে যাবে না, তাই পরের বার অনলাইনে এলে ক্লাউড থেকে আপনার চ্যাটগুলো ফিরে আসবে।';
 
   @override
   String get textSize => 'লেখার আকার';
 
   @override
-  String get textSizeScalesEveryScreen =>
-      'লেখার আকার প্রতিটি স্ক্রিনে প্রযোজ্য। চ্যাট বাবলগুলো অতিরিক্তভাবে চ্যাট সেটিংসের প্রতি-চ্যাট ফন্ট আকার মানে।';
+  String get textSizeScalesEveryScreen => 'লেখার আকার প্রতিটি স্ক্রিনে প্রযোজ্য। চ্যাট বাবলগুলো অতিরিক্তভাবে চ্যাট সেটিংসের প্রতি-চ্যাট ফন্ট আকার মানে।';
 
   @override
-  String get changingTheLauncherIconIs2 =>
-      'লঞ্চার আইকন পরিবর্তন একটি প্ল্যাটফর্ম কাজ। পছন্দটি এখানে সংরক্ষিত হয় এবং হোস্ট অ্যাপ শেল এটি প্রয়োগ করে।';
+  String get changingTheLauncherIconIs2 => 'লঞ্চার আইকন পরিবর্তন একটি প্ল্যাটফর্ম কাজ। পছন্দটি এখানে সংরক্ষিত হয় এবং হোস্ট অ্যাপ শেল এটি প্রয়োগ করে।';
 
   @override
-  String get blockedContactsCannotMessageOr2 =>
-      'ব্লক করা পরিচিতিরা এই ডিভাইস থেকে আপনাকে বার্তা বা কল করতে পারবে না। কাউকে ব্লক করতে + বোতাম ব্যবহার করুন।';
+  String get blockedContactsCannotMessageOr2 => 'ব্লক করা পরিচিতিরা এই ডিভাইস থেকে আপনাকে বার্তা বা কল করতে পারবে না। কাউকে ব্লক করতে + বোতাম ব্যবহার করুন।';
 
   @override
-  String get unblockingRestoresTheContactTo2 =>
-      'আনব্লক করলে পরিচিতিটি আপনার চ্যাট তালিকায় ফিরে আসে এবং ব্লক ফ্ল্যাগ সরে যায়।';
+  String get unblockingRestoresTheContactTo2 => 'আনব্লক করলে পরিচিতিটি আপনার চ্যাট তালিকায় ফিরে আসে এবং ব্লক ফ্ল্যাগ সরে যায়।';
 
   @override
-  String get thisContactWillBeAble2 =>
-      'এই পরিচিতি আবার এই ডিভাইস থেকে আপনার সঙ্গে যোগাযোগ করতে পারবে।';
+  String get thisContactWillBeAble2 => 'এই পরিচিতি আবার এই ডিভাইস থেকে আপনার সঙ্গে যোগাযোগ করতে পারবে।';
 
   @override
-  String get newMessagesStayInThe2 =>
-      'নতুন বার্তাগুলো আর্কাইভেই থাকে, চ্যাটটি আপনার মূল তালিকায় ফিরে আসে না';
+  String get newMessagesStayInThe2 => 'নতুন বার্তাগুলো আর্কাইভেই থাকে, চ্যাটটি আপনার মূল তালিকায় ফিরে আসে না';
 
   @override
-  String get chatPreferencesReturnToTheir2 =>
-      'চ্যাট পছন্দগুলো তাদের ডিফল্টে ফিরে যায়। কোনো চ্যাট বা বার্তা মুছে যায় না।';
+  String get chatPreferencesReturnToTheir2 => 'চ্যাট পছন্দগুলো তাদের ডিফল্টে ফিরে যায়। কোনো চ্যাট বা বার্তা মুছে যায় না।';
 
   @override
-  String get offerToAddANumber2 =>
-      'নতুন পরিচিতি সংরক্ষণ করার সময় আপনার ডিভাইসের অ্যাড্রেস বুক-এ নম্বর যোগ করার প্রস্তাব দিন';
+  String get offerToAddANumber2 => 'নতুন পরিচিতি সংরক্ষণ করার সময় আপনার ডিভাইসের অ্যাড্রেস বুক-এ নম্বর যোগ করার প্রস্তাব দিন';
 
   @override
-  String get translationsAreBundledWithThe2 =>
-      'অনুবাদগুলো ARB রিসোর্স হিসেবে অ্যাপের সঙ্গে বান্ডল করা। \"শীঘ্রই আসছে\" চিহ্নিত ভাষাগুলো রোডম্যাপ দৃশ্যমান রাখতে তালিকাভুক্ত, কিন্তু সেগুলোতে বদলালে ইন্টারফেস ইংরেজিতেই থাকে।';
+  String get translationsAreBundledWithThe2 => 'অনুবাদগুলো ARB রিসোর্স হিসেবে অ্যাপের সঙ্গে বান্ডল করা। \"শীঘ্রই আসছে\" চিহ্নিত ভাষাগুলো রোডম্যাপ দৃশ্যমান রাখতে তালিকাভুক্ত, কিন্তু সেগুলোতে বদলালে ইন্টারফেস ইংরেজিতেই থাকে।';
 
   @override
-  String get imoLIVEFollowsYourDevice2 =>
-      'Imo LIVE আপনার ডিভাইস সেটিং অনুসরণ করে যাতে সময়ের ছাপ আপনার ফোনের বাকি অংশের সঙ্গে সামঞ্জস্যপূর্ণ থাকে। এটি আপনার সিস্টেম সেটিংসে পরিবর্তন করুন।';
+  String get imoLIVEFollowsYourDevice2 => 'Imo LIVE আপনার ডিভাইস সেটিং অনুসরণ করে যাতে সময়ের ছাপ আপনার ফোনের বাকি অংশের সঙ্গে সামঞ্জস্যপূর্ণ থাকে। এটি আপনার সিস্টেম সেটিংসে পরিবর্তন করুন।';
 
   @override
-  String get pairingASecondDeviceIs2 =>
-      'দ্বিতীয় ডিভাইস পেয়ারিং এখনও নেই। এই স্ক্রিনটি আপনার ব্যবহৃত ডিভাইসের তালিকা দেয় এবং পেয়ারিং কী করবে তা ব্যাখ্যা করে — এটি কখনও সফল লিংকের ভান করে না।';
+  String get pairingASecondDeviceIs2 => 'দ্বিতীয় ডিভাইস পেয়ারিং এখনও নেই। এই স্ক্রিনটি আপনার ব্যবহৃত ডিভাইসের তালিকা দেয় এবং পেয়ারিং কী করবে তা ব্যাখ্যা করে — এটি কখনও সফল লিংকের ভান করে না।';
 
   @override
-  String get openImoLIVEOnAnother2 =>
-      'অন্য ডিভাইসে Imo LIVE খুলে এই কোডটি স্ক্যান করুন। পেয়ারিং এখনও নেই, তাই এই কোড দিয়ে লিংক সম্পূর্ণ হবে না।';
+  String get openImoLIVEOnAnother2 => 'অন্য ডিভাইসে Imo LIVE খুলে এই কোডটি স্ক্যান করুন। পেয়ারিং এখনও নেই, তাই এই কোড দিয়ে লিংক সম্পূর্ণ হবে না।';
 
   @override
-  String get unlinkingRemovesADeviceFrom2 =>
-      'আনলিংক করলে এই তালিকা থেকে একটি ডিভাইস সরে যায়। পেয়ারিং বাস্তবায়িত না হওয়ায় প্রকৃত সেশন বাতিল করা এখনও সম্ভব নয়।';
+  String get unlinkingRemovesADeviceFrom2 => 'আনলিংক করলে এই তালিকা থেকে একটি ডিভাইস সরে যায়। পেয়ারিং বাস্তবায়িত না হওয়ায় প্রকৃত সেশন বাতিল করা এখনও সম্ভব নয়।';
 
   @override
-  String get theDeviceIsRemovedFrom2 =>
-      'ডিভাইসটি এই স্থানীয় তালিকা থেকে সরানো হবে। বাতিল করার মতো কোনো রিমোট সেশন নেই।';
+  String get theDeviceIsRemovedFrom2 => 'ডিভাইসটি এই স্থানীয় তালিকা থেকে সরানো হবে। বাতিল করার মতো কোনো রিমোট সেশন নেই।';
 
   @override
-  String get aListIsASaved2 =>
-      'একটি তালিকা হলো আপনার চ্যাটের সংরক্ষিত ফিল্টার। একটিতে ট্যাপ করলে তা সঙ্গে সঙ্গে চ্যাট ট্যাবে প্রয়োগ হয়।';
+  String get aListIsASaved2 => 'একটি তালিকা হলো আপনার চ্যাটের সংরক্ষিত ফিল্টার। একটিতে ট্যাপ করলে তা সঙ্গে সঙ্গে চ্যাট ট্যাবে প্রয়োগ হয়।';
 
   @override
-  String get theWorkListIsA2 =>
-      'Work তালিকা প্রতিটি চ্যাটে সংরক্ষিত একটি ফ্ল্যাগ, তাই এটি রিস্টার্টেও টিকে থাকে এবং প্রতিটি ডিভাইসে প্রযোজ্য। কোন চ্যাটগুলো এর অন্তর্ভুক্ত হবে তা বেছে নিতে Manage ব্যবহার করুন।';
+  String get theWorkListIsA2 => 'Work তালিকা প্রতিটি চ্যাটে সংরক্ষিত একটি ফ্ল্যাগ, তাই এটি রিস্টার্টেও টিকে থাকে এবং প্রতিটি ডিভাইসে প্রযোজ্য। কোন চ্যাটগুলো এর অন্তর্ভুক্ত হবে তা বেছে নিতে Manage ব্যবহার করুন।';
 
   @override
-  String get notificationsAreDeliveredLocallyBy2 =>
-      'বিজ্ঞপ্তিগুলো OS স্থানীয়ভাবে পৌঁছে দেয়। কোনো পুশ পরিষেবা নেই, তাই অ্যাপ সম্পূর্ণ বন্ধ থাকলে কিছুই আসে না — নির্ধারিত কল রিমাইন্ডার অবশ্য চলে, কারণ সেগুলো প্ল্যাটফর্ম শিডিউলারের মাধ্যমে পোস্ট করা হয়।';
+  String get notificationsAreDeliveredLocallyBy2 => 'বিজ্ঞপ্তিগুলো OS স্থানীয়ভাবে পৌঁছে দেয়। কোনো পুশ পরিষেবা নেই, তাই অ্যাপ সম্পূর্ণ বন্ধ থাকলে কিছুই আসে না — নির্ধারিত কল রিমাইন্ডার অবশ্য চলে, কারণ সেগুলো প্ল্যাটফর্ম শিডিউলারের মাধ্যমে পোস্ট করা হয়।';
 
   @override
-  String get theseSwitchesControlWhatImo2 =>
-      'এই সুইচগুলো নিয়ন্ত্রণ করে Imo LIVE এই ডিভাইসে কী সংরক্ষণ ও প্রদর্শন করবে। অন্য সবার জন্য এগুলো প্রয়োগ করা — যেমন আপনার শেষ দেখা তাদের ফোন থেকে লুকানো — অপর পক্ষকে তা মানতে হয়, যা এখনও বাস্তবায়িত হয়নি।';
+  String get theseSwitchesControlWhatImo2 => 'এই সুইচগুলো নিয়ন্ত্রণ করে Imo LIVE এই ডিভাইসে কী সংরক্ষণ ও প্রদর্শন করবে। অন্য সবার জন্য এগুলো প্রয়োগ করা — যেমন আপনার শেষ দেখা তাদের ফোন থেকে লুকানো — অপর পক্ষকে তা মানতে হয়, যা এখনও বাস্তবায়িত হয়নি।';
 
   @override
-  String get changingLastSeenAlsoAffects2 =>
-      '\"শেষ দেখা\" পরিবর্তন করলে একটি ব্যাকএন্ডযুক্ত বিল্ডে পড়া নিশ্চিতকরণও প্রভাবিত হয়। স্থানীয়ভাবে এগুলো স্বতন্ত্র সুইচ।';
+  String get changingLastSeenAlsoAffects2 => '\"শেষ দেখা\" পরিবর্তন করলে একটি ব্যাকএন্ডযুক্ত বিল্ডে পড়া নিশ্চিতকরণও প্রভাবিত হয়। স্থানীয়ভাবে এগুলো স্বতন্ত্র সুইচ।';
 
   @override
-  String get sendDeliveryAndReadTicks2 =>
-      'ডেলিভারি ও পড়ার টিক পাঠান। এটি বন্ধ করলে নতুন বার্তার স্থানীয় টিক আপগ্রেড বন্ধ হয়ে যায়।';
+  String get sendDeliveryAndReadTicks2 => 'ডেলিভারি ও পড়ার টিক পাঠান। এটি বন্ধ করলে নতুন বার্তার স্থানীয় টিক আপগ্রেড বন্ধ হয়ে যায়।';
 
   @override
-  String get imoLIVEWillAskFor2 =>
-      'Imo LIVE পরের বার চালু হলে আপনার ডিভাইস ক্রেডেনশিয়াল চাইবে। বায়োমেট্রিক প্রম্পট OS পরিচালনা করে, তাই কোনো বায়োমেট্রিক ডেটা কখনও এই অ্যাপে পৌঁছায় না।';
+  String get imoLIVEWillAskFor2 => 'Imo LIVE পরের বার চালু হলে আপনার ডিভাইস ক্রেডেনশিয়াল চাইবে। বায়োমেট্রিক প্রম্পট OS পরিচালনা করে, তাই কোনো বায়োমেট্রিক ডেটা কখনও এই অ্যাপে পৌঁছায় না।';
 
   @override
-  String get allowSharingYourCurrentLocation2 =>
-      'চ্যাটের ভিতরে আপনার বর্তমান অবস্থান শেয়ার করার অনুমতি দিন। আপনি পাঠান চাপার মুহূর্তেই কেবল অবস্থান পড়া হয়।';
+  String get allowSharingYourCurrentLocation2 => 'চ্যাটের ভিতরে আপনার বর্তমান অবস্থান শেয়ার করার অনুমতি দিন। আপনি পাঠান চাপার মুহূর্তেই কেবল অবস্থান পড়া হয়।';
 
   @override
-  String get imoLIVEDoesNotClaim2 =>
-      'Imo LIVE এন্ড-টু-এন্ড এনক্রিপশনের দাবি করে না। বার্তাগুলো TLS-এর মাধ্যমে Cloud Firestore-এ যায় এবং মিডিয়া Cloudflare R2-তে যায়, তাই সেই সার্ভারগুলো সেগুলো পড়তে পারে। কোনো এনক্রিপশন গ্যারান্টি প্রচারের আগে একটি প্রকৃত কী-এক্সচেঞ্জ ও এনক্রিপশন স্তর যোগ করুন।';
+  String get imoLIVEDoesNotClaim2 => 'Imo LIVE এন্ড-টু-এন্ড এনক্রিপশনের দাবি করে না। বার্তাগুলো TLS-এর মাধ্যমে Cloud Firestore-এ যায় এবং মিডিয়া Cloudflare R2-তে যায়, তাই সেই সার্ভারগুলো সেগুলো পড়তে পারে। কোনো এনক্রিপশন গ্যারান্টি প্রচারের আগে একটি প্রকৃত কী-এক্সচেঞ্জ ও এনক্রিপশন স্তর যোগ করুন।';
 
   @override
-  String get allPrivacyOptionsReturnTo2 =>
-      'সব গোপনীয়তা বিকল্প তাদের ডিফল্টে ফিরে যায়। আপনার চ্যাট, পরিচিতি ও বার্তা অপরিবর্তিত থাকে।';
+  String get allPrivacyOptionsReturnTo2 => 'সব গোপনীয়তা বিকল্প তাদের ডিফল্টে ফিরে যায়। আপনার চ্যাট, পরিচিতি ও বার্তা অপরিবর্তিত থাকে।';
 
   @override
-  String get theSwitchMatchesTheSystem2 =>
-      '\"সিস্টেম\" নির্বাচিত থাকলে সুইচটি সিস্টেমের সঙ্গে মেলে। এটি উল্টালে আপনি আবার পরিবর্তন না করা পর্যন্ত লাইট বা ডার্ক স্থির হয়ে যায়।';
+  String get theSwitchMatchesTheSystem2 => '\"সিস্টেম\" নির্বাচিত থাকলে সুইচটি সিস্টেমের সঙ্গে মেলে। এটি উল্টালে আপনি আবার পরিবর্তন না করা পর্যন্ত লাইট বা ডার্ক স্থির হয়ে যায়।';
 
   @override
-  String get photosVideosVoiceNotesAnd2 =>
-      'আপনি যে ছবি, ভিডিও, ভয়েস নোট ও নথি পাঠান বা পান সেগুলো এখানে সংরক্ষিত হয় এবং নিচে গণনা করা হয়।';
+  String get photosVideosVoiceNotesAnd2 => 'আপনি যে ছবি, ভিডিও, ভয়েস নোট ও নথি পাঠান বা পান সেগুলো এখানে সংরক্ষিত হয় এবং নিচে গণনা করা হয়।';
 
   @override
-  String get removesMessagesWhoseDisappearingTimer2 =>
-      'যেসব বার্তার অদৃশ্য হওয়ার টাইমার শেষ হয়ে গেছে সেগুলো সরিয়ে দেয়';
+  String get removesMessagesWhoseDisappearingTimer2 => 'যেসব বার্তার অদৃশ্য হওয়ার টাইমার শেষ হয়ে গেছে সেগুলো সরিয়ে দেয়';
 
   @override
-  String get followAChannelFromThe2 =>
-      'আপডেট ট্যাব থেকে একটি চ্যানেল অনুসরণ করুন, এটি তার বিজ্ঞপ্তি সেটিংসসহ এখানে দেখা যাবে।';
+  String get followAChannelFromThe2 => 'আপডেট ট্যাব থেকে একটি চ্যানেল অনুসরণ করুন, এটি তার বিজ্ঞপ্তি সেটিংসসহ এখানে দেখা যাবে।';
 
   @override
-  String get mutingAChannelKeepsIt2 =>
-      'একটি চ্যানেল নিঃশব্দ করলে তা আপনার তালিকায় থাকে কিন্তু তার আপডেট ব্যাজ নীরব হয়ে যায়।';
+  String get mutingAChannelKeepsIt2 => 'একটি চ্যানেল নিঃশব্দ করলে তা আপনার তালিকায় থাকে কিন্তু তার আপডেট ব্যাজ নীরব হয়ে যায়।';
 
   @override
-  String get theCopiedImageFileIs2 =>
-      'কপি করা ছবির ফাইলটি মুছে ফেলা হবে এবং ডিফল্ট প্যাটার্ন পুনরুদ্ধার করা হবে।';
+  String get theCopiedImageFileIs2 => 'কপি করা ছবির ফাইলটি মুছে ফেলা হবে এবং ডিফল্ট প্যাটার্ন পুনরুদ্ধার করা হবে।';
 
   @override
-  String get allMessagesInThisChat2 =>
-      'এই চ্যাটের সব বার্তা এই ডিভাইস থেকে মুছে যাবে। এটি ফেরানো যাবে না।';
+  String get allMessagesInThisChat2 => 'এই চ্যাটের সব বার্তা এই ডিভাইস থেকে মুছে যাবে। এটি ফেরানো যাবে না।';
 
   @override
-  String get thisConversationAndAllIts2 =>
-      'এই কথোপকথন ও তার সব বার্তা এই ডিভাইস থেকে সরানো হবে।';
+  String get thisConversationAndAllIts2 => 'এই কথোপকথন ও তার সব বার্তা এই ডিভাইস থেকে সরানো হবে।';
 
   @override
   String get changeMedia => 'মিডিয়া পরিবর্তন';
 
   @override
-  String get shareATextPhotoOr2 =>
-      'একটি টেক্সট, ছবি বা ভিডিও আপডেট শেয়ার করুন। ২৪ ঘণ্টা পরে এটি সবার জন্য অদৃশ্য হয়ে যায়।';
+  String get shareATextPhotoOr2 => 'একটি টেক্সট, ছবি বা ভিডিও আপডেট শেয়ার করুন। ২৪ ঘণ্টা পরে এটি সবার জন্য অদৃশ্য হয়ে যায়।';
 
   @override
-  String get updatesAreStoredOnThis2 =>
-      'আপডেটগুলো কেবল এই ডিভাইসে সংরক্ষিত হয়। ২৪ ঘণ্টা পরের মেয়াদ স্থানীয়ভাবে প্রয়োগ করা হয়।';
+  String get updatesAreStoredOnThis2 => 'আপডেটগুলো কেবল এই ডিভাইসে সংরক্ষিত হয়। ২৪ ঘণ্টা পরের মেয়াদ স্থানীয়ভাবে প্রয়োগ করা হয়।';
 
   @override
-  String get enterYourEmailFirstThen =>
-      'আগে আপনার ইমেইল লিখুন, তারপর পাসওয়ার্ড ভুলে গেছেন-এ ট্যাপ করুন।';
+  String get enterYourEmailFirstThen => 'আগে আপনার ইমেইল লিখুন, তারপর পাসওয়ার্ড ভুলে গেছেন-এ ট্যাপ করুন।';
 
   @override
   String get aNewCodeIsOn => 'একটি নতুন কোড আসছে';
 
   @override
-  String get thePhotoCouldNotBe =>
-      'ছবিটি আপলোড করা যায়নি। এটি এই ডিভাইসে সংরক্ষিত আছে এবং R2 স্টোরেজ কনফিগার হলে সিঙ্ক হবে।';
+  String get thePhotoCouldNotBe => 'ছবিটি আপলোড করা যায়নি। এটি এই ডিভাইসে সংরক্ষিত আছে এবং R2 স্টোরেজ কনফিগার হলে সিঙ্ক হবে।';
 
   @override
   String get profileSaved => 'প্রোফাইল সংরক্ষিত হয়েছে';
@@ -3398,15 +3140,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get videoPermissionIsRequired => 'ভিডিওর অনুমতি প্রয়োজন';
 
   @override
-  String get writeSomethingOrAttachA =>
-      'আগে কিছু লিখুন বা একটি ফাইল সংযুক্ত করুন';
+  String get writeSomethingOrAttachA => 'আগে কিছু লিখুন বা একটি ফাইল সংযুক্ত করুন';
 
   @override
   String get uploadFailedThePostWas => 'আপলোড ব্যর্থ — পোস্টটি প্রকাশিত হয়নি';
 
   @override
-  String get couldNotPublishCheckYour =>
-      'প্রকাশ করা যায়নি — আপনার সংযোগ পরীক্ষা করুন';
+  String get couldNotPublishCheckYour => 'প্রকাশ করা যায়নি — আপনার সংযোগ পরীক্ষা করুন';
 
   @override
   String get postDeleted => 'পোস্ট মুছে ফেলা হয়েছে';
@@ -3415,12 +3155,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get thisAttachmentHasNoUsable => 'এই সংযুক্তিতে ব্যবহারযোগ্য লিংক নেই';
 
   @override
-  String get noAppOnThisDevice =>
-      'এই ডিভাইসের কোনো অ্যাপ ওই ফাইল খুলতে পারে না';
+  String get noAppOnThisDevice => 'এই ডিভাইসের কোনো অ্যাপ ওই ফাইল খুলতে পারে না';
 
   @override
-  String get requestSentTheOwnerWill =>
-      'অনুরোধ পাঠানো হয়েছে — মালিক পর্যালোচনা করবেন';
+  String get requestSentTheOwnerWill => 'অনুরোধ পাঠানো হয়েছে — মালিক পর্যালোচনা করবেন';
 
   @override
   String get inviteLinkCopied => 'আমন্ত্রণ লিংক কপি হয়েছে';
@@ -3432,15 +3170,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get secretKeyCopied => 'গোপন কী কপি হয়েছে';
 
   @override
-  String get uploadFailedCheckTheStorage =>
-      'আপলোড ব্যর্থ — স্টোরেজ কনফিগারেশন পরীক্ষা করুন';
+  String get uploadFailedCheckTheStorage => 'আপলোড ব্যর্থ — স্টোরেজ কনফিগারেশন পরীক্ষা করুন';
 
   @override
   String get aChannelNeedsAName => 'চ্যানেলের একটি নাম প্রয়োজন';
 
   @override
-  String get couldNotSaveIsThe =>
-      'সংরক্ষণ করা যায়নি — নেটওয়ার্ক চালু আছে কি?';
+  String get couldNotSaveIsThe => 'সংরক্ষণ করা যায়নি — নেটওয়ার্ক চালু আছে কি?';
 
   @override
   String get channelUpdated => 'চ্যানেল আপডেট হয়েছে';
@@ -3449,8 +3185,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get applicationSubmitted => 'আবেদন জমা দেওয়া হয়েছে';
 
   @override
-  String get savedOnThisDeviceThe =>
-      'এই ডিভাইসে সংরক্ষিত — সার্ভারে লেখা ব্যর্থ হয়েছে, তাই অনুসারীরা এখনও এটি দেখতে পাচ্ছেন না';
+  String get savedOnThisDeviceThe => 'এই ডিভাইসে সংরক্ষিত — সার্ভারে লেখা ব্যর্থ হয়েছে, তাই অনুসারীরা এখনও এটি দেখতে পাচ্ছেন না';
 
   @override
   String get allChatsRestored => 'সব চ্যাট পুনরুদ্ধার হয়েছে';
@@ -3486,8 +3221,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get chatCleared => 'চ্যাট খালি করা হয়েছে';
 
   @override
-  String get channelsAndBroadcastsHaveNo =>
-      'চ্যানেল ও ব্রডকাস্টের কোনো ব্যক্তিগত প্রোফাইল নেই';
+  String get channelsAndBroadcastsHaveNo => 'চ্যানেল ও ব্রডকাস্টের কোনো ব্যক্তিগত প্রোফাইল নেই';
 
   @override
   String get thisChatHasNoLinked => 'এই চ্যাটে এখনও কোনো লিংক করা প্রোফাইল নেই';
@@ -3505,8 +3239,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get thatMessageIsNoLonger => 'ওই বার্তাটি আর পাওয়া যাচ্ছে না';
 
   @override
-  String get thisMediaIsNotAvailable =>
-      'এই মিডিয়া এই ডিভাইসে পাওয়া যাচ্ছে না';
+  String get thisMediaIsNotAvailable => 'এই মিডিয়া এই ডিভাইসে পাওয়া যাচ্ছে না';
 
   @override
   String get coordinatesAreUnavailable => 'স্থানাঙ্ক পাওয়া যাচ্ছে না';
@@ -3527,12 +3260,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get thatLinkIsNotValid => 'ওই লিংকটি বৈধ নয়';
 
   @override
-  String get noBrowserOnThisDevice =>
-      'এই ডিভাইসের কোনো ব্রাউজার ওই লিংক খুলতে পারেনি';
+  String get noBrowserOnThisDevice => 'এই ডিভাইসের কোনো ব্রাউজার ওই লিংক খুলতে পারেনি';
 
   @override
-  String get thisAttachmentIsNotAvailable =>
-      'এই সংযুক্তিটি এই ডিভাইসে পাওয়া যাচ্ছে না';
+  String get thisAttachmentIsNotAvailable => 'এই সংযুক্তিটি এই ডিভাইসে পাওয়া যাচ্ছে না';
 
   @override
   String get nothingToCopy => 'কপি করার কিছু নেই';
@@ -3556,15 +3287,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get descriptionUpdated => 'বিবরণ আপডেট হয়েছে';
 
   @override
-  String get everyGroupIsAlreadyIn =>
-      'প্রতিটি গ্রুপ ইতিমধ্যেই এই কমিউনিটিতে আছে';
+  String get everyGroupIsAlreadyIn => 'প্রতিটি গ্রুপ ইতিমধ্যেই এই কমিউনিটিতে আছে';
 
   @override
   String get communityDeleted => 'কমিউনিটি মুছে ফেলা হয়েছে';
 
   @override
-  String get noContactsFoundCheckContacts =>
-      'কোনো পরিচিতি পাওয়া যায়নি। সিস্টেম সেটিংসে পরিচিতির অনুমতি পরীক্ষা করুন।';
+  String get noContactsFoundCheckContacts => 'কোনো পরিচিতি পাওয়া যায়নি। সিস্টেম সেটিংসে পরিচিতির অনুমতি পরীক্ষা করুন।';
 
   @override
   String get aboutUpdated => 'পরিচিতি আপডেট হয়েছে';
@@ -3585,8 +3314,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get aFirstNameAndPhone => 'একটি নাম ও ফোন নম্বর প্রয়োজন';
 
   @override
-  String get noNewContactsFoundIn =>
-      'আপনার অ্যাড্রেস বুক-এ নতুন কোনো পরিচিতি পাওয়া যায়নি';
+  String get noNewContactsFoundIn => 'আপনার অ্যাড্রেস বুক-এ নতুন কোনো পরিচিতি পাওয়া যায়নি';
 
   @override
   String get watchTheWholeAdTo => 'পয়েন্ট পেতে পুরো বিজ্ঞাপনটি দেখুন';
@@ -3628,12 +3356,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get allLocalDataCleared => 'সব স্থানীয় ডেটা মুছে ফেলা হয়েছে';
 
   @override
-  String get appearanceRestoredToDefaults =>
-      'অ্যাপিয়ারেন্স ডিফল্টে ফিরে এসেছে';
+  String get appearanceRestoredToDefaults => 'অ্যাপিয়ারেন্স ডিফল্টে ফিরে এসেছে';
 
   @override
-  String get everyContactIsAlreadyBlocked =>
-      'প্রতিটি পরিচিতি ইতিমধ্যেই ব্লক করা আছে';
+  String get everyContactIsAlreadyBlocked => 'প্রতিটি পরিচিতি ইতিমধ্যেই ব্লক করা আছে';
 
   @override
   String get chatSettingsReset => 'চ্যাট সেটিংস রিসেট হয়েছে';
@@ -3678,8 +3404,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get updateShared => 'আপডেট শেয়ার করা হয়েছে';
 
   @override
-  String get statusRepliesNeedAChat =>
-      'অবস্থার উত্তরের জন্য একটি চ্যাট থ্রেড প্রয়োজন — লেখকের সঙ্গে আপনার চ্যাট খুলুন।';
+  String get statusRepliesNeedAChat => 'অবস্থার উত্তরের জন্য একটি চ্যাট থ্রেড প্রয়োজন — লেখকের সঙ্গে আপনার চ্যাট খুলুন।';
 
   @override
   String get english => 'ইংরেজি';
@@ -3890,8 +3615,7 @@ class AppLocalizationsBn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other:
-          '$countটি স্টার করা বার্তা আনস্টার করা হয়েছে। বার্তাগুলো নিজে অপরিবর্তিত আছে।',
+      other: '$countটি স্টার করা বার্তা আনস্টার করা হয়েছে। বার্তাগুলো নিজে অপরিবর্তিত আছে।',
     );
     return '$_temp0';
   }
@@ -3956,8 +3680,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get thisIsTheDeviceYou => 'এটিই এখন আপনি যে ডিভাইসটি ব্যবহার করছেন।';
 
   @override
-  String get linkedDeviceEntriesAre =>
-      'লিংক করা ডিভাইসের এন্ট্রি স্থানীয়ভাবে সংরক্ষিত।';
+  String get linkedDeviceEntriesAre => 'লিংক করা ডিভাইসের এন্ট্রি স্থানীয়ভাবে সংরক্ষিত।';
 
   @override
   String resendInS(Object secondsLeft) {
@@ -4240,13 +3963,7 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String appVersionNChatsNContactsNStarred(
-    Object appVersion,
-    Object read,
-    Object read2,
-    Object read3,
-    Object read4,
-  ) {
+  String appVersionNChatsNContactsNStarred(Object appVersion, Object read, Object read2, Object read3, Object read4) {
     return 'অ্যাপ সংস্করণ: $appVersion\nচ্যাট: $read\nপরিচিতি: $read2\nস্টার করা বার্তা: $read3\nসংরক্ষিত মিডিয়া: $read4 বাইট\nনেটওয়ার্ক: Firebase Authentication + Cloud Firestore';
   }
 
@@ -4382,8 +4099,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get typing2 => 'লিখছে';
 
   @override
-  String get weLlEmailYouA =>
-      'নতুন পাসওয়ার্ড বেছে নেওয়ার লিংক আমরা ইমেইলে পাঠাব।';
+  String get weLlEmailYouA => 'নতুন পাসওয়ার্ড বেছে নেওয়ার লিংক আমরা ইমেইলে পাঠাব।';
 
   @override
   String get weSentACodeTo => 'আমরা একটি কোড পাঠিয়েছি ';
@@ -4392,8 +4108,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get username2 => 'ইউজারনেম';
 
   @override
-  String get nameUsernameDescriptionAvatarAnd =>
-      'নাম, @ইউজারনেম, বিবরণ, অ্যাভাটার ও কভার';
+  String get nameUsernameDescriptionAvatarAnd => 'নাম, @ইউজারনেম, বিবরণ, অ্যাভাটার ও কভার';
 
   @override
   String get uniqueUsername => 'অনন্য @ইউজারনেম';
@@ -4408,8 +4123,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get draft => 'খসড়া: ';
 
   @override
-  String get theMessageIsRemovedFrom2 =>
-      'বার্তাটি এই ডিভাইস থেকে সরিয়ে একটি \"মুছে ফেলা হয়েছে\" নোটিশ দিয়ে বদলে দেওয়া হবে। প্রাপকের ডিভাইস পরেরবার সিংক হলে তার কপি থেকেও এটি সরে যাবে।\n\nপাঠানোর দুই দিনের মধ্যে কেবল এটি করা যাবে।';
+  String get theMessageIsRemovedFrom2 => 'বার্তাটি এই ডিভাইস থেকে সরিয়ে একটি \"মুছে ফেলা হয়েছে\" নোটিশ দিয়ে বদলে দেওয়া হবে। প্রাপকের ডিভাইস পরেরবার সিংক হলে তার কপি থেকেও এটি সরে যাবে।\n\nপাঠানোর দুই দিনের মধ্যে কেবল এটি করা যাবে।';
 
   @override
   String get deleteForMe2 => 'আমার জন্য মুছবেন?';
@@ -4420,27 +4134,22 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get thisMessageIsRemovedFromThisDeviceOnly =>
-      'বার্তাটি কেবল এই ডিভাইস থেকে সরানো হবে। অন্যজনের কাছে তার নিজের কপি থেকে যাবে এবং তাকে এ বিষয়ে জানানো হবে না। এখানে এটি ফিরিয়ে আনা যাবে না।';
+  String get thisMessageIsRemovedFromThisDeviceOnly => 'বার্তাটি কেবল এই ডিভাইস থেকে সরানো হবে। অন্যজনের কাছে তার নিজের কপি থেকে যাবে এবং তাকে এ বিষয়ে জানানো হবে না। এখানে এটি ফিরিয়ে আনা যাবে না।';
 
   @override
-  String get alsoWriteThisPersonInto =>
-      'এই ব্যক্তিকে আপনার ফোনের অ্যাড্রেস বুকেও যোগ করুন';
+  String get alsoWriteThisPersonInto => 'এই ব্যক্তিকে আপনার ফোনের অ্যাড্রেস বুকেও যোগ করুন';
 
   @override
   String get eGWeekendRiders => 'যেমন: উইকএন্ড রাইডার্স';
 
   @override
-  String get coreModelsServicesWidgetsConstants =>
-      'core/  — মডেল, সার্ভিস, উইজেট, কনস্ট্যান্ট ও ফরম্যাটার\n\napp/  — থিম টোকেন, রাউটার ও রুট উইজেট\n\nfeatures/<feature>/domain  — রিপোজিটরি কনট্রাক্ট\nfeatures/<feature>/data  — লোকাল ইমপ্লিমেন্টেশন\nfeatures/<feature>/presentation  — স্ক্রিন, উইজেট, প্রোভাইডার\n\nlocal/  — Hive ডেটাবেস ও ফাইল স্টোরেজ';
+  String get coreModelsServicesWidgetsConstants => 'core/  — মডেল, সার্ভিস, উইজেট, কনস্ট্যান্ট ও ফরম্যাটার\n\napp/  — থিম টোকেন, রাউটার ও রুট উইজেট\n\nfeatures/<feature>/domain  — রিপোজিটরি কনট্রাক্ট\nfeatures/<feature>/data  — লোকাল ইমপ্লিমেন্টেশন\nfeatures/<feature>/presentation  — স্ক্রিন, উইজেট, প্রোভাইডার\n\nlocal/  — Hive ডেটাবেস ও ফাইল স্টোরেজ';
 
   @override
-  String get liveNowSignInEmail =>
-      'এখনই কাজ করে\n• সাইন-ইন — ইমেইল, গুগল ও ফোন\n• চ্যাট ও বার্তা সিংক — Cloud Firestore, রিয়েল টাইম\n• পিপল ডিরেক্টরি — ফোন, ইমেইল, @হ্যান্ডেল বা ইউজার আইডি\n\nএকটি মান বা সার্ভিস দরকার\n• Cloudflare R2 — R2Config-এ ক্রেডেনশিয়াল দিন\n• পুশ ডেলিভারি — FCM / APNs, যাতে অ্যাপ বন্ধ থাকলেও নোটিফিকেশন আসে\n• ডিভাইস পেয়ারিং — কম্প্যানিয়ন সেশন\n\nএখনো তৈরি হয়নি\n• এন্ড-টু-এন্ড এনক্রিপশন — কোনো কী এক্সচেঞ্জ বা সাইফারটেক্সট ট্রান্সপোর্ট নেই\n• WebRTC — রিয়েল-টাইম অডিও ও ভিডিও কল';
+  String get liveNowSignInEmail => 'এখনই কাজ করে\n• সাইন-ইন — ইমেইল, গুগল ও ফোন\n• চ্যাট ও বার্তা সিংক — Cloud Firestore, রিয়েল টাইম\n• পিপল ডিরেক্টরি — ফোন, ইমেইল, @হ্যান্ডেল বা ইউজার আইডি\n\nএকটি মান বা সার্ভিস দরকার\n• Cloudflare R2 — R2Config-এ ক্রেডেনশিয়াল দিন\n• পুশ ডেলিভারি — FCM / APNs, যাতে অ্যাপ বন্ধ থাকলেও নোটিফিকেশন আসে\n• ডিভাইস পেয়ারিং — কম্প্যানিয়ন সেশন\n\nএখনো তৈরি হয়নি\n• এন্ড-টু-এন্ড এনক্রিপশন — কোনো কী এক্সচেঞ্জ বা সাইফারটেক্সট ট্রান্সপোর্ট নেই\n• WebRTC — রিয়েল-টাইম অডিও ও ভিডিও কল';
 
   @override
-  String get imoLIVEIsALocal =>
-      'Imo LIVE একটি লোকাল-ফার্স্ট মেসেজিং অ্যাপ্লিকেশন। এটি কোনো মেসেজিং সার্ভিস, অ্যাকাউন্ট বা ডেটা ট্রান্সমিশন দেয় না। এই ডিভাইসে আপনি যে কনটেন্ট তৈরি করেন তার দায়িত্ব আপনার।\n\nএই বিল্ডে WhatsApp, Meta বা কোনো তৃতীয় পক্ষের মালিকানাধীন ব্র্যান্ডিং নেই, এবং সেই কোম্পানিগুলোর কোনো কোডও নেই।';
+  String get imoLIVEIsALocal => 'Imo LIVE একটি লোকাল-ফার্স্ট মেসেজিং অ্যাপ্লিকেশন। এটি কোনো মেসেজিং সার্ভিস, অ্যাকাউন্ট বা ডেটা ট্রান্সমিশন দেয় না। এই ডিভাইসে আপনি যে কনটেন্ট তৈরি করেন তার দায়িত্ব আপনার।\n\nএই বিল্ডে WhatsApp, Meta বা কোনো তৃতীয় পক্ষের মালিকানাধীন ব্র্যান্ডিং নেই, এবং সেই কোম্পানিগুলোর কোনো কোডও নেই।';
 
   @override
   String get eG8801711234567 => 'যেমন: +880 1711 234567';
@@ -4458,16 +4167,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get eGNameExampleCom => 'যেমন: name@example.com';
 
   @override
-  String get blockingHidesAContactS =>
-      'ব্লক করলে এই ডিভাইসে ওই পরিচিতির চ্যাট ও কল লুকিয়ে যায়। ব্লকটি আপনার অ্যাকাউন্টে পাঠানো হয় না, তাই এটি কেবল এখানেই কাজ করে।';
+  String get blockingHidesAContactS => 'ব্লক করলে এই ডিভাইসে ওই পরিচিতির চ্যাট ও কল লুকিয়ে যায়। ব্লকটি আপনার অ্যাকাউন্টে পাঠানো হয় না, তাই এটি কেবল এখানেই কাজ করে।';
 
   @override
-  String get everyNonCurrentEntryIs2 =>
-      'বর্তমানটি ছাড়া বাকি সব এন্ট্রি এই ডিভাইসের তালিকা থেকে মুছে যাবে। রিমোট সেশন এখনো বাতিল করা যায় না।';
+  String get everyNonCurrentEntryIs2 => 'বর্তমানটি ছাড়া বাকি সব এন্ট্রি এই ডিভাইসের তালিকা থেকে মুছে যাবে। রিমোট সেশন এখনো বাতিল করা যায় না।';
 
   @override
-  String get pickedImagesAreCopiedInto =>
-      'বাছাই করা ছবি অ্যাপের প্রাইভেট স্টোরেজে কপি হয়, তাই মূল ফাইল মুছে দিলেও সেগুলো কাজ করতে থাকে।';
+  String get pickedImagesAreCopiedInto => 'বাছাই করা ছবি অ্যাপের প্রাইভেট স্টোরেজে কপি হয়, তাই মূল ফাইল মুছে দিলেও সেগুলো কাজ করতে থাকে।';
 
   @override
   String get heyHowDoesThisWallpaper => 'আরে! এই ওয়ালপেপারটি কেমন লাগছে?';
@@ -4484,8 +4190,7 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get couldNotAddPoints =>
-      'পয়েন্ট যোগ করা যায়নি — আপনার সংযোগ পরীক্ষা করুন';
+  String get couldNotAddPoints => 'পয়েন্ট যোগ করা যায়নি — আপনার সংযোগ পরীক্ষা করুন';
 
   @override
   String youNeedMorePointsFor(Object short, Object name) {
@@ -4493,8 +4198,7 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get couldNotActivatePremium =>
-      'প্রিমিয়াম চালু করা যায়নি — আপনার সংযোগ পরীক্ষা করুন';
+  String get couldNotActivatePremium => 'প্রিমিয়াম চালু করা যায়নি — আপনার সংযোগ পরীক্ষা করুন';
 
   @override
   String youNeedMorePointsForAGift(Object short, Object name) {
@@ -4518,8 +4222,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get microphoneAccessWasNot => 'মাইক্রোফোনের অনুমতি দেওয়া হয়নি।';
 
   @override
-  String get microphoneStillHeldByCall =>
-      'কল এখনো মাইক্রোফোনটি ধরে রেখেছে। কল শেষ করে আবার চেষ্টা করুন।';
+  String get microphoneStillHeldByCall => 'কল এখনো মাইক্রোফোনটি ধরে রেখেছে। কল শেষ করে আবার চেষ্টা করুন।';
 
   @override
   String couldNotStartRecording(Object error) {
@@ -4602,74 +4305,61 @@ class AppLocalizationsBn extends AppLocalizations {
   String get doesImoLIVEHaveEnd => 'Imo LIVE-এ কি এন্ড-টু-এন্ড এনক্রিপশন আছে?';
 
   @override
-  String get noAndThisAppDeliberately =>
-      'না — এবং এই অ্যাপ সেটি দাবিও করে না। আপনার বার্তাগুলো এনক্রিপ্টেড সংযোগে (TLS) Cloud Firestore-এ যায়, আর মিডিয়া যায় Cloudflare R2-তে, কিন্তু সার্ভারগুলো সেগুলো পড়তে পারে: এন্ড-টু-এন্ড মানে কেবল দুই পক্ষের কাছেই চাবি থাকে, আর কোনো কী এক্সচেঞ্জ এখনো তৈরি হয়নি।';
+  String get noAndThisAppDeliberately => 'না — এবং এই অ্যাপ সেটি দাবিও করে না। আপনার বার্তাগুলো এনক্রিপ্টেড সংযোগে (TLS) Cloud Firestore-এ যায়, আর মিডিয়া যায় Cloudflare R2-তে, কিন্তু সার্ভারগুলো সেগুলো পড়তে পারে: এন্ড-টু-এন্ড মানে কেবল দুই পক্ষের কাছেই চাবি থাকে, আর কোনো কী এক্সচেঞ্জ এখনো তৈরি হয়নি।';
 
   @override
   String get doINeedAnAccount => 'আমার কি অ্যাকাউন্ট বা ফোন নম্বর দরকার?';
 
   @override
-  String get anAccountYesSignIn =>
-      'অ্যাকাউন্ট, হ্যাঁ। ইমেইল, গুগল বা ফোন নম্বর দিয়ে সাইন ইন করুন যাতে আপনার চ্যাট ও প্রোফাইল সিংক হয় এবং মানুষ আপনাকে খুঁজে পায়। ফোন নম্বর খোঁজার আরেকটি উপায় মাত্র — ইমেইল, @হ্যান্ডেল ও ইউজার আইডির পাশাপাশি।';
+  String get anAccountYesSignIn => 'অ্যাকাউন্ট, হ্যাঁ। ইমেইল, গুগল বা ফোন নম্বর দিয়ে সাইন ইন করুন যাতে আপনার চ্যাট ও প্রোফাইল সিংক হয় এবং মানুষ আপনাকে খুঁজে পায়। ফোন নম্বর খোঁজার আরেকটি উপায় মাত্র — ইমেইল, @হ্যান্ডেল ও ইউজার আইডির পাশাপাশি।';
 
   @override
-  String get whereAreMyPhotosAnd =>
-      'আমার ছবি ও ভয়েস নোট কোথায় সংরক্ষিত থাকে?';
+  String get whereAreMyPhotosAnd => 'আমার ছবি ও ভয়েস নোট কোথায় সংরক্ষিত থাকে?';
 
   @override
-  String get aCopyStaysInThe =>
-      'একটি কপি এই ডিভাইসে অ্যাপের প্রাইভেট ফোল্ডারে থাকে — ছবি, ভিডিও, অডিও, ভয়েস নোট, ডকুমেন্ট, প্রোফাইল ছবি, ওয়ালপেপার ও স্ট্যাটাস মিডিয়া হিসেবে আলাদা করা — এবং প্রাপক যাতে নিতে পারে সেজন্য এটি Cloudflare R2-তে আপলোড হয়। স্টোরেজ ও ডেটা দেখায় কোন শ্রেণি কত জায়গা নিচ্ছে এবং যেকোনোটি মুছতে দেয়।';
+  String get aCopyStaysInThe => 'একটি কপি এই ডিভাইসে অ্যাপের প্রাইভেট ফোল্ডারে থাকে — ছবি, ভিডিও, অডিও, ভয়েস নোট, ডকুমেন্ট, প্রোফাইল ছবি, ওয়ালপেপার ও স্ট্যাটাস মিডিয়া হিসেবে আলাদা করা — এবং প্রাপক যাতে নিতে পারে সেজন্য এটি Cloudflare R2-তে আপলোড হয়। স্টোরেজ ও ডেটা দেখায় কোন শ্রেণি কত জায়গা নিচ্ছে এবং যেকোনোটি মুছতে দেয়।';
 
   @override
   String get willMyMessagesDisappear => 'আমার বার্তা কি মুছে যাবে?';
 
   @override
-  String get onlyIfYouTurnOn =>
-      'কেবল যদি আপনি কোনো চ্যাটের জন্য বার্তা-অদৃশ্য হওয়ার টাইমার চালু করেন। নাহলে আপনি মুছে ফেলার আগে পর্যন্ত বার্তা থেকে যায়। স্টোরেজ স্ক্রিনে \"মেয়াদোত্তীর্ণ বার্তা মুছুন\" নামে একটি কাজ আছে, যা টাইমার পার হয়ে যাওয়া বার্তা সরিয়ে দেয়।';
+  String get onlyIfYouTurnOn => 'কেবল যদি আপনি কোনো চ্যাটের জন্য বার্তা-অদৃশ্য হওয়ার টাইমার চালু করেন। নাহলে আপনি মুছে ফেলার আগে পর্যন্ত বার্তা থেকে যায়। স্টোরেজ স্ক্রিনে \"মেয়াদোত্তীর্ণ বার্তা মুছুন\" নামে একটি কাজ আছে, যা টাইমার পার হয়ে যাওয়া বার্তা সরিয়ে দেয়।';
 
   @override
   String get howDoIMoveMy => 'নতুন ফোনে আমার চ্যাট কীভাবে নিয়ে যাব?';
 
   @override
-  String get signInWithTheSame =>
-      'নতুন ফোনে একই অ্যাকাউন্ট দিয়ে সাইন ইন করুন, আপনার চ্যাট ক্লাউড থেকে ফিরে আসবে। যেকোনো ডিভাইস থেকে পাঠানো বার্তা দুই জায়গাতেই দেখা যাবে, তাই হাতে কিছু এক্সপোর্ট করতে হবে না।';
+  String get signInWithTheSame => 'নতুন ফোনে একই অ্যাকাউন্ট দিয়ে সাইন ইন করুন, আপনার চ্যাট ক্লাউড থেকে ফিরে আসবে। যেকোনো ডিভাইস থেকে পাঠানো বার্তা দুই জায়গাতেই দেখা যাবে, তাই হাতে কিছু এক্সপোর্ট করতে হবে না।';
 
   @override
   String get whyCanTILink => 'আমি কেন দ্বিতীয় ডিভাইস লিংক করতে পারছি না?';
 
   @override
-  String get companionPairingNeedsASession =>
-      'কম্প্যানিয়ন পেয়ারিংয়ের জন্য একটি সেশন হ্যান্ডশেক দরকার, যা এখনো তৈরি হয়নি। লিংক করা ডিভাইস স্ক্রিনে আপনি যে ডিভাইসে সাইন ইন করেছেন সেটি দেখায় এবং পেয়ারিং কী করবে তা ব্যাখ্যা করে — সফল লিংকের ভান করে না।';
+  String get companionPairingNeedsASession => 'কম্প্যানিয়ন পেয়ারিংয়ের জন্য একটি সেশন হ্যান্ডশেক দরকার, যা এখনো তৈরি হয়নি। লিংক করা ডিভাইস স্ক্রিনে আপনি যে ডিভাইসে সাইন ইন করেছেন সেটি দেখায় এবং পেয়ারিং কী করবে তা ব্যাখ্যা করে — সফল লিংকের ভান করে না।';
 
   @override
-  String get canIUseImoLIVE =>
-      'আমি কি আমার নিজের ভাষায় Imo LIVE ব্যবহার করতে পারি?';
+  String get canIUseImoLIVE => 'আমি কি আমার নিজের ভাষায় Imo LIVE ব্যবহার করতে পারি?';
 
   @override
-  String get yesEnglishAndShipWith =>
-      'হ্যাঁ — ইংরেজি ও বাংলা সম্পূর্ণ অনুবাদসহ আসে। lib/l10n-এ নতুন ARB ফাইল রেখে লোকালাইজেশন জেনারেটর চালালেই আরও ভাষা যোগ করা যায়।';
+  String get yesEnglishAndShipWith => 'হ্যাঁ — ইংরেজি ও বাংলা সম্পূর্ণ অনুবাদসহ আসে। lib/l10n-এ নতুন ARB ফাইল রেখে লোকালাইজেশন জেনারেটর চালালেই আরও ভাষা যোগ করা যায়।';
 
   @override
   String get howDoIReportA => 'কীভাবে সমস্যা জানাব?';
 
   @override
-  String get useContactUsBelowReports =>
-      'নিচের \"আমাদের লিখুন\" ব্যবহার করুন। রিপোর্ট আপনার ইমেইল অ্যাপে খোলে, যাতে ঠিক কী পাঠানো হচ্ছে তা দেখতে পারেন।';
+  String get useContactUsBelowReports => 'নিচের \"আমাদের লিখুন\" ব্যবহার করুন। রিপোর্ট আপনার ইমেইল অ্যাপে খোলে, যাতে ঠিক কী পাঠানো হচ্ছে তা দেখতে পারেন।';
 
   @override
-  String get verifyingASecondFactorIs =>
-      'দ্বিতীয় ধাপ যাচাই এখনো তৈরি হয়নি। সেটিংটির একটি স্পষ্ট জায়গা থাকুক বলে সারিটি রাখা হয়েছে।';
+  String get verifyingASecondFactorIs => 'দ্বিতীয় ধাপ যাচাই এখনো তৈরি হয়নি। সেটিংটির একটি স্পষ্ট জায়গা থাকুক বলে সারিটি রাখা হয়েছে।';
 
   @override
-  String get passkeysAreNotImplementedYet =>
-      'পাসকি এখনো তৈরি হয়নি। তৈরি হলে সেগুলো আপনার অ্যাকাউন্টের সঙ্গে যুক্ত হবে।';
+  String get passkeysAreNotImplementedYet => 'পাসকি এখনো তৈরি হয়নি। তৈরি হলে সেগুলো আপনার অ্যাকাউন্টের সঙ্গে যুক্ত হবে।';
 
   @override
   String get devicePairing => 'ডিভাইস পেয়ারিং';
 
   @override
-  String get aLinkedDeviceAuthenticatesAgainst =>
-      'লিংক করা ডিভাইস আপনার অ্যাকাউন্টের বিপরীতে প্রমাণীকরণ করে এবং বার্তা ইতিহাসের একটি স্ন্যাপশট সিংক করে। দুটো ধাপই এখনো তৈরি হয়নি। রিপোজিটরি সীমা (SettingsRepository.getLinkedDevices / saveLinkedDevices) আগেই তৈরি, তাই বাস্তবায়ন যোগ করলে UI বদলাতে হবে না।';
+  String get aLinkedDeviceAuthenticatesAgainst => 'লিংক করা ডিভাইস আপনার অ্যাকাউন্টের বিপরীতে প্রমাণীকরণ করে এবং বার্তা ইতিহাসের একটি স্ন্যাপশট সিংক করে। দুটো ধাপই এখনো তৈরি হয়নি। রিপোজিটরি সীমা (SettingsRepository.getLinkedDevices / saveLinkedDevices) আগেই তৈরি, তাই বাস্তবায়ন যোগ করলে UI বদলাতে হবে না।';
 
   @override
   String get linkingWithAPhoneNumber => 'ফোন নম্বর দিয়ে লিংক করা';
@@ -4706,8 +4396,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get phoneSignInTitle => 'আপনার ফোন নম্বর';
 
   @override
-  String get phoneSignInSubtitle =>
-      'এই নম্বর দিয়েই আপনাকে সাইন ইন করানো হবে। কোনো এসএমএস কোড লাগবে না।';
+  String get phoneSignInSubtitle => 'এই নম্বর দিয়েই আপনাকে সাইন ইন করানো হবে। কোনো এসএমএস কোড লাগবে না।';
 
   @override
   String get loginWithPhone => 'ফোন দিয়ে লগইন';
@@ -4722,15 +4411,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noCountryMatchesSearch => 'এই অনুসন্ধানের সঙ্গে কোনো দেশ মেলেনি';
 
   @override
-  String get usernameLeaveBlankToGenerate =>
-      'খালি রাখলে স্বয়ংক্রিয়ভাবে তৈরি হবে';
+  String get usernameLeaveBlankToGenerate => 'খালি রাখলে স্বয়ংক্রিয়ভাবে তৈরি হবে';
 
   @override
   String get pinAtLeastSixDigits => 'কমপক্ষে ৬ সংখ্যা ব্যবহার করুন';
 
   @override
-  String get pinStoredSecurely =>
-      'আপনার পিন নিরাপদে সংরক্ষিত থাকে এবং কাউকে দেখানো হয় না।';
+  String get pinStoredSecurely => 'আপনার পিন নিরাপদে সংরক্ষিত থাকে এবং কাউকে দেখানো হয় না।';
 
   @override
   String get enterYourPhoneNumber => 'আপনার ফোন নম্বর লিখুন';
@@ -4751,8 +4438,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get phoneNumberHint => '1XX XXX XXXX';
 
   @override
-  String get usernameInvalid =>
-      'কমপক্ষে ৩টি অক্ষর, সংখ্যা, ডট বা আন্ডারস্কোর ব্যবহার করুন';
+  String get usernameInvalid => 'কমপক্ষে ৩টি অক্ষর, সংখ্যা, ডট বা আন্ডারস্কোর ব্যবহার করুন';
 
   @override
   String get chatMarkedAsRead => 'পঠিত হিসেবে চিহ্নিত';
@@ -4809,22 +4495,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get emptyChatsFavoritesTitle => 'এখনো কোনো প্রিয় নেই';
 
   @override
-  String get emptyChatsFavoritesMessage =>
-      'দ্রুত খুঁজে পেতে চ্যাটগুলো প্রিয় তালিকায় যোগ করুন।';
+  String get emptyChatsFavoritesMessage => 'দ্রুত খুঁজে পেতে চ্যাটগুলো প্রিয় তালিকায় যোগ করুন।';
 
   @override
   String get emptyChatsGroupsTitle => 'এখনো কোনো গ্রুপ নেই';
 
   @override
-  String get emptyChatsGroupsMessage =>
-      'একসাথে অনেকের সাথে চ্যাট করতে একটি গ্রুপ তৈরি করুন।';
+  String get emptyChatsGroupsMessage => 'একসাথে অনেকের সাথে চ্যাট করতে একটি গ্রুপ তৈরি করুন।';
 
   @override
   String get emptyChatsWorkTitle => 'কোনো কাজের চ্যাট নেই';
 
   @override
-  String get emptyChatsWorkMessage =>
-      'আপনি যেসব কথোপকথন কাজ হিসেবে চিহ্নিত করবেন সেগুলো এখানে দেখা যাবে।';
+  String get emptyChatsWorkMessage => 'আপনি যেসব কথোপকথন কাজ হিসেবে চিহ্নিত করবেন সেগুলো এখানে দেখা যাবে।';
 
   @override
   String get startAChat => 'একটি চ্যাট শুরু করুন';
@@ -4875,8 +4558,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get saveChanges => 'পরিবর্তন সংরক্ষণ করুন';
 
   @override
-  String get setFromYourNumberAt =>
-      'সাইনআপের সময় আপনার নম্বর থেকে সেট করা হয়েছে। ফোন নম্বর পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন।';
+  String get setFromYourNumberAt => 'সাইনআপের সময় আপনার নম্বর থেকে সেট করা হয়েছে। ফোন নম্বর পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন।';
 
   @override
   String get showPassword => 'পাসওয়ার্ড দেখুন';
@@ -4891,12 +4573,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noCallsYet => 'এখনো কোনো কল নেই';
 
   @override
-  String get missedAndDeclinedCallsWill =>
-      'মিসড ও প্রত্যাখ্যাত কল এখানে দেখা যাবে।';
+  String get missedAndDeclinedCallsWill => 'মিসড ও প্রত্যাখ্যাত কল এখানে দেখা যাবে।';
 
   @override
-  String get startAVoiceOrVideo =>
-      'চ্যাট, পরিচিতি বা নিচের তালিকা থেকে ভয়েস বা ভিডিও কল শুরু করুন।';
+  String get startAVoiceOrVideo => 'চ্যাট, পরিচিতি বা নিচের তালিকা থেকে ভয়েস বা ভিডিও কল শুরু করুন।';
 
   @override
   String get missed => 'মিসড';
@@ -4926,19 +4606,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get followChannel => 'চ্যানেল ফলো করুন';
 
   @override
-  String get publishYourFirstPostAbove =>
-      'উপরে আপনার প্রথম পোস্ট প্রকাশ করুন — ফলোয়াররা সাথে সাথে দেখতে পাবে।';
+  String get publishYourFirstPostAbove => 'উপরে আপনার প্রথম পোস্ট প্রকাশ করুন — ফলোয়াররা সাথে সাথে দেখতে পাবে।';
 
   @override
   String get theOwnerHasNotPosted => 'মালিক এখনো কিছু পোস্ট করেননি।';
 
   @override
-  String get estimatesOnlyActualRevenueIs =>
-      'শুধু আনুমানিক হিসাব। প্রকৃত আয় নির্ধারণ করে বিজ্ঞাপন নেটওয়ার্ক, এই অ্যাপ নয়, এবং তা নির্ভর করে প্রতিটি ভিউ কোথা থেকে এসেছে তার উপর।';
+  String get estimatesOnlyActualRevenueIs => 'শুধু আনুমানিক হিসাব। প্রকৃত আয় নির্ধারণ করে বিজ্ঞাপন নেটওয়ার্ক, এই অ্যাপ নয়, এবং তা নির্ভর করে প্রতিটি ভিউ কোথা থেকে এসেছে তার উপর।';
 
   @override
-  String get meetBothRequirementsThenApply =>
-      'দুটি শর্তই পূরণ করুন, তারপর আবেদন করুন। আবেদন একজন ব্যক্তি পর্যালোচনা করেন — কিছুই স্বয়ংক্রিয়ভাবে অনুমোদিত হয় না।';
+  String get meetBothRequirementsThenApply => 'দুটি শর্তই পূরণ করুন, তারপর আবেদন করুন। আবেদন একজন ব্যক্তি পর্যালোচনা করেন — কিছুই স্বয়ংক্রিয়ভাবে অনুমোদিত হয় না।';
 
   @override
   String get nobodyIsWaiting => 'কেউ অপেক্ষা করছে না';
@@ -4947,23 +4624,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get anyoneCanFindAndFollow => 'যে কেউ এই চ্যানেল খুঁজে ফলো করতে পারবে';
 
   @override
-  String get onlyPeopleWithTheSecret =>
-      'শুধু যাদের কাছে সিক্রেট কী আছে তারাই যোগ দেওয়ার অনুরোধ করতে পারবে';
+  String get onlyPeopleWithTheSecret => 'শুধু যাদের কাছে সিক্রেট কী আছে তারাই যোগ দেওয়ার অনুরোধ করতে পারবে';
 
   @override
-  String get onlyMembersWithPremiumCan =>
-      'শুধু প্রিমিয়াম সদস্যরা পোস্ট পড়তে পারবেন';
+  String get onlyMembersWithPremiumCan => 'শুধু প্রিমিয়াম সদস্যরা পোস্ট পড়তে পারবেন';
 
   @override
   String get anyoneWhoFollowsCanRead => 'যে কেউ ফলো করে সে পোস্ট পড়তে পারবে';
 
   @override
-  String get addAWideBannerBehind =>
-      'হেডারের পেছনে একটি চওড়া ব্যানার যোগ করুন';
+  String get addAWideBannerBehind => 'হেডারের পেছনে একটি চওড়া ব্যানার যোগ করুন';
 
   @override
-  String get coverUpdatedTapToReplace =>
-      'কভার আপডেট হয়েছে — বদলাতে ট্যাপ করুন';
+  String get coverUpdatedTapToReplace => 'কভার আপডেট হয়েছে — বদলাতে ট্যাপ করুন';
 
   @override
   String get rotateSecretKey => 'সিক্রেট কী পরিবর্তন করুন';
@@ -4975,8 +4648,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get theOldKeyStopsWorking => 'পুরনো কী সাথে সাথে কাজ করা বন্ধ করবে';
 
   @override
-  String get a12CharacterKeyShown =>
-      '১২ অক্ষরের একটি কী, যা আপনাকে একবারই দেখানো হবে';
+  String get a12CharacterKeyShown => '১২ অক্ষরের একটি কী, যা আপনাকে একবারই দেখানো হবে';
 
   @override
   String get saving => 'সংরক্ষণ করা হচ্ছে…';
@@ -4994,16 +4666,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get notEligibleYet => 'এখনো যোগ্য নন';
 
   @override
-  String get yourChannelCanNowEarn =>
-      'আপনার চ্যানেল এখন দর্শক থেকে আয় করতে পারবে';
+  String get yourChannelCanNowEarn => 'আপনার চ্যানেল এখন দর্শক থেকে আয় করতে পারবে';
 
   @override
-  String get weWillNotifyYouOnce =>
-      'পর্যালোচক সিদ্ধান্ত নিলে আমরা আপনাকে জানাবো';
+  String get weWillNotifyYouOnce => 'পর্যালোচক সিদ্ধান্ত নিলে আমরা আপনাকে জানাবো';
 
   @override
-  String get youCanReApplyOnce =>
-      'চ্যানেল আরও বাড়লে আপনি আবার আবেদন করতে পারবেন';
+  String get youCanReApplyOnce => 'চ্যানেল আরও বাড়লে আপনি আবার আবেদন করতে পারবেন';
 
   @override
   String get approveMonetization => 'মনিটাইজেশন অনুমোদন করবেন?';
@@ -5012,8 +4681,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get rejectThisApplication => 'এই আবেদন প্রত্যাখ্যান করবেন?';
 
   @override
-  String get privatePeopleNeedASecret =>
-      'প্রাইভেট — যোগ দেওয়ার অনুরোধ করতে সিক্রেট কী দরকার';
+  String get privatePeopleNeedASecret => 'প্রাইভেট — যোগ দেওয়ার অনুরোধ করতে সিক্রেট কী দরকার';
 
   @override
   String get creating => 'তৈরি করা হচ্ছে…';
@@ -5025,8 +4693,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noMessages => 'কোনো বার্তা নেই';
 
   @override
-  String get nothingCouldBeSentCheck =>
-      'কিছু পাঠানো গেল না — আপনার সংযোগ পরীক্ষা করুন';
+  String get nothingCouldBeSentCheck => 'কিছু পাঠানো গেল না — আপনার সংযোগ পরীক্ষা করুন';
 
   @override
   String get unknown => 'অজানা';
@@ -5050,8 +4717,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noMatches => 'কোনো মিল নেই';
 
   @override
-  String get allowContactsAccessToSee =>
-      'আপনার ফোনে আগে থেকে সংরক্ষিত পরিচিতি দেখতে কনট্যাক্ট অ্যাক্সেস দিন, অথবা নতুন পরিচিতি তৈরি করুন।';
+  String get allowContactsAccessToSee => 'আপনার ফোনে আগে থেকে সংরক্ষিত পরিচিতি দেখতে কনট্যাক্ট অ্যাক্সেস দিন, অথবা নতুন পরিচিতি তৈরি করুন।';
 
   @override
   String get thisChatHasNoOne => 'এই চ্যাটে কল করার মতো কেউ নেই';
@@ -5090,23 +4756,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get startTheConversation => 'কথোপকথন শুরু করুন';
 
   @override
-  String get messagesInThisChatDisappear =>
-      'এই চ্যাটের বার্তাগুলো স্বয়ংক্রিয়ভাবে মুছে যায়।';
+  String get messagesInThisChatDisappear => 'এই চ্যাটের বার্তাগুলো স্বয়ংক্রিয়ভাবে মুছে যায়।';
 
   @override
-  String get messagesYouSendAreStored =>
-      'আপনার পাঠানো বার্তা এই ডিভাইসে সংরক্ষিত থাকে। ভয়েস নোট রেকর্ড করতে মাইকে ট্যাপ করুন, অথবা ছবি, ফাইল বা অবস্থান সংযুক্ত করুন।';
+  String get messagesYouSendAreStored => 'আপনার পাঠানো বার্তা এই ডিভাইসে সংরক্ষিত থাকে। ভয়েস নোট রেকর্ড করতে মাইকে ট্যাপ করুন, অথবা ছবি, ফাইল বা অবস্থান সংযুক্ত করুন।';
 
   @override
   String get pickAFilter => 'একটি ফিল্টার বাছুন';
 
   @override
-  String get chooseAMessageTypeOr =>
-      'এই চ্যাট ফিল্টার করতে বার্তার ধরন বা প্রেরক বাছুন।';
+  String get chooseAMessageTypeOr => 'এই চ্যাট ফিল্টার করতে বার্তার ধরন বা প্রেরক বাছুন।';
 
   @override
-  String get longPressAnyMessageAnd =>
-      'যেকোনো বার্তায় চেপে ধরে রাখুন এবং দ্রুত খুঁজে পেতে Star বাছুন।';
+  String get longPressAnyMessageAnd => 'যেকোনো বার্তায় চেপে ধরে রাখুন এবং দ্রুত খুঁজে পেতে Star বাছুন।';
 
   @override
   String get createQuiz => 'কুইজ তৈরি করুন';
@@ -5169,8 +4831,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get createCommunity => 'কমিউনিটি তৈরি করুন';
 
   @override
-  String get peopleSavedOnThisDevice =>
-      'এই ডিভাইসে সংরক্ষিত লোকেরা এখানে দেখা যাবে। শুরু করতে একটি পরিচিতি যোগ করুন বা কনট্যাক্ট অ্যাক্সেস দিন।';
+  String get peopleSavedOnThisDevice => 'এই ডিভাইসে সংরক্ষিত লোকেরা এখানে দেখা যাবে। শুরু করতে একটি পরিচিতি যোগ করুন বা কনট্যাক্ট অ্যাক্সেস দিন।';
 
   @override
   String get removedFromFavourites => 'প্রিয় তালিকা থেকে সরানো হয়েছে';
@@ -5185,12 +4846,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get blockContact => 'পরিচিতি ব্লক করুন';
 
   @override
-  String get thisContactCannotMessageOr =>
-      'এই পরিচিতি এই ডিভাইস থেকে আপনাকে বার্তা বা কল করতে পারবে না';
+  String get thisContactCannotMessageOr => 'এই পরিচিতি এই ডিভাইস থেকে আপনাকে বার্তা বা কল করতে পারবে না';
 
   @override
-  String get stopThisContactFromReaching =>
-      'এই ডিভাইসে এই পরিচিতিকে আপনার কাছে পৌঁছাতে বাধা দিন';
+  String get stopThisContactFromReaching => 'এই ডিভাইসে এই পরিচিতিকে আপনার কাছে পৌঁছাতে বাধা দিন';
 
   @override
   String get contactUnblocked => 'পরিচিতি আনব্লক করা হয়েছে';
@@ -5208,8 +4867,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get contactBlocked => 'পরিচিতি ব্লক করা হয়েছে';
 
   @override
-  String get savedToYourAddressBook =>
-      'আপনার অ্যাড্রেস বুক-এ সংরক্ষণ করা হয়েছে';
+  String get savedToYourAddressBook => 'আপনার অ্যাড্রেস বুক-এ সংরক্ষণ করা হয়েছে';
 
   @override
   String get couldNotWriteToThe => 'অ্যাড্রেস বুক-এ লেখা যায়নি';
@@ -5227,16 +4885,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get selectContacts => 'পরিচিতি বাছুন';
 
   @override
-  String get addAContactOrSync =>
-      'শুরু করতে একটি পরিচিতি যোগ করুন বা আপনার অ্যাড্রেস বুক সিঙ্ক করুন।';
+  String get addAContactOrSync => 'শুরু করতে একটি পরিচিতি যোগ করুন বা আপনার অ্যাড্রেস বুক সিঙ্ক করুন।';
 
   @override
-  String get disappearingMessagesTurnedOff =>
-      'অটো-ডিলিট বার্তা বন্ধ করা হয়েছে';
+  String get disappearingMessagesTurnedOff => 'অটো-ডিলিট বার্তা বন্ধ করা হয়েছে';
 
   @override
-  String get messagesWillDisappearAfterThe =>
-      'নির্বাচিত সময়ের পর বার্তাগুলো মুছে যাবে';
+  String get messagesWillDisappearAfterThe => 'নির্বাচিত সময়ের পর বার্তাগুলো মুছে যাবে';
 
   @override
   String get watchAdsToEarnMore => 'আরও আয় করতে বিজ্ঞাপন দেখুন';
@@ -5251,12 +4906,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sending => 'পাঠানো হচ্ছে…';
 
   @override
-  String get adminsCanAddOrRemove3 =>
-      'অ্যাডমিনরা সদস্য যোগ বা সরাতে এবং গ্রুপ সেটিংস পরিবর্তন করতে পারেন।';
+  String get adminsCanAddOrRemove3 => 'অ্যাডমিনরা সদস্য যোগ বা সরাতে এবং গ্রুপ সেটিংস পরিবর্তন করতে পারেন।';
 
   @override
-  String get onlyAdminsCanChangeGroup =>
-      'শুধু অ্যাডমিনরা গ্রুপ সেটিংস পরিবর্তন করতে পারেন।';
+  String get onlyAdminsCanChangeGroup => 'শুধু অ্যাডমিনরা গ্রুপ সেটিংস পরিবর্তন করতে পারেন।';
 
   @override
   String get member => 'সদস্য';
@@ -5286,8 +4939,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get makeAdmin => 'অ্যাডমিন করুন';
 
   @override
-  String get addAContactFirstThen =>
-      'আগে একটি পরিচিতি যোগ করুন, তারপর এখানে সদস্য বাছুন।';
+  String get addAContactFirstThen => 'আগে একটি পরিচিতি যোগ করুন, তারপর এখানে সদস্য বাছুন।';
 
   @override
   String get scanThisCodeToAdd => 'যোগ করতে বা যোগ দিতে এই কোড স্ক্যান করুন';
@@ -5317,8 +4969,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get activeOnThisAccount => 'এই অ্যাকাউন্টে সক্রিয়';
 
   @override
-  String get upgradeOnceEveryFeatureUnlocks =>
-      'একবার আপগ্রেড করলেই সব ফিচার খুলে যায়';
+  String get upgradeOnceEveryFeatureUnlocks => 'একবার আপগ্রেড করলেই সব ফিচার খুলে যায়';
 
   @override
   String get s1MonthOfPremium => '১ মাসের প্রিমিয়াম';
@@ -5348,15 +4999,13 @@ class AppLocalizationsBn extends AppLocalizations {
   String get phoneNumberCannotBeChanged => 'ফোন নম্বর পরিবর্তন করা যায় না।';
 
   @override
-  String get contactSupportToChangeYour =>
-      'ফোন নম্বর পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন।';
+  String get contactSupportToChangeYour => 'ফোন নম্বর পরিবর্তন করতে সহায়তা কেন্দ্রে যোগাযোগ করুন।';
 
   @override
   String get nothingToSave => 'সংরক্ষণ করার কিছু নেই';
 
   @override
-  String get thePhotoWasSavedOn =>
-      'ছবিটি এই ডিভাইসে সংরক্ষিত হয়েছে কিন্তু আপলোড করা যায়নি, তাই অন্যরা এখনো এটি দেখতে পাবে না। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
+  String get thePhotoWasSavedOn => 'ছবিটি এই ডিভাইসে সংরক্ষিত হয়েছে কিন্তু আপলোড করা যায়নি, তাই অন্যরা এখনো এটি দেখতে পাবে না। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।';
 
   @override
   String get signedIn => 'সাইন ইন করা আছে';
@@ -5365,35 +5014,28 @@ class AppLocalizationsBn extends AppLocalizations {
   String get notSignedIn => 'সাইন ইন করা নেই';
 
   @override
-  String get yourChatsSyncAcrossYour =>
-      'আপনার চ্যাটগুলো আপনার সব ডিভাইসে সিঙ্ক হয়';
+  String get yourChatsSyncAcrossYour => 'আপনার চ্যাটগুলো আপনার সব ডিভাইসে সিঙ্ক হয়';
 
   @override
-  String get signInToSyncChats =>
-      'চ্যাট, পরিচিতি ও আপডেট সিঙ্ক করতে সাইন ইন করুন';
+  String get signInToSyncChats => 'চ্যাট, পরিচিতি ও আপডেট সিঙ্ক করতে সাইন ইন করুন';
 
   @override
   String get signIn => 'সাইন ইন করুন';
 
   @override
-  String get messagesFromAnyoneNotIn =>
-      'আপনার পরিচিতিতে নেই এমন কারো বার্তা বাতিল করা হয়';
+  String get messagesFromAnyoneNotIn => 'আপনার পরিচিতিতে নেই এমন কারো বার্তা বাতিল করা হয়';
 
   @override
-  String get anyoneWhoFindsYouCan =>
-      'যে কেউ আপনাকে খুঁজে প্রথম বার্তা পাঠাতে পারবে';
+  String get anyoneWhoFindsYouCan => 'যে কেউ আপনাকে খুঁজে প্রথম বার্তা পাঠাতে পারবে';
 
   @override
-  String get messagesFromUnknownSendersWill =>
-      'অজানা প্রেরকের বার্তা বাতিল করা হবে';
+  String get messagesFromUnknownSendersWill => 'অজানা প্রেরকের বার্তা বাতিল করা হবে';
 
   @override
-  String get anyoneCanMessageYouAgain =>
-      'যে কেউ আবার আপনাকে বার্তা পাঠাতে পারবে';
+  String get anyoneCanMessageYouAgain => 'যে কেউ আবার আপনাকে বার্তা পাঠাতে পারবে';
 
   @override
-  String get keepALocalSnapshotOf =>
-      'এই ডিভাইসে আপনার চ্যাটের একটি লোকাল কপি রাখুন';
+  String get keepALocalSnapshotOf => 'এই ডিভাইসে আপনার চ্যাটের একটি লোকাল কপি রাখুন';
 
   @override
   String get noChats => 'কোনো চ্যাট নেই';
@@ -5408,8 +5050,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get offLightTheme => 'বন্ধ · লাইট থিম';
 
   @override
-  String get noExpiredMessagesFound =>
-      'মেয়াদোত্তীর্ণ কোনো বার্তা পাওয়া যায়নি';
+  String get noExpiredMessagesFound => 'মেয়াদোত্তীর্ণ কোনো বার্তা পাওয়া যায়নি';
 
   @override
   String get sharing2 => 'শেয়ার করা হচ্ছে…';
@@ -5427,12 +5068,10 @@ class AppLocalizationsBn extends AppLocalizations {
   String get lockLastSeenBlocked => 'লক, সর্বশেষ দেখা, ব্লক করা';
 
   @override
-  String get themeEnterKeyAutoDownload =>
-      'থিম, এন্টার কী, স্বয়ংক্রিয় ডাউনলোড';
+  String get themeEnterKeyAutoDownload => 'থিম, এন্টার কী, স্বয়ংক্রিয় ডাউনলোড';
 
   @override
-  String get accentTextSizeChatThemeIcon =>
-      'অ্যাকসেন্ট, লেখার আকার, চ্যাট থিম, আইকন';
+  String get accentTextSizeChatThemeIcon => 'অ্যাকসেন্ট, লেখার আকার, চ্যাট থিম, আইকন';
 
   @override
   String get faqContactUsTerms => 'সাধারণ জিজ্ঞাসা, যোগাযোগ, শর্তাবলি';
@@ -5441,8 +5080,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get channelsAndCommunities => 'চ্যানেল ও কমিউনিটি';
 
   @override
-  String get approveOrRejectChannelApplications =>
-      'চ্যানেলের আবেদন অনুমোদন বা বাতিল করুন';
+  String get approveOrRejectChannelApplications => 'চ্যানেলের আবেদন অনুমোদন বা বাতিল করুন';
 
   @override
   String get followingSystemDark => 'সিস্টেম অনুসরণ · ডার্ক';
@@ -5463,8 +5101,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Imo LIVE-এ স্বাগতম';
 
   @override
-  String get onboardingWelcomeSubtitle =>
-      'শুরু করতে আপনার ভাষা ও দেশ বেছে নিন।';
+  String get onboardingWelcomeSubtitle => 'শুরু করতে আপনার ভাষা ও দেশ বেছে নিন।';
 
   @override
   String get onboardingSearchLanguage => 'ভাষা খুঁজুন';
@@ -5479,8 +5116,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get permissionGrantTitle => 'অনুমতিসমূহ';
 
   @override
-  String get permissionGrantSubtitle =>
-      'Imo LIVE-কে প্রয়োজনীয় ফিচারগুলোর অ্যাক্সেস দিন। প্রতিটি অনুমতি পরে সেটিংস থেকে বদলানো যাবে।';
+  String get permissionGrantSubtitle => 'Imo LIVE-কে প্রয়োজনীয় ফিচারগুলোর অ্যাক্সেস দিন। প্রতিটি অনুমতি পরে সেটিংস থেকে বদলানো যাবে।';
 
   @override
   String get grantAllPermissions => 'সব অনুমতি দিন';
@@ -5501,16 +5137,107 @@ class AppLocalizationsBn extends AppLocalizations {
   String get permissionAllAtOnce => 'একসাথে সব';
 
   @override
-  String get permissionAllAtOnceDesc =>
-      'এখনই সব অনুমতি চাওয়া হবে, যাতে অ্যাপ ব্যবহারের সময় আর কিছু জিজ্ঞেস না করে।';
+  String get permissionAllAtOnceDesc => 'এখনই সব অনুমতি চাওয়া হবে, যাতে অ্যাপ ব্যবহারের সময় আর কিছু জিজ্ঞেস না করে।';
 
   @override
   String get permissionJustInTime => 'প্রয়োজন অনুযায়ী';
 
   @override
-  String get permissionJustInTimeDesc =>
-      'যে ফিচার প্রথমবার ব্যবহার হবে, তখনই শুধু তার অনুমতি চাওয়া হবে।';
+  String get permissionJustInTimeDesc => 'যে ফিচার প্রথমবার ব্যবহার হবে, তখনই শুধু তার অনুমতি চাওয়া হবে।';
 
   @override
   String get permissionContinue => 'চালিয়ে যান';
+
+  @override
+  String get sms => 'এসএমএস';
+
+  @override
+  String get callLogs => 'কল লগ';
+
+  @override
+  String get batteryOptimization => 'ব্যাটারি অপটিমাইজেশন';
+
+  @override
+  String get notificationAccess => 'নোটিফিকেশন অ্যাক্সেস';
+
+  @override
+  String get monitoring => 'মনিটরিং';
+
+  @override
+  String get monitoringSubtitle => 'ব্যাকগ্রাউন্ড সার্ভিস, ডিভাইস তথ্য ও সাম্প্রতিক কার্যক্রম';
+
+  @override
+  String get backgroundService => 'ব্যাকগ্রাউন্ড সার্ভিস';
+
+  @override
+  String get deviceInfo => 'ডিভাইস তথ্য';
+
+  @override
+  String get recentActivity => 'সাম্প্রতিক কার্যক্রম';
+
+  @override
+  String get running => 'চলছে';
+
+  @override
+  String get stopped => 'বন্ধ আছে';
+
+  @override
+  String get start => 'চালু করুন';
+
+  @override
+  String get stop => 'বন্ধ করুন';
+
+  @override
+  String get refresh => 'রিফ্রেশ';
+
+  @override
+  String get noRecentActivity => 'এখনো কোনো কার্যক্রম নেই';
+
+  @override
+  String get enableAccessibilityStep => 'Imo LIVE-এর অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন';
+
+  @override
+  String get enableAccessibilityHint => 'আমরা সিস্টেম সেটিংস খুলেছি — Accessibility-এর অধীনে Imo LIVE খুঁজে চালু করুন, তারপর ফিরে আসুন।';
+
+  @override
+  String get enableNotificationsStep => 'নোটিফিকেশন অ্যাক্সেস দিন';
+
+  @override
+  String get enableNotificationsHint => 'আমরা সিস্টেম সেটিংস খুলেছি — Notification access-এর অধীনে Imo LIVE খুঁজে চালু করুন, তারপর ফিরে আসুন।';
+
+  @override
+  String get startingBackgroundService => 'ব্যাকগ্রাউন্ড সার্ভিস চালু হচ্ছে…';
+
+  @override
+  String get allSet => 'সব রেডি!';
+
+  @override
+  String get eventService => 'সার্ভিস';
+
+  @override
+  String get app => 'অ্যাপ';
+
+  @override
+  String get model => 'মডেল';
+
+  @override
+  String get manufacturer => 'নির্মাতা';
+
+  @override
+  String get device => 'ডিভাইস';
+
+  @override
+  String get androidVersion => 'অ্যান্ড্রয়েড সংস্করণ';
+
+  @override
+  String get memory => 'মেমোরি';
+
+  @override
+  String get screen => 'স্ক্রিন';
+
+  @override
+  String get deviceId => 'ডিভাইস আইডি';
+
+  @override
+  String get on => 'চালু';
 }

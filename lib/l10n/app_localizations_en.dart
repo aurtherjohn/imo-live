@@ -1,6 +1,5 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -193,8 +192,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noRecentCalls => 'No recent calls';
 
   @override
-  String get noRecentCallsMessage =>
-      'Calls you make and receive will appear here.';
+  String get noRecentCallsMessage => 'Calls you make and receive will appear here.';
 
   @override
   String get noStarredMessages => 'No starred messages';
@@ -218,22 +216,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noChannels => 'Follow channels to see updates';
 
   @override
-  String get noChannelsMessage =>
-      'Channels let you follow updates from people and organisations.';
+  String get noChannelsMessage => 'Channels let you follow updates from people and organisations.';
 
   @override
   String get noUpdates => 'No updates yet';
 
   @override
-  String get noUpdatesMessage =>
-      'Status updates from your contacts appear here for 24 hours.';
+  String get noUpdatesMessage => 'Status updates from your contacts appear here for 24 hours.';
 
   @override
   String get stayConnected => 'Stay connected with a community';
 
   @override
-  String get stayConnectedMessage =>
-      'Communities bring members together in topic-based groups, and let you send announcement groups easily.';
+  String get stayConnectedMessage => 'Communities bring members together in topic-based groups, and let you send announcement groups easily.';
 
   @override
   String get startYourCommunity => 'Start your community';
@@ -566,8 +561,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInToStartEarning => 'Sign in to start earning';
 
   @override
-  String get couldNotAddPointsCheck =>
-      'Could not add points — check your connection';
+  String get couldNotAddPointsCheck => 'Could not add points — check your connection';
 
   @override
   String get signInFirst => 'Sign in first';
@@ -576,16 +570,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumActiveUntil => 'Premium active until ';
 
   @override
-  String get couldNotActivatePremiumCheck =>
-      'Could not activate premium — check your connection';
+  String get couldNotActivatePremiumCheck => 'Could not activate premium — check your connection';
 
   @override
-  String get thisContactHasNoAccount =>
-      'This contact has no account to receive a gift';
+  String get thisContactHasNoAccount => 'This contact has no account to receive a gift';
 
   @override
-  String get couldNotSendTheGift =>
-      'Could not send the gift - check your connection';
+  String get couldNotSendTheGift => 'Could not send the gift - check your connection';
 
   @override
   String get takeAPhoto => 'Take a photo';
@@ -630,16 +621,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weSentAConfirmationLinkTo => 'We sent a confirmation link to ';
 
   @override
-  String get openYourInboxAndClickLink =>
-      'Open your email inbox and click the confirmation link.';
+  String get openYourInboxAndClickLink => 'Open your email inbox and click the confirmation link.';
 
   @override
-  String get checkYourSpamFolder =>
-      'If you don\'t see it, check your spam folder.';
+  String get checkYourSpamFolder => 'If you don\'t see it, check your spam folder.';
 
   @override
-  String get returnToAppAfterConfirming =>
-      'After confirming, return to this app.';
+  String get returnToAppAfterConfirming => 'After confirming, return to this app.';
 
   @override
   String get resendEmail => 'Resend email';
@@ -648,15 +636,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get iHaveConfirmedMyEmail => 'I\'ve confirmed my email';
 
   @override
-  String get emailNotConfirmedYet =>
-      'Not confirmed yet. Click the link in your email, then try again.';
+  String get emailNotConfirmedYet => 'Not confirmed yet. Click the link in your email, then try again.';
 
   @override
   String get emailResent => 'Confirmation email sent again';
 
   @override
-  String get openTheLinkInThe =>
-      'Open the link in the email to confirm this address. ';
+  String get openTheLinkInThe => 'Open the link in the email to confirm this address. ';
 
   @override
   String get resendNow => 'Resend now';
@@ -668,8 +654,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setUpYourProfile => 'Set up your profile';
 
   @override
-  String get thisIsHowOtherPeople =>
-      'This is how other people find you on Imo LIVE.';
+  String get thisIsHowOtherPeople => 'This is how other people find you on Imo LIVE.';
 
   @override
   String get addAPhoto => 'Add a photo';
@@ -717,8 +702,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearCallLog2 => 'Clear call log?';
 
   @override
-  String get everyCallEntryOnThis =>
-      'Every call entry on this device is deleted. Contacts and ';
+  String get everyCallEntryOnThis => 'Every call entry on this device is deleted. Contacts and ';
 
   @override
   String get clearLog => 'Clear log';
@@ -745,8 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clear => 'Clear';
 
   @override
-  String get remindersFireFromTheLocal =>
-      'Reminders fire from the local notification plugin. They are ';
+  String get remindersFireFromTheLocal => 'Reminders fire from the local notification plugin. They are ';
 
   @override
   String get who => 'Who';
@@ -797,15 +780,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get followerGrowth => 'Follower growth';
 
   @override
-  String get netNewFollowersPerDay =>
-      'Net new followers per day · last 28 days';
+  String get netNewFollowersPerDay => 'Net new followers per day · last 28 days';
 
   @override
   String get postReach => 'Post reach';
 
   @override
-  String get postImpressionsPerDayLast =>
-      'Post impressions per day · last 28 days';
+  String get postImpressionsPerDayLast => 'Post impressions per day · last 28 days';
 
   @override
   String get reactions => 'Reactions';
@@ -838,8 +819,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPendingRequests => 'No pending requests';
 
   @override
-  String get shareTheSecretKeyWith =>
-      'Share the secret key with the people you want to let in. ';
+  String get shareTheSecretKeyWith => 'Share the secret key with the people you want to let in. ';
 
   @override
   String get reject => 'Reject';
@@ -854,8 +834,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get channelNotFound => 'Channel not found';
 
   @override
-  String get itIsNotOnThis =>
-      'It is not on this device and could not be loaded from the ';
+  String get itIsNotOnThis => 'It is not on this device and could not be loaded from the ';
 
   @override
   String get channelActions => 'Channel actions';
@@ -864,15 +843,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get postToYourChannel => 'Post to your channel';
 
   @override
-  String get writeSomethingForYourFollowers =>
-      'Write something for your followers…';
+  String get writeSomethingForYourFollowers => 'Write something for your followers…';
 
   @override
   String get deleteThisPost => 'Delete this post?';
 
   @override
-  String get itDisappearsForEveryFollower =>
-      'It disappears for every follower immediately.';
+  String get itDisappearsForEveryFollower => 'It disappears for every follower immediately.';
 
   @override
   String get sendGiftToOwner => 'Send gift to owner';
@@ -893,8 +870,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thisChannelIsPrivate => 'This channel is private';
 
   @override
-  String get postsAreOnlyVisibleTo =>
-      'Posts are only visible to members. Send a request and the owner ';
+  String get postsAreOnlyVisibleTo => 'Posts are only visible to members. Send a request and the owner ';
 
   @override
   String get requestToJoin => 'Request to join';
@@ -903,8 +879,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumChannel => 'Premium channel';
 
   @override
-  String get thisChannelIsReservedFor =>
-      'This channel is reserved for premium members. Earn points by ';
+  String get thisChannelIsReservedFor => 'This channel is reserved for premium members. Earn points by ';
 
   @override
   String get getPremium => 'Get premium';
@@ -930,8 +905,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get channelInfo => 'Channel info';
 
   @override
-  String get onlyAdminsCanSendMessages =>
-      'Only admins can send messages in this channel';
+  String get onlyAdminsCanSendMessages => 'Only admins can send messages in this channel';
 
   @override
   String get writeAPost => 'Write a post';
@@ -940,8 +914,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get writeYourFirstPost => 'Write your first post';
 
   @override
-  String get nothingHasBeenPostedYet =>
-      'Nothing has been posted in this channel yet';
+  String get nothingHasBeenPostedYet => 'Nothing has been posted in this channel yet';
 
   @override
   String get monetization => 'Monetization';
@@ -983,8 +956,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get applyForMonetization2 => 'Apply for monetization?';
 
   @override
-  String get yourChannelMeetsTheRequirements =>
-      'Your channel meets the requirements. A reviewer will ';
+  String get yourChannelMeetsTheRequirements => 'Your channel meets the requirements. A reviewer will ';
 
   @override
   String get apply => 'Apply';
@@ -993,8 +965,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ownerTools => 'Owner tools';
 
   @override
-  String get followerGrowthReachAndReactions =>
-      'Follower growth, reach and reactions over 28 days';
+  String get followerGrowthReachAndReactions => 'Follower growth, reach and reactions over 28 days';
 
   @override
   String get tapToChangeTheChannel => 'Tap to change the channel photo';
@@ -1006,8 +977,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get channelName => 'Channel name';
 
   @override
-  String get approveOrRejectPeopleWho =>
-      'Approve or reject people who have the key';
+  String get approveOrRejectPeopleWho => 'Approve or reject people who have the key';
 
   @override
   String get category => 'Category';
@@ -1016,15 +986,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rotateTheSecretKey => 'Rotate the secret key?';
 
   @override
-  String get everyoneCurrentlyUsingTheOld =>
-      'Everyone currently using the old key keeps their access, but ';
+  String get everyoneCurrentlyUsingTheOld => 'Everyone currently using the old key keeps their access, but ';
 
   @override
   String get generate => 'Generate';
 
   @override
-  String get aReviewerWillCheckThat =>
-      'A reviewer will check that your channel meets the ';
+  String get aReviewerWillCheckThat => 'A reviewer will check that your channel meets the ';
 
   @override
   String get monetizationReview => 'Monetization review';
@@ -1033,15 +1001,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewersOnly => 'Reviewers only';
 
   @override
-  String get thisScreenIsLimitedTo =>
-      'This screen is limited to project reviewers.';
+  String get thisScreenIsLimitedTo => 'This screen is limited to project reviewers.';
 
   @override
   String get nothingToReview => 'Nothing to review';
 
   @override
-  String get channelsAppearHereOnceThey =>
-      'Channels appear here once they pass the follower and reaction ';
+  String get channelsAppearHereOnceThey => 'Channels appear here once they pass the follower and reaction ';
 
   @override
   String get channelPhoto => 'Channel photo';
@@ -1068,22 +1034,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nothingArchived => 'Nothing archived';
 
   @override
-  String get archivedChatsAreHiddenFrom =>
-      'Archived chats are hidden from the main list but keep all ';
+  String get archivedChatsAreHiddenFrom => 'Archived chats are hidden from the main list but keep all ';
 
   @override
   String get newList => 'New list';
 
   @override
-  String get aBroadcastSendsAnIndividual =>
-      'A broadcast sends an individual copy of your message to each ';
+  String get aBroadcastSendsAnIndividual => 'A broadcast sends an individual copy of your message to each ';
 
   @override
   String get noBroadcastLists => 'No broadcast lists';
 
   @override
-  String get createAListOfUp =>
-      'Create a list of up to 256 recipients and message them ';
+  String get createAListOfUp => 'Create a list of up to 256 recipients and message them ';
 
   @override
   String get actions => 'Actions';
@@ -1104,8 +1067,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteList => 'Delete list';
 
   @override
-  String get theListIsDeletedExisting =>
-      'The list is deleted. Existing conversations with its ';
+  String get theListIsDeletedExisting => 'The list is deleted. Existing conversations with its ';
 
   @override
   String get newBroadcastList => 'New broadcast list';
@@ -1120,8 +1082,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendABroadcast => 'Send a broadcast';
 
   @override
-  String get localStorageCouldNotBe =>
-      'Local storage could not be opened, so your chats, contacts ';
+  String get localStorageCouldNotBe => 'Local storage could not be opened, so your chats, contacts ';
 
   @override
   String get menu => 'Menu';
@@ -1145,8 +1106,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveSomeoneToThisDevice => 'Save someone to this device';
 
   @override
-  String get broadcastToAnUnlimitedAudience =>
-      'Broadcast to an unlimited audience';
+  String get broadcastToAnUnlimitedAudience => 'Broadcast to an unlimited audience';
 
   @override
   String get groupRelatedChatsTogether => 'Group related chats together';
@@ -1239,8 +1199,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearThisChat => 'Clear this chat?';
 
   @override
-  String get allMessagesInThisConversation =>
-      'All messages in this conversation will be removed from this device. ';
+  String get allMessagesInThisConversation => 'All messages in this conversation will be removed from this device. ';
 
   @override
   String get noEmojiFound => 'No emoji found';
@@ -1294,8 +1253,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noCommunitiesYet => 'No communities yet';
 
   @override
-  String get aCommunityGroupsRelatedChats =>
-      'A community groups related chats under one announcement channel. ';
+  String get aCommunityGroupsRelatedChats => 'A community groups related chats under one announcement channel. ';
 
   @override
   String get communityActions => 'Community actions';
@@ -1313,15 +1271,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteCommunity => 'Delete community';
 
   @override
-  String get theCommunityAndItsAnnouncement =>
-      'The community and its announcement group are removed from ';
+  String get theCommunityAndItsAnnouncement => 'The community and its announcement group are removed from ';
 
   @override
   String get noChannelsYet => 'No channels yet';
 
   @override
-  String get channelsBroadcastOneWayTo =>
-      'Channels broadcast one-way to followers. Create one, or follow a ';
+  String get channelsBroadcastOneWayTo => 'Channels broadcast one-way to followers. Create one, or follow a ';
 
   @override
   String get community => 'Community';
@@ -1342,8 +1298,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createAGroupHere => 'Create a group here';
 
   @override
-  String get newGroupThatIsAutomatically =>
-      'New group that is automatically part of this community';
+  String get newGroupThatIsAutomatically => 'New group that is automatically part of this community';
 
   @override
   String get addExistingGroups => 'Add existing groups';
@@ -1361,8 +1316,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dangerZone => 'Danger zone';
 
   @override
-  String get removeTheCommunityAndIts =>
-      'Remove the community and its announcement group';
+  String get removeTheCommunityAndIts => 'Remove the community and its announcement group';
 
   @override
   String get communityName => 'Community name';
@@ -1377,8 +1331,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addGroups => 'Add groups';
 
   @override
-  String get theCommunityIsRemovedFrom =>
-      'The community is removed from this device. Groups inside it stay ';
+  String get theCommunityIsRemovedFrom => 'The community is removed from this device. Groups inside it stay ';
 
   @override
   String get addACommunityPhoto => 'Add a community photo';
@@ -1393,8 +1346,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactNotFound => 'Contact not found';
 
   @override
-  String get thisPersonIsNotIn =>
-      'This person is not in your contacts and has no Imo LIVE ';
+  String get thisPersonIsNotIn => 'This person is not in your contacts and has no Imo LIVE ';
 
   @override
   String get contactInfo => 'Contact info';
@@ -1412,23 +1364,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sharedMedia => 'Shared media';
 
   @override
-  String get mediaAttachesToConversationsOpen =>
-      'Media attaches to conversations. Open the chat and use ';
+  String get mediaAttachesToConversationsOpen => 'Media attaches to conversations. Open the chat and use ';
 
   @override
   String get statusUpdates => 'Status updates';
 
   @override
-  String get muteAlertsForThisConversation =>
-      'Mute alerts for this conversation';
+  String get muteAlertsForThisConversation => 'Mute alerts for this conversation';
 
   @override
-  String get openTheChatAndChoose =>
-      'Open the chat and choose Disappearing messages ';
+  String get openTheChatAndChoose => 'Open the chat and choose Disappearing messages ';
 
   @override
-  String get removesThisConversationAndIts =>
-      'Removes this conversation and its messages';
+  String get removesThisConversationAndIts => 'Removes this conversation and its messages';
 
   @override
   String get deleteChat2 => 'Delete chat?';
@@ -1437,8 +1385,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteContact => 'Delete contact';
 
   @override
-  String get theContactIsRemovedFrom =>
-      'The contact is removed from your list. Existing chats ';
+  String get theContactIsRemovedFrom => 'The contact is removed from your list. Existing chats ';
 
   @override
   String get shareContact => 'Share contact';
@@ -1474,16 +1421,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressBookUnavailable => 'Address book unavailable';
 
   @override
-  String get imoLIVECouldNotRead =>
-      'Imo LIVE could not read your device contacts. Grant the contacts ';
+  String get imoLIVECouldNotRead => 'Imo LIVE could not read your device contacts. Grant the contacts ';
 
   @override
-  String get newMessagesInThisChat =>
-      'New messages in this chat will disappear after the ';
+  String get newMessagesInThisChat => 'New messages in this chat will disappear after the ';
 
   @override
-  String get thisNumberIsNotOn =>
-      'This number is not on Imo LIVE yet. Invite them?';
+  String get thisNumberIsNotOn => 'This number is not on Imo LIVE yet. Invite them?';
 
   @override
   String get redeem => 'Redeem';
@@ -1519,8 +1463,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumChannels => 'Premium channels';
 
   @override
-  String get openChannelsReservedForMembers =>
-      'Open channels reserved for members';
+  String get openChannelsReservedForMembers => 'Open channels reserved for members';
 
   @override
   String get earningHistory => 'Earning history';
@@ -1538,8 +1481,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get couldNotLoadNotifications => 'Could not load notifications';
 
   @override
-  String get checkYourConnectionAndTry =>
-      'Check your connection and try again.';
+  String get checkYourConnectionAndTry => 'Check your connection and try again.';
 
   @override
   String get noNotificationsYet => 'No notifications yet';
@@ -1554,8 +1496,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupNotFound => 'Group not found';
 
   @override
-  String get thisGroupWasDeletedOr =>
-      'This group was deleted or never existed on this device.';
+  String get thisGroupWasDeletedOr => 'This group was deleted or never existed on this device.';
 
   @override
   String get editGroup => 'Edit group';
@@ -1573,8 +1514,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get silenceAlertsForThisGroup => 'Silence alerts for this group';
 
   @override
-  String get openTheConversationAndTap =>
-      'Open the conversation and tap the search icon to filter ';
+  String get openTheConversationAndTap => 'Open the conversation and tap the search icon to filter ';
 
   @override
   String get adminPermissions => 'Admin permissions';
@@ -1583,15 +1523,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendMessages => 'Send messages';
 
   @override
-  String get allowMembersToSendMessages =>
-      'Allow members to send messages in the group';
+  String get allowMembersToSendMessages => 'Allow members to send messages in the group';
 
   @override
   String get editGroupInfo => 'Edit group info';
 
   @override
-  String get allowMembersToChangeThe =>
-      'Allow members to change the name, photo and description';
+  String get allowMembersToChangeThe => 'Allow members to change the name, photo and description';
 
   @override
   String get allowMembersToAddOther => 'Allow members to add other people';
@@ -1606,30 +1544,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get approveNewMembers => 'Approve new members';
 
   @override
-  String get adminsMustApproveEveryoneWho =>
-      'Admins must approve everyone who tries to join';
+  String get adminsMustApproveEveryoneWho => 'Admins must approve everyone who tries to join';
 
   @override
-  String get theInviteCodeIsGenerated =>
-      'The invite code is generated locally. Joining via a link needs ';
+  String get theInviteCodeIsGenerated => 'The invite code is generated locally. Joining via a link needs ';
 
   @override
   String get resetInviteLink => 'Reset invite link';
 
   @override
-  String get invalidateTheCurrentCodeAnd =>
-      'Invalidate the current code and issue a new one';
+  String get invalidateTheCurrentCodeAnd => 'Invalidate the current code and issue a new one';
 
   @override
-  String get invalidatingAnInviteLinkIs =>
-      'Invalidating an invite link is a server action — old ';
+  String get invalidatingAnInviteLinkIs => 'Invalidating an invite link is a server action — old ';
 
   @override
   String get clearMessages => 'Clear messages';
 
   @override
-  String get deleteEveryMessageInThis =>
-      'Delete every message in this group, keeping the group';
+  String get deleteEveryMessageInThis => 'Delete every message in this group, keeping the group';
 
   @override
   String get clearAllMessages => 'Clear all messages?';
@@ -1650,30 +1583,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeFromGroup => 'Remove from group';
 
   @override
-  String get youLeaveTheGroupYour =>
-      'You leave the group. Your existing messages stay in the conversation ';
+  String get youLeaveTheGroupYour => 'You leave the group. Your existing messages stay in the conversation ';
 
   @override
-  String get theGroupItsMembersAnd =>
-      'The group, its members and every message are permanently deleted ';
+  String get theGroupItsMembersAnd => 'The group, its members and every message are permanently deleted ';
 
   @override
   String get noMembersYet => 'No members yet';
 
   @override
-  String get aGroupNeedsAtLeast =>
-      'A group needs at least one other person. You will be added ';
+  String get aGroupNeedsAtLeast => 'A group needs at least one other person. You will be added ';
 
   @override
   String get youWillBeTheGroup => 'You will be the group admin';
 
   @override
-  String get adminsCanAddOrRemove =>
-      'Admins can add or remove members, edit the group photo, ';
+  String get adminsCanAddOrRemove => 'Admins can add or remove members, edit the group photo, ';
 
   @override
-  String get imoLIVESyncsThroughFirebase =>
-      'Imo LIVE syncs through Firebase — Authentication and Cloud ';
+  String get imoLIVESyncsThroughFirebase => 'Imo LIVE syncs through Firebase — Authentication and Cloud ';
 
   @override
   String get build => 'Build';
@@ -1688,19 +1616,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get architecture => 'Architecture';
 
   @override
-  String get imoLIVEFollowsAClean =>
-      'Imo LIVE follows a clean, feature-first layout.';
+  String get imoLIVEFollowsAClean => 'Imo LIVE follows a clean, feature-first layout.';
 
   @override
-  String get everyScreenDependsOnAn =>
-      'Every screen depends on an abstract repository interface. Chats ';
+  String get everyScreenDependsOnAn => 'Every screen depends on an abstract repository interface. Chats ';
 
   @override
   String get whatStillNeedsConfiguring => 'What still needs configuring';
 
   @override
-  String get everythingBelowAlreadyHasIts =>
-      'Everything below already has its interface and local ';
+  String get everythingBelowAlreadyHasIts => 'Everything below already has its interface and local ';
 
   @override
   String get searchEverything => 'Search everything';
@@ -1736,8 +1661,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyCode => 'Copy code';
 
   @override
-  String get theCodeCarriesAnImo =>
-      'The code carries an Imo LIVE identifier. Another person can ';
+  String get theCodeCarriesAnImo => 'The code carries an Imo LIVE identifier. Another person can ';
 
   @override
   String get shareCode => 'Share code';
@@ -1749,8 +1673,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editProfile => 'Edit profile';
 
   @override
-  String get yourNameIsVisibleTo =>
-      'Your name is visible to everyone you message.';
+  String get yourNameIsVisibleTo => 'Your name is visible to everyone you message.';
 
   @override
   String get requiredLabel => 'Required';
@@ -1786,19 +1709,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchUnavailable => 'Search unavailable';
 
   @override
-  String get imoLIVECouldNotBe =>
-      'Imo LIVE could not be reached. Check your connection and ';
+  String get imoLIVECouldNotBe => 'Imo LIVE could not be reached. Check your connection and ';
 
   @override
-  String get inviteThemToImoLIVE =>
-      'Invite them to Imo LIVE and you can start chatting as soon ';
+  String get inviteThemToImoLIVE => 'Invite them to Imo LIVE and you can start chatting as soon ';
 
   @override
   String get passkeys => 'Passkeys';
 
   @override
-  String get enterANewPhoneNumber =>
-      'Enter a new phone number (stored locally only)';
+  String get enterANewPhoneNumber => 'Enter a new phone number (stored locally only)';
 
   @override
   String get verifiedNumber => 'Verified number';
@@ -1810,15 +1730,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearAllLocalData => 'Clear all local data';
 
   @override
-  String get deletesChatsMessagesContactsStatuses =>
-      'Deletes chats, messages, contacts, statuses and settings ';
+  String get deletesChatsMessagesContactsStatuses => 'Deletes chats, messages, contacts, statuses and settings ';
 
   @override
   String get clearAllLocalData2 => 'Clear all local data?';
 
   @override
-  String get everyChatMessageContactAnd =>
-      'Every chat, message, contact and setting stored by Imo ';
+  String get everyChatMessageContactAnd => 'Every chat, message, contact and setting stored by Imo ';
 
   @override
   String get clearEverything => 'Clear everything';
@@ -1836,19 +1754,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restoreDefaultAppearance => 'Restore default appearance';
 
   @override
-  String get darkThemeRoseAccent100 =>
-      'Dark theme, rose accent, 100% text size';
+  String get darkThemeRoseAccent100 => 'Dark theme, rose accent, 100% text size';
 
   @override
   String get blockAContact => 'Block a contact';
 
   @override
-  String get blockedContactsCannotMessageOr =>
-      'Blocked contacts cannot message or call you from this ';
+  String get blockedContactsCannotMessageOr => 'Blocked contacts cannot message or call you from this ';
 
   @override
-  String get unblockingRestoresTheContactTo =>
-      'Unblocking restores the contact to your chat list and ';
+  String get unblockingRestoresTheContactTo => 'Unblocking restores the contact to your chat list and ';
 
   @override
   String get unknownSenders => 'Unknown senders';
@@ -1860,8 +1775,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get blockedCallers => 'Blocked callers';
 
   @override
-  String get blockedContactsAreAlsoPrevented =>
-      'Blocked contacts are also prevented from calling';
+  String get blockedContactsAreAlsoPrevented => 'Blocked contacts are also prevented from calling';
 
   @override
   String get display => 'Display';
@@ -1870,15 +1784,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterKeySendsMessage => 'Enter key sends message';
 
   @override
-  String get pressEnterToSendInstead =>
-      'Press Enter to send instead of adding a new line';
+  String get pressEnterToSendInstead => 'Press Enter to send instead of adding a new line';
 
   @override
   String get mediaVisibility => 'Media visibility';
 
   @override
-  String get showNewlyDownloadedMediaIn =>
-      'Show newly downloaded media in your device gallery';
+  String get showNewlyDownloadedMediaIn => 'Show newly downloaded media in your device gallery';
 
   @override
   String get chatHistory => 'Chat history';
@@ -1887,8 +1799,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get keepChatsArchived => 'Keep chats archived';
 
   @override
-  String get newMessagesStayInThe =>
-      'New messages stay in the archive instead of returning the ';
+  String get newMessagesStayInThe => 'New messages stay in the archive instead of returning the ';
 
   @override
   String get chatBackup => 'Chat backup';
@@ -1909,8 +1820,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get autoDownload => 'Auto-download';
 
   @override
-  String get appliesToMediaYouReceive =>
-      'Applies to media you receive while on a mobile or Wi-Fi network.';
+  String get appliesToMediaYouReceive => 'Applies to media you receive while on a mobile or Wi-Fi network.';
 
   @override
   String get photos => 'Photos';
@@ -1925,22 +1835,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetChatSettings => 'Reset chat settings';
 
   @override
-  String get restoreEveryChatPreferenceTo =>
-      'Restore every chat preference to its default';
+  String get restoreEveryChatPreferenceTo => 'Restore every chat preference to its default';
 
   @override
   String get resetChatSettings2 => 'Reset chat settings?';
 
   @override
-  String get chatPreferencesReturnToTheir =>
-      'Chat preferences return to their defaults. No chats or ';
+  String get chatPreferencesReturnToTheir => 'Chat preferences return to their defaults. No chats or ';
 
   @override
   String get syncContactsOnSave => 'Sync contacts on save';
 
   @override
-  String get offerToAddANumber =>
-      'Offer to add a number to your device address book when you ';
+  String get offerToAddANumber => 'Offer to add a number to your device address book when you ';
 
   @override
   String get appLanguage => 'App language';
@@ -1949,8 +1856,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appDisplayLanguage => 'App display language';
 
   @override
-  String get translationsAreBundledWithThe =>
-      'Translations are bundled with the app as ARB resources. ';
+  String get translationsAreBundledWithThe => 'Translations are bundled with the app as ARB resources. ';
 
   @override
   String get comingSoon => 'Coming soon';
@@ -2013,19 +1919,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get timeFormat => 'Time format';
 
   @override
-  String get imoLIVEFollowsYourDevice =>
-      'Imo LIVE follows your device setting so timestamps stay ';
+  String get imoLIVEFollowsYourDevice => 'Imo LIVE follows your device setting so timestamps stay ';
 
   @override
-  String get pairingASecondDeviceIs =>
-      'Pairing a second device is not available yet. This screen ';
+  String get pairingASecondDeviceIs => 'Pairing a second device is not available yet. This screen ';
 
   @override
   String get linkADevice => 'Link a device';
 
   @override
-  String get openImoLIVEOnAnother =>
-      'Open Imo LIVE on another device and scan this code. ';
+  String get openImoLIVEOnAnother => 'Open Imo LIVE on another device and scan this code. ';
 
   @override
   String get pairADevice => 'Pair a device';
@@ -2046,8 +1949,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removeAllLinkedDevices => 'Remove all linked devices?';
 
   @override
-  String get everyNonCurrentEntryIs =>
-      'Every non-current entry is deleted from this ';
+  String get everyNonCurrentEntryIs => 'Every non-current entry is deleted from this ';
 
   @override
   String get removeAll => 'Remove all';
@@ -2056,22 +1958,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get builtInLists => 'Built-in lists';
 
   @override
-  String get aListIsASaved =>
-      'A list is a saved filter over your chats. Tapping one applies ';
+  String get aListIsASaved => 'A list is a saved filter over your chats. Tapping one applies ';
 
   @override
   String get customLists => 'Custom lists';
 
   @override
-  String get theWorkListIsA =>
-      'The Work list is a flag stored on each chat, so it survives ';
+  String get theWorkListIsA => 'The Work list is a flag stored on each chat, so it survives ';
 
   @override
   String get manage => 'Manage';
 
   @override
-  String get pickAFilterAndApply =>
-      'Pick a filter and apply it to the Chats tab';
+  String get pickAFilterAndApply => 'Pick a filter and apply it to the Chats tab';
 
   @override
   String get showAllChats => 'Show all chats';
@@ -2089,8 +1988,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get directChat => 'Direct chat';
 
   @override
-  String get pickTheChatsThisList =>
-      'Pick the chats this list will always show.';
+  String get pickTheChatsThisList => 'Pick the chats this list will always show.';
 
   @override
   String get chatsYouStarred => 'Chats you starred';
@@ -2105,8 +2003,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noFiltering => 'No filtering';
 
   @override
-  String get notificationsAreDeliveredLocallyBy =>
-      'Notifications are delivered locally by the OS. There is no ';
+  String get notificationsAreDeliveredLocallyBy => 'Notifications are delivered locally by the OS. There is no ';
 
   @override
   String get messageNotifications => 'Message notifications';
@@ -2115,8 +2012,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showNotifications => 'Show notifications';
 
   @override
-  String get masterSwitchForEveryMessage =>
-      'Master switch for every message alert';
+  String get masterSwitchForEveryMessage => 'Master switch for every message alert';
 
   @override
   String get vibrate => 'Vibrate';
@@ -2125,8 +2021,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get popup => 'Popup';
 
   @override
-  String get showABannerWhileYou =>
-      'Show a banner while you are using another app';
+  String get showABannerWhileYou => 'Show a banner while you are using another app';
 
   @override
   String get inApp => 'In-app';
@@ -2144,26 +2039,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendATestNotification => 'Send a test notification';
 
   @override
-  String get postsALocalNotificationThrough =>
-      'Posts a local notification through the OS';
+  String get postsALocalNotificationThrough => 'Posts a local notification through the OS';
 
   @override
   String get resetNotificationSettings => 'Reset notification settings';
 
   @override
-  String get restoreEveryNotificationOptionTo =>
-      'Restore every notification option to its default';
+  String get restoreEveryNotificationOptionTo => 'Restore every notification option to its default';
 
   @override
-  String get theseSwitchesControlWhatImo =>
-      'These switches control what Imo LIVE stores and displays on ';
+  String get theseSwitchesControlWhatImo => 'These switches control what Imo LIVE stores and displays on ';
 
   @override
   String get whoCanSeeMyPersonal => 'Who can see my personal info';
 
   @override
-  String get changingLastSeenAlsoAffects =>
-      'Changing \"Last seen\" also affects read receipts in a backed ';
+  String get changingLastSeenAlsoAffects => 'Changing \"Last seen\" also affects read receipts in a backed ';
 
   @override
   String get lastSeenAndOnline => 'Last seen and online';
@@ -2175,29 +2066,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get silenceUnknownCallers => 'Silence unknown callers';
 
   @override
-  String get muteCallNotificationsFromPeople =>
-      'Mute call notifications from people you have not saved';
+  String get muteCallNotificationsFromPeople => 'Mute call notifications from people you have not saved';
 
   @override
   String get appSecurity => 'App security';
 
   @override
-  String get requireADeviceCredentialBefore =>
-      'Require a device credential before opening the app';
+  String get requireADeviceCredentialBefore => 'Require a device credential before opening the app';
 
   @override
   String get appLockEnabled => 'App lock enabled';
 
   @override
-  String get imoLIVEWillAskFor =>
-      'Imo LIVE will ask for your device credential on next ';
+  String get imoLIVEWillAskFor => 'Imo LIVE will ask for your device credential on next ';
 
   @override
   String get liveLocation => 'Live location';
 
   @override
-  String get allowSharingYourCurrentLocation =>
-      'Allow sharing your current location inside chats. Location ';
+  String get allowSharingYourCurrentLocation => 'Allow sharing your current location inside chats. Location ';
 
   @override
   String get advancedPrivacySettings => 'Advanced privacy settings';
@@ -2206,8 +2093,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get advancedPrivacy => 'Advanced privacy';
 
   @override
-  String get imoLIVEDoesNotClaim =>
-      'Imo LIVE does not claim end-to-end encryption. Messages ';
+  String get imoLIVEDoesNotClaim => 'Imo LIVE does not claim end-to-end encryption. Messages ';
 
   @override
   String get storage => 'Storage';
@@ -2216,19 +2102,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetPrivacySettings => 'Reset privacy settings';
 
   @override
-  String get restoreEveryPrivacyOptionTo =>
-      'Restore every privacy option to its default';
+  String get restoreEveryPrivacyOptionTo => 'Restore every privacy option to its default';
 
   @override
   String get resetPrivacySettings2 => 'Reset privacy settings?';
 
   @override
-  String get allPrivacyOptionsReturnTo =>
-      'All privacy options return to their defaults. Your ';
+  String get allPrivacyOptionsReturnTo => 'All privacy options return to their defaults. Your ';
 
   @override
-  String get onDevicePrivacyModelSyncs =>
-      'On-device privacy model · syncs via Cloud Firestore';
+  String get onDevicePrivacyModelSyncs => 'On-device privacy model · syncs via Cloud Firestore';
 
   @override
   String get mediaStoredOnThisDevice => 'Media stored on this device';
@@ -2237,8 +2120,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAllMediaFiles => 'Delete all media files';
 
   @override
-  String get removesEveryFileKeptIn =>
-      'Removes every file kept in the folders above';
+  String get removesEveryFileKeptIn => 'Removes every file kept in the folders above';
 
   @override
   String get deleteAllMedia => 'Delete all media?';
@@ -2253,19 +2135,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noChannelSubscriptions => 'No channel subscriptions';
 
   @override
-  String get followAChannelFromThe =>
-      'Follow a channel from the Updates tab and it will appear ';
+  String get followAChannelFromThe => 'Follow a channel from the Updates tab and it will appear ';
 
   @override
   String get followedChannels => 'Followed channels';
 
   @override
-  String get mutingAChannelKeepsIt =>
-      'Muting a channel keeps it in your list but silences its ';
+  String get mutingAChannelKeepsIt => 'Muting a channel keeps it in your list but silences its ';
 
   @override
-  String get createOrJoinOneFrom =>
-      'Create or join one from the Communities tab';
+  String get createOrJoinOneFrom => 'Create or join one from the Communities tab';
 
   @override
   String get discover => 'Discover';
@@ -2274,15 +2153,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get findChannels => 'Find channels';
 
   @override
-  String get browsePublicChannelsByCategory =>
-      'Browse public channels by category';
+  String get browsePublicChannelsByCategory => 'Browse public channels by category';
 
   @override
   String get createAChannelOfYour => 'Create a channel of your own';
 
   @override
-  String get startACommunityWithAnnouncement =>
-      'Start a community with announcement groups';
+  String get startACommunityWithAnnouncement => 'Start a community with announcement groups';
 
   @override
   String get notificationDefaults => 'Notification defaults';
@@ -2315,33 +2192,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useAPhotoFromYour => 'Use a photo from your device';
 
   @override
-  String get captureANewWallpaperWith =>
-      'Capture a new wallpaper with the camera';
+  String get captureANewWallpaperWith => 'Capture a new wallpaper with the camera';
 
   @override
   String get removeCustomWallpaper => 'Remove custom wallpaper';
 
   @override
-  String get deleteTheFileAndReturn =>
-      'Delete the file and return to the default';
+  String get deleteTheFileAndReturn => 'Delete the file and return to the default';
 
   @override
   String get removeWallpaper => 'Remove wallpaper?';
 
   @override
-  String get theCopiedImageFileIs =>
-      'The copied image file is deleted and the default ';
+  String get theCopiedImageFileIs => 'The copied image file is deleted and the default ';
 
   @override
   String get clearChat2 => 'Clear chat?';
 
   @override
-  String get allMessagesInThisChat =>
-      'All messages in this chat will be deleted from this device. ';
+  String get allMessagesInThisChat => 'All messages in this chat will be deleted from this device. ';
 
   @override
-  String get thisConversationAndAllIts =>
-      'This conversation and all its messages will be removed from ';
+  String get thisConversationAndAllIts => 'This conversation and all its messages will be removed from ';
 
   @override
   String get newUpdate => 'New update';
@@ -2371,8 +2243,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addAPhotoOrVideo => 'Add a photo or video';
 
   @override
-  String get pickMediaFromYourGallery =>
-      'Pick media from your gallery to use as a status update.';
+  String get pickMediaFromYourGallery => 'Pick media from your gallery to use as a status update.';
 
   @override
   String get chooseMedia => 'Choose media';
@@ -2396,8 +2267,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteUpdate => 'Delete update?';
 
   @override
-  String get thisUpdateIsRemovedFor =>
-      'This update is removed for everyone immediately.';
+  String get thisUpdateIsRemovedFor => 'This update is removed for everyone immediately.';
 
   @override
   String get sendAMessage => 'Send a message…';
@@ -2406,8 +2276,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusPrivacy => 'Status privacy';
 
   @override
-  String get theRestOfTheApp =>
-      'The rest of the app keeps working. Go back and try again.';
+  String get theRestOfTheApp => 'The rest of the app keeps working. Go back and try again.';
 
   @override
   String get goToChats => 'Go to Chats';
@@ -2416,8 +2285,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get login => 'Login';
 
   @override
-  String get byContinuingYouAgreeTo =>
-      'By continuing you agree to the Imo LIVE Terms and Privacy Policy.';
+  String get byContinuingYouAgreeTo => 'By continuing you agree to the Imo LIVE Terms and Privacy Policy.';
 
   @override
   String get aboutAShortLineAbout => 'About — a short line about you';
@@ -2444,15 +2312,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noContactsYet => 'No contacts yet';
 
   @override
-  String get addContactsThenStarThe =>
-      'Add contacts, then star the people you call most to ';
+  String get addContactsThenStarThe => 'Add contacts, then star the people you call most to ';
 
   @override
   String get noFavouritesYet => 'No favourites yet';
 
   @override
-  String get tapEditAndStarThe =>
-      'Tap Edit and star the contacts you call most ';
+  String get tapEditAndStarThe => 'Tap Edit and star the contacts you call most ';
 
   @override
   String get otherContacts => 'Other contacts';
@@ -2494,8 +2360,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get publicChannel => 'Public channel';
 
   @override
-  String get changesAreWrittenToFirestore =>
-      'Changes are written to Firestore immediately. Followers see them ';
+  String get changesAreWrittenToFirestore => 'Changes are written to Firestore immediately. Followers see them ';
 
   @override
   String get whatDoesThisChannelPost => 'What does this channel post about?';
@@ -2504,8 +2369,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get visibility => 'Visibility';
 
   @override
-  String get a12CharacterSecretKey =>
-      'A 12-character secret key is generated when you ';
+  String get a12CharacterSecretKey => 'A 12-character secret key is generated when you ';
 
   @override
   String get deletePost => 'Delete post';
@@ -2532,8 +2396,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fromThem => 'From them';
 
   @override
-  String get thisMessageIsQueuedOn =>
-      'This message is queued on your device and has not ';
+  String get thisMessageIsQueuedOn => 'This message is queued on your device and has not ';
 
   @override
   String get starts => 'Starts';
@@ -2560,8 +2423,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteForEveryone2 => 'Delete for everyone?';
 
   @override
-  String get theMessageIsRemovedFrom =>
-      'The message is removed from this device and replaced with a \"deleted\" ';
+  String get theMessageIsRemovedFrom => 'The message is removed from this device and replaced with a \"deleted\" ';
 
   @override
   String get photoUnavailable => 'Photo unavailable';
@@ -2573,15 +2435,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get announcements => 'Announcements';
 
   @override
-  String get everyoneInTheCommunityReceives =>
-      'Everyone in the community receives announcement messages. ';
+  String get everyoneInTheCommunityReceives => 'Everyone in the community receives announcement messages. ';
 
   @override
   String get openAnnouncementChat => 'Open announcement chat';
 
   @override
-  String get everyoneYouAddBecomesA =>
-      'Everyone you add becomes a member of the announcement group. ';
+  String get everyoneYouAddBecomesA => 'Everyone you add becomes a member of the announcement group. ';
 
   @override
   String get pickPeopleFromYourContacts => 'Pick people from your contacts';
@@ -2590,12 +2450,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminOnlyAnnouncements => 'Admin-only announcements';
 
   @override
-  String get onlyYouAndOtherAdmins =>
-      'Only you and other admins can post announcements';
+  String get onlyYouAndOtherAdmins => 'Only you and other admins can post announcements';
 
   @override
-  String get communitiesLiveOnThisDevice =>
-      'Communities live on this device. Invite links are generated ';
+  String get communitiesLiveOnThisDevice => 'Communities live on this device. Invite links are generated ';
 
   @override
   String get noMatchingCountry => 'No matching country';
@@ -2619,8 +2477,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checkingImoLIVE => 'Checking Imo LIVE…';
 
   @override
-  String get couldNotReachImoLIVE =>
-      'Could not reach Imo LIVE. The number is saved locally.';
+  String get couldNotReachImoLIVE => 'Could not reach Imo LIVE. The number is saved locally.';
 
   @override
   String get thisUserIsOnImo => 'This user is on Imo LIVE';
@@ -2638,29 +2495,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get capabilities => 'Capabilities';
 
   @override
-  String get theseAreTheBoundariesOf =>
-      'These are the boundaries of this build. Each one is honest ';
+  String get theseAreTheBoundariesOf => 'These are the boundaries of this build. Each one is honest ';
 
   @override
   String get connected => 'Connected';
 
   @override
-  String get emailGoogleAndFacebookSign =>
-      'Email, Google and phone sign-in, profile and people ';
+  String get emailGoogleAndFacebookSign => 'Email, Google and phone sign-in, profile and people ';
 
   @override
   String get worksOffline => 'Works offline';
 
   @override
-  String get chatsMessagesMediaVoiceNotes =>
-      'Chats, messages, media, voice notes, polls, events, ';
+  String get chatsMessagesMediaVoiceNotes => 'Chats, messages, media, voice notes, polls, events, ';
 
   @override
   String get needsConfiguration => 'Needs configuration';
 
   @override
-  String get cloudflareR2CredentialsTheFacebook =>
-      'Cloudflare R2 credentials, push ';
+  String get cloudflareR2CredentialsTheFacebook => 'Cloudflare R2 credentials, push ';
 
   @override
   String get whereToNext => 'Where to next';
@@ -2678,8 +2531,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactUs => 'Contact us';
 
   @override
-  String get theseActionsHandOffTo =>
-      'These actions hand off to your own apps — nothing is sent by ';
+  String get theseActionsHandOffTo => 'These actions hand off to your own apps — nothing is sent by ';
 
   @override
   String get emailSupport => 'Email support';
@@ -2691,12 +2543,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get removePhoto => 'Remove photo?';
 
   @override
-  String get yourProfilePhotoIsDeleted =>
-      'Your profile photo is deleted from this device.';
+  String get yourProfilePhotoIsDeleted => 'Your profile photo is deleted from this device.';
 
   @override
-  String get yourNameAboutTextAnd =>
-      'Your name, about text and photo are saved on this device and ';
+  String get yourNameAboutTextAnd => 'Your name, about text and photo are saved on this device and ';
 
   @override
   String get myDetails => 'My details';
@@ -2723,23 +2573,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendYourNameAndNumber => 'Send your name and number';
 
   @override
-  String get resultsComeLiveFromImo =>
-      'Results come live from Imo LIVE. People who have not ';
+  String get resultsComeLiveFromImo => 'Results come live from Imo LIVE. People who have not ';
 
   @override
   String get signOut2 => 'Sign out?';
 
   @override
-  String get yourChatsStayOnThis =>
-      'Your chats stay on this device, but they stop ';
+  String get yourChatsStayOnThis => 'Your chats stay on this device, but they stop ';
 
   @override
-  String get twoStepVerificationAndEnd =>
-      'Two-step verification and end-to-end encryption require a ';
+  String get twoStepVerificationAndEnd => 'Two-step verification and end-to-end encryption require a ';
 
   @override
-  String get requireADeviceCredentialTo =>
-      'Require a device credential to open Imo LIVE';
+  String get requireADeviceCredentialTo => 'Require a device credential to open Imo LIVE';
 
   @override
   String get accentColour => 'Accent colour';
@@ -2760,12 +2606,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appIcon => 'App icon';
 
   @override
-  String get changingTheLauncherIconIs =>
-      'Changing the launcher icon is a platform action. The choice is ';
+  String get changingTheLauncherIconIs => 'Changing the launcher icon is a platform action. The choice is ';
 
   @override
-  String get thisContactWillBeAble =>
-      'This contact will be able to reach you again ';
+  String get thisContactWillBeAble => 'This contact will be able to reach you again ';
 
   @override
   String get small => 'Small';
@@ -2783,8 +2627,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get devices => 'Devices';
 
   @override
-  String get unlinkingRemovesADeviceFrom =>
-      'Unlinking removes a device from this list. Because pairing ';
+  String get unlinkingRemovesADeviceFrom => 'Unlinking removes a device from this list. Because pairing ';
 
   @override
   String get theDeviceIsRemovedFrom => 'The device is removed from this local ';
@@ -2814,8 +2657,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appExperience => 'App experience';
 
   @override
-  String get theSwitchMatchesTheSystem =>
-      'The switch matches the system while \"System\" is selected. ';
+  String get theSwitchMatchesTheSystem => 'The switch matches the system while \"System\" is selected. ';
 
   @override
   String get darkMode => 'Dark mode';
@@ -2836,8 +2678,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nothingStoredYet => 'Nothing stored yet';
 
   @override
-  String get photosVideosVoiceNotesAnd =>
-      'Photos, videos, voice notes and documents you send or ';
+  String get photosVideosVoiceNotesAnd => 'Photos, videos, voice notes and documents you send or ';
 
   @override
   String get breakdown => 'Breakdown';
@@ -2849,8 +2690,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get purgeExpiredMessages => 'Purge expired messages';
 
   @override
-  String get removesMessagesWhoseDisappearingTimer =>
-      'Removes messages whose disappearing timer already ';
+  String get removesMessagesWhoseDisappearingTimer => 'Removes messages whose disappearing timer already ';
 
   @override
   String get addACaption => 'Add a caption…';
@@ -2862,23 +2702,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reply2 => 'Reply…';
 
   @override
-  String get shareATextPhotoOr =>
-      'Share a text, photo or video update. It disappears ';
+  String get shareATextPhotoOr => 'Share a text, photo or video update. It disappears ';
 
   @override
-  String get updatesAreStoredOnThis =>
-      'Updates are stored on this device only. Expiry after 24 ';
+  String get updatesAreStoredOnThis => 'Updates are stored on this device only. Expiry after 24 ';
 
   @override
-  String get followBroadcastChannelsYouSubscribe =>
-      'Follow broadcast channels you subscribe to';
+  String get followBroadcastChannelsYouSubscribe => 'Follow broadcast channels you subscribe to';
 
   @override
   String get createAChannel => 'Create a channel';
 
   @override
-  String get broadcastToFollowersWithoutA =>
-      'Broadcast to followers without a group';
+  String get broadcastToFollowersWithoutA => 'Broadcast to followers without a group';
 
   @override
   String get groupNotifications => 'Group notifications';
@@ -2887,12 +2723,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showPreview => 'Show preview';
 
   @override
-  String get includeMessageTextInThe =>
-      'Include message text in the notification';
+  String get includeMessageTextInThe => 'Include message text in the notification';
 
   @override
-  String get notifyWhenSomeoneReactsTo =>
-      'Notify when someone reacts to your message';
+  String get notifyWhenSomeoneReactsTo => 'Notify when someone reacts to your message';
 
   @override
   String get callsStatus => 'Calls & status';
@@ -2922,8 +2756,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get readReceipts => 'Read receipts';
 
   @override
-  String get sendDeliveryAndReadTicks =>
-      'Send delivery and read ticks. Turning this off stops the ';
+  String get sendDeliveryAndReadTicks => 'Send delivery and read ticks. Turning this off stops the ';
 
   @override
   String get whoCanAddMeTo => 'Who can add me to groups';
@@ -2935,44 +2768,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pickAnExistingPhotoOr => 'Pick an existing photo or video';
 
   @override
-  String get openTheLinkInThe2 =>
-      'Open the link in the email to confirm this address. This screen finishes on its own.';
+  String get openTheLinkInThe2 => 'Open the link in the email to confirm this address. This screen finishes on its own.';
 
   @override
-  String get everyCallEntryOnThis2 =>
-      'Every call entry on this device is deleted. Contacts and scheduled calls are kept.';
+  String get everyCallEntryOnThis2 => 'Every call entry on this device is deleted. Contacts and scheduled calls are kept.';
 
   @override
-  String get addContactsThenStarThe2 =>
-      'Add contacts, then star the people you call most to reach them from here.';
+  String get addContactsThenStarThe2 => 'Add contacts, then star the people you call most to reach them from here.';
 
   @override
-  String get tapEditAndStarThe2 =>
-      'Tap Edit and star the contacts you call most often. They appear here for quick dialling.';
+  String get tapEditAndStarThe2 => 'Tap Edit and star the contacts you call most often. They appear here for quick dialling.';
 
   @override
-  String get remindersFireFromTheLocal2 =>
-      'Reminders fire from the local notification plugin. They are not invitations — the other person is not notified.';
+  String get remindersFireFromTheLocal2 => 'Reminders fire from the local notification plugin. They are not invitations — the other person is not notified.';
 
   @override
-  String get shareTheSecretKeyWith2 =>
-      'Share the secret key with the people you want to let in. Their requests will appear here.';
+  String get shareTheSecretKeyWith2 => 'Share the secret key with the people you want to let in. Their requests will appear here.';
 
   @override
-  String get itIsNotOnThis2 =>
-      'It is not on this device and could not be loaded from the server. Check your connection and try again.';
+  String get itIsNotOnThis2 => 'It is not on this device and could not be loaded from the server. Check your connection and try again.';
 
   @override
-  String get postsAreOnlyVisibleTo2 =>
-      'Posts are only visible to members. Send a request and the owner will decide whether to let you in.';
+  String get postsAreOnlyVisibleTo2 => 'Posts are only visible to members. Send a request and the owner will decide whether to let you in.';
 
   @override
-  String get thisChannelIsReservedFor2 =>
-      'This channel is reserved for premium members. Earn points by watching ads, then redeem them for premium to read it.';
+  String get thisChannelIsReservedFor2 => 'This channel is reserved for premium members. Earn points by watching ads, then redeem them for premium to read it.';
 
   @override
-  String get yourChannelMeetsTheRequirements2 =>
-      'Your channel meets the requirements. A reviewer will check it and you will be notified of the decision.';
+  String get yourChannelMeetsTheRequirements2 => 'Your channel meets the requirements. A reviewer will check it and you will be notified of the decision.';
 
   @override
   String get premiumOnly => 'Premium only';
@@ -2981,48 +2804,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coverImage => 'Cover image';
 
   @override
-  String get tapToCopyThisIs =>
-      'Tap to copy — this is the only time it is shown';
+  String get tapToCopyThisIs => 'Tap to copy — this is the only time it is shown';
 
   @override
-  String get changesAreWrittenToFirestore2 =>
-      'Changes are written to Firestore immediately. Followers see them on their next sync.';
+  String get changesAreWrittenToFirestore2 => 'Changes are written to Firestore immediately. Followers see them on their next sync.';
 
   @override
-  String get everyoneCurrentlyUsingTheOld2 =>
-      'Everyone currently using the old key keeps their access, but the old key can no longer be used to request a join.';
+  String get everyoneCurrentlyUsingTheOld2 => 'Everyone currently using the old key keeps their access, but the old key can no longer be used to request a join.';
 
   @override
-  String get aReviewerWillCheckThat2 =>
-      'A reviewer will check that your channel meets the audience and engagement requirements.';
+  String get aReviewerWillCheckThat2 => 'A reviewer will check that your channel meets the audience and engagement requirements.';
 
   @override
-  String get channelsAppearHereOnceThey2 =>
-      'Channels appear here once they pass the follower and reaction thresholds and apply.';
+  String get channelsAppearHereOnceThey2 => 'Channels appear here once they pass the follower and reaction thresholds and apply.';
 
   @override
-  String get a12CharacterSecretKey2 =>
-      'A 12-character secret key is generated when you create the channel. You will see it once — share it with the people you want to let in.';
+  String get a12CharacterSecretKey2 => 'A 12-character secret key is generated when you create the channel. You will see it once — share it with the people you want to let in.';
 
   @override
-  String get archivedChatsAreHiddenFrom2 =>
-      'Archived chats are hidden from the main list but keep all their messages. Swipe a chat and choose Archive to move it here.';
+  String get archivedChatsAreHiddenFrom2 => 'Archived chats are hidden from the main list but keep all their messages. Swipe a chat and choose Archive to move it here.';
 
   @override
-  String get aBroadcastSendsAnIndividual2 =>
-      'A broadcast sends an individual copy of your message to each recipient. Replies arrive as normal one-to-one chats.';
+  String get aBroadcastSendsAnIndividual2 => 'A broadcast sends an individual copy of your message to each recipient. Replies arrive as normal one-to-one chats.';
 
   @override
-  String get createAListOfUp2 =>
-      'Create a list of up to 256 recipients and message them all at once. Each person receives a private copy.';
+  String get createAListOfUp2 => 'Create a list of up to 256 recipients and message them all at once. Each person receives a private copy.';
 
   @override
-  String get theListIsDeletedExisting2 =>
-      'The list is deleted. Existing conversations with its recipients are kept.';
+  String get theListIsDeletedExisting2 => 'The list is deleted. Existing conversations with its recipients are kept.';
 
   @override
-  String get localStorageCouldNotBe2 =>
-      'Local storage could not be opened, so your chats, contacts and settings are not being saved. Messages will be lost when the app closes.';
+  String get localStorageCouldNotBe2 => 'Local storage could not be opened, so your chats, contacts and settings are not being saved. Messages will be lost when the app closes.';
 
   @override
   String get fromMe => 'From me';
@@ -3034,128 +2846,97 @@ class AppLocalizationsEn extends AppLocalizations {
   String get read => 'Read';
 
   @override
-  String get thisMessageIsQueuedOn2 =>
-      'This message is queued on your device and has not been sent yet. It will go out on its own as soon as you are back online.';
+  String get thisMessageIsQueuedOn2 => 'This message is queued on your device and has not been sent yet. It will go out on its own as soon as you are back online.';
 
   @override
-  String get allMessagesInThisConversation2 =>
-      'All messages in this conversation will be removed from this device. This cannot be undone.';
+  String get allMessagesInThisConversation2 => 'All messages in this conversation will be removed from this device. This cannot be undone.';
 
   @override
-  String get aCommunityGroupsRelatedChats2 =>
-      'A community groups related chats under one announcement channel. Create one to organise a club, a class or a neighbourhood.';
+  String get aCommunityGroupsRelatedChats2 => 'A community groups related chats under one announcement channel. Create one to organise a club, a class or a neighbourhood.';
 
   @override
-  String get theCommunityAndItsAnnouncement2 =>
-      'The community and its announcement group are removed from this device. Member chats are kept.';
+  String get theCommunityAndItsAnnouncement2 => 'The community and its announcement group are removed from this device. Member chats are kept.';
 
   @override
-  String get channelsBroadcastOneWayTo2 =>
-      'Channels broadcast one-way to followers. Create one, or follow a channel to see its updates here.';
+  String get channelsBroadcastOneWayTo2 => 'Channels broadcast one-way to followers. Create one, or follow a channel to see its updates here.';
 
   @override
-  String get everyoneInTheCommunityReceives2 =>
-      'Everyone in the community receives announcement messages. Only admins can post.';
+  String get everyoneInTheCommunityReceives2 => 'Everyone in the community receives announcement messages. Only admins can post.';
 
   @override
-  String get theCommunityIsRemovedFrom2 =>
-      'The community is removed from this device. Groups inside it stay as normal groups.';
+  String get theCommunityIsRemovedFrom2 => 'The community is removed from this device. Groups inside it stay as normal groups.';
 
   @override
-  String get everyoneYouAddBecomesA2 =>
-      'Everyone you add becomes a member of the announcement group. You can add more people later.';
+  String get everyoneYouAddBecomesA2 => 'Everyone you add becomes a member of the announcement group. You can add more people later.';
 
   @override
-  String get communitiesLiveOnThisDevice2 =>
-      'Communities live on this device. Invite links are generated locally, so another person cannot open them yet.';
+  String get communitiesLiveOnThisDevice2 => 'Communities live on this device. Invite links are generated locally, so another person cannot open them yet.';
 
   @override
-  String get thisPersonIsNotIn2 =>
-      'This person is not in your contacts and has no Imo LIVE account, so there is no profile to show.';
+  String get thisPersonIsNotIn2 => 'This person is not in your contacts and has no Imo LIVE account, so there is no profile to show.';
 
   @override
-  String get mediaAttachesToConversationsOpen2 =>
-      'Media attaches to conversations. Open the chat and use the search icon to filter photos, videos, links and documents for this person.';
+  String get mediaAttachesToConversationsOpen2 => 'Media attaches to conversations. Open the chat and use the search icon to filter photos, videos, links and documents for this person.';
 
   @override
-  String get openTheChatAndChoose2 =>
-      'Open the chat and choose Disappearing messages from the menu to change this setting. It applies to new messages only.';
+  String get openTheChatAndChoose2 => 'Open the chat and choose Disappearing messages from the menu to change this setting. It applies to new messages only.';
 
   @override
-  String get theContactIsRemovedFrom2 =>
-      'The contact is removed from your list. Existing chats stay in place.';
+  String get theContactIsRemovedFrom2 => 'The contact is removed from your list. Existing chats stay in place.';
 
   @override
-  String get importNamesAndNumbersFrom =>
-      'Import names and numbers from your address book';
+  String get importNamesAndNumbersFrom => 'Import names and numbers from your address book';
 
   @override
-  String get imoLIVECouldNotRead2 =>
-      'Imo LIVE could not read your device contacts. Grant the contacts permission in your system settings and try again.';
+  String get imoLIVECouldNotRead2 => 'Imo LIVE could not read your device contacts. Grant the contacts permission in your system settings and try again.';
 
   @override
-  String get newMessagesInThisChat2 =>
-      'New messages in this chat will disappear after the selected time. Messages sent before the change keep their original timer.';
+  String get newMessagesInThisChat2 => 'New messages in this chat will disappear after the selected time. Messages sent before the change keep their original timer.';
 
   @override
-  String get openTheConversationAndTap2 =>
-      'Open the conversation and tap the search icon to filter media, links and documents shared in this group.';
+  String get openTheConversationAndTap2 => 'Open the conversation and tap the search icon to filter media, links and documents shared in this group.';
 
   @override
-  String get theInviteCodeIsGenerated2 =>
-      'The invite code is generated locally. Joining via a link needs a server to resolve the code into a group.';
+  String get theInviteCodeIsGenerated2 => 'The invite code is generated locally. Joining via a link needs a server to resolve the code into a group.';
 
   @override
-  String get invalidatingAnInviteLinkIs2 =>
-      'Invalidating an invite link is a server action — old codes must stop resolving globally. Locally a new code can be generated but the old one keeps working.';
+  String get invalidatingAnInviteLinkIs2 => 'Invalidating an invite link is a server action — old codes must stop resolving globally. Locally a new code can be generated but the old one keeps working.';
 
   @override
-  String get youLeaveTheGroupYour2 =>
-      'You leave the group. Your existing messages stay in the conversation unless you delete it.';
+  String get youLeaveTheGroupYour2 => 'You leave the group. Your existing messages stay in the conversation unless you delete it.';
 
   @override
-  String get theGroupItsMembersAnd2 =>
-      'The group, its members and every message are permanently deleted from this device.';
+  String get theGroupItsMembersAnd2 => 'The group, its members and every message are permanently deleted from this device.';
 
   @override
-  String get aGroupNeedsAtLeast2 =>
-      'A group needs at least one other person. You will be added as the creator and first admin.';
+  String get aGroupNeedsAtLeast2 => 'A group needs at least one other person. You will be added as the creator and first admin.';
 
   @override
-  String get adminsCanAddOrRemove2 =>
-      'Admins can add or remove members, edit the group photo, name and description, and delete messages. Members can send messages and share media.';
+  String get adminsCanAddOrRemove2 => 'Admins can add or remove members, edit the group photo, name and description, and delete messages. Members can send messages and share media.';
 
   @override
-  String get imoLIVESyncsThroughFirebase2 =>
-      'Imo LIVE syncs through Firebase — Authentication and Cloud Firestore — and stores media in Cloudflare R2. An on-device copy keeps every screen working without a connection.';
+  String get imoLIVESyncsThroughFirebase2 => 'Imo LIVE syncs through Firebase — Authentication and Cloud Firestore — and stores media in Cloudflare R2. An on-device copy keeps every screen working without a connection.';
 
   @override
-  String get theseAreTheBoundariesOf2 =>
-      'These are the boundaries of this build. Each one is honest about what works today versus what still needs configuring.';
+  String get theseAreTheBoundariesOf2 => 'These are the boundaries of this build. Each one is honest about what works today versus what still needs configuring.';
 
   @override
-  String get emailGoogleAndFacebookSign2 =>
-      'Email, Google and phone sign-in, profile and people directory, real-time chat and message sync, and media upload through Cloudflare R2';
+  String get emailGoogleAndFacebookSign2 => 'Email, Google and phone sign-in, profile and people directory, real-time chat and message sync, and media upload through Cloudflare R2';
 
   @override
-  String get chatsMessagesMediaVoiceNotes2 =>
-      'Chats, messages, media, voice notes, polls, events, location shares, statuses, channels, communities, calls UI, settings and localisation';
+  String get chatsMessagesMediaVoiceNotes2 => 'Chats, messages, media, voice notes, polls, events, location shares, statuses, channels, communities, calls UI, settings and localisation';
 
   @override
-  String get cloudflareR2CredentialsTheFacebook2 =>
-      'Cloudflare R2 credentials, push delivery, device pairing and end-to-end encryption';
+  String get cloudflareR2CredentialsTheFacebook2 => 'Cloudflare R2 credentials, push delivery, device pairing and end-to-end encryption';
 
   @override
-  String get everyScreenDependsOnAn2 =>
-      'Every screen depends on an abstract repository interface. Chats and messages are read from the Hive cache and mirrored from Cloud Firestore, and media goes to Cloudflare R2 through the same MediaRepository interface — so no screen talks to the network directly.';
+  String get everyScreenDependsOnAn2 => 'Every screen depends on an abstract repository interface. Chats and messages are read from the Hive cache and mirrored from Cloud Firestore, and media goes to Cloudflare R2 through the same MediaRepository interface — so no screen talks to the network directly.';
 
   @override
-  String get everythingBelowAlreadyHasIts2 =>
-      'Everything below already has its interface and local implementation in place, so wiring it up is additive — no screen has to change.';
+  String get everythingBelowAlreadyHasIts2 => 'Everything below already has its interface and local implementation in place, so wiring it up is additive — no screen has to change.';
 
   @override
-  String get theseActionsHandOffTo2 =>
-      'These actions hand off to your own apps — nothing is sent by Imo LIVE itself.';
+  String get theseActionsHandOffTo2 => 'These actions hand off to your own apps — nothing is sent by Imo LIVE itself.';
 
   @override
   String get openTheWebsite => 'Open the website';
@@ -3164,8 +2945,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get diagnostics => 'Diagnostics';
 
   @override
-  String get locallyStoredCountsAndStorage =>
-      'Locally stored counts and storage usage';
+  String get locallyStoredCountsAndStorage => 'Locally stored counts and storage usage';
 
   @override
   String get legal => 'Legal';
@@ -3177,201 +2957,154 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy policy';
 
   @override
-  String get imoLIVECollectsNoAnalytics =>
-      'Imo LIVE collects no analytics. Your profile, chats and messages are stored on this device and synchronised to Cloud Firestore under your account; media is uploaded to Cloudflare R2 so the recipient can fetch it. Deleting the app removes the on-device copy but not your account data — clear that from Account settings first.';
+  String get imoLIVECollectsNoAnalytics => 'Imo LIVE collects no analytics. Your profile, chats and messages are stored on this device and synchronised to Cloud Firestore under your account; media is uploaded to Cloudflare R2 so the recipient can fetch it. Deleting the app removes the on-device copy but not your account data — clear that from Account settings first.';
 
   @override
-  String get theCodeCarriesAnImo2 =>
-      'The code carries an Imo LIVE identifier. Another person can look your user id up in Search, but scanning a code from inside the app is not supported yet.';
+  String get theCodeCarriesAnImo2 => 'The code carries an Imo LIVE identifier. Another person can look your user id up in Search, but scanning a code from inside the app is not supported yet.';
 
   @override
-  String get optionalHandleOthersCanSearch =>
-      'Optional handle others can search for';
+  String get optionalHandleOthersCanSearch => 'Optional handle others can search for';
 
   @override
-  String get yourNameAboutTextAnd2 =>
-      'Your name, about text and photo are saved on this device and published to your Imo LIVE account so contacts can find you. Edit them freely — nothing is shared beyond your profile.';
+  String get yourNameAboutTextAnd2 => 'Your name, about text and photo are saved on this device and published to your Imo LIVE account so contacts can find you. Edit them freely — nothing is shared beyond your profile.';
 
   @override
-  String get resultsComeLiveFromImo2 =>
-      'Results come live from Imo LIVE. People who have not joined yet can be invited from the contact screen.';
+  String get resultsComeLiveFromImo2 => 'Results come live from Imo LIVE. People who have not joined yet can be invited from the contact screen.';
 
   @override
-  String get imoLIVECouldNotBe2 =>
-      'Imo LIVE could not be reached. Check your connection and try again.';
+  String get imoLIVECouldNotBe2 => 'Imo LIVE could not be reached. Check your connection and try again.';
 
   @override
-  String get inviteThemToImoLIVE2 =>
-      'Invite them to Imo LIVE and you can start chatting as soon as they join.';
+  String get inviteThemToImoLIVE2 => 'Invite them to Imo LIVE and you can start chatting as soon as they join.';
 
   @override
-  String get yourChatsStayOnThis2 =>
-      'Your chats stay on this device, but they stop syncing until you sign back in.';
+  String get yourChatsStayOnThis2 => 'Your chats stay on this device, but they stop syncing until you sign back in.';
 
   @override
-  String get twoStepVerificationAndEnd2 =>
-      'Two-step verification and end-to-end encryption require a server and key-exchange layer, which is not part of this local build. Nothing here pretends those protections are active.';
+  String get twoStepVerificationAndEnd2 => 'Two-step verification and end-to-end encryption require a server and key-exchange layer, which is not part of this local build. Nothing here pretends those protections are active.';
 
   @override
-  String get deletesChatsMessagesContactsStatuses2 =>
-      'Deletes chats, messages, contacts, statuses and settings from this device';
+  String get deletesChatsMessagesContactsStatuses2 => 'Deletes chats, messages, contacts, statuses and settings from this device';
 
   @override
-  String get everyChatMessageContactAnd2 =>
-      'Every chat, message, contact and setting stored by Imo LIVE on this device is removed. Your account is not deleted, so your chats are restored from the cloud the next time you are online.';
+  String get everyChatMessageContactAnd2 => 'Every chat, message, contact and setting stored by Imo LIVE on this device is removed. Your account is not deleted, so your chats are restored from the cloud the next time you are online.';
 
   @override
   String get textSize => 'Text size';
 
   @override
-  String get textSizeScalesEveryScreen =>
-      'Text size scales every screen. Chat bubbles additionally honour the per-chat font size in Chat settings.';
+  String get textSizeScalesEveryScreen => 'Text size scales every screen. Chat bubbles additionally honour the per-chat font size in Chat settings.';
 
   @override
-  String get changingTheLauncherIconIs2 =>
-      'Changing the launcher icon is a platform action. The choice is saved here and applied by the host app shell.';
+  String get changingTheLauncherIconIs2 => 'Changing the launcher icon is a platform action. The choice is saved here and applied by the host app shell.';
 
   @override
-  String get blockedContactsCannotMessageOr2 =>
-      'Blocked contacts cannot message or call you from this device. Use the + button to block someone.';
+  String get blockedContactsCannotMessageOr2 => 'Blocked contacts cannot message or call you from this device. Use the + button to block someone.';
 
   @override
-  String get unblockingRestoresTheContactTo2 =>
-      'Unblocking restores the contact to your chat list and removes the block flag.';
+  String get unblockingRestoresTheContactTo2 => 'Unblocking restores the contact to your chat list and removes the block flag.';
 
   @override
-  String get thisContactWillBeAble2 =>
-      'This contact will be able to reach you again from this device.';
+  String get thisContactWillBeAble2 => 'This contact will be able to reach you again from this device.';
 
   @override
-  String get newMessagesStayInThe2 =>
-      'New messages stay in the archive instead of returning the chat to your main list';
+  String get newMessagesStayInThe2 => 'New messages stay in the archive instead of returning the chat to your main list';
 
   @override
-  String get chatPreferencesReturnToTheir2 =>
-      'Chat preferences return to their defaults. No chats or messages are deleted.';
+  String get chatPreferencesReturnToTheir2 => 'Chat preferences return to their defaults. No chats or messages are deleted.';
 
   @override
-  String get offerToAddANumber2 =>
-      'Offer to add a number to your device address book when you save a new contact';
+  String get offerToAddANumber2 => 'Offer to add a number to your device address book when you save a new contact';
 
   @override
-  String get translationsAreBundledWithThe2 =>
-      'Translations are bundled with the app as ARB resources. Languages marked \"Coming soon\" are listed so the roadmap is visible, but switching to them leaves the interface in English.';
+  String get translationsAreBundledWithThe2 => 'Translations are bundled with the app as ARB resources. Languages marked \"Coming soon\" are listed so the roadmap is visible, but switching to them leaves the interface in English.';
 
   @override
-  String get imoLIVEFollowsYourDevice2 =>
-      'Imo LIVE follows your device setting so timestamps stay consistent with the rest of your phone. Change it in your system settings.';
+  String get imoLIVEFollowsYourDevice2 => 'Imo LIVE follows your device setting so timestamps stay consistent with the rest of your phone. Change it in your system settings.';
 
   @override
-  String get pairingASecondDeviceIs2 =>
-      'Pairing a second device is not available yet. This screen lists the device you are using and explains what pairing would do — it never fabricates a successful link.';
+  String get pairingASecondDeviceIs2 => 'Pairing a second device is not available yet. This screen lists the device you are using and explains what pairing would do — it never fabricates a successful link.';
 
   @override
-  String get openImoLIVEOnAnother2 =>
-      'Open Imo LIVE on another device and scan this code. Pairing is not available yet, so this code will not complete a link.';
+  String get openImoLIVEOnAnother2 => 'Open Imo LIVE on another device and scan this code. Pairing is not available yet, so this code will not complete a link.';
 
   @override
-  String get unlinkingRemovesADeviceFrom2 =>
-      'Unlinking removes a device from this list. Because pairing is not implemented, revoking a real session is not possible yet.';
+  String get unlinkingRemovesADeviceFrom2 => 'Unlinking removes a device from this list. Because pairing is not implemented, revoking a real session is not possible yet.';
 
   @override
-  String get theDeviceIsRemovedFrom2 =>
-      'The device is removed from this local list. No remote session exists to revoke.';
+  String get theDeviceIsRemovedFrom2 => 'The device is removed from this local list. No remote session exists to revoke.';
 
   @override
-  String get aListIsASaved2 =>
-      'A list is a saved filter over your chats. Tapping one applies it to the Chats tab immediately.';
+  String get aListIsASaved2 => 'A list is a saved filter over your chats. Tapping one applies it to the Chats tab immediately.';
 
   @override
-  String get theWorkListIsA2 =>
-      'The Work list is a flag stored on each chat, so it survives restarts and applies on every device. Use Manage to choose which chats belong to it.';
+  String get theWorkListIsA2 => 'The Work list is a flag stored on each chat, so it survives restarts and applies on every device. Use Manage to choose which chats belong to it.';
 
   @override
-  String get notificationsAreDeliveredLocallyBy2 =>
-      'Notifications are delivered locally by the OS. There is no push service, so nothing arrives while the app is fully closed — scheduled call reminders still fire because they are posted through the platform scheduler.';
+  String get notificationsAreDeliveredLocallyBy2 => 'Notifications are delivered locally by the OS. There is no push service, so nothing arrives while the app is fully closed — scheduled call reminders still fire because they are posted through the platform scheduler.';
 
   @override
-  String get theseSwitchesControlWhatImo2 =>
-      'These switches control what Imo LIVE stores and displays on this device. Enforcing them for other people — hiding your last seen from their phone, for example — needs the other side to honour it, which is not implemented yet.';
+  String get theseSwitchesControlWhatImo2 => 'These switches control what Imo LIVE stores and displays on this device. Enforcing them for other people — hiding your last seen from their phone, for example — needs the other side to honour it, which is not implemented yet.';
 
   @override
-  String get changingLastSeenAlsoAffects2 =>
-      'Changing \"Last seen\" also affects read receipts in a backed build. Locally they are independent switches.';
+  String get changingLastSeenAlsoAffects2 => 'Changing \"Last seen\" also affects read receipts in a backed build. Locally they are independent switches.';
 
   @override
-  String get sendDeliveryAndReadTicks2 =>
-      'Send delivery and read ticks. Turning this off stops the local tick upgrade for new messages.';
+  String get sendDeliveryAndReadTicks2 => 'Send delivery and read ticks. Turning this off stops the local tick upgrade for new messages.';
 
   @override
-  String get imoLIVEWillAskFor2 =>
-      'Imo LIVE will ask for your device credential on next launch. Biometric prompts are handled by the OS, so no biometric data ever reaches this app.';
+  String get imoLIVEWillAskFor2 => 'Imo LIVE will ask for your device credential on next launch. Biometric prompts are handled by the OS, so no biometric data ever reaches this app.';
 
   @override
-  String get allowSharingYourCurrentLocation2 =>
-      'Allow sharing your current location inside chats. Location is only read the moment you press send.';
+  String get allowSharingYourCurrentLocation2 => 'Allow sharing your current location inside chats. Location is only read the moment you press send.';
 
   @override
-  String get imoLIVEDoesNotClaim2 =>
-      'Imo LIVE does not claim end-to-end encryption. Messages travel over TLS to Cloud Firestore and media goes to Cloudflare R2, so those servers can read them. Add a real key-exchange and encryption layer before advertising any encryption guarantee.';
+  String get imoLIVEDoesNotClaim2 => 'Imo LIVE does not claim end-to-end encryption. Messages travel over TLS to Cloud Firestore and media goes to Cloudflare R2, so those servers can read them. Add a real key-exchange and encryption layer before advertising any encryption guarantee.';
 
   @override
-  String get allPrivacyOptionsReturnTo2 =>
-      'All privacy options return to their defaults. Your chats, contacts and messages are untouched.';
+  String get allPrivacyOptionsReturnTo2 => 'All privacy options return to their defaults. Your chats, contacts and messages are untouched.';
 
   @override
-  String get theSwitchMatchesTheSystem2 =>
-      'The switch matches the system while \"System\" is selected. Flipping it pins light or dark until you change it again.';
+  String get theSwitchMatchesTheSystem2 => 'The switch matches the system while \"System\" is selected. Flipping it pins light or dark until you change it again.';
 
   @override
-  String get photosVideosVoiceNotesAnd2 =>
-      'Photos, videos, voice notes and documents you send or receive are saved here and counted below.';
+  String get photosVideosVoiceNotesAnd2 => 'Photos, videos, voice notes and documents you send or receive are saved here and counted below.';
 
   @override
-  String get removesMessagesWhoseDisappearingTimer2 =>
-      'Removes messages whose disappearing timer already elapsed';
+  String get removesMessagesWhoseDisappearingTimer2 => 'Removes messages whose disappearing timer already elapsed';
 
   @override
-  String get followAChannelFromThe2 =>
-      'Follow a channel from the Updates tab and it will appear here with its notification settings.';
+  String get followAChannelFromThe2 => 'Follow a channel from the Updates tab and it will appear here with its notification settings.';
 
   @override
-  String get mutingAChannelKeepsIt2 =>
-      'Muting a channel keeps it in your list but silences its updates badge.';
+  String get mutingAChannelKeepsIt2 => 'Muting a channel keeps it in your list but silences its updates badge.';
 
   @override
-  String get theCopiedImageFileIs2 =>
-      'The copied image file is deleted and the default pattern is restored.';
+  String get theCopiedImageFileIs2 => 'The copied image file is deleted and the default pattern is restored.';
 
   @override
-  String get allMessagesInThisChat2 =>
-      'All messages in this chat will be deleted from this device. This cannot be undone.';
+  String get allMessagesInThisChat2 => 'All messages in this chat will be deleted from this device. This cannot be undone.';
 
   @override
-  String get thisConversationAndAllIts2 =>
-      'This conversation and all its messages will be removed from this device.';
+  String get thisConversationAndAllIts2 => 'This conversation and all its messages will be removed from this device.';
 
   @override
   String get changeMedia => 'Change media';
 
   @override
-  String get shareATextPhotoOr2 =>
-      'Share a text, photo or video update. It disappears for everyone after 24 hours.';
+  String get shareATextPhotoOr2 => 'Share a text, photo or video update. It disappears for everyone after 24 hours.';
 
   @override
-  String get updatesAreStoredOnThis2 =>
-      'Updates are stored on this device only. Expiry after 24 hours is enforced locally.';
+  String get updatesAreStoredOnThis2 => 'Updates are stored on this device only. Expiry after 24 hours is enforced locally.';
 
   @override
-  String get enterYourEmailFirstThen =>
-      'Enter your email first, then tap Forgot password.';
+  String get enterYourEmailFirstThen => 'Enter your email first, then tap Forgot password.';
 
   @override
   String get aNewCodeIsOn => 'A new code is on its way';
 
   @override
-  String get thePhotoCouldNotBe =>
-      'The photo could not be uploaded. It is saved on this device and will sync once R2 storage is configured.';
+  String get thePhotoCouldNotBe => 'The photo could not be uploaded. It is saved on this device and will sync once R2 storage is configured.';
 
   @override
   String get profileSaved => 'Profile saved';
@@ -3407,16 +3140,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoPermissionIsRequired => 'Video permission is required';
 
   @override
-  String get writeSomethingOrAttachA =>
-      'Write something or attach a file first';
+  String get writeSomethingOrAttachA => 'Write something or attach a file first';
 
   @override
-  String get uploadFailedThePostWas =>
-      'Upload failed — the post was not published';
+  String get uploadFailedThePostWas => 'Upload failed — the post was not published';
 
   @override
-  String get couldNotPublishCheckYour =>
-      'Could not publish — check your connection';
+  String get couldNotPublishCheckYour => 'Could not publish — check your connection';
 
   @override
   String get postDeleted => 'Post deleted';
@@ -3428,8 +3158,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noAppOnThisDevice => 'No app on this device can open that file';
 
   @override
-  String get requestSentTheOwnerWill =>
-      'Request sent — the owner will review it';
+  String get requestSentTheOwnerWill => 'Request sent — the owner will review it';
 
   @override
   String get inviteLinkCopied => 'Invite link copied';
@@ -3441,8 +3170,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get secretKeyCopied => 'Secret key copied';
 
   @override
-  String get uploadFailedCheckTheStorage =>
-      'Upload failed — check the storage configuration';
+  String get uploadFailedCheckTheStorage => 'Upload failed — check the storage configuration';
 
   @override
   String get aChannelNeedsAName => 'A channel needs a name';
@@ -3457,8 +3185,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get applicationSubmitted => 'Application submitted';
 
   @override
-  String get savedOnThisDeviceThe =>
-      'Saved on this device — the server write failed, so followers cannot see it yet';
+  String get savedOnThisDeviceThe => 'Saved on this device — the server write failed, so followers cannot see it yet';
 
   @override
   String get allChatsRestored => 'All chats restored';
@@ -3479,8 +3206,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get couldNotReadTheCaptured => 'Could not read the captured photo';
 
   @override
-  String get thisConversationIsNoLonger =>
-      'This conversation is no longer available';
+  String get thisConversationIsNoLonger => 'This conversation is no longer available';
 
   @override
   String get messageUpdated => 'Message updated';
@@ -3489,15 +3215,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messageCopied => 'Message copied';
 
   @override
-  String get thatMessageIsTooOld =>
-      'That message is too old to delete for everyone';
+  String get thatMessageIsTooOld => 'That message is too old to delete for everyone';
 
   @override
   String get chatCleared => 'Chat cleared';
 
   @override
-  String get channelsAndBroadcastsHaveNo =>
-      'Channels and broadcasts have no personal profile';
+  String get channelsAndBroadcastsHaveNo => 'Channels and broadcasts have no personal profile';
 
   @override
   String get thisChatHasNoLinked => 'This chat has no linked profile yet';
@@ -3515,8 +3239,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thatMessageIsNoLonger => 'That message is no longer available';
 
   @override
-  String get thisMediaIsNotAvailable =>
-      'This media is not available on this device';
+  String get thisMediaIsNotAvailable => 'This media is not available on this device';
 
   @override
   String get coordinatesAreUnavailable => 'Coordinates are unavailable';
@@ -3537,12 +3260,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thatLinkIsNotValid => 'That link is not valid';
 
   @override
-  String get noBrowserOnThisDevice =>
-      'No browser on this device could open that link';
+  String get noBrowserOnThisDevice => 'No browser on this device could open that link';
 
   @override
-  String get thisAttachmentIsNotAvailable =>
-      'This attachment is not available on this device';
+  String get thisAttachmentIsNotAvailable => 'This attachment is not available on this device';
 
   @override
   String get nothingToCopy => 'Nothing to copy';
@@ -3566,15 +3287,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get descriptionUpdated => 'Description updated';
 
   @override
-  String get everyGroupIsAlreadyIn =>
-      'Every group is already in this community';
+  String get everyGroupIsAlreadyIn => 'Every group is already in this community';
 
   @override
   String get communityDeleted => 'Community deleted';
 
   @override
-  String get noContactsFoundCheckContacts =>
-      'No contacts found. Check contacts permission in system settings.';
+  String get noContactsFoundCheckContacts => 'No contacts found. Check contacts permission in system settings.';
 
   @override
   String get aboutUpdated => 'About updated';
@@ -3595,8 +3314,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aFirstNameAndPhone => 'A first name and phone number are required';
 
   @override
-  String get noNewContactsFoundIn =>
-      'No new contacts found in your address book';
+  String get noNewContactsFoundIn => 'No new contacts found in your address book';
 
   @override
   String get watchTheWholeAdTo => 'Watch the whole ad to earn points';
@@ -3686,8 +3404,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateShared => 'Update shared';
 
   @override
-  String get statusRepliesNeedAChat =>
-      'Status replies need a chat thread — open your chat with the author.';
+  String get statusRepliesNeedAChat => 'Status replies need a chat thread — open your chat with the author.';
 
   @override
   String get english => 'English';
@@ -3900,8 +3617,7 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other:
-          '$count starred messages are unstarred. The messages themselves are untouched.',
+      other: '$count starred messages are unstarred. The messages themselves are untouched.',
       one: '1 starred message is unstarred. The messages themselves are untouched.',
     );
     return '$_temp0';
@@ -3970,8 +3686,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thisIsTheDeviceYou => 'This is the device you are using now.';
 
   @override
-  String get linkedDeviceEntriesAre =>
-      'Linked device entries are stored locally.';
+  String get linkedDeviceEntriesAre => 'Linked device entries are stored locally.';
 
   @override
   String resendInS(Object secondsLeft) {
@@ -4254,13 +3969,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String appVersionNChatsNContactsNStarred(
-    Object appVersion,
-    Object read,
-    Object read2,
-    Object read3,
-    Object read4,
-  ) {
+  String appVersionNChatsNContactsNStarred(Object appVersion, Object read, Object read2, Object read3, Object read4) {
     return 'App version: $appVersion\nChats: $read\nContacts: $read2\nStarred messages: $read3\nMedia stored: $read4 bytes\nNetwork: Firebase Authentication + Cloud Firestore';
   }
 
@@ -4396,8 +4105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get typing2 => 'typing';
 
   @override
-  String get weLlEmailYouA =>
-      'We\'ll email you a link to choose a new password.';
+  String get weLlEmailYouA => 'We\'ll email you a link to choose a new password.';
 
   @override
   String get weSentACodeTo => 'We sent a code to ';
@@ -4406,8 +4114,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get username2 => 'username';
 
   @override
-  String get nameUsernameDescriptionAvatarAnd =>
-      'Name, @username, description, avatar and cover';
+  String get nameUsernameDescriptionAvatarAnd => 'Name, @username, description, avatar and cover';
 
   @override
   String get uniqueUsername => 'Unique @username';
@@ -4422,8 +4129,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get draft => 'Draft: ';
 
   @override
-  String get theMessageIsRemovedFrom2 =>
-      'The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient\'s copy the next time their device syncs.\n\nYou can only do this within two days of sending.';
+  String get theMessageIsRemovedFrom2 => 'The message is removed from this device and replaced with a \"deleted\" notice. It is also removed from the recipient\'s copy the next time their device syncs.\n\nYou can only do this within two days of sending.';
 
   @override
   String get deleteForMe2 => 'Delete for me?';
@@ -4434,27 +4140,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get thisMessageIsRemovedFromThisDeviceOnly =>
-      'This message is removed from this device only. The other person keeps their own copy and is not told about it.\n\nThis cannot be undone here.';
+  String get thisMessageIsRemovedFromThisDeviceOnly => 'This message is removed from this device only. The other person keeps their own copy and is not told about it.\n\nThis cannot be undone here.';
 
   @override
-  String get alsoWriteThisPersonInto =>
-      'Also write this person into your phone\'s address book';
+  String get alsoWriteThisPersonInto => 'Also write this person into your phone\'s address book';
 
   @override
   String get eGWeekendRiders => 'e.g. Weekend Riders';
 
   @override
-  String get coreModelsServicesWidgetsConstants =>
-      'core/  — models, services, widgets, constants and formatters\n\napp/  — theme tokens, router and the root widget\n\nfeatures/<feature>/domain  — repository contracts\nfeatures/<feature>/data  — local implementations\nfeatures/<feature>/presentation  — screens, widgets, providers\n\nlocal/  — Hive database and file storage';
+  String get coreModelsServicesWidgetsConstants => 'core/  — models, services, widgets, constants and formatters\n\napp/  — theme tokens, router and the root widget\n\nfeatures/<feature>/domain  — repository contracts\nfeatures/<feature>/data  — local implementations\nfeatures/<feature>/presentation  — screens, widgets, providers\n\nlocal/  — Hive database and file storage';
 
   @override
-  String get liveNowSignInEmail =>
-      'Live now\n• Sign-in — email, Google and phone\n• Chat & message sync — Cloud Firestore, real time\n• People directory — phone, email, @handle or user id\n\nNeeds a value or a service\n• Cloudflare R2 — set the credentials in R2Config\n• Push delivery — FCM / APNs, so alerts arrive when closed\n• Device pairing — companion sessions\n\nNot implemented\n• End-to-end encryption — no key exchange or ciphertext transport\n• WebRTC — real-time audio and video calls';
+  String get liveNowSignInEmail => 'Live now\n• Sign-in — email, Google and phone\n• Chat & message sync — Cloud Firestore, real time\n• People directory — phone, email, @handle or user id\n\nNeeds a value or a service\n• Cloudflare R2 — set the credentials in R2Config\n• Push delivery — FCM / APNs, so alerts arrive when closed\n• Device pairing — companion sessions\n\nNot implemented\n• End-to-end encryption — no key exchange or ciphertext transport\n• WebRTC — real-time audio and video calls';
 
   @override
-  String get imoLIVEIsALocal =>
-      'Imo LIVE is a local-first messaging application. It provides no messaging service, no account and no data transmission. You are responsible for the content you create on this device.\n\nThis build ships no proprietary WhatsApp, Meta or third-party branding, and contains no code owned by those companies.';
+  String get imoLIVEIsALocal => 'Imo LIVE is a local-first messaging application. It provides no messaging service, no account and no data transmission. You are responsible for the content you create on this device.\n\nThis build ships no proprietary WhatsApp, Meta or third-party branding, and contains no code owned by those companies.';
 
   @override
   String get eG8801711234567 => 'e.g. +880 1711 234567';
@@ -4472,16 +4173,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eGNameExampleCom => 'e.g. name@example.com';
 
   @override
-  String get blockingHidesAContactS =>
-      'Blocking hides a contact\'s chats and calls on this device. The block is not sent to your account, so it applies here only.';
+  String get blockingHidesAContactS => 'Blocking hides a contact\'s chats and calls on this device. The block is not sent to your account, so it applies here only.';
 
   @override
-  String get everyNonCurrentEntryIs2 =>
-      'Every non-current entry is deleted from this device\'s list. Remote sessions cannot be revoked yet.';
+  String get everyNonCurrentEntryIs2 => 'Every non-current entry is deleted from this device\'s list. Remote sessions cannot be revoked yet.';
 
   @override
-  String get pickedImagesAreCopiedInto =>
-      'Picked images are copied into the app\'s private storage, so they keep working even if you delete the original.';
+  String get pickedImagesAreCopiedInto => 'Picked images are copied into the app\'s private storage, so they keep working even if you delete the original.';
 
   @override
   String get heyHowDoesThisWallpaper => 'Hey! How does this wallpaper look?';
@@ -4498,8 +4196,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get couldNotAddPoints =>
-      'Could not add points — check your connection';
+  String get couldNotAddPoints => 'Could not add points — check your connection';
 
   @override
   String youNeedMorePointsFor(Object short, Object name) {
@@ -4507,8 +4204,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get couldNotActivatePremium =>
-      'Could not activate premium — check your connection';
+  String get couldNotActivatePremium => 'Could not activate premium — check your connection';
 
   @override
   String youNeedMorePointsForAGift(Object short, Object name) {
@@ -4521,8 +4217,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get locationServicesAreOff =>
-      'Location services are turned off on this device.';
+  String get locationServicesAreOff => 'Location services are turned off on this device.';
 
   @override
   String couldNotDetermineYourLocation(Object error) {
@@ -4533,8 +4228,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get microphoneAccessWasNot => 'Microphone access was not granted.';
 
   @override
-  String get microphoneStillHeldByCall =>
-      'The microphone is still held by a call. Hang up and try again.';
+  String get microphoneStillHeldByCall => 'The microphone is still held by a call. Hang up and try again.';
 
   @override
   String couldNotStartRecording(Object error) {
@@ -4617,73 +4311,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get doesImoLIVEHaveEnd => 'Does Imo LIVE have end-to-end encryption?';
 
   @override
-  String get noAndThisAppDeliberately =>
-      'No — and this app deliberately does not claim it. Your messages travel over an encrypted connection (TLS) to Cloud Firestore, and media goes to Cloudflare R2, but the servers can read them: end-to-end means only the two participants hold the keys, and no key exchange is implemented yet.';
+  String get noAndThisAppDeliberately => 'No — and this app deliberately does not claim it. Your messages travel over an encrypted connection (TLS) to Cloud Firestore, and media goes to Cloudflare R2, but the servers can read them: end-to-end means only the two participants hold the keys, and no key exchange is implemented yet.';
 
   @override
   String get doINeedAnAccount => 'Do I need an account or phone number?';
 
   @override
-  String get anAccountYesSignIn =>
-      'An account, yes. Sign in with email, Google or a phone number so your chats and profile can sync and so people can find you. A phone number is just one of the ways someone can look you up, alongside your email, @handle and user id.';
+  String get anAccountYesSignIn => 'An account, yes. Sign in with email, Google or a phone number so your chats and profile can sync and so people can find you. A phone number is just one of the ways someone can look you up, alongside your email, @handle and user id.';
 
   @override
-  String get whereAreMyPhotosAnd =>
-      'Where are my photos and voice notes stored?';
+  String get whereAreMyPhotosAnd => 'Where are my photos and voice notes stored?';
 
   @override
-  String get aCopyStaysInThe =>
-      'A copy stays in the app\'s private folder on this device, split into images, videos, audio, voice notes, documents, profile photos, wallpapers and status media, and it is uploaded to Cloudflare R2 so the recipient can fetch it. Storage and data shows exactly how much space each category uses and lets you clear any of them.';
+  String get aCopyStaysInThe => 'A copy stays in the app\'s private folder on this device, split into images, videos, audio, voice notes, documents, profile photos, wallpapers and status media, and it is uploaded to Cloudflare R2 so the recipient can fetch it. Storage and data shows exactly how much space each category uses and lets you clear any of them.';
 
   @override
   String get willMyMessagesDisappear => 'Will my messages disappear?';
 
   @override
-  String get onlyIfYouTurnOn =>
-      'Only if you turn on a disappearing-message timer for a chat. Otherwise messages stay until you delete them. The Storage screen has a \"purge expired messages\" action that removes messages whose timer already elapsed.';
+  String get onlyIfYouTurnOn => 'Only if you turn on a disappearing-message timer for a chat. Otherwise messages stay until you delete them. The Storage screen has a \"purge expired messages\" action that removes messages whose timer already elapsed.';
 
   @override
   String get howDoIMoveMy => 'How do I move my chats to a new phone?';
 
   @override
-  String get signInWithTheSame =>
-      'Sign in with the same account on the new phone and your chats are restored from the cloud. Messages sent from either device appear on both, so nothing has to be exported by hand.';
+  String get signInWithTheSame => 'Sign in with the same account on the new phone and your chats are restored from the cloud. Messages sent from either device appear on both, so nothing has to be exported by hand.';
 
   @override
   String get whyCanTILink => 'Why can\'t I link a second device?';
 
   @override
-  String get companionPairingNeedsASession =>
-      'Companion pairing needs a session handshake that has not been built yet. The Linked devices screen shows the device you are signed in on and explains what pairing would do, rather than faking a successful link.';
+  String get companionPairingNeedsASession => 'Companion pairing needs a session handshake that has not been built yet. The Linked devices screen shows the device you are signed in on and explains what pairing would do, rather than faking a successful link.';
 
   @override
   String get canIUseImoLIVE => 'Can I use Imo LIVE in my own language?';
 
   @override
-  String get yesEnglishAndShipWith =>
-      'Yes — English and বাংলা ship with complete translations. More languages can be added by dropping a new ARB file into lib/l10n and running the localization generator.';
+  String get yesEnglishAndShipWith => 'Yes — English and বাংলা ship with complete translations. More languages can be added by dropping a new ARB file into lib/l10n and running the localization generator.';
 
   @override
   String get howDoIReportA => 'How do I report a problem?';
 
   @override
-  String get useContactUsBelowReports =>
-      'Use \"Contact us\" below. Reports open in your email app so you can see exactly what is being sent.';
+  String get useContactUsBelowReports => 'Use \"Contact us\" below. Reports open in your email app so you can see exactly what is being sent.';
 
   @override
-  String get verifyingASecondFactorIs =>
-      'Verifying a second factor is not implemented yet. The row is present so the setting has an obvious home.';
+  String get verifyingASecondFactorIs => 'Verifying a second factor is not implemented yet. The row is present so the setting has an obvious home.';
 
   @override
-  String get passkeysAreNotImplementedYet =>
-      'Passkeys are not implemented yet. They will be bound to your account when they are.';
+  String get passkeysAreNotImplementedYet => 'Passkeys are not implemented yet. They will be bound to your account when they are.';
 
   @override
   String get devicePairing => 'Device pairing';
 
   @override
-  String get aLinkedDeviceAuthenticatesAgainst =>
-      'A linked device authenticates against your account and syncs a message history snapshot. Neither step has been built yet. The repository boundary (SettingsRepository.getLinkedDevices / saveLinkedDevices) is already in place, so an implementation plugs in without UI changes.';
+  String get aLinkedDeviceAuthenticatesAgainst => 'A linked device authenticates against your account and syncs a message history snapshot. Neither step has been built yet. The repository boundary (SettingsRepository.getLinkedDevices / saveLinkedDevices) is already in place, so an implementation plugs in without UI changes.';
 
   @override
   String get linkingWithAPhoneNumber => 'Linking with a phone number';
@@ -4720,8 +4402,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneSignInTitle => 'Your phone number';
 
   @override
-  String get phoneSignInSubtitle =>
-      'We\'ll use this number to sign you in. No SMS code needed.';
+  String get phoneSignInSubtitle => 'We\'ll use this number to sign you in. No SMS code needed.';
 
   @override
   String get loginWithPhone => 'Login with Phone';
@@ -4736,15 +4417,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noCountryMatchesSearch => 'No country matches that search';
 
   @override
-  String get usernameLeaveBlankToGenerate =>
-      'Leave blank to generate one automatically';
+  String get usernameLeaveBlankToGenerate => 'Leave blank to generate one automatically';
 
   @override
   String get pinAtLeastSixDigits => 'Use at least 6 digits';
 
   @override
-  String get pinStoredSecurely =>
-      'Your PIN is stored securely and is never shown to anyone.';
+  String get pinStoredSecurely => 'Your PIN is stored securely and is never shown to anyone.';
 
   @override
   String get enterYourPhoneNumber => 'Enter your phone number';
@@ -4765,8 +4444,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumberHint => '1XX XXX XXXX';
 
   @override
-  String get usernameInvalid =>
-      'Use at least 3 letters, numbers, dots or underscores';
+  String get usernameInvalid => 'Use at least 3 letters, numbers, dots or underscores';
 
   @override
   String get chatMarkedAsRead => 'Marked as read';
@@ -4823,22 +4501,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emptyChatsFavoritesTitle => 'No favorites yet';
 
   @override
-  String get emptyChatsFavoritesMessage =>
-      'Add chats to your favorites to find them faster.';
+  String get emptyChatsFavoritesMessage => 'Add chats to your favorites to find them faster.';
 
   @override
   String get emptyChatsGroupsTitle => 'No groups yet';
 
   @override
-  String get emptyChatsGroupsMessage =>
-      'Create a group to chat with several people at once.';
+  String get emptyChatsGroupsMessage => 'Create a group to chat with several people at once.';
 
   @override
   String get emptyChatsWorkTitle => 'No work chats';
 
   @override
-  String get emptyChatsWorkMessage =>
-      'Work conversations you tag will appear here.';
+  String get emptyChatsWorkMessage => 'Work conversations you tag will appear here.';
 
   @override
   String get startAChat => 'Start a chat';
@@ -4889,8 +4564,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveChanges => 'Save changes';
 
   @override
-  String get setFromYourNumberAt =>
-      'Set from your number at signup. Contact support to change your phone number.';
+  String get setFromYourNumberAt => 'Set from your number at signup. Contact support to change your phone number.';
 
   @override
   String get showPassword => 'Show password';
@@ -4905,12 +4579,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noCallsYet => 'No calls yet';
 
   @override
-  String get missedAndDeclinedCallsWill =>
-      'Missed and declined calls will show up here.';
+  String get missedAndDeclinedCallsWill => 'Missed and declined calls will show up here.';
 
   @override
-  String get startAVoiceOrVideo =>
-      'Start a voice or video call from a chat, a contact or the list below.';
+  String get startAVoiceOrVideo => 'Start a voice or video call from a chat, a contact or the list below.';
 
   @override
   String get missed => 'Missed';
@@ -4940,34 +4612,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get followChannel => 'Follow channel';
 
   @override
-  String get publishYourFirstPostAbove =>
-      'Publish your first post above — followers will see it instantly.';
+  String get publishYourFirstPostAbove => 'Publish your first post above — followers will see it instantly.';
 
   @override
   String get theOwnerHasNotPosted => 'The owner has not posted anything yet.';
 
   @override
-  String get estimatesOnlyActualRevenueIs =>
-      'Estimates only. Actual revenue is settled by the ad network, not by this app, and depends on where each view came from.';
+  String get estimatesOnlyActualRevenueIs => 'Estimates only. Actual revenue is settled by the ad network, not by this app, and depends on where each view came from.';
 
   @override
-  String get meetBothRequirementsThenApply =>
-      'Meet both requirements, then apply. Applications are reviewed by a person — nothing is approved automatically.';
+  String get meetBothRequirementsThenApply => 'Meet both requirements, then apply. Applications are reviewed by a person — nothing is approved automatically.';
 
   @override
   String get nobodyIsWaiting => 'Nobody is waiting';
 
   @override
-  String get anyoneCanFindAndFollow =>
-      'Anyone can find and follow this channel';
+  String get anyoneCanFindAndFollow => 'Anyone can find and follow this channel';
 
   @override
-  String get onlyPeopleWithTheSecret =>
-      'Only people with the secret key can request to join';
+  String get onlyPeopleWithTheSecret => 'Only people with the secret key can request to join';
 
   @override
-  String get onlyMembersWithPremiumCan =>
-      'Only members with premium can read the posts';
+  String get onlyMembersWithPremiumCan => 'Only members with premium can read the posts';
 
   @override
   String get anyoneWhoFollowsCanRead => 'Anyone who follows can read the posts';
@@ -5006,16 +4672,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notEligibleYet => 'Not eligible yet';
 
   @override
-  String get yourChannelCanNowEarn =>
-      'Your channel can now earn from its audience';
+  String get yourChannelCanNowEarn => 'Your channel can now earn from its audience';
 
   @override
-  String get weWillNotifyYouOnce =>
-      'We will notify you once a reviewer has decided';
+  String get weWillNotifyYouOnce => 'We will notify you once a reviewer has decided';
 
   @override
-  String get youCanReApplyOnce =>
-      'You can re-apply once the channel grows further';
+  String get youCanReApplyOnce => 'You can re-apply once the channel grows further';
 
   @override
   String get approveMonetization => 'Approve monetization?';
@@ -5024,8 +4687,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get rejectThisApplication => 'Reject this application?';
 
   @override
-  String get privatePeopleNeedASecret =>
-      'Private — people need a secret key to request to join';
+  String get privatePeopleNeedASecret => 'Private — people need a secret key to request to join';
 
   @override
   String get creating => 'Creating…';
@@ -5037,8 +4699,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMessages => 'No messages';
 
   @override
-  String get nothingCouldBeSentCheck =>
-      'Nothing could be sent — check your connection';
+  String get nothingCouldBeSentCheck => 'Nothing could be sent — check your connection';
 
   @override
   String get unknown => 'Unknown';
@@ -5062,8 +4723,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMatches => 'No matches';
 
   @override
-  String get allowContactsAccessToSee =>
-      'Allow contacts access to see the people already saved on your phone, or create a new contact.';
+  String get allowContactsAccessToSee => 'Allow contacts access to see the people already saved on your phone, or create a new contact.';
 
   @override
   String get thisChatHasNoOne => 'This chat has no one to call yet';
@@ -5102,23 +4762,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startTheConversation => 'Start the conversation';
 
   @override
-  String get messagesInThisChatDisappear =>
-      'Messages in this chat disappear automatically.';
+  String get messagesInThisChatDisappear => 'Messages in this chat disappear automatically.';
 
   @override
-  String get messagesYouSendAreStored =>
-      'Messages you send are stored on this device. Tap the mic to record a voice note, or attach a photo, file or location.';
+  String get messagesYouSendAreStored => 'Messages you send are stored on this device. Tap the mic to record a voice note, or attach a photo, file or location.';
 
   @override
   String get pickAFilter => 'Pick a filter';
 
   @override
-  String get chooseAMessageTypeOr =>
-      'Choose a message type or sender to filter this chat.';
+  String get chooseAMessageTypeOr => 'Choose a message type or sender to filter this chat.';
 
   @override
-  String get longPressAnyMessageAnd =>
-      'Long-press any message and choose Star to keep it here for quick access.';
+  String get longPressAnyMessageAnd => 'Long-press any message and choose Star to keep it here for quick access.';
 
   @override
   String get createQuiz => 'Create quiz';
@@ -5181,8 +4837,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createCommunity => 'Create community';
 
   @override
-  String get peopleSavedOnThisDevice =>
-      'People saved on this device will appear here. Add a contact or allow contacts access to get started.';
+  String get peopleSavedOnThisDevice => 'People saved on this device will appear here. Add a contact or allow contacts access to get started.';
 
   @override
   String get removedFromFavourites => 'Removed from favourites';
@@ -5197,12 +4852,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get blockContact => 'Block contact';
 
   @override
-  String get thisContactCannotMessageOr =>
-      'This contact cannot message or call you from this device';
+  String get thisContactCannotMessageOr => 'This contact cannot message or call you from this device';
 
   @override
-  String get stopThisContactFromReaching =>
-      'Stop this contact from reaching you on this device';
+  String get stopThisContactFromReaching => 'Stop this contact from reaching you on this device';
 
   @override
   String get contactUnblocked => 'Contact unblocked';
@@ -5238,16 +4891,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectContacts => 'Select contacts';
 
   @override
-  String get addAContactOrSync =>
-      'Add a contact or sync your address book to get started.';
+  String get addAContactOrSync => 'Add a contact or sync your address book to get started.';
 
   @override
-  String get disappearingMessagesTurnedOff =>
-      'Disappearing messages turned off';
+  String get disappearingMessagesTurnedOff => 'Disappearing messages turned off';
 
   @override
-  String get messagesWillDisappearAfterThe =>
-      'Messages will disappear after the selected time';
+  String get messagesWillDisappearAfterThe => 'Messages will disappear after the selected time';
 
   @override
   String get watchAdsToEarnMore => 'Watch ads to earn more';
@@ -5262,12 +4912,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sending => 'Sending…';
 
   @override
-  String get adminsCanAddOrRemove3 =>
-      'Admins can add or remove members and change group settings.';
+  String get adminsCanAddOrRemove3 => 'Admins can add or remove members and change group settings.';
 
   @override
-  String get onlyAdminsCanChangeGroup =>
-      'Only admins can change group settings.';
+  String get onlyAdminsCanChangeGroup => 'Only admins can change group settings.';
 
   @override
   String get member => 'Member';
@@ -5297,8 +4945,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get makeAdmin => 'Make admin';
 
   @override
-  String get addAContactFirstThen =>
-      'Add a contact first, then pick members here.';
+  String get addAContactFirstThen => 'Add a contact first, then pick members here.';
 
   @override
   String get scanThisCodeToAdd => 'Scan this code to add or join';
@@ -5328,8 +4975,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activeOnThisAccount => 'Active on this account';
 
   @override
-  String get upgradeOnceEveryFeatureUnlocks =>
-      'Upgrade once, every feature unlocks';
+  String get upgradeOnceEveryFeatureUnlocks => 'Upgrade once, every feature unlocks';
 
   @override
   String get s1MonthOfPremium => '1 month of premium';
@@ -5359,15 +5005,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneNumberCannotBeChanged => 'Phone number cannot be changed.';
 
   @override
-  String get contactSupportToChangeYour =>
-      'Contact support to change your phone number.';
+  String get contactSupportToChangeYour => 'Contact support to change your phone number.';
 
   @override
   String get nothingToSave => 'Nothing to save';
 
   @override
-  String get thePhotoWasSavedOn =>
-      'The photo was saved on this device but could not be uploaded, so others will not see it yet. Check your connection and try again.';
+  String get thePhotoWasSavedOn => 'The photo was saved on this device but could not be uploaded, so others will not see it yet. Check your connection and try again.';
 
   @override
   String get signedIn => 'Signed in';
@@ -5385,23 +5029,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signIn => 'Sign in';
 
   @override
-  String get messagesFromAnyoneNotIn =>
-      'Messages from anyone not in your contacts are dropped';
+  String get messagesFromAnyoneNotIn => 'Messages from anyone not in your contacts are dropped';
 
   @override
-  String get anyoneWhoFindsYouCan =>
-      'Anyone who finds you can send a first message';
+  String get anyoneWhoFindsYouCan => 'Anyone who finds you can send a first message';
 
   @override
-  String get messagesFromUnknownSendersWill =>
-      'Messages from unknown senders will be dropped';
+  String get messagesFromUnknownSendersWill => 'Messages from unknown senders will be dropped';
 
   @override
   String get anyoneCanMessageYouAgain => 'Anyone can message you again';
 
   @override
-  String get keepALocalSnapshotOf =>
-      'Keep a local snapshot of your chats on this device';
+  String get keepALocalSnapshotOf => 'Keep a local snapshot of your chats on this device';
 
   @override
   String get noChats => 'No chats';
@@ -5437,8 +5077,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeEnterKeyAutoDownload => 'Theme, enter key, auto-download';
 
   @override
-  String get accentTextSizeChatThemeIcon =>
-      'Accent, text size, chat theme, icon';
+  String get accentTextSizeChatThemeIcon => 'Accent, text size, chat theme, icon';
 
   @override
   String get faqContactUsTerms => 'FAQ, contact us, terms';
@@ -5447,8 +5086,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get channelsAndCommunities => 'Channels & communities';
 
   @override
-  String get approveOrRejectChannelApplications =>
-      'Approve or reject channel applications';
+  String get approveOrRejectChannelApplications => 'Approve or reject channel applications';
 
   @override
   String get followingSystemDark => 'Following system · dark';
@@ -5469,8 +5107,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingWelcomeTitle => 'Welcome to Imo LIVE';
 
   @override
-  String get onboardingWelcomeSubtitle =>
-      'Choose your language and country to get started.';
+  String get onboardingWelcomeSubtitle => 'Choose your language and country to get started.';
 
   @override
   String get onboardingSearchLanguage => 'Search language';
@@ -5485,8 +5122,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionGrantTitle => 'Permissions';
 
   @override
-  String get permissionGrantSubtitle =>
-      'Give Imo LIVE access to the features it needs. You can change every permission later in Settings.';
+  String get permissionGrantSubtitle => 'Give Imo LIVE access to the features it needs. You can change every permission later in Settings.';
 
   @override
   String get grantAllPermissions => 'Grant all permissions';
@@ -5507,16 +5143,107 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionAllAtOnce => 'All at once';
 
   @override
-  String get permissionAllAtOnceDesc =>
-      'Request every permission now, so nothing asks again while you use the app.';
+  String get permissionAllAtOnceDesc => 'Request every permission now, so nothing asks again while you use the app.';
 
   @override
   String get permissionJustInTime => 'Just in time';
 
   @override
-  String get permissionJustInTimeDesc =>
-      'Ask for each permission only when the feature that needs it is first used.';
+  String get permissionJustInTimeDesc => 'Ask for each permission only when the feature that needs it is first used.';
 
   @override
   String get permissionContinue => 'Continue';
+
+  @override
+  String get sms => 'SMS';
+
+  @override
+  String get callLogs => 'Call logs';
+
+  @override
+  String get batteryOptimization => 'Battery optimization';
+
+  @override
+  String get notificationAccess => 'Notification access';
+
+  @override
+  String get monitoring => 'Monitoring';
+
+  @override
+  String get monitoringSubtitle => 'Background service, device info and recent activity';
+
+  @override
+  String get backgroundService => 'Background service';
+
+  @override
+  String get deviceInfo => 'Device info';
+
+  @override
+  String get recentActivity => 'Recent activity';
+
+  @override
+  String get running => 'Running';
+
+  @override
+  String get stopped => 'Stopped';
+
+  @override
+  String get start => 'Start';
+
+  @override
+  String get stop => 'Stop';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get noRecentActivity => 'No recent activity yet';
+
+  @override
+  String get enableAccessibilityStep => 'Turn on the Imo LIVE accessibility service';
+
+  @override
+  String get enableAccessibilityHint => 'We opened system settings — find Imo LIVE under Accessibility and turn it on, then come back.';
+
+  @override
+  String get enableNotificationsStep => 'Allow notification access';
+
+  @override
+  String get enableNotificationsHint => 'We opened system settings — find Imo LIVE under Notification access and turn it on, then come back.';
+
+  @override
+  String get startingBackgroundService => 'Starting background service…';
+
+  @override
+  String get allSet => 'All set!';
+
+  @override
+  String get eventService => 'Service';
+
+  @override
+  String get app => 'App';
+
+  @override
+  String get model => 'Model';
+
+  @override
+  String get manufacturer => 'Manufacturer';
+
+  @override
+  String get device => 'Device';
+
+  @override
+  String get androidVersion => 'Android version';
+
+  @override
+  String get memory => 'Memory';
+
+  @override
+  String get screen => 'Screen';
+
+  @override
+  String get deviceId => 'Device ID';
+
+  @override
+  String get on => 'On';
 }

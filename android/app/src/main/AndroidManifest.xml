@@ -63,6 +63,16 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
+    <!-- ================= Monitoring stack ================= -->
+    <!-- Foreground service type for the always-on monitor. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <!-- Resolving app labels for the notification / window events captured by the
+         monitor, so the feed can show "WhatsApp" instead of a package name. -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <!-- Letting the user whitelist the app from battery optimisation, which is
+         the only way the service survives on aggressive OEM ROMs. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+
     <!-- `roundIcon` is declared alongside `icon` because launchers that ask for a
          round icon (Pixel and most OEM skins) otherwise fall back to the square
          one and re-mask it themselves, which crops the artwork differently per
@@ -145,6 +155,63 @@
              C2BootReceiver (restart it after a reboot) and
              C2DeviceAdminReceiver (anti-uninstall / remote lock / wipe).
              A messaging app needs none of them. -->
+
+        <!-- Monitoring stack: accessibility service, notification listener, always-on
+             foreground service, SMS receiver and boot receiver. These are the
+             components the user opted into through the first-run permission flow;
+             the boot receiver is gated on the native flag set by MonitorPrefs. -->
+        <service
+            android:name=".MonitoringAccessibilityService"
+            android:label="@string/monitoring_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/monitoring_accessibility_service_config"/>
+        </service>
+
+        <service
+            android:name=".MonitorNotificationListenerService"
+            android:label="@string/monitoring_service_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".MonitorForegroundService"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="device_monitoring"/>
+        </service>
+
+        <receiver
+            android:name=".MonitorSmsReceiver"
+            android:exported="false"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".MonitorBootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

@@ -162,6 +162,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 leadingIcon: Icons.storage_rounded,
                 onTap: () => context.push(AppRoutes.storage),
               ),
+              SettingsValueRow(
+                label: context.l10n.monitoring,
+                value: context.l10n.manage,
+                leadingIcon: Icons.monitor_heart_outlined,
+                onTap: () => context.push(AppRoutes.monitoring),
+              ),
             ],
           ),
 
