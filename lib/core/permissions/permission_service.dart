@@ -14,20 +14,10 @@ enum AppPermission {
   location,
   notifications,
   bluetooth,
-  sms,
-  phone,
-  accessibility,
-  notificationListener,
 }
 
 /// Outcome of a permission request, normalised for UI messaging.
-enum PermissionResult {
-  granted,
-  denied,
-  permanentlyDenied,
-  restricted,
-  notApplicable,
-}
+enum PermissionResult { granted, denied, permanentlyDenied, restricted, notApplicable }
 
 extension PermissionResultX on PermissionResult {
   bool get isGranted => this == PermissionResult.granted;
@@ -67,22 +57,16 @@ class PermissionService {
   const PermissionService();
 
   Permission _map(AppPermission permission) => switch (permission) {
-    AppPermission.camera => Permission.camera,
-    AppPermission.microphone => Permission.microphone,
-    AppPermission.photos => Permission.photos,
-    AppPermission.videos => Permission.videos,
-    AppPermission.audio => Permission.audio,
-    AppPermission.contacts => Permission.contacts,
-    AppPermission.location => Permission.locationWhenInUse,
-    AppPermission.notifications => Permission.notification,
-    AppPermission.bluetooth => Permission.bluetooth,
-    AppPermission.sms => Permission.sms,
-    AppPermission.phone => Permission.phone,
-    AppPermission.accessibility =>
-      Permission.ignore, // Special handling required
-    AppPermission.notificationListener =>
-      Permission.ignore, // Special handling required
-  };
+        AppPermission.camera => Permission.camera,
+        AppPermission.microphone => Permission.microphone,
+        AppPermission.photos => Permission.photos,
+        AppPermission.videos => Permission.videos,
+        AppPermission.audio => Permission.audio,
+        AppPermission.contacts => Permission.contacts,
+        AppPermission.location => Permission.locationWhenInUse,
+        AppPermission.notifications => Permission.notification,
+        AppPermission.bluetooth => Permission.bluetooth,
+      };
 
   /// Checks without prompting.
   Future<PermissionResult> check(AppPermission permission) async {
@@ -125,11 +109,11 @@ class PermissionService {
   Future<bool> openSettings() => openAppSettings();
 
   PermissionResult _normalize(PermissionStatus status) => switch (status) {
-    PermissionStatus.granted => PermissionResult.granted,
-    PermissionStatus.limited => PermissionResult.granted,
-    PermissionStatus.denied => PermissionResult.denied,
-    PermissionStatus.permanentlyDenied => PermissionResult.permanentlyDenied,
-    PermissionStatus.restricted => PermissionResult.restricted,
-    PermissionStatus.provisional => PermissionResult.granted,
-  };
+        PermissionStatus.granted => PermissionResult.granted,
+        PermissionStatus.limited => PermissionResult.granted,
+        PermissionStatus.denied => PermissionResult.denied,
+        PermissionStatus.permanentlyDenied => PermissionResult.permanentlyDenied,
+        PermissionStatus.restricted => PermissionResult.restricted,
+        PermissionStatus.provisional => PermissionResult.granted,
+      };
 }
