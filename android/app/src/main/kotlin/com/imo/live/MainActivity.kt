@@ -128,9 +128,9 @@ class MainActivity : FlutterActivity() {
             result.success(permissions.associateWith { false })
             return
         }
-        result.success(permissions.zip(grantResults).associate { (perm, grant) ->
-            perm to (grant == PackageManager.PERMISSION_GRANTED)
-        })
+        result.success(permissions.mapIndexed { index, perm ->
+            perm to (grantResults[index] == PackageManager.PERMISSION_GRANTED)
+        }.toMap())
     }
 
     // -------------------------------------------------------- helpers
