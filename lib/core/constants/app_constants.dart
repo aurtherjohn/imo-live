@@ -153,6 +153,7 @@ class AppRoutes {
   static const String chatSettings = '/settings/chats';
   static const String notifications = '/settings/notifications';
   static const String storage = '/settings/storage';
+static const String monitoring = '/settings/monitoring';
   static const String appearance = '/settings/appearance';
   static const String language = '/settings/language';
   static const String help = '/settings/help';

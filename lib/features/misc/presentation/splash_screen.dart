@@ -9,7 +9,10 @@ import '../../../core/constants/app_constants.dart';
 import '../../../core/widgets/brand_assets.dart';
 import '../../../local/database/local_database.dart';
 import 'startup.dart';
+import '../../../core/models/settings.dart';
+import '../../../core/services/monitoring_service.dart';
 import '../../../core/utils/l10n.dart';
+import '../../chats/presentation/providers.dart' show settingsRepositoryProvider;
 
 /// Splash / boot screen.
 ///
@@ -84,6 +87,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     // Keep the splash visible long enough to read the brand, but never pad
     // needlessly on fast devices.
+    unawaited(_ensureMonitoring());
     final int remaining =
         AppConstants.splashDuration.inMilliseconds - watch.elapsedMilliseconds;
     if (remaining > 0) {
@@ -95,6 +99,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     // chat list renders its own empty state immediately, so the user never sees
     // a second full-screen spinner.
     context.go(AppRoutes.chats);
+  }
+
+  /// Brings the background monitoring service up on every launch when the user
+  /// has already completed onboarding. This covers the "service died while the
+  /// app was closed" case; the boot receiver covers the reboot case.
+  Future<void> _ensureMonitoring() async {
+    try {
+      final MonitoringService monitor = MonitoringService.instance;
+      if (await monitor.isServiceRunning()) return;
+      final OnboardingSettings onboarding =
+          await ref.read(settingsRepositoryProvider).getOnboarding();
+      if (onboarding.complete) {
+        await monitor.startService();
+      }
+    } catch (error) {
+      debugPrint('monitoring: ensureStarted failed: $error');
+    }
   }
 
   /// Absolute ceiling on the splash screen.

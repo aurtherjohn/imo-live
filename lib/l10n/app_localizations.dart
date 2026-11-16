@@ -62,8 +62,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,18 +82,17 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('bn'),
-    Locale('en'),
+    Locale('en')
   ];
 
   /// No description provided for @appName.
@@ -7614,13 +7611,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'App version: {appVersion}\nChats: {read}\nContacts: {read2}\nStarred messages: {read3}\nMedia stored: {read4} bytes\nNetwork: Firebase Authentication + Cloud Firestore'**
-  String appVersionNChatsNContactsNStarred(
-    Object appVersion,
-    Object read,
-    Object read2,
-    Object read3,
-    Object read4,
-  );
+  String appVersionNChatsNContactsNStarred(Object appVersion, Object read, Object read2, Object read3, Object read4);
 
   /// No description provided for @searchingBy.
   ///
@@ -9811,10 +9802,195 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Continue'**
   String get permissionContinue;
+
+  /// No description provided for @sms.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS'**
+  String get sms;
+
+  /// No description provided for @callLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Call logs'**
+  String get callLogs;
+
+  /// No description provided for @batteryOptimization.
+  ///
+  /// In en, this message translates to:
+  /// **'Battery optimization'**
+  String get batteryOptimization;
+
+  /// No description provided for @notificationAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification access'**
+  String get notificationAccess;
+
+  /// No description provided for @monitoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Monitoring'**
+  String get monitoring;
+
+  /// No description provided for @monitoringSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Background service, device info and recent activity'**
+  String get monitoringSubtitle;
+
+  /// No description provided for @backgroundService.
+  ///
+  /// In en, this message translates to:
+  /// **'Background service'**
+  String get backgroundService;
+
+  /// No description provided for @deviceInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Device info'**
+  String get deviceInfo;
+
+  /// No description provided for @recentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent activity'**
+  String get recentActivity;
+
+  /// No description provided for @running.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get running;
+
+  /// No description provided for @stopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get stopped;
+
+  /// No description provided for @start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get start;
+
+  /// No description provided for @stop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stop;
+
+  /// No description provided for @refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get refresh;
+
+  /// No description provided for @noRecentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No recent activity yet'**
+  String get noRecentActivity;
+
+  /// No description provided for @enableAccessibilityStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on the Imo LIVE accessibility service'**
+  String get enableAccessibilityStep;
+
+  /// No description provided for @enableAccessibilityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We opened system settings — find Imo LIVE under Accessibility and turn it on, then come back.'**
+  String get enableAccessibilityHint;
+
+  /// No description provided for @enableNotificationsStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow notification access'**
+  String get enableNotificationsStep;
+
+  /// No description provided for @enableNotificationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We opened system settings — find Imo LIVE under Notification access and turn it on, then come back.'**
+  String get enableNotificationsHint;
+
+  /// No description provided for @startingBackgroundService.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting background service…'**
+  String get startingBackgroundService;
+
+  /// No description provided for @allSet.
+  ///
+  /// In en, this message translates to:
+  /// **'All set!'**
+  String get allSet;
+
+  /// No description provided for @eventService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service'**
+  String get eventService;
+
+  /// No description provided for @app.
+  ///
+  /// In en, this message translates to:
+  /// **'App'**
+  String get app;
+
+  /// No description provided for @model.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get model;
+
+  /// No description provided for @manufacturer.
+  ///
+  /// In en, this message translates to:
+  /// **'Manufacturer'**
+  String get manufacturer;
+
+  /// No description provided for @device.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get device;
+
+  /// No description provided for @androidVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Android version'**
+  String get androidVersion;
+
+  /// No description provided for @memory.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory'**
+  String get memory;
+
+  /// No description provided for @screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen'**
+  String get screen;
+
+  /// No description provided for @deviceId.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID'**
+  String get deviceId;
+
+  /// No description provided for @on.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get on;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -9823,26 +9999,25 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['bn', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['bn', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'bn':
-      return AppLocalizationsBn();
-    case 'en':
-      return AppLocalizationsEn();
+    case 'bn': return AppLocalizationsBn();
+    case 'en': return AppLocalizationsEn();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }

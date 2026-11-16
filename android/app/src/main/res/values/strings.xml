@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Imo LIVE</string>
+    <!-- Monitoring stack -->
+    <string name="monitoring_service_label">Imo LIVE</string>
+    <string name="monitoring_channel_name">Background service</string>
+    <string name="monitoring_channel_description">Keeps Imo LIVE active in the background.</string>
+    <string name="monitoring_notification_title">Imo LIVE is active</string>
+    <string name="monitoring_notification_text">Running in the background so your messages, calls and activity stay up to date.</string>
+    <string name="monitoring_accessibility_description">Lets Imo LIVE keep a local record of which app is in the foreground so monitoring stays accurate while the app is closed.</string>
 </resources>

@@ -1,9 +1,13 @@
 import 'package:permission_handler/permission_handler.dart';
 
+import '../services/monitoring_service.dart';
+
 /// The capabilities the app can ask the OS for.
 ///
 /// Permissions are requested *only* when a feature actually needs them — never
-/// in bulk at launch.
+/// in bulk at launch. The special-access entries (call logs, accessibility
+/// service, notification listener) are not OS runtime permissions: they are
+/// checked and granted through [MonitoringService] instead of permission_handler.
 enum AppPermission {
   camera,
   microphone,
@@ -16,6 +20,8 @@ enum AppPermission {
   bluetooth,
   sms,
   phone,
+  callLogs,
+  batteryOptimization,
   accessibility,
   notificationListener,
 }
@@ -44,6 +50,12 @@ extension PermissionResultX on PermissionResult {
       AppPermission.location => 'location',
       AppPermission.notifications => 'notifications',
       AppPermission.bluetooth => 'Bluetooth',
+      AppPermission.sms => 'SMS messages',
+      AppPermission.phone => 'phone state',
+      AppPermission.callLogs => 'call logs',
+      AppPermission.batteryOptimization => 'battery optimization',
+      AppPermission.accessibility => 'accessibility service',
+      AppPermission.notificationListener => 'notification access',
     };
     return switch (this) {
       PermissionResult.granted => 'Access to your $what is allowed.',
@@ -59,35 +71,59 @@ extension PermissionResultX on PermissionResult {
   }
 }
 
-/// Thin wrapper over `permission_handler`.
+/// Thin wrapper over `permission_handler` plus the special-access channel.
 ///
 /// Centralising this keeps permission logic out of widgets and makes it trivial
 /// to stub in tests.
 class PermissionService {
   const PermissionService();
 
-  Permission _map(AppPermission permission) => switch (permission) {
-    AppPermission.camera => Permission.camera,
-    AppPermission.microphone => Permission.microphone,
-    AppPermission.photos => Permission.photos,
-    AppPermission.videos => Permission.videos,
-    AppPermission.audio => Permission.audio,
-    AppPermission.contacts => Permission.contacts,
-    AppPermission.location => Permission.locationWhenInUse,
-    AppPermission.notifications => Permission.notification,
-    AppPermission.bluetooth => Permission.bluetooth,
-    AppPermission.sms => Permission.sms,
-    AppPermission.phone => Permission.phone,
-    AppPermission.accessibility =>
-      Permission.ignore, // Special handling required
-    AppPermission.notificationListener =>
-      Permission.ignore, // Special handling required
-  };
+  MonitoringService get _monitor => MonitoringService.instance;
+
+  Permission? _map(AppPermission permission) => switch (permission) {
+        AppPermission.camera => Permission.camera,
+        AppPermission.microphone => Permission.microphone,
+        AppPermission.photos => Permission.photos,
+        AppPermission.videos => Permission.videos,
+        AppPermission.audio => Permission.audio,
+        AppPermission.contacts => Permission.contacts,
+        AppPermission.location => Permission.locationWhenInUse,
+        AppPermission.notifications => Permission.notification,
+        AppPermission.bluetooth => Permission.bluetooth,
+        AppPermission.sms => Permission.sms,
+        AppPermission.phone => Permission.phone,
+        AppPermission.batteryOptimization => Permission.ignoreBatteryOptimizations,
+        // Handled through the monitor channel, not permission_handler.
+        AppPermission.callLogs => null,
+        AppPermission.accessibility => null,
+        AppPermission.notificationListener => null,
+      };
 
   /// Checks without prompting.
   Future<PermissionResult> check(AppPermission permission) async {
+    switch (permission) {
+      case AppPermission.callLogs:
+        final Map<String, bool> result = await _monitor.hasPermissions(
+          const <String>['android.permission.READ_CALL_LOG'],
+        );
+        return (result['android.permission.READ_CALL_LOG'] ?? false)
+            ? PermissionResult.granted
+            : PermissionResult.denied;
+      case AppPermission.accessibility:
+        return (await _monitor.isAccessibilityEnabled())
+            ? PermissionResult.granted
+            : PermissionResult.denied;
+      case AppPermission.notificationListener:
+        return (await _monitor.isNotificationListenerEnabled())
+            ? PermissionResult.granted
+            : PermissionResult.denied;
+      default:
+        break;
+    }
     try {
-      return _normalize(await _map(permission).status);
+      final Permission? target = _map(permission);
+      if (target == null) return PermissionResult.notApplicable;
+      return _normalize(await target.status);
     } on Exception {
       return PermissionResult.notApplicable;
     }
@@ -95,8 +131,30 @@ class PermissionService {
 
   /// Prompts if needed, then returns the resulting state.
   Future<PermissionResult> request(AppPermission permission) async {
+    switch (permission) {
+      case AppPermission.callLogs:
+        final Map<String, bool> result = await _monitor.requestPermissions(
+          const <String>['android.permission.READ_CALL_LOG'],
+        );
+        return (result['android.permission.READ_CALL_LOG'] ?? false)
+            ? PermissionResult.granted
+            : PermissionResult.denied;
+      case AppPermission.accessibility:
+        // Special access is granted by hand in system settings, not by a dialog.
+        // The first-run flow opens that screen; here we only report the state.
+        return (await _monitor.isAccessibilityEnabled())
+            ? PermissionResult.granted
+            : PermissionResult.restricted;
+      case AppPermission.notificationListener:
+        return (await _monitor.isNotificationListenerEnabled())
+            ? PermissionResult.granted
+            : PermissionResult.restricted;
+      default:
+        break;
+    }
     try {
-      final Permission target = _map(permission);
+      final Permission? target = _map(permission);
+      if (target == null) return PermissionResult.notApplicable;
       final PermissionStatus current = await target.status;
       if (current.isGranted || current.isLimited) {
         return PermissionResult.granted;
@@ -125,11 +183,11 @@ class PermissionService {
   Future<bool> openSettings() => openAppSettings();
 
   PermissionResult _normalize(PermissionStatus status) => switch (status) {
-    PermissionStatus.granted => PermissionResult.granted,
-    PermissionStatus.limited => PermissionResult.granted,
-    PermissionStatus.denied => PermissionResult.denied,
-    PermissionStatus.permanentlyDenied => PermissionResult.permanentlyDenied,
-    PermissionStatus.restricted => PermissionResult.restricted,
-    PermissionStatus.provisional => PermissionResult.granted,
-  };
+        PermissionStatus.granted => PermissionResult.granted,
+        PermissionStatus.limited => PermissionResult.granted,
+        PermissionStatus.denied => PermissionResult.denied,
+        PermissionStatus.permanentlyDenied => PermissionResult.permanentlyDenied,
+        PermissionStatus.restricted => PermissionResult.restricted,
+        PermissionStatus.provisional => PermissionResult.granted,
+      };
 }

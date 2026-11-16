@@ -49,6 +49,7 @@ import '../features/updates/presentation/status_view_screen.dart';
 import '../features/updates/presentation/updates_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/settings/presentation/storage_screen.dart';
+import '../features/settings/presentation/monitoring_screen.dart';
 import '../features/settings/presentation/wallpaper_screen.dart';
 import '../features/search/presentation/directory_search_screen.dart';
 import '../core/utils/l10n.dart';
@@ -320,6 +321,12 @@ final GoRouter appRouter = GoRouter(
       name: 'storage',
       pageBuilder: (BuildContext context, GoRouterState state) =>
           appPage(state, const StorageScreen()),
+    ),
+    GoRoute(
+      path: AppRoutes.monitoring,
+      name: 'monitoring',
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          appPage(state, const MonitoringScreen()),
     ),
     GoRoute(
       path: AppRoutes.appearance,
